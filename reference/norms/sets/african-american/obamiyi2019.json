@@ -1,0 +1,538 @@
+{
+  "id": "obamiyi2019",
+  "kind": "population",
+  "status": "verified",
+  "citation": {
+    "authors": "Obamiyi S, Wang Z, Sommers E, Rossouw PE, Michelogiannakis D",
+    "title": "Overbite depth indicator and anteroposterior dysplasia indicator cephalometric norms for African Americans",
+    "journal": "Angle Orthodontist",
+    "year": 2019,
+    "volume": "89",
+    "pages": "897-902",
+    "doi": "10.2319/021619-116.1",
+    "openAccess": true
+  },
+  "population": {
+    "id": "african-american",
+    "label": "African-American",
+    "ethnicity": [
+      "African-American"
+    ],
+    "country": "USA",
+    "region": "Bolton-Brush Growth Center, Cleveland, Ohio"
+  },
+  "sample": {
+    "n": 160,
+    "nMale": 97,
+    "nFemale": 63,
+    "ageMin": 7,
+    "ageMax": 14,
+    "ageMean": 10.28
+  },
+  "selection": "class-I",
+  "modality": "unknown",
+  "scale": {
+    "kind": "not-stated"
+  },
+  "headPosition": "unknown",
+  "curation": {
+    "extractedBy": [
+      "AI reader A",
+      "AI reader B"
+    ],
+    "comparedOn": "2026-10-08",
+    "date": "2026-10-08",
+    "notes": "Compared 2026-10-08 (norms:compare a vs b exit 1, 44 differences; logs/task9b2-compare-obamiyi2019.log). All 38 means, SDs and n agree; every one re-read from the page images (PDF p. 3 = p. 899, Tables 1-2; PDF p. 4 = p. 900, Table 3). Differences: (1) source wording on every row (prose) -> 'Table N, row R, p. P'. (2) ranges on the Total and Table 2 rows found by b only: checked on the pages (Table 2 Min/Max columns, p. 899: F ODI 59-83, APDI 68-90; M ODI 56-90, APDI 70-90; Results text: total ODI 56-90°, p. 899, total APDI 68-90°, p. 900) -> correct, but see (3). (3) Band overlap (merge notes): Table 2's whole-sample sex rows (7-14) overlap Table 3's single-age rows of the same sex, and Table 1's Total row (7-14, pooled) overlaps Table 1's single-age pooled rows; the validator refuses both. Kept the age-specific rows (Table 1 by age, pooled; Table 3 by age and sex) and moved the whole-sample rows (Table 2 and Table 1 Total) with their ranges to a caveat: a child is better compared with children of his own age than with the 7-14 average, and the paper found ODI differs with age (7 vs 14 y, P = .0043, p. 900). 38 extracted rows -> 32 entries. ODI close (mandibular plane menton to gonion, p. 898); APDI same, measured directly (merge notes). Modality unknown (b; Figure 1 is captioned 'digital', the AAOF Legacy films are older; the paper does not say). Selection class-I (Angle Class I molars, normal occlusion; no facial-balance criterion, p. 898)."
+  },
+  "caveats": [
+    "Untreated children 7-14 y with Angle Class I molars and normal occlusion (no crossbite, open bite, spacing or crowding; overbite and overjet within normal limits), from the Bolton-Brush Growth Center (AAOF Legacy Collection); not selected for facial balance (p. 898). Hand traced by one calibrated investigator.",
+    "Not entered (they overlap the age-specific rows; the validator allows one row per age, sex and measurement): Table 2's whole-sample rows, 7-14 y — girls (n 63) ODI 70.3 ± 5.2 (range 59-83), APDI 78.6 ± 4.7 (68-90); boys (n 97) ODI 71.2 ± 6.2 (56-90), APDI 77.8 ± 3.9 (70-90) (p. 899) — and Table 1's Total row, n 160: ODI 70.9 ± 5.8 (range 56–90, p. 899), APDI 78.1 ± 4.2 (range 68–90, p. 900).",
+    "Table 1's pooled rows for ages 12 and 13 (n 17 each) print exactly the same mean, SD and median as Table 3's M12 and M13 rows (n 16 each). The pooled rows include one girl each (from the girls' 12-14 group), so identical values to 0.1° are possible but unexpected; entered as printed.",
+    "Age groups are whole years as the paper groups them ('7' entered as 7-7); the paper does not say whether '7' means 7.0-7.99.",
+    "Medians are also tabled; not entered.",
+    "Film scale and head position are not stated (only angles are entered, so scale does not matter)."
+  ],
+  "entries": [
+    {
+      "measurement": "m15_ODI",
+      "sex": "pooled",
+      "ageBand": [
+        7,
+        7
+      ],
+      "mean": 68.1,
+      "sd": 4.4,
+      "n": 33,
+      "unit": "deg",
+      "source": "Table 1, row 7 y, p. 899",
+      "definitionMatch": "close",
+      "definitionNote": "Obamiyi measured the A-B plane to the mandibular plane from menton to gonion (Go–Me, p. 898), plus the palatal-plane-to-FH angle with Kim's sign rule; Kim's ODI and the catalogue use the tangent mandibular plane."
+    },
+    {
+      "measurement": "m14_APDI",
+      "sex": "pooled",
+      "ageBand": [
+        7,
+        7
+      ],
+      "mean": 76.4,
+      "sd": 4.4,
+      "n": 33,
+      "unit": "deg",
+      "source": "Table 1, row 7 y, p. 899",
+      "definitionMatch": "same",
+      "note": "Measured directly as the angle between the A-B plane and the palatal plane (p. 899), which is geometrically Kim & Vietas' facial angle ± A-B plane angle ± palatal plane angle (the FH and facial-line terms cancel)."
+    },
+    {
+      "measurement": "m15_ODI",
+      "sex": "pooled",
+      "ageBand": [
+        8,
+        9
+      ],
+      "mean": 72.0,
+      "sd": 5.5,
+      "n": 32,
+      "unit": "deg",
+      "source": "Table 1, row 8–9 y, p. 899",
+      "definitionMatch": "close",
+      "definitionNote": "Obamiyi measured the A-B plane to the mandibular plane from menton to gonion (Go–Me, p. 898), plus the palatal-plane-to-FH angle with Kim's sign rule; Kim's ODI and the catalogue use the tangent mandibular plane."
+    },
+    {
+      "measurement": "m14_APDI",
+      "sex": "pooled",
+      "ageBand": [
+        8,
+        9
+      ],
+      "mean": 77.1,
+      "sd": 3.9,
+      "n": 32,
+      "unit": "deg",
+      "source": "Table 1, row 8–9 y, p. 899",
+      "definitionMatch": "same",
+      "note": "Measured directly as the angle between the A-B plane and the palatal plane (p. 899), which is geometrically Kim & Vietas' facial angle ± A-B plane angle ± palatal plane angle (the FH and facial-line terms cancel)."
+    },
+    {
+      "measurement": "m15_ODI",
+      "sex": "pooled",
+      "ageBand": [
+        10,
+        11
+      ],
+      "mean": 71.1,
+      "sd": 5.8,
+      "n": 31,
+      "unit": "deg",
+      "source": "Table 1, row 10–11 y, p. 899",
+      "definitionMatch": "close",
+      "definitionNote": "Obamiyi measured the A-B plane to the mandibular plane from menton to gonion (Go–Me, p. 898), plus the palatal-plane-to-FH angle with Kim's sign rule; Kim's ODI and the catalogue use the tangent mandibular plane."
+    },
+    {
+      "measurement": "m14_APDI",
+      "sex": "pooled",
+      "ageBand": [
+        10,
+        11
+      ],
+      "mean": 79.2,
+      "sd": 3.6,
+      "n": 31,
+      "unit": "deg",
+      "source": "Table 1, row 10–11 y, p. 899",
+      "definitionMatch": "same",
+      "note": "Measured directly as the angle between the A-B plane and the palatal plane (p. 899), which is geometrically Kim & Vietas' facial angle ± A-B plane angle ± palatal plane angle (the FH and facial-line terms cancel)."
+    },
+    {
+      "measurement": "m15_ODI",
+      "sex": "pooled",
+      "ageBand": [
+        12,
+        12
+      ],
+      "mean": 70.9,
+      "sd": 5.9,
+      "n": 17,
+      "unit": "deg",
+      "source": "Table 1, row 12 y, p. 899",
+      "definitionMatch": "close",
+      "definitionNote": "Obamiyi measured the A-B plane to the mandibular plane from menton to gonion (Go–Me, p. 898), plus the palatal-plane-to-FH angle with Kim's sign rule; Kim's ODI and the catalogue use the tangent mandibular plane."
+    },
+    {
+      "measurement": "m14_APDI",
+      "sex": "pooled",
+      "ageBand": [
+        12,
+        12
+      ],
+      "mean": 77.6,
+      "sd": 3.8,
+      "n": 17,
+      "unit": "deg",
+      "source": "Table 1, row 12 y, p. 899",
+      "definitionMatch": "same",
+      "note": "Measured directly as the angle between the A-B plane and the palatal plane (p. 899), which is geometrically Kim & Vietas' facial angle ± A-B plane angle ± palatal plane angle (the FH and facial-line terms cancel)."
+    },
+    {
+      "measurement": "m15_ODI",
+      "sex": "pooled",
+      "ageBand": [
+        13,
+        13
+      ],
+      "mean": 69.4,
+      "sd": 6.2,
+      "n": 17,
+      "unit": "deg",
+      "source": "Table 1, row 13 y, p. 899",
+      "definitionMatch": "close",
+      "definitionNote": "Obamiyi measured the A-B plane to the mandibular plane from menton to gonion (Go–Me, p. 898), plus the palatal-plane-to-FH angle with Kim's sign rule; Kim's ODI and the catalogue use the tangent mandibular plane."
+    },
+    {
+      "measurement": "m14_APDI",
+      "sex": "pooled",
+      "ageBand": [
+        13,
+        13
+      ],
+      "mean": 79.9,
+      "sd": 4.9,
+      "n": 17,
+      "unit": "deg",
+      "source": "Table 1, row 13 y, p. 899",
+      "definitionMatch": "same",
+      "note": "Measured directly as the angle between the A-B plane and the palatal plane (p. 899), which is geometrically Kim & Vietas' facial angle ± A-B plane angle ± palatal plane angle (the FH and facial-line terms cancel)."
+    },
+    {
+      "measurement": "m15_ODI",
+      "sex": "pooled",
+      "ageBand": [
+        14,
+        14
+      ],
+      "mean": 73.2,
+      "sd": 6.4,
+      "n": 30,
+      "unit": "deg",
+      "source": "Table 1, row 14 y, p. 899",
+      "definitionMatch": "close",
+      "definitionNote": "Obamiyi measured the A-B plane to the mandibular plane from menton to gonion (Go–Me, p. 898), plus the palatal-plane-to-FH angle with Kim's sign rule; Kim's ODI and the catalogue use the tangent mandibular plane."
+    },
+    {
+      "measurement": "m14_APDI",
+      "sex": "pooled",
+      "ageBand": [
+        14,
+        14
+      ],
+      "mean": 79.2,
+      "sd": 4.1,
+      "n": 30,
+      "unit": "deg",
+      "source": "Table 1, row 14 y, p. 899",
+      "definitionMatch": "same",
+      "note": "Measured directly as the angle between the A-B plane and the palatal plane (p. 899), which is geometrically Kim & Vietas' facial angle ± A-B plane angle ± palatal plane angle (the FH and facial-line terms cancel)."
+    },
+    {
+      "measurement": "m15_ODI",
+      "sex": "F",
+      "ageBand": [
+        7,
+        7
+      ],
+      "mean": 67.4,
+      "sd": 4.5,
+      "n": 16,
+      "unit": "deg",
+      "source": "Table 3, row F7, p. 900",
+      "definitionMatch": "close",
+      "definitionNote": "Obamiyi measured the A-B plane to the mandibular plane from menton to gonion (Go–Me, p. 898), plus the palatal-plane-to-FH angle with Kim's sign rule; Kim's ODI and the catalogue use the tangent mandibular plane."
+    },
+    {
+      "measurement": "m14_APDI",
+      "sex": "F",
+      "ageBand": [
+        7,
+        7
+      ],
+      "mean": 76.1,
+      "sd": 5.2,
+      "n": 16,
+      "unit": "deg",
+      "source": "Table 3, row F7, p. 900",
+      "definitionMatch": "same",
+      "note": "Measured directly as the angle between the A-B plane and the palatal plane (p. 899), which is geometrically Kim & Vietas' facial angle ± A-B plane angle ± palatal plane angle (the FH and facial-line terms cancel)."
+    },
+    {
+      "measurement": "m15_ODI",
+      "sex": "F",
+      "ageBand": [
+        8,
+        9
+      ],
+      "mean": 71.3,
+      "sd": 5.6,
+      "n": 16,
+      "unit": "deg",
+      "source": "Table 3, row F8–9, p. 900",
+      "definitionMatch": "close",
+      "definitionNote": "Obamiyi measured the A-B plane to the mandibular plane from menton to gonion (Go–Me, p. 898), plus the palatal-plane-to-FH angle with Kim's sign rule; Kim's ODI and the catalogue use the tangent mandibular plane."
+    },
+    {
+      "measurement": "m14_APDI",
+      "sex": "F",
+      "ageBand": [
+        8,
+        9
+      ],
+      "mean": 77.4,
+      "sd": 3.8,
+      "n": 16,
+      "unit": "deg",
+      "source": "Table 3, row F8–9, p. 900",
+      "definitionMatch": "same",
+      "note": "Measured directly as the angle between the A-B plane and the palatal plane (p. 899), which is geometrically Kim & Vietas' facial angle ± A-B plane angle ± palatal plane angle (the FH and facial-line terms cancel)."
+    },
+    {
+      "measurement": "m15_ODI",
+      "sex": "F",
+      "ageBand": [
+        10,
+        11
+      ],
+      "mean": 71.0,
+      "sd": 5.7,
+      "n": 15,
+      "unit": "deg",
+      "source": "Table 3, row F10–11, p. 900",
+      "definitionMatch": "close",
+      "definitionNote": "Obamiyi measured the A-B plane to the mandibular plane from menton to gonion (Go–Me, p. 898), plus the palatal-plane-to-FH angle with Kim's sign rule; Kim's ODI and the catalogue use the tangent mandibular plane."
+    },
+    {
+      "measurement": "m14_APDI",
+      "sex": "F",
+      "ageBand": [
+        10,
+        11
+      ],
+      "mean": 80.5,
+      "sd": 3.9,
+      "n": 15,
+      "unit": "deg",
+      "source": "Table 3, row F10–11, p. 900",
+      "definitionMatch": "same",
+      "note": "Measured directly as the angle between the A-B plane and the palatal plane (p. 899), which is geometrically Kim & Vietas' facial angle ± A-B plane angle ± palatal plane angle (the FH and facial-line terms cancel)."
+    },
+    {
+      "measurement": "m15_ODI",
+      "sex": "F",
+      "ageBand": [
+        12,
+        14
+      ],
+      "mean": 71.7,
+      "sd": 4.3,
+      "n": 16,
+      "unit": "deg",
+      "source": "Table 3, row F12–14, p. 900",
+      "definitionMatch": "close",
+      "definitionNote": "Obamiyi measured the A-B plane to the mandibular plane from menton to gonion (Go–Me, p. 898), plus the palatal-plane-to-FH angle with Kim's sign rule; Kim's ODI and the catalogue use the tangent mandibular plane.",
+      "note": "Girls 12-14 are one group in Table 3 (n 16); the paper does not say how many are 12, 13 or 14."
+    },
+    {
+      "measurement": "m14_APDI",
+      "sex": "F",
+      "ageBand": [
+        12,
+        14
+      ],
+      "mean": 80.7,
+      "sd": 4.4,
+      "n": 16,
+      "unit": "deg",
+      "source": "Table 3, row F12–14, p. 900",
+      "definitionMatch": "same",
+      "note": "Measured directly as the angle between the A-B plane and the palatal plane (p. 899), which is geometrically Kim & Vietas' facial angle ± A-B plane angle ± palatal plane angle (the FH and facial-line terms cancel). Girls 12-14 are one group in Table 3 (n 16); the paper does not say how many are 12, 13 or 14."
+    },
+    {
+      "measurement": "m15_ODI",
+      "sex": "M",
+      "ageBand": [
+        7,
+        7
+      ],
+      "mean": 68.6,
+      "sd": 4.2,
+      "n": 17,
+      "unit": "deg",
+      "source": "Table 3, row M7, p. 900",
+      "definitionMatch": "close",
+      "definitionNote": "Obamiyi measured the A-B plane to the mandibular plane from menton to gonion (Go–Me, p. 898), plus the palatal-plane-to-FH angle with Kim's sign rule; Kim's ODI and the catalogue use the tangent mandibular plane."
+    },
+    {
+      "measurement": "m14_APDI",
+      "sex": "M",
+      "ageBand": [
+        7,
+        7
+      ],
+      "mean": 76.6,
+      "sd": 3.6,
+      "n": 17,
+      "unit": "deg",
+      "source": "Table 3, row M7, p. 900",
+      "definitionMatch": "same",
+      "note": "Measured directly as the angle between the A-B plane and the palatal plane (p. 899), which is geometrically Kim & Vietas' facial angle ± A-B plane angle ± palatal plane angle (the FH and facial-line terms cancel)."
+    },
+    {
+      "measurement": "m15_ODI",
+      "sex": "M",
+      "ageBand": [
+        8,
+        9
+      ],
+      "mean": 72.7,
+      "sd": 5.5,
+      "n": 16,
+      "unit": "deg",
+      "source": "Table 3, row M8–9, p. 900",
+      "definitionMatch": "close",
+      "definitionNote": "Obamiyi measured the A-B plane to the mandibular plane from menton to gonion (Go–Me, p. 898), plus the palatal-plane-to-FH angle with Kim's sign rule; Kim's ODI and the catalogue use the tangent mandibular plane."
+    },
+    {
+      "measurement": "m14_APDI",
+      "sex": "M",
+      "ageBand": [
+        8,
+        9
+      ],
+      "mean": 76.8,
+      "sd": 4.2,
+      "n": 16,
+      "unit": "deg",
+      "source": "Table 3, row M8–9, p. 900",
+      "definitionMatch": "same",
+      "note": "Measured directly as the angle between the A-B plane and the palatal plane (p. 899), which is geometrically Kim & Vietas' facial angle ± A-B plane angle ± palatal plane angle (the FH and facial-line terms cancel)."
+    },
+    {
+      "measurement": "m15_ODI",
+      "sex": "M",
+      "ageBand": [
+        10,
+        11
+      ],
+      "mean": 71.3,
+      "sd": 6.0,
+      "n": 16,
+      "unit": "deg",
+      "source": "Table 3, row M10–11, p. 900",
+      "definitionMatch": "close",
+      "definitionNote": "Obamiyi measured the A-B plane to the mandibular plane from menton to gonion (Go–Me, p. 898), plus the palatal-plane-to-FH angle with Kim's sign rule; Kim's ODI and the catalogue use the tangent mandibular plane."
+    },
+    {
+      "measurement": "m14_APDI",
+      "sex": "M",
+      "ageBand": [
+        10,
+        11
+      ],
+      "mean": 78.1,
+      "sd": 3.1,
+      "n": 16,
+      "unit": "deg",
+      "source": "Table 3, row M10–11, p. 900",
+      "definitionMatch": "same",
+      "note": "Measured directly as the angle between the A-B plane and the palatal plane (p. 899), which is geometrically Kim & Vietas' facial angle ± A-B plane angle ± palatal plane angle (the FH and facial-line terms cancel)."
+    },
+    {
+      "measurement": "m15_ODI",
+      "sex": "M",
+      "ageBand": [
+        12,
+        12
+      ],
+      "mean": 70.9,
+      "sd": 5.9,
+      "n": 16,
+      "unit": "deg",
+      "source": "Table 3, row M12, p. 900",
+      "definitionMatch": "close",
+      "definitionNote": "Obamiyi measured the A-B plane to the mandibular plane from menton to gonion (Go–Me, p. 898), plus the palatal-plane-to-FH angle with Kim's sign rule; Kim's ODI and the catalogue use the tangent mandibular plane."
+    },
+    {
+      "measurement": "m14_APDI",
+      "sex": "M",
+      "ageBand": [
+        12,
+        12
+      ],
+      "mean": 77.6,
+      "sd": 3.8,
+      "n": 16,
+      "unit": "deg",
+      "source": "Table 3, row M12, p. 900",
+      "definitionMatch": "same",
+      "note": "Measured directly as the angle between the A-B plane and the palatal plane (p. 899), which is geometrically Kim & Vietas' facial angle ± A-B plane angle ± palatal plane angle (the FH and facial-line terms cancel)."
+    },
+    {
+      "measurement": "m15_ODI",
+      "sex": "M",
+      "ageBand": [
+        13,
+        13
+      ],
+      "mean": 69.4,
+      "sd": 6.2,
+      "n": 16,
+      "unit": "deg",
+      "source": "Table 3, row M13, p. 900",
+      "definitionMatch": "close",
+      "definitionNote": "Obamiyi measured the A-B plane to the mandibular plane from menton to gonion (Go–Me, p. 898), plus the palatal-plane-to-FH angle with Kim's sign rule; Kim's ODI and the catalogue use the tangent mandibular plane."
+    },
+    {
+      "measurement": "m14_APDI",
+      "sex": "M",
+      "ageBand": [
+        13,
+        13
+      ],
+      "mean": 79.9,
+      "sd": 4.9,
+      "n": 16,
+      "unit": "deg",
+      "source": "Table 3, row M13, p. 900",
+      "definitionMatch": "same",
+      "note": "Measured directly as the angle between the A-B plane and the palatal plane (p. 899), which is geometrically Kim & Vietas' facial angle ± A-B plane angle ± palatal plane angle (the FH and facial-line terms cancel)."
+    },
+    {
+      "measurement": "m15_ODI",
+      "sex": "M",
+      "ageBand": [
+        14,
+        14
+      ],
+      "mean": 74.8,
+      "sd": 7.9,
+      "n": 16,
+      "unit": "deg",
+      "source": "Table 3, row M14, p. 900",
+      "definitionMatch": "close",
+      "definitionNote": "Obamiyi measured the A-B plane to the mandibular plane from menton to gonion (Go–Me, p. 898), plus the palatal-plane-to-FH angle with Kim's sign rule; Kim's ODI and the catalogue use the tangent mandibular plane."
+    },
+    {
+      "measurement": "m14_APDI",
+      "sex": "M",
+      "ageBand": [
+        14,
+        14
+      ],
+      "mean": 77.6,
+      "sd": 3.1,
+      "n": 16,
+      "unit": "deg",
+      "source": "Table 3, row M14, p. 900",
+      "definitionMatch": "same",
+      "note": "Measured directly as the angle between the A-B plane and the palatal plane (p. 899), which is geometrically Kim & Vietas' facial angle ± A-B plane angle ± palatal plane angle (the FH and facial-line terms cancel)."
+    }
+  ]
+}

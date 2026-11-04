@@ -1,0 +1,230 @@
+{
+  "id": "downs1948",
+  "kind": "analysis-own",
+  "analyses": [
+    "downs"
+  ],
+  "status": "verified",
+  "citation": {
+    "authors": "Downs WB",
+    "title": "Variations in facial relationships: their significance in treatment and prognosis",
+    "journal": "Angle Orthodontist",
+    "year": 1949,
+    "volume": "19",
+    "pages": "145-155",
+    "openAccess": true
+  },
+  "population": {
+    "id": "analysis-own",
+    "label": "The analysis's own norms",
+    "ethnicity": []
+  },
+  "sample": {
+    "n": 20,
+    "ageMin": 12,
+    "ageMax": 17
+  },
+  "selection": "class-I",
+  "modality": "film",
+  "scale": {
+    "kind": "not-stated"
+  },
+  "headPosition": "unknown",
+  "curation": {
+    "extractedBy": [
+      "AI reader A",
+      "AI reader B"
+    ],
+    "comparedOn": "2026-10-08",
+    "date": "2026-10-08",
+    "notes": "Compared 2026-10-08 (norms:compare exit 1). Differences settled: (1) citation.year a=1948 b=1949 -> 1949: merge ruling, cite the reprint on file (Angle Orthod 1949;19(3):145-155, page headers 'Vol. XIX, No. 3'); the original (Am J Orthod 1948;34:812-40) is named in caveats from the footnote on p. 145. Set id kept as downs1948. (2) #62 range high a=10 b=20 -> 20: page image p. 151 shows Table II '+3.5 +10 +14.5' and the text, which gives the range as +3.5 to +20 around a mean of +14.5 (merge ruling: +10 is a misprint, mean exceeds it). (3) source wording on all 10 rows (prose). Every value re-read from the page images: Table I p. 149 (PDF p. 5): 82-95 87.8; +10 to -8.5 0; -9 to 0 -4.6; 28-17 21.9; 66-53 59.4. Table II p. 151 (PDF p. 7): +1.5 +14 +9.3; 130 150.5 135.4; -8.5 +7 91.4; +3.5 +10 +14.5; -1 +5 +2.7. #6 table -4.6 vs text -4.8: table kept (merge ruling), noted. Sample p. 145: twenty individuals aged 12-17, about equally divided as to sex, clinically excellent occlusions -> ageBand [12,17], pooled, selection class-I (a had ideal-aesthetic; the paper selected on occlusion). No centre: Downs' means are sample means and his ranges the sample's range (owner B-2 notes). Scale not-stated. No SD anywhere."
+  },
+  "caveats": [
+    "Read from the reprint in Angle Orthodontist 1949;19(3):145-155 (the file on hand). Its footnote (p. 145) says the paper was first published in American Journal of Orthodontics, Oct. 1948, 34:812-40, and was first prizewinner of the AAO essay contest, 1948.",
+    "Sample (p. 145): twenty living individuals aged 12-17 years, roughly half of each sex, all with clinically excellent occlusions. No split by sex or age: every entry is pooled, 12-17.",
+    "Only means and ranges (minimal and maximal) are printed; no SD anywhere. The ranges are the sample's observed spread, not an ideal tolerance.",
+    "A-B plane (#6): Table I prints mean -4.6; the text (p. 148) says -4.8. The table value is stored.",
+    "Lower incisor to occlusal plane (#62): Table II prints the maximum as +10, below its own mean of +14.5; the text gives +3.5 to +20. The text's +20 is stored as the high end.",
+    "Lower incisor to mandibular plane (#56): Table II mixes deviation-from-90 range (-8.5, +7) with a full-angle mean (91.4); stored as the full angle (81.5 to 97, mean 91.4), as Fig. 12 prints it.",
+    "Ethnicity, film scale and head position are not stated. The one mm row (#63) is used as printed (assumed true size, owner ruling M-2)."
+  ],
+  "entries": [
+    {
+      "measurement": "m04_FacialAngle",
+      "sex": "pooled",
+      "ageBand": [
+        12,
+        17
+      ],
+      "mean": 87.8,
+      "range": {
+        "low": 82,
+        "high": 95
+      },
+      "n": 20,
+      "unit": "deg",
+      "source": "Table I, p. 149 (text p. 146)",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m05_Convexity",
+      "sex": "pooled",
+      "ageBand": [
+        12,
+        17
+      ],
+      "mean": 0,
+      "range": {
+        "low": -8.5,
+        "high": 10
+      },
+      "n": 20,
+      "unit": "deg",
+      "source": "Table I, p. 149 (text p. 148)",
+      "definitionMatch": "same",
+      "note": "Printed '+10 to -8.5'; + when A is ahead of the facial plane (convex), - behind (p. 148), the catalogue's sign."
+    },
+    {
+      "measurement": "m06_ABPlane",
+      "sex": "pooled",
+      "ageBand": [
+        12,
+        17
+      ],
+      "mean": -4.6,
+      "range": {
+        "low": -9,
+        "high": 0
+      },
+      "n": 20,
+      "unit": "deg",
+      "source": "Table I, p. 149 (text p. 148)",
+      "definitionMatch": "same",
+      "note": "Table I (p. 149) prints the mean -4.6 (Fig. 6 p. 147 also -4.6); the text (p. 148) says 'The mean was -4.8'. The table value is stored (merge ruling). B behind A reads minus (p. 148), the catalogue's sign."
+    },
+    {
+      "measurement": "m22_FHMPt",
+      "sex": "pooled",
+      "ageBand": [
+        12,
+        17
+      ],
+      "mean": 21.9,
+      "range": {
+        "low": 17,
+        "high": 28
+      },
+      "n": 20,
+      "unit": "deg",
+      "source": "Table I, p. 149 (text p. 148)",
+      "definitionMatch": "same",
+      "note": "Downs' mandibular plane: tangent to the lower border at gonion and the lowest point of the mandible in the midsagittal plane (p. 150), the catalogue's tangent plane."
+    },
+    {
+      "measurement": "m24_YAxis",
+      "sex": "pooled",
+      "ageBand": [
+        12,
+        17
+      ],
+      "mean": 59.4,
+      "range": {
+        "low": 53,
+        "high": 66
+      },
+      "n": 20,
+      "unit": "deg",
+      "source": "Table I, p. 149 (text p. 148)",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m61_CantOP",
+      "sex": "pooled",
+      "ageBand": [
+        12,
+        17
+      ],
+      "mean": 9.3,
+      "range": {
+        "low": 1.5,
+        "high": 14
+      },
+      "n": 20,
+      "unit": "deg",
+      "source": "Table II, p. 151 (text p. 150)",
+      "definitionMatch": "same",
+      "note": "Minus when the posterior end drops past parallel with FH (p. 150), the catalogue's sign."
+    },
+    {
+      "measurement": "m53_Interincisal",
+      "sex": "pooled",
+      "ageBand": [
+        12,
+        17
+      ],
+      "mean": 135.4,
+      "range": {
+        "low": 130,
+        "high": 150.5
+      },
+      "n": 20,
+      "unit": "deg",
+      "source": "Table II, p. 151 (text p. 150)",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m56_IMPAt",
+      "sex": "pooled",
+      "ageBand": [
+        12,
+        17
+      ],
+      "mean": 91.4,
+      "range": {
+        "low": 81.5,
+        "high": 97
+      },
+      "n": 20,
+      "unit": "deg",
+      "source": "Table II, p. 151 (text and Fig. 12, p. 151)",
+      "definitionMatch": "same",
+      "note": "Table II prints the range as deviations from 90 (-8.5, +7) and the mean as the full angle (91.4); the text gives the mean as +1.4 (p. 151). Stored as the full angle the catalogue measures (90 added to the range), matching Fig. 12 (81.5 and 97)."
+    },
+    {
+      "measurement": "m62_L1OPdev",
+      "sex": "pooled",
+      "ageBand": [
+        12,
+        17
+      ],
+      "mean": 14.5,
+      "range": {
+        "low": 3.5,
+        "high": 20
+      },
+      "n": 20,
+      "unit": "deg",
+      "source": "Table II, p. 151 (range high from the text, p. 151)",
+      "definitionMatch": "same",
+      "note": "Table II prints the maximum as +10, impossible with its own mean of +14.5; the text on the same page gives the range as +3.5 to +20 with a mean of +14.5. The text's +20 is stored as the high end (merge ruling: the table's +10 is a misprint). Deviation from a right angle, as the catalogue stores it."
+    },
+    {
+      "measurement": "m63_U1APog",
+      "sex": "pooled",
+      "ageBand": [
+        12,
+        17
+      ],
+      "mean": 2.7,
+      "range": {
+        "low": -1,
+        "high": 5
+      },
+      "n": 20,
+      "unit": "mm",
+      "source": "Table II, p. 151 (text and Fig. 13, p. 151)",
+      "definitionMatch": "same",
+      "note": "Incisal edge of the upper central incisor to the A-P line, + anterior (p. 151), the catalogue's sign."
+    }
+  ]
+}

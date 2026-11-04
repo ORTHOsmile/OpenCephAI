@@ -1,0 +1,143 @@
+{
+  "id": "moate2002-wei1968",
+  "kind": "population",
+  "status": "verified",
+  "citation": {
+    "authors": "Wei SH",
+    "title": "A roentgenographic cephalometric study of prognathism in Chinese males and females",
+    "journal": "Angle Orthod",
+    "year": 1968,
+    "volume": "38(4)",
+    "pages": "305–20",
+    "openAccess": false
+  },
+  "population": {
+    "id": "chinese",
+    "label": "Chinese",
+    "ethnicity": [
+      "Chinese"
+    ]
+  },
+  "sample": {
+    "n": 107,
+    "nMale": 84,
+    "nFemale": 23
+  },
+  "selection": "ideal-aesthetic",
+  "modality": "unknown",
+  "scale": {
+    "kind": "not-stated"
+  },
+  "headPosition": "unknown",
+  "secondHand": {
+    "via": "Moate & Darendeliler 2002, Table IV"
+  },
+  "curation": {
+    "extractedBy": [
+      "AI reader A",
+      "AI reader B"
+    ],
+    "date": "2026-10-08",
+    "notes": "Compared 2026-10-08: norms:compare a vs b exit 1, 13 differences (logs/task9a2-compare-<id>.log). Every mean and SD of both extractors re-read from the page images (PDF pp. 2-6 = journal pp. 20-24), and the settled file checked by script against a third, independent reading of the pages (the table in sets.test.ts). Decisions: (0) Source text normalised to one pattern giving table, page, row and column with sex and age (a and b worded it differently; prose only). Adult rows: a gave [18, 40], b no band -> [18, 40] with the P18 note (merge notes). (1) a's U1-SN 107 ± 9 (males) rejected: Table IV p. 23 prints it in the Chan column (its left edge aligned with Chan's 84 ± 3 and 33 ± 4), not Wei's, whose column holds only SNA, SNB, ANB and S-N (b did not enter it; it is in moate2002-chan1972). Page images: PDF pp. 2-6 = journal pp. 20-24 (Tables I-VI), rendered at 2000 px.",
+    "comparedOn": "2026-10-08"
+  },
+  "caveats": [
+    "Quoted second-hand from Moate & Darendeliler 2002 (Aust Orthod J 18:19-26, a compilation of published Chinese cephalometric norms), Table IV; the original paper was not read. The compilation rounds every mean and SD to whole numbers (Lew's soft tissue to 0.5) and gives no landmark, plane or method definitions.",
+    "The compilation states no film scale or magnification for any study; assumed true size (owner ruling M-2).",
+    "107 young adults of Chinese ethnic descent (84 male, 23 female), selected from 253 for facial harmony, no previous orthodontic treatment and Chinese descent; mean age 23 (males) and 21 (females) (text p. 20). The place is not stated.",
+    "Not entered (not catalogue measurements; no ratio computed): S-N (65 ± 3 males, 63 ± 2 females).",
+    "Table V (p. 24) averages several studies; it is not entered for this study (merge notes)."
+  ],
+  "entries": [
+    {
+      "measurement": "m01_SNA",
+      "sex": "M",
+      "ageBand": [
+        18,
+        40
+      ],
+      "mean": 81,
+      "sd": 4,
+      "n": 84,
+      "unit": "deg",
+      "source": "Table IV, p. 23, row 'SNA', column Wei (males, 18 Years +)",
+      "definitionMatch": "same",
+      "note": "'18 Years +' (Table IV): upper bound not stated; 40 by convention (Miao's stated range 4–40), P18."
+    },
+    {
+      "measurement": "m02_SNB",
+      "sex": "M",
+      "ageBand": [
+        18,
+        40
+      ],
+      "mean": 79,
+      "sd": 5,
+      "n": 84,
+      "unit": "deg",
+      "source": "Table IV, p. 23, row 'SNB', column Wei (males, 18 Years +)",
+      "definitionMatch": "same",
+      "note": "'18 Years +' (Table IV): upper bound not stated; 40 by convention (Miao's stated range 4–40), P18."
+    },
+    {
+      "measurement": "m03_ANB",
+      "sex": "M",
+      "ageBand": [
+        18,
+        40
+      ],
+      "mean": 2,
+      "sd": 2,
+      "n": 84,
+      "unit": "deg",
+      "source": "Table IV, p. 23, row 'ANB', column Wei (males, 18 Years +)",
+      "definitionMatch": "same",
+      "note": "'18 Years +' (Table IV): upper bound not stated; 40 by convention (Miao's stated range 4–40), P18."
+    },
+    {
+      "measurement": "m01_SNA",
+      "sex": "F",
+      "ageBand": [
+        18,
+        40
+      ],
+      "mean": 81,
+      "sd": 4,
+      "n": 23,
+      "unit": "deg",
+      "source": "Table IV, p. 23, row 'SNA', column Wei (females, 18 Years +)",
+      "definitionMatch": "same",
+      "note": "'18 Years +' (Table IV): upper bound not stated; 40 by convention (Miao's stated range 4–40), P18."
+    },
+    {
+      "measurement": "m02_SNB",
+      "sex": "F",
+      "ageBand": [
+        18,
+        40
+      ],
+      "mean": 80,
+      "sd": 5,
+      "n": 23,
+      "unit": "deg",
+      "source": "Table IV, p. 23, row 'SNB', column Wei (females, 18 Years +)",
+      "definitionMatch": "same",
+      "note": "'18 Years +' (Table IV): upper bound not stated; 40 by convention (Miao's stated range 4–40), P18."
+    },
+    {
+      "measurement": "m03_ANB",
+      "sex": "F",
+      "ageBand": [
+        18,
+        40
+      ],
+      "mean": 1,
+      "sd": 2,
+      "n": 23,
+      "unit": "deg",
+      "source": "Table IV, p. 23, row 'ANB', column Wei (females, 18 Years +)",
+      "definitionMatch": "same",
+      "note": "'18 Years +' (Table IV): upper bound not stated; 40 by convention (Miao's stated range 4–40), P18."
+    }
+  ]
+}

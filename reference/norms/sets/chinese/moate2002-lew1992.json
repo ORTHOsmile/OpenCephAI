@@ -1,0 +1,246 @@
+{
+  "id": "moate2002-lew1992",
+  "kind": "population",
+  "status": "verified",
+  "citation": {
+    "authors": "Lew KK, Ho KK, Keng SB, Ho KH",
+    "title": "Soft-tissue cephalometric norms in Chinese adults with esthetic facial profiles",
+    "journal": "J Oral & Maxillofac Surg",
+    "year": 1992,
+    "volume": "50(11)",
+    "pages": "1184–9; discussion 1189–90",
+    "openAccess": false
+  },
+  "population": {
+    "id": "chinese",
+    "label": "Chinese",
+    "ethnicity": [
+      "Chinese"
+    ],
+    "country": "Singapore",
+    "region": "Singapore"
+  },
+  "sample": {
+    "n": 48
+  },
+  "selection": "ideal-aesthetic",
+  "modality": "unknown",
+  "scale": {
+    "kind": "not-stated"
+  },
+  "headPosition": "unknown",
+  "secondHand": {
+    "via": "Moate & Darendeliler 2002, Tables IV and VI"
+  },
+  "curation": {
+    "extractedBy": [
+      "AI reader A",
+      "AI reader B"
+    ],
+    "date": "2026-10-08",
+    "notes": "Compared 2026-10-08: norms:compare a vs b exit 1, 30 differences (logs/task9a2-compare-<id>.log). Every mean and SD of both extractors re-read from the page images (PDF pp. 2-6 = journal pp. 20-24), and the settled file checked by script against a third, independent reading of the pages (the table in sets.test.ts). Decisions: (0) Source text normalised to one pattern giving table, page, row and column with sex and age (a and b worded it differently; prose only). Adult band: a [18, 40] / b none -> [18, 40] (P18 note; 'adults', text p. 22). (1) Upper lip strain 14 mm (a: #79 'different', M and F) not entered; Table VI strain 1.5 ± 1.5 kept close (merge notes); fix round 1 (8 Oct): -> different, not used (owner LIP-1). (2) 'Upper lip mm' 15 (a and b: #89, M and F) not entered: decided from the page, see caveat (Table VI gives no length; 15 is Lew's basic upper lip thickness). (3) Table VI 'Upper lip thickness' 15.0 ± 1.5: a and b both #78 -> #77 basic upper lip thickness (Holdaway's list order and value; see the definitionNote). A curation call by the implementer, flagged for review. (4) Nasolabial 95 a same / b close -> close (method not in the compilation, merge notes). Page images: PDF pp. 2-6 = journal pp. 20-24 (Tables I-VI), rendered at 2000 px. Owner LIP-3 (8 Oct, after LIP-2 flipped the catalogue's #79 to Holdaway's direction): upper lip strain different -> close, used.",
+    "comparedOn": "2026-10-08"
+  },
+  "caveats": [
+    "Quoted second-hand from Moate & Darendeliler 2002 (Aust Orthod J 18:19-26, a compilation of published Chinese cephalometric norms), Tables IV and VI; the original paper was not read. The compilation rounds every mean and SD to whole numbers (Lew's soft tissue to 0.5) and gives no landmark, plane or method definitions.",
+    "The compilation states no film scale or magnification for any study; assumed true size (owner ruling M-2).",
+    "48 Chinese adults with aesthetic profiles (text p. 22). Region Singapore per the task brief (the compilation does not name the place). No age range or sex split is given.",
+    "Table IV heads this column 'Lew10', but reference 10 is Jacobson 1975; the column was identified by the author name against Moate's reference list (Lew et al. 1992 is reference 11), as both extractors did.",
+    "Table VI has no reference mark; the text attributes it to Lew, Ho and Keng (p. 22). Its values are pooled (no sex split); its Caucasian column is not entered.",
+    "Not entered: upper lip strain 14 mm (Table IV row 20, males and females; Table V row 13 'Lip Strain' 14). 14 mm is implausible as a strain and contradicts Lew's own Table VI strain, 1.5 ± 1.5 mm. It matches Holdaway's lip thickness at the vermilion (13-14 mm), so it may be that measurement mislabelled; not entered as either (merge notes).",
+    "Not entered: Upper lip 15 mm (Table IV row 19 'Upper lip mm', males and females), which Table V row 12 relabels 'Upper lip length'. Lew's own Table VI gives no lip length; it gives 'Upper lip thickness 15.0 ± 1.5' (entered as #77). An upper lip length (subnasale to stomion, #89) of 15 mm would be short for an adult, so the 15 is read as the same basic thickness repeated without its SD. Catalogue #89, added from these tables (owner M5), therefore gets no norm from this compilation (raised with the owner).",
+    "Upper lip strain, Table VI 1.5 ± 1.5 mm: used, close (owner ruling LIP-3, 8 Oct, replacing LIP-1's 'kept but not used'), after the catalogue's #79 was flipped to Holdaway's direction (LIP-2). Caution: Moate gives Lew's strain as 14 mm in Table IV and 1.5 ± 1.5 in Table VI; the 1.5 matches Holdaway's convention and Moate's Caucasian column.",
+    "Not in the catalogue: upper lip curvature (Table VI, 5.5 ± 1.5 mm).",
+    "Table V (p. 24) repeats the nasolabial, lip and strain values; not entered separately."
+  ],
+  "entries": [
+    {
+      "measurement": "m73_STFacial",
+      "sex": "pooled",
+      "ageBand": [
+        18,
+        40
+      ],
+      "mean": 92.5,
+      "sd": 6.5,
+      "n": 48,
+      "unit": "deg",
+      "source": "Table VI, p. 24, row 'Soft tissue facial angle', Chinese column",
+      "definitionMatch": "close",
+      "definitionNote": "Holdaway soft-tissue facial angle; method not in the compilation (Lew 1992 quoted second-hand).",
+      "note": "Adults ('48 Chinese adults', text p. 22): upper bound not stated; 40 by convention (Miao's stated range 4–40), P18."
+    },
+    {
+      "measurement": "m74_NoseProm",
+      "sex": "pooled",
+      "ageBand": [
+        18,
+        40
+      ],
+      "mean": 6,
+      "sd": 2,
+      "n": 48,
+      "unit": "mm",
+      "source": "Table VI, p. 24, row 'Nose prominence', Chinese column",
+      "definitionMatch": "close",
+      "definitionNote": "Holdaway nose prominence; method not in the compilation (Lew 1992 quoted second-hand).",
+      "note": "Adults ('48 Chinese adults', text p. 22): upper bound not stated; 40 by convention (Miao's stated range 4–40), P18."
+    },
+    {
+      "measurement": "m75_SupSulcus",
+      "sex": "pooled",
+      "ageBand": [
+        18,
+        40
+      ],
+      "mean": 9,
+      "sd": 1.5,
+      "n": 48,
+      "unit": "mm",
+      "source": "Table VI, p. 24, row 'Superior sulcus depth', Chinese column",
+      "definitionMatch": "close",
+      "definitionNote": "Holdaway superior sulcus depth; method not in the compilation (Lew 1992 quoted second-hand).",
+      "note": "Adults ('48 Chinese adults', text p. 22): upper bound not stated; 40 by convention (Miao's stated range 4–40), P18."
+    },
+    {
+      "measurement": "m07_ANPog",
+      "sex": "pooled",
+      "ageBand": [
+        18,
+        40
+      ],
+      "mean": 1.5,
+      "sd": 1.5,
+      "n": 48,
+      "unit": "mm",
+      "source": "Table VI, p. 24, row 'Skeletal profile convexity', Chinese column",
+      "definitionMatch": "close",
+      "definitionNote": "Printed 'Skeletal profile convexity (mm)' (Holdaway: A point to N–Pog); method not in the compilation (Lew 1992 quoted second-hand).",
+      "note": "Adults ('48 Chinese adults', text p. 22): upper bound not stated; 40 by convention (Miao's stated range 4–40), P18."
+    },
+    {
+      "measurement": "m77_BasicUL",
+      "sex": "pooled",
+      "ageBand": [
+        18,
+        40
+      ],
+      "mean": 15,
+      "sd": 1.5,
+      "n": 48,
+      "unit": "mm",
+      "source": "Table VI, p. 24, row 'Upper lip thickness', Chinese column",
+      "definitionMatch": "close",
+      "definitionNote": "Printed 'Upper lip thickness (mm)'. Entered as Holdaway's basic upper lip thickness (#77), not the thickness at the vermilion (#78): Lew's Table VI lists Holdaway's eleven soft-tissue measurements in Holdaway's order, and this row sits where Holdaway's 'basic upper lip thickness' sits (after skeletal convexity, before upper lip strain); its 15.0 mm is Holdaway's basic thickness (15 mm; his vermilion thickness is 13–14 mm, AlBarakati 2012 Table 3), and the compilation's Caucasian column prints the same 15.0; method not in the compilation (Lew 1992 quoted second-hand).",
+      "note": "Adults ('48 Chinese adults', text p. 22): upper bound not stated; 40 by convention (Miao's stated range 4–40), P18."
+    },
+    {
+      "measurement": "m79_ULStrain",
+      "sex": "pooled",
+      "ageBand": [
+        18,
+        40
+      ],
+      "mean": 1.5,
+      "sd": 1.5,
+      "n": 48,
+      "unit": "mm",
+      "source": "Table VI, p. 24, row 'Upper lip strain', Chinese column",
+      "definitionMatch": "close",
+      "definitionNote": "Owner ruling 8 Oct: used after the catalogue was flipped to Holdaway's direction (LIP-2). Caution: Moate also prints '14' for Lew's strain (Table IV) — the 1.5 ± 1.5 (Table VI) matches Holdaway's convention and Moate's Caucasian column.",
+      "note": "Adults ('48 Chinese adults', text p. 22): upper bound not stated; 40 by convention (Miao's stated range 4–40), P18."
+    },
+    {
+      "measurement": "m80_HAngle",
+      "sex": "pooled",
+      "ageBand": [
+        18,
+        40
+      ],
+      "mean": 16,
+      "sd": 1.5,
+      "n": 48,
+      "unit": "deg",
+      "source": "Table VI, p. 24, row 'H angle', Chinese column",
+      "definitionMatch": "close",
+      "definitionNote": "Printed 'H angle (mm)' with the value '16 ± 1.5°'; entered in degrees; method not in the compilation (Lew 1992 quoted second-hand).",
+      "note": "Adults ('48 Chinese adults', text p. 22): upper bound not stated; 40 by convention (Miao's stated range 4–40), P18."
+    },
+    {
+      "measurement": "m81_LLH",
+      "sex": "pooled",
+      "ageBand": [
+        18,
+        40
+      ],
+      "mean": 0.5,
+      "sd": 1,
+      "n": 48,
+      "unit": "mm",
+      "source": "Table VI, p. 24, row 'Lower lip to H line', Chinese column",
+      "definitionMatch": "close",
+      "definitionNote": "Holdaway lower lip to H line; method not in the compilation (Lew 1992 quoted second-hand).",
+      "note": "Adults ('48 Chinese adults', text p. 22): upper bound not stated; 40 by convention (Miao's stated range 4–40), P18."
+    },
+    {
+      "measurement": "m82_InfSulcusH",
+      "sex": "pooled",
+      "ageBand": [
+        18,
+        40
+      ],
+      "mean": 4,
+      "sd": 1.5,
+      "n": 48,
+      "unit": "mm",
+      "source": "Table VI, p. 24, row 'Inferior sulcus to H line', Chinese column",
+      "definitionMatch": "close",
+      "definitionNote": "Holdaway inferior sulcus to H line; method not in the compilation (Lew 1992 quoted second-hand).",
+      "note": "Adults ('48 Chinese adults', text p. 22): upper bound not stated; 40 by convention (Miao's stated range 4–40), P18."
+    },
+    {
+      "measurement": "m83_ChinThick",
+      "sex": "pooled",
+      "ageBand": [
+        18,
+        40
+      ],
+      "mean": 9,
+      "sd": 1,
+      "n": 48,
+      "unit": "mm",
+      "source": "Table VI, p. 24, row 'Soft tissue chin thickness', Chinese column",
+      "definitionMatch": "close",
+      "definitionNote": "Holdaway soft-tissue chin thickness; method not in the compilation (Lew 1992 quoted second-hand).",
+      "note": "Adults ('48 Chinese adults', text p. 22): upper bound not stated; 40 by convention (Miao's stated range 4–40), P18."
+    },
+    {
+      "measurement": "m86_Nasolabial",
+      "sex": "M",
+      "ageBand": [
+        18,
+        40
+      ],
+      "mean": 95,
+      "unit": "deg",
+      "source": "Table IV, p. 23, row 18 'Nasolabial', Lew column (males)",
+      "definitionMatch": "close",
+      "definitionNote": "Nasolabial angle (Table IV row 18; also Table V row 11, 95); method not in the compilation (Lew 1992 quoted second-hand).",
+      "note": "Adults ('48 Chinese adults', text p. 22): upper bound not stated; 40 by convention (Miao's stated range 4–40), P18. No SD printed. Identical value for both sexes; Table VI (pooled) has no nasolabial row."
+    },
+    {
+      "measurement": "m86_Nasolabial",
+      "sex": "F",
+      "ageBand": [
+        18,
+        40
+      ],
+      "mean": 95,
+      "unit": "deg",
+      "source": "Table IV, p. 23, row 18 'Nasolabial', Lew column (females)",
+      "definitionMatch": "close",
+      "definitionNote": "Nasolabial angle (Table IV row 18; also Table V row 11, 95); method not in the compilation (Lew 1992 quoted second-hand).",
+      "note": "Adults ('48 Chinese adults', text p. 22): upper bound not stated; 40 by convention (Miao's stated range 4–40), P18. No SD printed. Identical value for both sexes; Table VI (pooled) has no nasolabial row."
+    }
+  ]
+}

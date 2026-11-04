@@ -1,0 +1,638 @@
+{
+  "id": "kim2025",
+  "kind": "population",
+  "status": "verified",
+  "citation": {
+    "authors": "Kim LEH, Jeong J, Setzer FC, Chung C-H, Jeon HH",
+    "title": "Cephalometric norms for African Americans with normal occlusion in the Greater Philadelphia region: a retrospective observational study",
+    "journal": "Journal of Orofacial Orthopedics",
+    "year": 2025,
+    "volume": "87",
+    "pages": "477-489",
+    "doi": "10.1007/s00056-025-00598-7",
+    "openAccess": true
+  },
+  "population": {
+    "id": "african-american",
+    "label": "African-American",
+    "ethnicity": [
+      "African-American"
+    ],
+    "country": "USA",
+    "region": "Greater Philadelphia (University of Pennsylvania orthodontic clinic)"
+  },
+  "sample": {
+    "n": 34,
+    "nMale": 9,
+    "nFemale": 25,
+    "ageMean": 28.4
+  },
+  "selection": "class-I",
+  "modality": "unknown",
+  "scale": {
+    "kind": "not-stated"
+  },
+  "headPosition": "unknown",
+  "curation": {
+    "extractedBy": [
+      "AI reader A",
+      "AI reader B"
+    ],
+    "comparedOn": "2026-10-13",
+    "date": "2026-10-13",
+    "notes": "Compared 2026-10-13 (norms:compare a vs b exit 1; self-test passed). No mean, SD or n differed on the 36 rows both readers entered. Reader a used the text layer only, so every one of the 37 values was re-read at merge on reader b's page images of Tables 1-5 (PDF pp. 5-6 = pp. 481-482): all agree. Settled: year 2025 (published online 15 Jul 2025; print issue 2026, 87:477-489; a had 2026); 20 definitionMatch differences (a same, b close) settled close where the paper's landmark definitions sit in Supplementary Tables 1-5, not on file (incisor points, occlusal and mandibular planes, gonion, Ricketts points); #33 only b entered it: kept, close (the paper's Ricketts 'Mandibular arc' is Ricketts 1981's 'mandibular bend', p. 130, the catalogue's #33; the catalogue note that left out onfile's 'Mandibular arc (Dr-Xi-Pm)' concerned a separate onfile row, not this angle); #22 FMA 25.2 (Table 1) entered, Downs mandibular plane 25.1 (Table 4) a caveat; Pog-NB -1.2 as printed, sign convention unstated (note); facial angle source Table 4 (b), Table 2's facial depth named in the note. Set-level: selection mixed-occlusion (ruling, P37: the sample is people attending a university orthodontic clinic, p. 480, p. 486; both readers had entered a class-I selection; superseded the same day by owner ruling KIMRANK-1: class-I, ranked as an ordinary Class I sample); modality unknown (a; the films were traced digitally in Dolphin, but the radiograph type is not stated, so b's 'digital' was not kept); authors as printed, Chung C-H (Chun-Hsi)."
+  },
+  "caveats": [
+    "Year: published online 15 Jul 2025; printed J Orofac Orthop 2026;87:477-489 (p. 477). The year is 2025 (online first), matching the set id.",
+    "Sample (p. 477, p. 480-481): 34 adults (25 F, 9 M) screened from 650 African-American adult records, 2016-2024, at the University of Pennsylvania orthodontic clinic, so they were people attending for orthodontic records (the paper calls them patients seeking treatment, p. 486). Mean age 28.4 ± 12.7 y; no age range given.",
+    "Ranked as an ordinary Class I sample (owner ruling KIMRANK-1, 13 Oct; replaces the P37 treatment-sample ruling of the same day): the 34 were chosen for normal occlusion and a balanced profile from records of people attending a university orthodontic clinic, as Cheong 2024 was chosen from clinic patients. So an African-American adult gets this set's adult rows; children keep Bailey & Taylor 1998 and Obamiyi 2019, whose bands cover their ages.",
+    "Selection (p. 480): Angle Class I occlusion, overbite 20-30% or >0 and <3 mm, overjet 1-3 mm, no crossbite, minor crowding or spacing/rotations up to 2 mm, and a balanced profile judged by three examiners; no prior orthodontics or orthognathic surgery. Overjet and overbite were explicit numeric inclusion criteria and are not tabled, so nothing is entered for #68/#69 (rule P45).",
+    "Only pooled values are tabled; the paper says sex differences were seen but not shown (p. 484).",
+    "Traced on Dolphin Imaging 12.0 by one examiner (p. 481); landmark definitions are in Supplementary Tables 1-5, which are not on file, so planes and incisor points cannot be checked.",
+    "Not in the catalogue: Maxillary depth 94.1 ± 3.0°, Maxillary height 58.3 ± 3.9°, Facial taper 65.0 ± 4.3°, Corpus length 83.7 ± 5.8 mm, Hinge axis angle 102.4 ± 7.2° (Table 2, p. 481); Anterior cranial base 67.5 ± 4.3 mm, Posterior cranial base 33.1 ± 3.7 mm, Ramus height 45.2 ± 5.9 mm, Mandibular body 73.9 ± 4.8 mm, UFH to LFH 42.1 ± 1.8 %, U1 to FH 122.9 ± 6.6° (Table 3, p. 482).",
+    "Not entered (duplicate of an entered catalogue measurement): Downs 'Mandibular plane angle' 25.1 ± 5.6° (Table 4, p. 482) would also be #22, already filled from FMA 25.2 ± 5.6° (Table 1); the 0.1° difference suggests Dolphin drew the two mandibular planes differently, but the paper does not say.",
+    "Repeated values printed in more than one table (interincisal, facial angle/facial depth, convexity angle, A to N-Pog, U1 to A-Pog) are entered once, with the other table named in the entry's note.",
+    "The 'Published AA norms' column in every table restates other papers (refs 10, 13, 15, 16, 19) and is not entered.",
+    "Kim's extraction index (#17), ODI, APDI and combination factor are not given in this paper.",
+    "Confidence intervals of the mean are printed beside each value and not entered.",
+    "Modality: traced digitally in Dolphin Imaging 12.0 (p. 481); whether the radiographs were digital or scanned film, the machine, the magnification and the head position are not stated."
+  ],
+  "entries": [
+    {
+      "measurement": "m01_SNA",
+      "sex": "pooled",
+      "ageBand": [
+        18,
+        40
+      ],
+      "mean": 84.6,
+      "sd": 3.6,
+      "n": 34,
+      "unit": "deg",
+      "source": "Table 1, p. 481 (PDF p. 5)",
+      "definitionMatch": "same",
+      "note": "Adults; the paper gives mean age 28.4 ± 12.7 y and no age range (p. 477, p. 481); upper bound not stated; 40 by convention (rule P18)."
+    },
+    {
+      "measurement": "m02_SNB",
+      "sex": "pooled",
+      "ageBand": [
+        18,
+        40
+      ],
+      "mean": 81.0,
+      "sd": 3.2,
+      "n": 34,
+      "unit": "deg",
+      "source": "Table 1, p. 481 (PDF p. 5)",
+      "definitionMatch": "same",
+      "note": "Adults; the paper gives mean age 28.4 ± 12.7 y and no age range (p. 477, p. 481); upper bound not stated; 40 by convention (rule P18)."
+    },
+    {
+      "measurement": "m03_ANB",
+      "sex": "pooled",
+      "ageBand": [
+        18,
+        40
+      ],
+      "mean": 3.7,
+      "sd": 2.0,
+      "n": 34,
+      "unit": "deg",
+      "source": "Table 1, p. 481 (PDF p. 5)",
+      "definitionMatch": "same",
+      "note": "Adults; the paper gives mean age 28.4 ± 12.7 y and no age range (p. 477, p. 481); upper bound not stated; 40 by convention (rule P18)."
+    },
+    {
+      "measurement": "m47_U1NAdeg",
+      "sex": "pooled",
+      "ageBand": [
+        18,
+        40
+      ],
+      "mean": 28.8,
+      "sd": 7.0,
+      "n": 34,
+      "unit": "deg",
+      "source": "Table 1, p. 481 (PDF p. 5), row '1/to NA (°)'",
+      "definitionMatch": "same",
+      "note": "Adults; the paper gives mean age 28.4 ± 12.7 y and no age range (p. 477, p. 481); upper bound not stated; 40 by convention (rule P18)."
+    },
+    {
+      "measurement": "m46_U1NAmm",
+      "sex": "pooled",
+      "ageBand": [
+        18,
+        40
+      ],
+      "mean": 7.7,
+      "sd": 2.6,
+      "n": 34,
+      "unit": "mm",
+      "source": "Table 1, p. 481 (PDF p. 5), row '1/to NA (mm)'",
+      "definitionMatch": "close",
+      "definitionNote": "Incisor point for the distance not stated (tip or most labial crown point); The paper names the measurement but defines no landmarks in the main text (it points to Supplementary Tables 1-5, not on file); traced in Dolphin Imaging 12.0.",
+      "note": "Adults; the paper gives mean age 28.4 ± 12.7 y and no age range (p. 477, p. 481); upper bound not stated; 40 by convention (rule P18)."
+    },
+    {
+      "measurement": "m50_L1NBdeg",
+      "sex": "pooled",
+      "ageBand": [
+        18,
+        40
+      ],
+      "mean": 38.0,
+      "sd": 7.2,
+      "n": 34,
+      "unit": "deg",
+      "source": "Table 1, p. 481 (PDF p. 5), row '/1 to NB (°)'",
+      "definitionMatch": "same",
+      "note": "Adults; the paper gives mean age 28.4 ± 12.7 y and no age range (p. 477, p. 481); upper bound not stated; 40 by convention (rule P18)."
+    },
+    {
+      "measurement": "m49_L1NBmm",
+      "sex": "pooled",
+      "ageBand": [
+        18,
+        40
+      ],
+      "mean": 10.4,
+      "sd": 2.6,
+      "n": 34,
+      "unit": "mm",
+      "source": "Table 1, p. 481 (PDF p. 5), row '/1 to NB (mm)'",
+      "definitionMatch": "close",
+      "definitionNote": "Incisor point for the distance not stated (tip or most labial crown point); The paper names the measurement but defines no landmarks in the main text (it points to Supplementary Tables 1-5, not on file); traced in Dolphin Imaging 12.0.",
+      "note": "Adults; the paper gives mean age 28.4 ± 12.7 y and no age range (p. 477, p. 481); upper bound not stated; 40 by convention (rule P18)."
+    },
+    {
+      "measurement": "m53_Interincisal",
+      "sex": "pooled",
+      "ageBand": [
+        18,
+        40
+      ],
+      "mean": 109.5,
+      "sd": 10.3,
+      "n": 34,
+      "unit": "deg",
+      "source": "Table 1, p. 481 (PDF p. 5), row '1/to/1 (°)'",
+      "definitionMatch": "same",
+      "note": "Adults; the paper gives mean age 28.4 ± 12.7 y and no age range (p. 477, p. 481); upper bound not stated; 40 by convention (rule P18). The same value is printed in Table 2 (1/to/1) and Table 4 (Interincisal angle), p. 481-482."
+    },
+    {
+      "measurement": "m60_OPSN",
+      "sex": "pooled",
+      "ageBand": [
+        18,
+        40
+      ],
+      "mean": 15.2,
+      "sd": 4.6,
+      "n": 34,
+      "unit": "deg",
+      "source": "Table 1, p. 481 (PDF p. 5), row 'OP to SN (°)'",
+      "definitionMatch": "close",
+      "definitionNote": "Occlusal plane construction not stated (catalogue uses the Downs occlusal plane); The paper names the measurement but defines no landmarks in the main text (it points to Supplementary Tables 1-5, not on file); traced in Dolphin Imaging 12.0.",
+      "note": "Adults; the paper gives mean age 28.4 ± 12.7 y and no age range (p. 477, p. 481); upper bound not stated; 40 by convention (rule P18)."
+    },
+    {
+      "measurement": "m20_SNGoGn",
+      "sex": "pooled",
+      "ageBand": [
+        18,
+        40
+      ],
+      "mean": 32.0,
+      "sd": 6.4,
+      "n": 34,
+      "unit": "deg",
+      "source": "Table 1, p. 481 (PDF p. 5)",
+      "definitionMatch": "same",
+      "note": "Adults; the paper gives mean age 28.4 ± 12.7 y and no age range (p. 477, p. 481); upper bound not stated; 40 by convention (rule P18)."
+    },
+    {
+      "measurement": "m18_PogNB",
+      "sex": "pooled",
+      "ageBand": [
+        18,
+        40
+      ],
+      "mean": -1.2,
+      "sd": 2.0,
+      "n": 34,
+      "unit": "mm",
+      "source": "Table 1, p. 481 (PDF p. 5), row 'Pog-NB (mm)'",
+      "definitionMatch": "close",
+      "definitionNote": "Sign convention not stated by the paper; the catalogue reads + when Pog is ahead of NB. The printed mean is negative (and the comparison AA norm in the same table is also negative), so the paper's sign may be the opposite of the catalogue's; entered as printed, unconverted. The paper names the measurement but defines no landmarks in the main text (it points to Supplementary Tables 1-5, not on file); traced in Dolphin Imaging 12.0.",
+      "note": "Adults; the paper gives mean age 28.4 ± 12.7 y and no age range (p. 477, p. 481); upper bound not stated; 40 by convention (rule P18). Minus sign confirmed on the page image."
+    },
+    {
+      "measurement": "m22_FHMPt",
+      "sex": "pooled",
+      "ageBand": [
+        18,
+        40
+      ],
+      "mean": 25.2,
+      "sd": 5.6,
+      "n": 34,
+      "unit": "deg",
+      "source": "Table 1, p. 481 (PDF p. 5), row 'FMA (°)'",
+      "definitionMatch": "close",
+      "definitionNote": "Mandibular plane not stated (the catalogue's #22 is FH to a lower-border tangent); The paper names the measurement but defines no landmarks in the main text (it points to Supplementary Tables 1-5, not on file); traced in Dolphin Imaging 12.0.",
+      "note": "Adults; the paper gives mean age 28.4 ± 12.7 y and no age range (p. 477, p. 481); upper bound not stated; 40 by convention (rule P18). Table 4 (Downs) prints a separate 'Mandibular plane angle' of 25.1 ± 5.6°, p. 482; only one entry per measurement is allowed, so that row is in caveats."
+    },
+    {
+      "measurement": "m58_FMIA",
+      "sex": "pooled",
+      "ageBand": [
+        18,
+        40
+      ],
+      "mean": 52.3,
+      "sd": 7.0,
+      "n": 34,
+      "unit": "deg",
+      "source": "Table 1, p. 481 (PDF p. 5)",
+      "definitionMatch": "same",
+      "note": "Adults; the paper gives mean age 28.4 ± 12.7 y and no age range (p. 477, p. 481); upper bound not stated; 40 by convention (rule P18)."
+    },
+    {
+      "measurement": "m56_IMPAt",
+      "sex": "pooled",
+      "ageBand": [
+        18,
+        40
+      ],
+      "mean": 102.5,
+      "sd": 8.4,
+      "n": 34,
+      "unit": "deg",
+      "source": "Table 1, p. 481 (PDF p. 5), row 'IMPA (°)'",
+      "definitionMatch": "close",
+      "definitionNote": "Mandibular plane not stated (the catalogue's #56 uses the lower-border tangent; Go-Me would be #57); The paper names the measurement but defines no landmarks in the main text (it points to Supplementary Tables 1-5, not on file); traced in Dolphin Imaging 12.0.",
+      "note": "Adults; the paper gives mean age 28.4 ± 12.7 y and no age range (p. 477, p. 481); upper bound not stated; 40 by convention (rule P18)."
+    },
+    {
+      "measurement": "m30_FacAxisR",
+      "sex": "pooled",
+      "ageBand": [
+        18,
+        40
+      ],
+      "mean": 91.0,
+      "sd": 4.6,
+      "n": 34,
+      "unit": "deg",
+      "source": "Table 2, p. 481 (PDF p. 5), row 'Facial axis (°)'",
+      "definitionMatch": "close",
+      "definitionNote": "Ba-N to the facial axis assumed per Ricketts; the Pt point and constructed gnathion used are not stated. The paper names the measurement but defines no landmarks in the main text (it points to Supplementary Tables 1-5, not on file); traced in Dolphin Imaging 12.0.",
+      "note": "Adults; the paper gives mean age 28.4 ± 12.7 y and no age range (p. 477, p. 481); upper bound not stated; 40 by convention (rule P18)."
+    },
+    {
+      "measurement": "m33_MandBend",
+      "sex": "pooled",
+      "ageBand": [
+        18,
+        40
+      ],
+      "mean": 35.4,
+      "sd": 5.6,
+      "n": 34,
+      "unit": "deg",
+      "source": "Table 2, p. 481 (PDF p. 5), row 'Mandibular arc (°)'",
+      "definitionMatch": "close",
+      "definitionNote": "The paper's row is Ricketts' 'Mandibular arc' with no definition in the main text (Supplementary Tables 1-5 not on file). The catalogue's #33 is the same Ricketts angle: Ricketts 1981 (p. 130) calls it the mandibular bend, the condyle axis (Xi to DC) against the corpus axis (Pm-Xi) extended back. Close, not same, because Dolphin's construction of Xi and DC is not shown. The catalogue's exclusion note on onfile's 'Mandibular arc (Dr-Xi-Pm)' concerned a separate onfile row, not this angle.",
+      "note": "Adults; the paper gives mean age 28.4 ± 12.7 y and no age range (p. 477, p. 481); upper bound not stated; 40 by convention (rule P18). Against Ricketts 1981's own growth figures (22.0 at 8, about +0.6 per year, p. 130) the expected value near this sample's mean age of 28 is about 34; 35.4 fits."
+    },
+    {
+      "measurement": "m07_ANPog",
+      "sex": "pooled",
+      "ageBand": [
+        18,
+        40
+      ],
+      "mean": 4.3,
+      "sd": 2.6,
+      "n": 34,
+      "unit": "mm",
+      "source": "Table 2, p. 481 (PDF p. 5), row 'A Pt convexity (mm)'",
+      "definitionMatch": "close",
+      "definitionNote": "The paper's label is 'A Pt convexity'; read as Ricketts' convexity (A to N-Pog), which is the catalogue's #7; sign convention not stated (positive value fits A ahead of N-Pog). The paper names the measurement but defines no landmarks in the main text (it points to Supplementary Tables 1-5, not on file); traced in Dolphin Imaging 12.0.",
+      "note": "Adults; the paper gives mean age 28.4 ± 12.7 y and no age range (p. 477, p. 481); upper bound not stated; 40 by convention (rule P18). The same value is printed again in Table 5, p. 482."
+    },
+    {
+      "measurement": "m32_OralGnomon",
+      "sex": "pooled",
+      "ageBand": [
+        18,
+        40
+      ],
+      "mean": 43.8,
+      "sd": 3.7,
+      "n": 34,
+      "unit": "deg",
+      "source": "Table 2, p. 481 (PDF p. 5), row 'Lower facial height (°)'",
+      "definitionMatch": "close",
+      "definitionNote": "The paper's label is Ricketts' lower facial height (an angle); the catalogue's #32 (ANS-Xi-Pm) carries that name in onfile. The paper names the measurement but defines no landmarks in the main text (it points to Supplementary Tables 1-5, not on file); traced in Dolphin Imaging 12.0.",
+      "note": "Adults; the paper gives mean age 28.4 ± 12.7 y and no age range (p. 477, p. 481); upper bound not stated; 40 by convention (rule P18)."
+    },
+    {
+      "measurement": "m63_U1APog",
+      "sex": "pooled",
+      "ageBand": [
+        18,
+        40
+      ],
+      "mean": 11.2,
+      "sd": 2.6,
+      "n": 34,
+      "unit": "mm",
+      "source": "Table 4, p. 482 (PDF p. 6), row '1/to Apog (mm)'",
+      "definitionMatch": "close",
+      "definitionNote": "Incisor point for the distance not stated (tip or most labial crown point); The paper names the measurement but defines no landmarks in the main text (it points to Supplementary Tables 1-5, not on file); traced in Dolphin Imaging 12.0.",
+      "note": "Adults; the paper gives mean age 28.4 ± 12.7 y and no age range (p. 477, p. 481); upper bound not stated; 40 by convention (rule P18). The same value is printed in Table 2, row '1/to APog (mm)', p. 481."
+    },
+    {
+      "measurement": "m19_U6PTV",
+      "sex": "pooled",
+      "ageBand": [
+        18,
+        40
+      ],
+      "mean": 21.9,
+      "sd": 3.3,
+      "n": 34,
+      "unit": "mm",
+      "source": "Table 2, p. 481 (PDF p. 5), row '6/to Pt vertical (mm)'",
+      "definitionMatch": "close",
+      "definitionNote": "Molar point not stated (catalogue: back of the upper first molar); sign not stated (positive value fits molar ahead of PTV). The paper names the measurement but defines no landmarks in the main text (it points to Supplementary Tables 1-5, not on file); traced in Dolphin Imaging 12.0.",
+      "note": "Adults; the paper gives mean age 28.4 ± 12.7 y and no age range (p. 477, p. 481); upper bound not stated; 40 by convention (rule P18)."
+    },
+    {
+      "measurement": "m64_L1APog",
+      "sex": "pooled",
+      "ageBand": [
+        18,
+        40
+      ],
+      "mean": 8.5,
+      "sd": 2.3,
+      "n": 34,
+      "unit": "mm",
+      "source": "Table 2, p. 481 (PDF p. 5), row '/1 to APog (mm)'",
+      "definitionMatch": "close",
+      "definitionNote": "Incisor point for the distance not stated (tip or most labial crown point); The paper names the measurement but defines no landmarks in the main text (it points to Supplementary Tables 1-5, not on file); traced in Dolphin Imaging 12.0.",
+      "note": "Adults; the paper gives mean age 28.4 ± 12.7 y and no age range (p. 477, p. 481); upper bound not stated; 40 by convention (rule P18). Mean read twice on the page image: 8.5 ± 2.3 mm (unusually large against Ricketts' ideal of about +1 mm, but as printed)."
+    },
+    {
+      "measurement": "m34_Saddle",
+      "sex": "pooled",
+      "ageBand": [
+        18,
+        40
+      ],
+      "mean": 127.2,
+      "sd": 6.0,
+      "n": 34,
+      "unit": "deg",
+      "source": "Table 3, p. 482 (PDF p. 6)",
+      "definitionMatch": "same",
+      "note": "Adults; the paper gives mean age 28.4 ± 12.7 y and no age range (p. 477, p. 481); upper bound not stated; 40 by convention (rule P18)."
+    },
+    {
+      "measurement": "m35_Articular",
+      "sex": "pooled",
+      "ageBand": [
+        18,
+        40
+      ],
+      "mean": 144.7,
+      "sd": 8.4,
+      "n": 34,
+      "unit": "deg",
+      "source": "Table 3, p. 482 (PDF p. 6)",
+      "definitionMatch": "close",
+      "definitionNote": "Gonion construction not stated (catalogue uses the AI-placed Go, ruling C3; Dolphin may construct gonion); The paper names the measurement but defines no landmarks in the main text (it points to Supplementary Tables 1-5, not on file); traced in Dolphin Imaging 12.0.",
+      "note": "Adults; the paper gives mean age 28.4 ± 12.7 y and no age range (p. 477, p. 481); upper bound not stated; 40 by convention (rule P18)."
+    },
+    {
+      "measurement": "m36_Gonial",
+      "sex": "pooled",
+      "ageBand": [
+        18,
+        40
+      ],
+      "mean": 122.7,
+      "sd": 7.6,
+      "n": 34,
+      "unit": "deg",
+      "source": "Table 3, p. 482 (PDF p. 6)",
+      "definitionMatch": "close",
+      "definitionNote": "Gonion construction not stated (catalogue uses the AI-placed Go, ruling C3; Dolphin may construct gonion); The paper names the measurement but defines no landmarks in the main text (it points to Supplementary Tables 1-5, not on file); traced in Dolphin Imaging 12.0.",
+      "note": "Adults; the paper gives mean age 28.4 ± 12.7 y and no age range (p. 477, p. 481); upper bound not stated; 40 by convention (rule P18)."
+    },
+    {
+      "measurement": "m39_SumAngles",
+      "sex": "pooled",
+      "ageBand": [
+        18,
+        40
+      ],
+      "mean": 394.6,
+      "sd": 6.5,
+      "n": 34,
+      "unit": "deg",
+      "source": "Table 3, p. 482 (PDF p. 6), row 'Sum of angles (°)'",
+      "definitionMatch": "close",
+      "definitionNote": "Gonion construction not stated (catalogue uses the AI-placed Go, ruling C3; Dolphin may construct gonion); The paper names the measurement but defines no landmarks in the main text (it points to Supplementary Tables 1-5, not on file); traced in Dolphin Imaging 12.0.",
+      "note": "Adults; the paper gives mean age 28.4 ± 12.7 y and no age range (p. 477, p. 481); upper bound not stated; 40 by convention (rule P18)."
+    },
+    {
+      "measurement": "m37_UpperGonial",
+      "sex": "pooled",
+      "ageBand": [
+        18,
+        40
+      ],
+      "mean": 49.4,
+      "sd": 5.3,
+      "n": 34,
+      "unit": "deg",
+      "source": "Table 3, p. 482 (PDF p. 6)",
+      "definitionMatch": "close",
+      "definitionNote": "Gonion construction not stated (catalogue uses the AI-placed Go, ruling C3; Dolphin may construct gonion); The paper names the measurement but defines no landmarks in the main text (it points to Supplementary Tables 1-5, not on file); traced in Dolphin Imaging 12.0.",
+      "note": "Adults; the paper gives mean age 28.4 ± 12.7 y and no age range (p. 477, p. 481); upper bound not stated; 40 by convention (rule P18)."
+    },
+    {
+      "measurement": "m38_LowerGonial",
+      "sex": "pooled",
+      "ageBand": [
+        18,
+        40
+      ],
+      "mean": 73.2,
+      "sd": 5.4,
+      "n": 34,
+      "unit": "deg",
+      "source": "Table 3, p. 482 (PDF p. 6)",
+      "definitionMatch": "close",
+      "definitionNote": "Gonion construction not stated (catalogue uses the AI-placed Go, ruling C3; Dolphin may construct gonion); The paper names the measurement but defines no landmarks in the main text (it points to Supplementary Tables 1-5, not on file); traced in Dolphin Imaging 12.0.",
+      "note": "Adults; the paper gives mean age 28.4 ± 12.7 y and no age range (p. 477, p. 481); upper bound not stated; 40 by convention (rule P18)."
+    },
+    {
+      "measurement": "m42_Jarabak",
+      "sex": "pooled",
+      "ageBand": [
+        18,
+        40
+      ],
+      "mean": 64.3,
+      "sd": 5.6,
+      "n": 34,
+      "unit": "%",
+      "source": "Table 3, p. 482 (PDF p. 6), row 'PFH to AFH (%)'",
+      "definitionMatch": "close",
+      "definitionNote": "Read as posterior (S-Go) over anterior (N-Me) face height ×100; the paper does not name the points. Gonion construction not stated (catalogue uses the AI-placed Go, ruling C3; Dolphin may construct gonion); The paper names the measurement but defines no landmarks in the main text (it points to Supplementary Tables 1-5, not on file); traced in Dolphin Imaging 12.0.",
+      "note": "Adults; the paper gives mean age 28.4 ± 12.7 y and no age range (p. 477, p. 481); upper bound not stated; 40 by convention (rule P18)."
+    },
+    {
+      "measurement": "m54_U1SN",
+      "sex": "pooled",
+      "ageBand": [
+        18,
+        40
+      ],
+      "mean": 113.4,
+      "sd": 6.8,
+      "n": 34,
+      "unit": "deg",
+      "source": "Table 3, p. 482 (PDF p. 6), row '1/to SN (°)'",
+      "definitionMatch": "same",
+      "note": "Adults; the paper gives mean age 28.4 ± 12.7 y and no age range (p. 477, p. 481); upper bound not stated; 40 by convention (rule P18)."
+    },
+    {
+      "measurement": "m04_FacialAngle",
+      "sex": "pooled",
+      "ageBand": [
+        18,
+        40
+      ],
+      "mean": 89.8,
+      "sd": 2.7,
+      "n": 34,
+      "unit": "deg",
+      "source": "Table 4, p. 482 (PDF p. 6), row 'Facial angle (°)'",
+      "definitionMatch": "same",
+      "note": "Adults; the paper gives mean age 28.4 ± 12.7 y and no age range (p. 477, p. 481); upper bound not stated; 40 by convention (rule P18). The same value is printed in Table 2 as 'Facial depth (°)', p. 481 (Ricketts' FH to N-Pog)."
+    },
+    {
+      "measurement": "m05_Convexity",
+      "sex": "pooled",
+      "ageBand": [
+        18,
+        40
+      ],
+      "mean": 8.9,
+      "sd": 5.1,
+      "n": 34,
+      "unit": "deg",
+      "source": "Table 4, p. 482 (PDF p. 6), row 'Angle of convexity (°)'",
+      "definitionMatch": "same",
+      "note": "Adults; the paper gives mean age 28.4 ± 12.7 y and no age range (p. 477, p. 481); upper bound not stated; 40 by convention (rule P18). Positive value read as A ahead of N-Pog, matching the catalogue's sign. Also printed in Table 5, p. 482."
+    },
+    {
+      "measurement": "m06_ABPlane",
+      "sex": "pooled",
+      "ageBand": [
+        18,
+        40
+      ],
+      "mean": -4.8,
+      "sd": 3.0,
+      "n": 34,
+      "unit": "deg",
+      "source": "Table 4, p. 482 (PDF p. 6), row 'AB plane (°)'",
+      "definitionMatch": "same",
+      "note": "Adults; the paper gives mean age 28.4 ± 12.7 y and no age range (p. 477, p. 481); upper bound not stated; 40 by convention (rule P18). Minus sign confirmed on the page image; negative = B behind A, as the catalogue's sign."
+    },
+    {
+      "measurement": "m24_YAxis",
+      "sex": "pooled",
+      "ageBand": [
+        18,
+        40
+      ],
+      "mean": 58.8,
+      "sd": 3.4,
+      "n": 34,
+      "unit": "deg",
+      "source": "Table 4, p. 482 (PDF p. 6)",
+      "definitionMatch": "same",
+      "note": "Adults; the paper gives mean age 28.4 ± 12.7 y and no age range (p. 477, p. 481); upper bound not stated; 40 by convention (rule P18)."
+    },
+    {
+      "measurement": "m61_CantOP",
+      "sex": "pooled",
+      "ageBand": [
+        18,
+        40
+      ],
+      "mean": 5.8,
+      "sd": 3.6,
+      "n": 34,
+      "unit": "deg",
+      "source": "Table 4, p. 482 (PDF p. 6), row 'Occlusal plane (°)'",
+      "definitionMatch": "close",
+      "definitionNote": "Occlusal plane construction not stated (catalogue uses the Downs occlusal plane); The paper names the measurement but defines no landmarks in the main text (it points to Supplementary Tables 1-5, not on file); traced in Dolphin Imaging 12.0. Sign not stated; the positive value is read as Downs' usual positive cant.",
+      "note": "Adults; the paper gives mean age 28.4 ± 12.7 y and no age range (p. 477, p. 481); upper bound not stated; 40 by convention (rule P18)."
+    },
+    {
+      "measurement": "m62_L1OPdev",
+      "sex": "pooled",
+      "ageBand": [
+        18,
+        40
+      ],
+      "mean": 31.8,
+      "sd": 7.2,
+      "n": 34,
+      "unit": "deg",
+      "source": "Table 4, p. 482 (PDF p. 6), row '/1 to occlusal plane (°)'",
+      "definitionMatch": "close",
+      "definitionNote": "The paper does not say the angle is read as degrees from 90, as the catalogue's #62 is; the size of the value (and its comparison norm, 27.3°) only fits a reading from 90. Occlusal plane construction not stated (catalogue uses the Downs occlusal plane); The paper names the measurement but defines no landmarks in the main text (it points to Supplementary Tables 1-5, not on file); traced in Dolphin Imaging 12.0.",
+      "note": "Adults; the paper gives mean age 28.4 ± 12.7 y and no age range (p. 477, p. 481); upper bound not stated; 40 by convention (rule P18)."
+    },
+    {
+      "measurement": "m71_ULE",
+      "sex": "pooled",
+      "ageBand": [
+        18,
+        40
+      ],
+      "mean": 0.4,
+      "sd": 3.0,
+      "n": 34,
+      "unit": "mm",
+      "source": "Table 5, p. 482 (PDF p. 6), row 'Upper lip to E-line (mm)'",
+      "definitionMatch": "same",
+      "note": "Adults; the paper gives mean age 28.4 ± 12.7 y and no age range (p. 477, p. 481); upper bound not stated; 40 by convention (rule P18). Sign not stated; positive read as lip ahead of the line."
+    },
+    {
+      "measurement": "m72_LLE",
+      "sex": "pooled",
+      "ageBand": [
+        18,
+        40
+      ],
+      "mean": 4.4,
+      "sd": 3.6,
+      "n": 34,
+      "unit": "mm",
+      "source": "Table 5, p. 482 (PDF p. 6), row 'Lower lip to E-line (mm)'",
+      "definitionMatch": "same",
+      "note": "Adults; the paper gives mean age 28.4 ± 12.7 y and no age range (p. 477, p. 481); upper bound not stated; 40 by convention (rule P18). Sign not stated; positive read as lip ahead of the line."
+    }
+  ]
+}

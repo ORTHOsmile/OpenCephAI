@@ -1,0 +1,255 @@
+{
+  "id": "alcalde2000",
+  "kind": "population",
+  "status": "verified",
+  "citation": {
+    "authors": "Alcalde RE, Jinno T, Orsini MG, Sasaki A, Sugiyama RM, Matsumura T",
+    "title": "Soft tissue cephalometric norms in Japanese adults",
+    "journal": "American Journal of Orthodontics and Dentofacial Orthopedics",
+    "year": 2000,
+    "volume": "118",
+    "pages": "84-89",
+    "doi": "10.1067/mod.2000.104411",
+    "openAccess": false
+  },
+  "population": {
+    "id": "japanese",
+    "label": "Japanese",
+    "ethnicity": [
+      "Japanese"
+    ],
+    "country": "Japan",
+    "region": "Okayama"
+  },
+  "sample": {
+    "n": 211,
+    "nMale": 92,
+    "nFemale": 119,
+    "ageMin": 20,
+    "ageMax": 28
+  },
+  "selection": "class-I",
+  "modality": "film",
+  "scale": {
+    "kind": "not-stated"
+  },
+  "headPosition": "NHP",
+  "curation": {
+    "extractedBy": [
+      "AI reader A",
+      "AI reader B"
+    ],
+    "comparedOn": "2026-10-08",
+    "date": "2026-10-08",
+    "notes": "Compared 2026-10-08 (norms:compare a vs b exit 1, 4 differences). Every mean and SD re-read from the page image of Table II (p. 87, PDF p. 4): agree. Decisions: (1) lower lip to E-line #72: a −0.13 (as printed), b +0.13 → +0.13: the paper's whites' value is +2.00 (Ricketts' 2 mm behind) and the text says the Japanese lower lip is more prominent to the E-plane (p. 85) and the lips anteriorly positioned in all analyses (p. 88), so the printed sign is + behind; converted to the catalogue's + ahead (merge notes asked to confirm against a and the text). (2) 'Upper lip thickness' 15.11: a #77 (basic), b #78 (vermilion) → #78: Holdaway's 'upper lip thickness' is measured at the vermilion border, distinct from his 'basic upper lip thickness'; AlBarakati 2012 Table 3 restates this value as the Japanese 'UL-vermilion'. (3) #89 upper lip length: a 'same', b 'close' → close: the text calls it 'Sn-UL St' (the upper lip's stomion), lips in repose. Not a/b differences but settled here: #79 upper lip strain entered as printed (merge notes) but 'different' (never used) - the paper's strain is positive (Holdaway: basic minus vermilion thickness) while the catalogue computes #78 − #77; raised with the owner. Supernormal group (Tables III-IV, n 19) not entered (P19). Selection class-I (Class I occlusion, minor or no crowding, good facial symmetry, p. 84; no profile criterion for this group). Scale not-stated. Owner LIP-2 (8 Oct): #79 different -> same after the catalogue was flipped to Holdaway's direction. Owner LIP-4 (12 Oct, final review I-3): 'Upper lip thickness' 15.11 moved from #78 to #77 (basic thickness), close; decision (2) above is superseded."
+  },
+  "caveats": [
+    "Sample: the Japanese normal group, 211 adults (92 men, 119 women), 20-28 y, with Japanese grandparents; Class I occlusion with minor or no crowding, good facial symmetry, no orthodontic treatment or surgery; Okayama University students (p. 84). The same research group's 1998 hard-tissue sample (217) is a separate set (alcalde1998).",
+    "Sexes pooled: the paper did not split its soft-tissue norms by sex (p. 88).",
+    "Radiographs in natural head position, teeth in maximum intercuspation, lips in repose (Shimavision 1100); hand traced and digitised (Quick Ceph) (p. 84). The paper does not say whether its FH-referenced angles use FH or a true horizontal. Film magnification not stated.",
+    "Not entered: the 'supernormal' group, 19 profiles of the same 211 chosen by 10 lay judges as esthetically pleasant (Tables III-IV, pp. 87-88) - a norm describes the normal group (P19). Table IV's 'Japanese' column is quoted from Alcalde 1998, not measured here.",
+    "Table II also prints the range, minimum and maximum for each row: observed extremes, not a norm range; not entered.",
+    "Lower lip to E-line: printed −0.13 with the paper's + = behind the E-plane (whites 2.00); stored as +0.13 under the catalogue's + = ahead.",
+    "Upper lip strain (#79): printed 2.57 ± 2.73; used (same) since the catalogue's #79 was flipped to Holdaway's direction, #77 minus #78, on 8 Oct (owner LIP-2). Before that it was kept but not used (opposite sign).",
+    "Not in the catalogue: Epker's G-Sn:Sn-Me, Sn-St:St-Me and Sn-Llv:Llv-Me ratios, interlabial distance Ulv-Llv, and subnasale perpendicular to the upper lip, lower lip and chin (Table II)."
+  ],
+  "entries": [
+    {
+      "measurement": "m72_LLE",
+      "sex": "pooled",
+      "ageBand": [
+        20,
+        28
+      ],
+      "mean": 0.13,
+      "sd": 2.51,
+      "n": 211,
+      "unit": "mm",
+      "source": "Table II, p. 87",
+      "definitionMatch": "same",
+      "note": "Sign converted: the paper prints −0.13 beside the whites' 2.00 and says the Japanese lower lip is MORE prominent to the E-plane than the whites' (p. 85; Discussion p. 88), so the paper's sign is + when the lip is behind the E-plane (Ricketts' 2 mm behind). Stored as +0.13 for the catalogue's + when ahead (merge notes). Printed range −5.20 to 4.30."
+    },
+    {
+      "measurement": "m73_STFacial",
+      "sex": "pooled",
+      "ageBand": [
+        20,
+        28
+      ],
+      "mean": 90.16,
+      "sd": 3.22,
+      "n": 211,
+      "unit": "deg",
+      "source": "Table II, p. 87",
+      "definitionMatch": "same",
+      "note": "Holdaway 1983 by citation; the paper gives no definition of its own."
+    },
+    {
+      "measurement": "m74_NoseProm",
+      "sex": "pooled",
+      "ageBand": [
+        20,
+        28
+      ],
+      "mean": 14.54,
+      "sd": 1.94,
+      "n": 211,
+      "unit": "mm",
+      "source": "Table II, p. 87",
+      "definitionMatch": "same",
+      "note": "Holdaway 1983 by citation; the paper gives no definition of its own."
+    },
+    {
+      "measurement": "m75_SupSulcus",
+      "sex": "pooled",
+      "ageBand": [
+        20,
+        28
+      ],
+      "mean": 4.46,
+      "sd": 2.25,
+      "n": 211,
+      "unit": "mm",
+      "source": "Table II, p. 87",
+      "definitionMatch": "same",
+      "note": "Holdaway 1983 by citation; the paper gives no definition of its own. A positive depth, as the catalogue."
+    },
+    {
+      "measurement": "m76_SnH",
+      "sex": "pooled",
+      "ageBand": [
+        20,
+        28
+      ],
+      "mean": 9.06,
+      "sd": 2.86,
+      "n": 211,
+      "unit": "mm",
+      "source": "Table II, p. 87",
+      "definitionMatch": "same",
+      "note": "Paper row 'Soft tissue subnasale to H line'. Holdaway 1983 by citation; the paper gives no definition of its own. A positive depth, as the catalogue."
+    },
+    {
+      "measurement": "m07_ANPog",
+      "sex": "pooled",
+      "ageBand": [
+        20,
+        28
+      ],
+      "mean": 2.42,
+      "sd": 3.22,
+      "n": 211,
+      "unit": "mm",
+      "source": "Table II, p. 87",
+      "definitionMatch": "same",
+      "note": "Paper row 'Skeletal profile convexity' (Holdaway), A to N-Pog, the catalogue's #7."
+    },
+    {
+      "measurement": "m77_BasicUL",
+      "sex": "pooled",
+      "ageBand": [
+        20,
+        28
+      ],
+      "mean": 15.11,
+      "sd": 2.48,
+      "n": 211,
+      "unit": "mm",
+      "source": "Table II, p. 87",
+      "definitionMatch": "close",
+      "definitionNote": "The paper labels the row only 'Upper lip thickness' (Holdaway analysis) and gives no landmarks. Read as Holdaway's basic upper lip thickness (#77) by owner ruling LIP-4 (12 Oct); AlBarakati & Bindayel 2012 (Table 3, p. 30) label the same value as the thickness at the vermilion (#78), so close, not same.",
+      "note": "Paper row 'Upper lip thickness' (Holdaway analysis), entered as #77 by owner ruling LIP-4 (12 Oct; final review I-3); it was #78 until then. Reason: the paper's own Whites column prints 15.0 for this row and 1.5 for upper lip strain; Holdaway's strain is basic thickness minus vermilion thickness and his vermilion standard is about 13.5 mm, and 15.0 − 13.5 = 1.5, so this row is the basic thickness. Lew 1992's row with the same label (via Moate 2002) is #77 too. One value only, entered once."
+    },
+    {
+      "measurement": "m79_ULStrain",
+      "sex": "pooled",
+      "ageBand": [
+        20,
+        28
+      ],
+      "mean": 2.57,
+      "sd": 2.73,
+      "n": 211,
+      "unit": "mm",
+      "source": "Table II, p. 87",
+      "definitionMatch": "same",
+      "definitionNote": "Holdaway's upper lip strain (Table II, Holdaway analysis), measured directly and printed positive (2.57; whites 1.50): the basic lip thickness minus the thickness at the vermilion. Was 'different' until 8 Oct, when the catalogue's #79 was flipped to Holdaway's direction, #77 minus #78 (owner LIP-2); the paper gives no definition of its own beyond Holdaway's name, so same.",
+      "note": "Printed as measured, 2.57 ± 2.73 (direct measurement, merge notes)."
+    },
+    {
+      "measurement": "m80_HAngle",
+      "sex": "pooled",
+      "ageBand": [
+        20,
+        28
+      ],
+      "mean": 15.51,
+      "sd": 4.28,
+      "n": 211,
+      "unit": "deg",
+      "source": "Table II, p. 87",
+      "definitionMatch": "same",
+      "note": "Holdaway 1983 by citation; the paper gives no definition of its own. Positive as printed (catalogue + when the upper lip is ahead)."
+    },
+    {
+      "measurement": "m81_LLH",
+      "sex": "pooled",
+      "ageBand": [
+        20,
+        28
+      ],
+      "mean": 1.62,
+      "sd": 1.75,
+      "n": 211,
+      "unit": "mm",
+      "source": "Table II, p. 87",
+      "definitionMatch": "same",
+      "note": "Positive = ahead of the H line: the text (p. 86) says the Japanese lower lip is in a more anterior position relative to the H line than the whites' 0.50."
+    },
+    {
+      "measurement": "m82_InfSulcusH",
+      "sex": "pooled",
+      "ageBand": [
+        20,
+        28
+      ],
+      "mean": 3.78,
+      "sd": 2.03,
+      "n": 211,
+      "unit": "mm",
+      "source": "Table II, p. 87",
+      "definitionMatch": "same",
+      "note": "Holdaway 1983 by citation; the paper gives no definition of its own. A positive depth, as the catalogue."
+    },
+    {
+      "measurement": "m83_ChinThick",
+      "sex": "pooled",
+      "ageBand": [
+        20,
+        28
+      ],
+      "mean": 13.58,
+      "sd": 2.31,
+      "n": 211,
+      "unit": "mm",
+      "source": "Table II, p. 87",
+      "definitionMatch": "same",
+      "note": "Holdaway 1983 by citation; the paper gives no definition of its own."
+    },
+    {
+      "measurement": "m89_ULLength",
+      "sex": "pooled",
+      "ageBand": [
+        20,
+        28
+      ],
+      "mean": 23.4,
+      "sd": 2.58,
+      "n": 211,
+      "unit": "mm",
+      "source": "Table II, p. 87",
+      "definitionMatch": "close",
+      "definitionNote": "Epker's upper lip length, tabled as Sn-St and described in the text (p. 86) as 'Sn-UL St': subnasale to the upper lip's stomion, lips in repose with a mean interlabial gap of 1.90 mm (Table II). The catalogue measures Sn to a single stomion point."
+    }
+  ]
+}

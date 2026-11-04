@@ -1,0 +1,294 @@
+{
+  "id": "mcnamara1984",
+  "kind": "analysis-own",
+  "analyses": [
+    "mcnamara"
+  ],
+  "status": "verified",
+  "citation": {
+    "authors": "McNamara JA Jr",
+    "title": "A method of cephalometric evaluation",
+    "journal": "American Journal of Orthodontics",
+    "year": 1984,
+    "volume": "86",
+    "pages": "449-469",
+    "openAccess": false
+  },
+  "population": {
+    "id": "analysis-own",
+    "label": "The analysis's own norms",
+    "ethnicity": []
+  },
+  "sample": {},
+  "selection": "class-I-balanced",
+  "modality": "film",
+  "scale": {
+    "kind": "enlarged",
+    "percent": 8,
+    "source": "p. 451"
+  },
+  "headPosition": "unknown",
+  "curation": {
+    "extractedBy": [
+      "AI reader A",
+      "AI reader B"
+    ],
+    "comparedOn": "2026-10-08",
+    "date": "2026-10-08",
+    "notes": "Compared 2026-10-08 (norms:compare exit 1, 16 differences). Scope settled first (merge notes, ruling P23): this set holds McNamara's OWN analysis norms, his composite norms, put together by choosing among comparable averages of the Burlington, Bolton and Ann Arbor samples (p. 451). The sample tables (Table I Ann Arbor, Table III and VI Bolton, Table IV Burlington) are sample statistics and go to their own population sets in Task 9b; a's 96 sample rows and b's sample rows (incl. b's Table I SNA rows) are therefore NOT in this set, and the Bolton female 6-year differential SD 8.1 (printed, possibly a misprint) is carried to Task 9b with them. Kept: b's 12 Table II rows (a had none), each re-read from the page image p. 451 (PDF p. 3): A-Nperp 0 / 1; U1-A vertical 4-6 / 4-6; L1-APo 1-3 / 1-3; Pog-Nperp -8 to -6 / -2 to +4; mandibular plane angle 25 / 22; facial axis 0 (90) / 0 (90). Facial axis definitionMatch a='same' b='close' -> 'same': the catalogue's #31 is McNamara's own angle as the owner ruled it (7 Oct, p. 460, line against line); the step 13 wording 'basion-PTM-gnathion' is noted. Mixed-dentition age band [6,12] kept from b, marked as our reading (the paper gives no ages). Face size (merge ruling): Co-Gn, the differential and LAFH have composite norms only by face size -> the medium row (Co-Gn 120-123 from p. 455; differential 25-27 and LAFH 65-67 from steps 17-18 p. 467, PDF p. 19, read from the image); Co-A has no composite norm (it is Table V's size index) and upper pharynx only a threshold (<5 mm, step 20 p. 468) -> not entered, caveats. Added from the paper (neither extractor entered it; checked on p. 468, PDF p. 20): lower pharynx 'average values, 10-12 mm' (step 22). centre: the composite rows are marked 'ideal' because the paper calls them ideals (step 9 'ideal is 0-1 mm', 'ideal is 4-6 mm', 'ideal is 1-3 mm'; steps 17-18 'ideal: ... medium'; step 13 'normal value') - this departs from the merge note's 'McNamara reports sample statistics -> no centre', which describes the sample tables, not these rows; the lower pharynx row is an average and has no centre. Scale: enlarged 8%, p. 451 (owner M-1/M-2; P27). M1 incisor rows close (facial surface). #31 stored as value + 90. Fix round 1 (2026-10-08, review): the adult rows had no age band and were unreachable whenever the patient's age was known (a 30-year-old got the mixed-dentition row, flagged age-mismatched) -> owner ruling MN-1: adult rows ageBand [13,99], mixed dentition stays [6,12]; the caveat that said a patient outside 6-12 gets the adult row is corrected. Owner ruling MN-2: all McNamara's clinical norms are ideals (centre 'ideal' kept on every clinical row, ruling added to each note). m12 note gains the p. 455 medium adult female 26-29."
+  },
+  "caveats": [
+    "These are McNamara's composite norms (Table II; p. 467 step-by-step ideals): p. 451 says they were put together by choosing among comparable averages of the Burlington, Bolton and Ann Arbor samples, and refined in use over the previous 9 years. They carry no SD and no n.",
+    "His three samples - Ann Arbor adults (Table I, 73 women, 38 men, p. 451), the Bolton standards (Tables III and VI, 16 per sex per age, 6-18 years) and the Burlington sample (Table IV, 6-20 years) - are sample statistics with SDs and belong in separate population sets (Task 9b, ruling P23), not here. Bolton female 6-year maxillomandibular differential SD is printed 8.1 (other ages 2.7-4.1): possibly a misprint, to be carried with that set.",
+    "8% film enlargement: p. 451 says the measures from all these samples include an 8% enlargement wherever possible, and step 16 (p. 467) says every normative value includes 8% enlargement. The mm values are stored as printed and converted to true size by the resolver.",
+    "Face size rows (the app has no face-size input): Table V (p. 454) gives mandibular length and LAFH against midfacial length - 80: 97-100, 57-58; 85: 105-108, 60-62; 90: 113-116, 63-64; 95: 122-125, 67-69; 100: 130-133, 70-74; 105: 138-141, 75-79 mm. Step 9d (p. 467): Pog to N-perp small -8 to -6, medium -4 to 0, large -2 to 2 mm. Step 17: differential small 20, medium 25-27, large 30-33 mm. Step 18: LAFH small 60-62, medium 65-67, large 70-73 mm. Text p. 455: mixed dentition midface 85, mandible 105-108, differential 20-23; medium adult female midface 94, mandible 120-123, differential 26-29; large adult male midface 100, mandible 130-133, differential 30-33 mm. Stored: the medium row for Co-Gn, the differential and LAFH only (their only composite norms); Pog to N-perp uses Table II.",
+    "Co-A (#10, effective midfacial length) has no composite norm: McNamara uses it as the size index from which the mandibular length and LAFH are read (Table V). Not entered.",
+    "Upper pharynx (#84): only a threshold - under 5 mm is a concern (step 20, p. 468; an opening of 5 mm or less, p. 463); the Ann Arbor mean 17.4 mm is sample data (Task 9b). Not entered.",
+    "McNamara gives no ages for his 'mixed dentition' and 'adult' columns. Owner ruling MN-1 (8 Oct): mixed dentition 6-12 years; adult values from 13 (permanent dentition), stored as 13-99 (99 = no upper limit), so each age takes exactly one of the two rows.",
+    "Not in the catalogue: change-per-year column of Table II; Table VII annual increments (p. 465); nasolabial angle about 110 degrees (p. 453, quoted from Scheideman et al.); upper incisor 2-3 mm below the upper lip at rest (p. 462).",
+    "Ethnicity is not stated anywhere in the paper."
+  ],
+  "entries": [
+    {
+      "measurement": "m08_ANperp",
+      "sex": "pooled",
+      "ageBand": [
+        6,
+        12
+      ],
+      "mean": 0,
+      "unit": "mm",
+      "source": "Table II (composite norms), p. 451",
+      "definitionMatch": "same",
+      "centre": "ideal",
+      "note": "Mixed dentition column. The paper gives no ages for 'mixed dentition': 6-12 years by owner ruling MN-1 (8 Oct). Ideal: all McNamara's clinical norms are ideals (owner ruling MN-2, 8 Oct)."
+    },
+    {
+      "measurement": "m67_U1Avert",
+      "sex": "pooled",
+      "ageBand": [
+        6,
+        12
+      ],
+      "range": {
+        "low": 4,
+        "high": 6
+      },
+      "unit": "mm",
+      "source": "Table II (composite norms), p. 451",
+      "definitionMatch": "close",
+      "definitionNote": "McNamara measured from the facial surface; the catalogue uses the incisal tip (C1)",
+      "centre": "ideal",
+      "note": "Mixed dentition column. The paper gives no ages for 'mixed dentition': 6-12 years by owner ruling MN-1 (8 Oct). 'No change' per year. Ideal: all McNamara's clinical norms are ideals (owner ruling MN-2, 8 Oct)."
+    },
+    {
+      "measurement": "m64_L1APog",
+      "sex": "pooled",
+      "ageBand": [
+        6,
+        12
+      ],
+      "range": {
+        "low": 1,
+        "high": 3
+      },
+      "unit": "mm",
+      "source": "Table II (composite norms), p. 451",
+      "definitionMatch": "close",
+      "definitionNote": "McNamara measured from the facial surface; the catalogue uses the incisal tip (C1)",
+      "centre": "ideal",
+      "note": "Mixed dentition column. The paper gives no ages for 'mixed dentition': 6-12 years by owner ruling MN-1 (8 Oct). 'No change' per year. Ideal: all McNamara's clinical norms are ideals (owner ruling MN-2, 8 Oct)."
+    },
+    {
+      "measurement": "m09_PogNperp",
+      "sex": "pooled",
+      "ageBand": [
+        6,
+        12
+      ],
+      "range": {
+        "low": -8,
+        "high": -6
+      },
+      "unit": "mm",
+      "source": "Table II (composite norms), p. 451",
+      "definitionMatch": "same",
+      "centre": "ideal",
+      "note": "Mixed dentition column. The paper gives no ages for 'mixed dentition': 6-12 years by owner ruling MN-1 (8 Oct). Change per year 0.5. Step 9d (p. 467) also gives it by face size: small -8 to -6, medium -4 to 0, large -2 to 2 mm (caveats). Ideal: all McNamara's clinical norms are ideals (owner ruling MN-2, 8 Oct)."
+    },
+    {
+      "measurement": "m23_FHGoMe",
+      "sex": "pooled",
+      "ageBand": [
+        6,
+        12
+      ],
+      "mean": 25,
+      "unit": "deg",
+      "source": "Table II (composite norms), p. 451",
+      "definitionMatch": "same",
+      "centre": "ideal",
+      "note": "Mixed dentition column. The paper gives no ages for 'mixed dentition': 6-12 years by owner ruling MN-1 (8 Oct). Change per year '-1 every 3-4 years'. McNamara's mandibular plane is gonion-menton (step 11c, p. 467). Ideal: all McNamara's clinical norms are ideals (owner ruling MN-2, 8 Oct)."
+    },
+    {
+      "measurement": "m31_FacAxisM",
+      "sex": "pooled",
+      "ageBand": [
+        6,
+        12
+      ],
+      "mean": 90,
+      "unit": "deg",
+      "source": "Table II (composite norms), p. 451",
+      "definitionMatch": "same",
+      "centre": "ideal",
+      "note": "Mixed dentition column. The paper gives no ages for 'mixed dentition': 6-12 years by owner ruling MN-1 (8 Oct). McNamara tabulates the difference from 90°; stored as value + 90° (owner ruling 7 Oct). Table II prints '0° (90°)'; step 13 (p. 467) calls 0° (90°) the normal value. The catalogue reads his facial axis angle as the basion-nasion line against the facial axis (PTM to constructed gnathion), line against line (owner ruling 7 Oct, p. 460). Ideal: all McNamara's clinical norms are ideals (owner ruling MN-2, 8 Oct)."
+    },
+    {
+      "measurement": "m08_ANperp",
+      "sex": "pooled",
+      "ageBand": [
+        13,
+        99
+      ],
+      "mean": 1,
+      "unit": "mm",
+      "source": "Table II (composite norms), p. 451 (step 9a, p. 467: ideal 0-1 mm)",
+      "definitionMatch": "same",
+      "centre": "ideal",
+      "note": "Adult column. McNamara gives no ages; adult values from 13 (permanent dentition), owner ruling 8 Oct. Ideal: all McNamara's clinical norms are ideals (owner ruling MN-2, 8 Oct)."
+    },
+    {
+      "measurement": "m67_U1Avert",
+      "sex": "pooled",
+      "ageBand": [
+        13,
+        99
+      ],
+      "range": {
+        "low": 4,
+        "high": 6
+      },
+      "unit": "mm",
+      "source": "Table II (composite norms), p. 451 (step 9b, p. 467)",
+      "definitionMatch": "close",
+      "definitionNote": "McNamara measured from the facial surface; the catalogue uses the incisal tip (C1)",
+      "centre": "ideal",
+      "note": "Adult column. McNamara gives no ages; adult values from 13 (permanent dentition), owner ruling 8 Oct. 'No change' per year. Ideal: all McNamara's clinical norms are ideals (owner ruling MN-2, 8 Oct)."
+    },
+    {
+      "measurement": "m64_L1APog",
+      "sex": "pooled",
+      "ageBand": [
+        13,
+        99
+      ],
+      "range": {
+        "low": 1,
+        "high": 3
+      },
+      "unit": "mm",
+      "source": "Table II (composite norms), p. 451 (step 9c, p. 467)",
+      "definitionMatch": "close",
+      "definitionNote": "McNamara measured from the facial surface; the catalogue uses the incisal tip (C1)",
+      "centre": "ideal",
+      "note": "Adult column. McNamara gives no ages; adult values from 13 (permanent dentition), owner ruling 8 Oct. 'No change' per year. Ideal: all McNamara's clinical norms are ideals (owner ruling MN-2, 8 Oct)."
+    },
+    {
+      "measurement": "m09_PogNperp",
+      "sex": "pooled",
+      "ageBand": [
+        13,
+        99
+      ],
+      "range": {
+        "low": -2,
+        "high": 4
+      },
+      "unit": "mm",
+      "source": "Table II (composite norms), p. 451",
+      "definitionMatch": "same",
+      "centre": "ideal",
+      "note": "Adult column. McNamara gives no ages; adult values from 13 (permanent dentition), owner ruling 8 Oct. Change per year 0.5. Step 9d (p. 467) also gives it by face size: small -8 to -6, medium -4 to 0, large -2 to 2 mm (caveats). Ideal: all McNamara's clinical norms are ideals (owner ruling MN-2, 8 Oct)."
+    },
+    {
+      "measurement": "m23_FHGoMe",
+      "sex": "pooled",
+      "ageBand": [
+        13,
+        99
+      ],
+      "mean": 22,
+      "unit": "deg",
+      "source": "Table II (composite norms), p. 451",
+      "definitionMatch": "same",
+      "centre": "ideal",
+      "note": "Adult column. McNamara gives no ages; adult values from 13 (permanent dentition), owner ruling 8 Oct. Change per year '-1 every 3-4 years'. McNamara's mandibular plane is gonion-menton (step 11c, p. 467). Ideal: all McNamara's clinical norms are ideals (owner ruling MN-2, 8 Oct)."
+    },
+    {
+      "measurement": "m31_FacAxisM",
+      "sex": "pooled",
+      "ageBand": [
+        13,
+        99
+      ],
+      "mean": 90,
+      "unit": "deg",
+      "source": "Table II (composite norms), p. 451",
+      "definitionMatch": "same",
+      "centre": "ideal",
+      "note": "Adult column. McNamara gives no ages; adult values from 13 (permanent dentition), owner ruling 8 Oct. McNamara tabulates the difference from 90°; stored as value + 90° (owner ruling 7 Oct). Table II prints '0° (90°)'; step 13 (p. 467) calls 0° (90°) the normal value. The catalogue reads his facial axis angle as the basion-nasion line against the facial axis (PTM to constructed gnathion), line against line (owner ruling 7 Oct, p. 460). Ideal: all McNamara's clinical norms are ideals (owner ruling MN-2, 8 Oct)."
+    },
+    {
+      "measurement": "m11_CoGn",
+      "sex": "pooled",
+      "range": {
+        "low": 120,
+        "high": 123
+      },
+      "unit": "mm",
+      "source": "Text p. 455 (medium-sized person: midface 94 mm, mandible 120-123 mm); Table V, p. 454",
+      "definitionMatch": "same",
+      "centre": "ideal",
+      "note": "Medium face size row: McNamara gives this norm only by face size (small / medium / large), which the app cannot select; the medium row is stored. McNamara relates mandibular length to the patient's own midfacial length (Table V: 80 -> 97-100 ... 105 -> 138-141), not to age or sex; a fixed row can only stand in for that. Ideal: all McNamara's clinical norms are ideals (owner ruling MN-2, 8 Oct)."
+    },
+    {
+      "measurement": "m12_MaxMandDiff",
+      "sex": "pooled",
+      "range": {
+        "low": 25,
+        "high": 27
+      },
+      "unit": "mm",
+      "source": "Step 17, p. 467 (ideal: small 20, medium 25-27, large 30-33 mm)",
+      "definitionMatch": "same",
+      "centre": "ideal",
+      "note": "Medium face size row: McNamara gives this norm only by face size (small / medium / large), which the app cannot select; the medium row is stored. p. 455 gives 26-29 for the medium adult female; step 17 gives 25-27. Ideal: all McNamara's clinical norms are ideals (owner ruling MN-2, 8 Oct)."
+    },
+    {
+      "measurement": "m28_LAFH",
+      "sex": "pooled",
+      "range": {
+        "low": 65,
+        "high": 67
+      },
+      "unit": "mm",
+      "source": "Step 18, p. 467 (ideal: small 60-62, medium 65-67, large 70-73 mm)",
+      "definitionMatch": "same",
+      "centre": "ideal",
+      "note": "Medium face size row: McNamara gives this norm only by face size (small / medium / large), which the app cannot select; the medium row is stored. Table V (p. 454) gives it against midfacial length (80 -> 57-58 ... 105 -> 75-79). Ideal: all McNamara's clinical norms are ideals (owner ruling MN-2, 8 Oct)."
+    },
+    {
+      "measurement": "m85_LowerPharynx",
+      "sex": "pooled",
+      "range": {
+        "low": 10,
+        "high": 12
+      },
+      "unit": "mm",
+      "source": "Step 22, p. 468 (average values 10-12 mm); text p. 463",
+      "definitionMatch": "same",
+      "note": "Average 10-12 mm; over 15-16 mm is a concern (p. 468). Derived from the Ann Arbor sample (p. 463), and said to change little with age. An average range, not an ideal: no centre, so no borrowed SD and no colour."
+    }
+  ]
+}

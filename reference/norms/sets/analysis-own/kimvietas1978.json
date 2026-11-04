@@ -1,0 +1,248 @@
+{
+  "id": "kimvietas1978",
+  "kind": "analysis-own",
+  "analyses": [
+    "kim"
+  ],
+  "status": "verified",
+  "citation": {
+    "authors": "Kim YH, Vietas JJ",
+    "title": "Anteroposterior dysplasia indicator: an adjunct to cephalometric differential diagnosis",
+    "journal": "American Journal of Orthodontics",
+    "year": 1978,
+    "volume": "73",
+    "pages": "619-633",
+    "doi": "10.1016/0002-9416(78)90223-3",
+    "openAccess": false
+  },
+  "population": {
+    "id": "analysis-own",
+    "label": "The analysis's own norms",
+    "ethnicity": [
+      "Caucasian"
+    ]
+  },
+  "sample": {
+    "n": 102,
+    "nMale": 51,
+    "nFemale": 51,
+    "ageMin": 8,
+    "ageMax": 14,
+    "ageMean": 11.5
+  },
+  "selection": "class-I",
+  "modality": "film",
+  "scale": {
+    "kind": "not-stated"
+  },
+  "headPosition": "unknown",
+  "curation": {
+    "extractedBy": [
+      "AI reader A",
+      "AI reader B"
+    ],
+    "comparedOn": "2026-10-08",
+    "date": "2026-10-08",
+    "notes": "Compared 2026-10-08 (norms:compare exit 1). Every value re-read from the page image of Table I, p. 623 (PDF p. 5), Group 1 columns: 86.30/3.25, 5.23/3.71, -5.84/2.76, 80.62/3.55, 77.32/3.29, 3.30/1.82, 0.89/3.32, 25.91/5.58, 24.57/5.25, 125.88/6.40, 60.11/3.44, -0.33/2.73, 81.37/3.79 - all match both extractors. Differences settled: (1) population.id a='caucasian' b='analysis-own' -> analysis-own (every analysis-own set uses it; Caucasian goes in ethnicity, p. 620). (2) #22 a='same' b='close' -> 'same': the paper does not define its mandibular plane; Kim's is the lower-border tangent (merge notes; Kim 1974 p. 589), noted on the entry. (3) #25 MMPA a='same' b='close' -> 'close' (tangent vs the catalogue's Go-Me). (4) #36 gonial a='same' b='close' -> 'close' (Kim's tangent-line gonial angle vs Ar-Go-Me). Added after checking the paper (neither extractor had it): ageBand [8,14] - p. 620: 51 boys and 51 girls aged 8 to 14, mean 11 years 6 months (Table I age row 11.6); both extractors left the band off although they entered Kim 1974's [7,14]. Group 1 only (normal occlusion); Groups 2-4 are malocclusion groups, not norms. Scale not-stated."
+  },
+  "caveats": [
+    "Group 1 only (p. 620): 102 Caucasian children with normal occlusion, 51 boys and 51 girls, 8 to 14 years (mean 11 years 6 months, SD 1.59). Groups 2-4 (neutroclusion, distoclusion, mesioclusion; 874 malocclusions) are not norms and are not entered.",
+    "The paper does not define its mandibular plane or gonial angle; they are read as Kim's own (Kim 1974: lower-border tangent; tangent-line gonial angle).",
+    "Not in the catalogue, not entered: molar displacement (study-model measurement, mm).",
+    "Film scale and head position are not stated; the Wits (mm) row is used as printed (assumed true size, owner ruling M-2)."
+  ],
+  "entries": [
+    {
+      "measurement": "m04_FacialAngle",
+      "sex": "pooled",
+      "ageBand": [
+        8,
+        14
+      ],
+      "mean": 86.3,
+      "sd": 3.25,
+      "n": 102,
+      "unit": "deg",
+      "source": "Table I, p. 623, Group 1 (normal occlusion), row 2 'Facial angle (Downs')'",
+      "definitionMatch": "same",
+      "note": "FH (porion to orbitale) to the facial plane (nasion to pogonion), p. 622 item 2."
+    },
+    {
+      "measurement": "m05_Convexity",
+      "sex": "pooled",
+      "ageBand": [
+        8,
+        14
+      ],
+      "mean": 5.23,
+      "sd": 3.71,
+      "n": 102,
+      "unit": "deg",
+      "source": "Table I, p. 623, Group 1 (normal occlusion), row 3 'Convexity (Downs')'",
+      "definitionMatch": "same",
+      "note": "Downs' angle of convexity; Downs' sign, + when A is ahead of N-Pog."
+    },
+    {
+      "measurement": "m06_ABPlane",
+      "sex": "pooled",
+      "ageBand": [
+        8,
+        14
+      ],
+      "mean": -5.84,
+      "sd": 2.76,
+      "n": 102,
+      "unit": "deg",
+      "source": "Table I, p. 623, Group 1 (normal occlusion), row 4 'A-B plane (Downs')'",
+      "definitionMatch": "same",
+      "note": "Downs' A-B plane angle; negative when B is behind A."
+    },
+    {
+      "measurement": "m01_SNA",
+      "sex": "pooled",
+      "ageBand": [
+        8,
+        14
+      ],
+      "mean": 80.62,
+      "sd": 3.55,
+      "n": 102,
+      "unit": "deg",
+      "source": "Table I, p. 623, Group 1 (normal occlusion), row 5 'S-N-A'",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m02_SNB",
+      "sex": "pooled",
+      "ageBand": [
+        8,
+        14
+      ],
+      "mean": 77.32,
+      "sd": 3.29,
+      "n": 102,
+      "unit": "deg",
+      "source": "Table I, p. 623, Group 1 (normal occlusion), row 6 'S-N-B'",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m03_ANB",
+      "sex": "pooled",
+      "ageBand": [
+        8,
+        14
+      ],
+      "mean": 3.3,
+      "sd": 1.82,
+      "n": 102,
+      "unit": "deg",
+      "source": "Table I, p. 623, Group 1 (normal occlusion), row 7 'A-N-B'",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m27_PalFH",
+      "sex": "pooled",
+      "ageBand": [
+        8,
+        14
+      ],
+      "mean": 0.89,
+      "sd": 3.32,
+      "n": 102,
+      "unit": "deg",
+      "source": "Table I, p. 623, Group 1 (normal occlusion), row 8 'Palatal plane to FH'",
+      "definitionMatch": "same",
+      "note": "Sign rule p. 622 item 8: upward and forward negative, downward and forward positive; the catalogue's sign."
+    },
+    {
+      "measurement": "m22_FHMPt",
+      "sex": "pooled",
+      "ageBand": [
+        8,
+        14
+      ],
+      "mean": 25.91,
+      "sd": 5.58,
+      "n": 102,
+      "unit": "deg",
+      "source": "Table I, p. 623, Group 1 (normal occlusion), row 9 'Mandibular plane to FH'",
+      "definitionMatch": "same",
+      "note": "This paper does not define its mandibular plane; read as Kim's lower-border tangent (Kim 1974 p. 589, item 3)."
+    },
+    {
+      "measurement": "m25_MMPA",
+      "sex": "pooled",
+      "ageBand": [
+        8,
+        14
+      ],
+      "mean": 24.57,
+      "sd": 5.25,
+      "n": 102,
+      "unit": "deg",
+      "source": "Table I, p. 623, Group 1 (normal occlusion), row 10 'Palatomandibular plane'",
+      "definitionMatch": "close",
+      "definitionNote": "Palatal plane to Kim's mandibular plane (not defined in this paper; Kim 1974's lower-border tangent); the catalogue's MMPA uses Go-Me."
+    },
+    {
+      "measurement": "m36_Gonial",
+      "sex": "pooled",
+      "ageBand": [
+        8,
+        14
+      ],
+      "mean": 125.88,
+      "sd": 6.4,
+      "n": 102,
+      "unit": "deg",
+      "source": "Table I, p. 623, Group 1 (normal occlusion), row 11 'Gonial angle'",
+      "definitionMatch": "close",
+      "definitionNote": "Not defined in this paper; Kim's gonial angle (Kim 1974 p. 590, item 9) is between tangent lines to the ramus and the lower border; the catalogue measures Ar-Go-Me through points."
+    },
+    {
+      "measurement": "m24_YAxis",
+      "sex": "pooled",
+      "ageBand": [
+        8,
+        14
+      ],
+      "mean": 60.11,
+      "sd": 3.44,
+      "n": 102,
+      "unit": "deg",
+      "source": "Table I, p. 623, Group 1 (normal occlusion), row 12 'Y-axis (Downs')'",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m13_Wits",
+      "sex": "pooled",
+      "ageBand": [
+        8,
+        14
+      ],
+      "mean": -0.33,
+      "sd": 2.73,
+      "n": 102,
+      "unit": "mm",
+      "source": "Table I, p. 623, Group 1 (normal occlusion), row 13 '\"Wits appraisal\"'",
+      "definitionMatch": "close",
+      "note": "Defined as the distance from AO to BO along the occlusal plane, after Jacobson (p. 622, item 13). Sign as the catalogue's: the distoclusion group reads +3.16, the mesioclusion group -4.97.",
+      "definitionNote": "Measured on the functional occlusal plane (through the premolars); this app measures Wits on the occlusal plane through the molars and incisors (since 16 Oct 2026)"
+    },
+    {
+      "measurement": "m14_APDI",
+      "sex": "pooled",
+      "ageBand": [
+        8,
+        14
+      ],
+      "mean": 81.37,
+      "sd": 3.79,
+      "n": 102,
+      "unit": "deg",
+      "source": "Table I, p. 623, Group 1 (normal occlusion), row 14 'APDI'",
+      "definitionMatch": "same",
+      "note": "Facial angle plus or minus the A-B plane angle, and again plus or minus the palatal plane angle (p. 622, item 14). Summary p. 632 gives 81.4 +- 3.79."
+    }
+  ]
+}

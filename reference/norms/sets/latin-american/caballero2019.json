@@ -1,0 +1,88 @@
+{
+  "id": "caballero2019",
+  "kind": "population",
+  "status": "verified",
+  "citation": {
+    "authors": "Caballero-Purizaga PJ, Arriola-Guillén LE, Watanabe-Kanno GA",
+    "title": "Efficiency of ODI and APDI of Kim's cephalometric analysis in a Latin American population with skeletal open bite",
+    "journal": "Dental Press Journal of Orthodontics",
+    "year": 2019,
+    "volume": "24(3)",
+    "pages": "46-54",
+    "doi": "10.1590/2177-6709.24.3.046-054.oar",
+    "openAccess": true
+  },
+  "population": {
+    "id": "latin-american",
+    "label": "Latin American",
+    "ethnicity": [
+      "Latin American"
+    ],
+    "country": "Peru",
+    "region": "Lima"
+  },
+  "sample": {
+    "n": 50,
+    "nMale": 20,
+    "nFemale": 30,
+    "ageMin": 15,
+    "ageMax": 40,
+    "ageMean": 23.66
+  },
+  "selection": "class-I-balanced",
+  "modality": "digital",
+  "scale": {
+    "kind": "true-size",
+    "source": "p. 48: radiographs 1:1 calibrated"
+  },
+  "headPosition": "NHP",
+  "curation": {
+    "extractedBy": [
+      "AI reader A",
+      "AI reader B"
+    ],
+    "comparedOn": "2026-10-08",
+    "date": "2026-10-08",
+    "notes": "Compared 2026-10-08 (norms:compare a vs b exit 1, 1 difference; logs/task9b2-compare-caballero2019.log). Both values and SDs re-read from the page image of Table 4 (PDF p. 6 = p. 51): ODI 72.10 ± 4.84, APDI 83.18 ± 1.71, balanced group, n 50. The one difference: ODI definitionMatch a 'same' / b 'close'. Re-read p. 48, p. 49 (Fig. 4) and p. 50 (Table 1): the sample-selection FMP (Tweed) uses Go-M (p. 48, Fig. 2), but the ODI itself is Kim's: Table 1 defines the mandibular plane, citing Kim, as a line from the chin along the lower and posterior border of the mandibular body (Kim's tangent wording), and Fig. 4 (captioned as Kim's analysis for ODI and APDI) draws MP from Me as a tangent to the lower border with no gonion marked. So the ODI was measured on Kim's tangent -> same (a). APDI same (both): measured directly as palatal plane to A-B plane (p. 49), geometrically Kim & Vietas' sum. Only the balanced (control) group entered (P19). ageBand 15-40: the stated range of all patients seen (p. 47); the balanced group's own age is given only as 23.66 ± 7.77 y (Table 3). Scale true-size: radiographs calibrated 1:1 (p. 48); both entries are angles, so it does not matter."
+  },
+  "caveats": [
+    "Only the balanced group (n 50; 20 M, 30 F; 23.66 ± 7.77 y) is entered. The three skeletal open bite groups (Class I, II and III, n 50 each; Table 4: ODI 65.87, 67.19, 60.29; APDI 81.78, 73.90, 87.40) are malocclusion groups, not norms, and are not entered.",
+    "Balanced-group selection (p. 47): skeletal Class I (ANB 2 ± 2°), mesofacial (FMP 25 ± 4°, Go-Me), USP projection -3 to -5.5 mm, overjet 2.5 ± 2.5 mm, overbite 2.5 ± 2 mm, untreated. ODI and APDI were not selection criteria, but they depend on what was (ODI on the mandibular plane and overbite, APDI on the A-B relation), so their spread is narrower than an unselected sample's (APDI SD 1.71°).",
+    "Age band 15-40 is the range of all patients seen (p. 47), not stated separately for the balanced group.",
+    "Values are pooled across sexes (no sex split tabled); the regression (Table 6) found sex significant for APDI.",
+    "Digital cephalograms, natural head position, lips at rest; values recorded to the nearest 0.5° (pp. 48-49).",
+    "The Portuguese abstract gives the balanced APDI as 83,19; Table 4 and the English text give 83.18. Table 4 used."
+  ],
+  "entries": [
+    {
+      "measurement": "m15_ODI",
+      "sex": "pooled",
+      "ageBand": [
+        15,
+        40
+      ],
+      "mean": 72.1,
+      "sd": 4.84,
+      "n": 50,
+      "unit": "deg",
+      "source": "Table 4, p. 51, balanced group",
+      "definitionMatch": "same",
+      "note": "Kim's ODI on Kim's tangent mandibular plane: Table 1 (p. 50) defines the mandibular plane, citing Kim, as a line from the chin along the lower and posterior border of the mandibular body, and Fig. 4 (p. 49) draws it from Me as a tangent to the lower border; the Go-Me plane (p. 48) was used only for the FMP selection criterion. Palatal angle added when PP tilts down-forward (p. 49), as Kim."
+    },
+    {
+      "measurement": "m14_APDI",
+      "sex": "pooled",
+      "ageBand": [
+        15,
+        40
+      ],
+      "mean": 83.18,
+      "sd": 1.71,
+      "n": 50,
+      "unit": "deg",
+      "source": "Table 4, p. 51, balanced group",
+      "definitionMatch": "same",
+      "note": "Measured directly as the angle between the palatal plane and the A-B plane (p. 49), which is geometrically Kim & Vietas' facial angle ± A-B plane angle ± palatal plane angle (the FH terms cancel)."
+    }
+  ]
+}

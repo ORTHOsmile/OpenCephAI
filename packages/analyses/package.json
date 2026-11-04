@@ -1,0 +1,12 @@
+{
+  "name": "@ceph/analyses",
+  "version": "0.1.0",
+  "private": true,
+  "license": "SEE LICENSE IN LICENSE",
+  "type": "module",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "scripts": { "test": "vitest run", "norms:check": "vitest run src/norms" },
+  "dependencies": { "@ceph/geometry": "workspace:*" },
+  "devDependencies": { "vitest": "^2.1.8" }
+}

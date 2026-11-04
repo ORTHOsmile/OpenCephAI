@@ -1,0 +1,638 @@
+{
+  "id": "gu2011",
+  "kind": "population",
+  "status": "verified",
+  "citation": {
+    "authors": "Gu Y, McNamara JA Jr, Sigler LM, Baccetti T",
+    "title": "Comparison of craniofacial characteristics of typical Chinese and Caucasian young adults",
+    "journal": "European Journal of Orthodontics",
+    "year": 2011,
+    "volume": "33",
+    "pages": "205-211",
+    "doi": "10.1093/ejo/cjq054",
+    "openAccess": false
+  },
+  "population": {
+    "id": "chinese",
+    "label": "Chinese",
+    "ethnicity": [
+      "Chinese"
+    ],
+    "country": "China",
+    "region": "Beijing"
+  },
+  "sample": {
+    "n": 65,
+    "nMale": 25,
+    "nFemale": 40
+  },
+  "selection": "class-I-balanced",
+  "modality": "film",
+  "scale": {
+    "kind": "enlarged",
+    "percent": 8,
+    "source": "p. 206"
+  },
+  "headPosition": "unknown",
+  "curation": {
+    "extractedBy": [
+      "AI reader A",
+      "AI reader B"
+    ],
+    "date": "2026-10-08",
+    "notes": "Compared 2026-10-08 (norms:compare a vs b exit 1, 6 differences, all definitionMatch; every mean, SD and n agreed). All 38 values re-read from the page image of Table 1 (p. 206, PDF p. 2): agree. Decisions (merge notes): #31 facial axis a 'same', b 'close' → close (PTM vs Pt not stated), stored + 90 (owner 7 Oct); 'MP' #23 a 'same', b 'close' → close (plane not named); IMPA #57 a 'same', b 'close' → close (plane not named). Incisor mm rows and Wits close as both extractors. Selection: a 'ideal-aesthetic', b 'class-I-balanced' → class-I-balanced (normal occlusion and well-balanced faces, p. 206). Scale: a 'magnificationCorrected: true', b 'false' (both pre-date the scale field) → enlarged 8%, p. 206, by merge-notes ruling P27. No age band at first (no range printed; merge notes); a's computed sample.ageMean (19.9, not printed) dropped. Fix round 1 (2026-10-08, owner AGE-1 / MAL-1, rulings P42, P45, P47, review): ageBand [16, 30] on every row (owner AGE-1); Wits definitionNote drops '(owner 7 Oct)' - the owner's ruling was the Caucasian Wits. Wording (Task 9b-1, re-review minors): the age caveat says the ruling once; the band is described as about 1 SD below to 3 SD above the mean ages.",
+    "comparedOn": "2026-10-08"
+  },
+  "caveats": [
+    "Beijing Chinese young adults from the Peking University orthodontic files, not originally from Guangdong or Fujian; untreated, normal occlusion, well-balanced faces judged by three Chinese orthodontists and three laypersons; cervical stage 6 (pp. 205-206). Men 19.3 ± 3.0 y (n 25), women 20.3 ± 3.4 y (n 40) (p. 205).",
+    "8% film enlargement: p. 206 says every cephalogram was standardised to 8 per cent magnification. Read as the mm values including an 8% enlargement (as McNamara 1984's 'enlargement factor included', whose samples and software the paper shares); stored as printed and converted to true size by the resolver (owner M-1, ruling P27).",
+    "No age range is printed (only mean ± SD by sex). Age band 16–30 on every row by owner ruling 8 Oct (AGE-1, age first): the paper gives mean ages 19.3 ± 3.0 (M) / 20.3 ± 3.4 (F), cervical stage 6; the band runs from about 1 SD below to 3 SD above the mean ages.",
+    "The paper does not define its mandibular plane ('MP', IMPA), occlusal plane (Wits), facial-axis points or incisor points; it cites Ricketts 1968 and McNamara 1984 and used Dentofacial Planner (p. 206). Those rows are close.",
+    "Head position during filming not stated. Lateral headfilms hand traced, landmarks verified by a second investigator, then digitised (p. 206).",
+    "Tables 3 to 6 (pp. 208-210) restate these values; Table 1, the group's own table, is used."
+  ],
+  "entries": [
+    {
+      "measurement": "m01_SNA",
+      "sex": "F",
+      "mean": 83.6,
+      "sd": 3.6,
+      "n": 40,
+      "unit": "deg",
+      "source": "Table 1, p. 206",
+      "definitionMatch": "same",
+      "ageBand": [
+        16,
+        30
+      ],
+      "note": "Age band: the paper gives mean ages 19.3 ± 3.0 (M) / 20.3 ± 3.4 (F), cervical stage 6; 16–30 by owner ruling: about 1 SD below to 3 SD above the mean ages."
+    },
+    {
+      "measurement": "m01_SNA",
+      "sex": "M",
+      "mean": 85.1,
+      "sd": 3.3,
+      "n": 25,
+      "unit": "deg",
+      "source": "Table 1, p. 206",
+      "definitionMatch": "same",
+      "ageBand": [
+        16,
+        30
+      ],
+      "note": "Age band: the paper gives mean ages 19.3 ± 3.0 (M) / 20.3 ± 3.4 (F), cervical stage 6; 16–30 by owner ruling: about 1 SD below to 3 SD above the mean ages."
+    },
+    {
+      "measurement": "m08_ANperp",
+      "sex": "F",
+      "mean": 0,
+      "sd": 4,
+      "n": 40,
+      "unit": "mm",
+      "source": "Table 1, p. 206",
+      "definitionMatch": "same",
+      "note": "The paper writes 'Pt A' for point A (subspinale). Age band: the paper gives mean ages 19.3 ± 3.0 (M) / 20.3 ± 3.4 (F), cervical stage 6; 16–30 by owner ruling: about 1 SD below to 3 SD above the mean ages.",
+      "ageBand": [
+        16,
+        30
+      ]
+    },
+    {
+      "measurement": "m08_ANperp",
+      "sex": "M",
+      "mean": 1,
+      "sd": 2.6,
+      "n": 25,
+      "unit": "mm",
+      "source": "Table 1, p. 206",
+      "definitionMatch": "same",
+      "note": "The paper writes 'Pt A' for point A (subspinale). Age band: the paper gives mean ages 19.3 ± 3.0 (M) / 20.3 ± 3.4 (F), cervical stage 6; 16–30 by owner ruling: about 1 SD below to 3 SD above the mean ages.",
+      "ageBand": [
+        16,
+        30
+      ]
+    },
+    {
+      "measurement": "m10_CoA",
+      "sex": "F",
+      "mean": 87.5,
+      "sd": 4.8,
+      "n": 40,
+      "unit": "mm",
+      "source": "Table 1, p. 206",
+      "definitionMatch": "same",
+      "note": "The paper writes 'Pt A' for point A (subspinale). Age band: the paper gives mean ages 19.3 ± 3.0 (M) / 20.3 ± 3.4 (F), cervical stage 6; 16–30 by owner ruling: about 1 SD below to 3 SD above the mean ages.",
+      "ageBand": [
+        16,
+        30
+      ]
+    },
+    {
+      "measurement": "m10_CoA",
+      "sex": "M",
+      "mean": 92,
+      "sd": 5.5,
+      "n": 25,
+      "unit": "mm",
+      "source": "Table 1, p. 206",
+      "definitionMatch": "same",
+      "note": "The paper writes 'Pt A' for point A (subspinale). Age band: the paper gives mean ages 19.3 ± 3.0 (M) / 20.3 ± 3.4 (F), cervical stage 6; 16–30 by owner ruling: about 1 SD below to 3 SD above the mean ages.",
+      "ageBand": [
+        16,
+        30
+      ]
+    },
+    {
+      "measurement": "m02_SNB",
+      "sex": "F",
+      "mean": 79.7,
+      "sd": 3.6,
+      "n": 40,
+      "unit": "deg",
+      "source": "Table 1, p. 206",
+      "definitionMatch": "same",
+      "ageBand": [
+        16,
+        30
+      ],
+      "note": "Age band: the paper gives mean ages 19.3 ± 3.0 (M) / 20.3 ± 3.4 (F), cervical stage 6; 16–30 by owner ruling: about 1 SD below to 3 SD above the mean ages."
+    },
+    {
+      "measurement": "m02_SNB",
+      "sex": "M",
+      "mean": 81.6,
+      "sd": 3.5,
+      "n": 25,
+      "unit": "deg",
+      "source": "Table 1, p. 206",
+      "definitionMatch": "same",
+      "ageBand": [
+        16,
+        30
+      ],
+      "note": "Age band: the paper gives mean ages 19.3 ± 3.0 (M) / 20.3 ± 3.4 (F), cervical stage 6; 16–30 by owner ruling: about 1 SD below to 3 SD above the mean ages."
+    },
+    {
+      "measurement": "m09_PogNperp",
+      "sex": "F",
+      "mean": -6.6,
+      "sd": 9.4,
+      "n": 40,
+      "unit": "mm",
+      "source": "Table 1, p. 206",
+      "definitionMatch": "same",
+      "ageBand": [
+        16,
+        30
+      ],
+      "note": "Age band: the paper gives mean ages 19.3 ± 3.0 (M) / 20.3 ± 3.4 (F), cervical stage 6; 16–30 by owner ruling: about 1 SD below to 3 SD above the mean ages."
+    },
+    {
+      "measurement": "m09_PogNperp",
+      "sex": "M",
+      "mean": -3.2,
+      "sd": 7.3,
+      "n": 25,
+      "unit": "mm",
+      "source": "Table 1, p. 206",
+      "definitionMatch": "same",
+      "ageBand": [
+        16,
+        30
+      ],
+      "note": "Age band: the paper gives mean ages 19.3 ± 3.0 (M) / 20.3 ± 3.4 (F), cervical stage 6; 16–30 by owner ruling: about 1 SD below to 3 SD above the mean ages."
+    },
+    {
+      "measurement": "m11_CoGn",
+      "sex": "F",
+      "mean": 119.4,
+      "sd": 7.9,
+      "n": 40,
+      "unit": "mm",
+      "source": "Table 1, p. 206",
+      "definitionMatch": "same",
+      "ageBand": [
+        16,
+        30
+      ],
+      "note": "Age band: the paper gives mean ages 19.3 ± 3.0 (M) / 20.3 ± 3.4 (F), cervical stage 6; 16–30 by owner ruling: about 1 SD below to 3 SD above the mean ages."
+    },
+    {
+      "measurement": "m11_CoGn",
+      "sex": "M",
+      "mean": 125.4,
+      "sd": 6.9,
+      "n": 25,
+      "unit": "mm",
+      "source": "Table 1, p. 206",
+      "definitionMatch": "same",
+      "ageBand": [
+        16,
+        30
+      ],
+      "note": "Age band: the paper gives mean ages 19.3 ± 3.0 (M) / 20.3 ± 3.4 (F), cervical stage 6; 16–30 by owner ruling: about 1 SD below to 3 SD above the mean ages."
+    },
+    {
+      "measurement": "m03_ANB",
+      "sex": "F",
+      "mean": 3.9,
+      "sd": 1.8,
+      "n": 40,
+      "unit": "deg",
+      "source": "Table 1, p. 206",
+      "definitionMatch": "same",
+      "ageBand": [
+        16,
+        30
+      ],
+      "note": "Age band: the paper gives mean ages 19.3 ± 3.0 (M) / 20.3 ± 3.4 (F), cervical stage 6; 16–30 by owner ruling: about 1 SD below to 3 SD above the mean ages."
+    },
+    {
+      "measurement": "m03_ANB",
+      "sex": "M",
+      "mean": 3.5,
+      "sd": 1.4,
+      "n": 25,
+      "unit": "deg",
+      "source": "Table 1, p. 206",
+      "definitionMatch": "same",
+      "ageBand": [
+        16,
+        30
+      ],
+      "note": "Age band: the paper gives mean ages 19.3 ± 3.0 (M) / 20.3 ± 3.4 (F), cervical stage 6; 16–30 by owner ruling: about 1 SD below to 3 SD above the mean ages."
+    },
+    {
+      "measurement": "m13_Wits",
+      "sex": "F",
+      "mean": -1.1,
+      "sd": 3.3,
+      "n": 40,
+      "unit": "mm",
+      "source": "Table 1, p. 206",
+      "definitionMatch": "close",
+      "definitionNote": "occlusal plane not stated in the paper",
+      "ageBand": [
+        16,
+        30
+      ],
+      "note": "Age band: the paper gives mean ages 19.3 ± 3.0 (M) / 20.3 ± 3.4 (F), cervical stage 6; 16–30 by owner ruling: about 1 SD below to 3 SD above the mean ages."
+    },
+    {
+      "measurement": "m13_Wits",
+      "sex": "M",
+      "mean": -0.6,
+      "sd": 2.6,
+      "n": 25,
+      "unit": "mm",
+      "source": "Table 1, p. 206",
+      "definitionMatch": "close",
+      "definitionNote": "occlusal plane not stated in the paper",
+      "ageBand": [
+        16,
+        30
+      ],
+      "note": "Age band: the paper gives mean ages 19.3 ± 3.0 (M) / 20.3 ± 3.4 (F), cervical stage 6; 16–30 by owner ruling: about 1 SD below to 3 SD above the mean ages."
+    },
+    {
+      "measurement": "m12_MaxMandDiff",
+      "sex": "F",
+      "mean": 31.8,
+      "sd": 4.8,
+      "n": 40,
+      "unit": "mm",
+      "source": "Table 1, p. 206",
+      "definitionMatch": "same",
+      "ageBand": [
+        16,
+        30
+      ],
+      "note": "Age band: the paper gives mean ages 19.3 ± 3.0 (M) / 20.3 ± 3.4 (F), cervical stage 6; 16–30 by owner ruling: about 1 SD below to 3 SD above the mean ages."
+    },
+    {
+      "measurement": "m12_MaxMandDiff",
+      "sex": "M",
+      "mean": 33.4,
+      "sd": 4,
+      "n": 25,
+      "unit": "mm",
+      "source": "Table 1, p. 206",
+      "definitionMatch": "same",
+      "ageBand": [
+        16,
+        30
+      ],
+      "note": "Age band: the paper gives mean ages 19.3 ± 3.0 (M) / 20.3 ± 3.4 (F), cervical stage 6; 16–30 by owner ruling: about 1 SD below to 3 SD above the mean ages."
+    },
+    {
+      "measurement": "m31_FacAxisM",
+      "sex": "F",
+      "mean": 87.8,
+      "sd": 7.7,
+      "n": 40,
+      "unit": "deg",
+      "source": "Table 1, p. 206",
+      "definitionMatch": "close",
+      "definitionNote": "facial axis points not stated: the paper cites Ricketts 1968 and McNamara 1984 for its landmarks; whether the axis runs from PTM (McNamara) or Pt (Ricketts) is not said",
+      "note": "Gu tabulates the difference from 90° (printed -2.2°); stored as value + 90° (owner ruling 7 Oct). SD unchanged. Age band: the paper gives mean ages 19.3 ± 3.0 (M) / 20.3 ± 3.4 (F), cervical stage 6; 16–30 by owner ruling: about 1 SD below to 3 SD above the mean ages.",
+      "ageBand": [
+        16,
+        30
+      ]
+    },
+    {
+      "measurement": "m31_FacAxisM",
+      "sex": "M",
+      "mean": 84.6,
+      "sd": 4.8,
+      "n": 25,
+      "unit": "deg",
+      "source": "Table 1, p. 206",
+      "definitionMatch": "close",
+      "definitionNote": "facial axis points not stated: the paper cites Ricketts 1968 and McNamara 1984 for its landmarks; whether the axis runs from PTM (McNamara) or Pt (Ricketts) is not said",
+      "note": "Gu tabulates the difference from 90° (printed -5.4°); stored as value + 90° (owner ruling 7 Oct). SD unchanged. Age band: the paper gives mean ages 19.3 ± 3.0 (M) / 20.3 ± 3.4 (F), cervical stage 6; 16–30 by owner ruling: about 1 SD below to 3 SD above the mean ages.",
+      "ageBand": [
+        16,
+        30
+      ]
+    },
+    {
+      "measurement": "m23_FHGoMe",
+      "sex": "F",
+      "mean": 30.4,
+      "sd": 5.9,
+      "n": 40,
+      "unit": "deg",
+      "source": "Table 1, p. 206",
+      "definitionMatch": "close",
+      "definitionNote": "mandibular plane not stated: the paper prints only 'MP (°)'. Mapped to FH–Go–Me, the McNamara analysis's mandibular plane angle, which the paper follows (McNamara 1984 cited, p. 206)",
+      "ageBand": [
+        16,
+        30
+      ],
+      "note": "Age band: the paper gives mean ages 19.3 ± 3.0 (M) / 20.3 ± 3.4 (F), cervical stage 6; 16–30 by owner ruling: about 1 SD below to 3 SD above the mean ages."
+    },
+    {
+      "measurement": "m23_FHGoMe",
+      "sex": "M",
+      "mean": 28.2,
+      "sd": 6.6,
+      "n": 25,
+      "unit": "deg",
+      "source": "Table 1, p. 206",
+      "definitionMatch": "close",
+      "definitionNote": "mandibular plane not stated: the paper prints only 'MP (°)'. Mapped to FH–Go–Me, the McNamara analysis's mandibular plane angle, which the paper follows (McNamara 1984 cited, p. 206)",
+      "ageBand": [
+        16,
+        30
+      ],
+      "note": "Age band: the paper gives mean ages 19.3 ± 3.0 (M) / 20.3 ± 3.4 (F), cervical stage 6; 16–30 by owner ruling: about 1 SD below to 3 SD above the mean ages."
+    },
+    {
+      "measurement": "m28_LAFH",
+      "sex": "F",
+      "mean": 69.4,
+      "sd": 6.2,
+      "n": 40,
+      "unit": "mm",
+      "source": "Table 1, p. 206",
+      "definitionMatch": "same",
+      "ageBand": [
+        16,
+        30
+      ],
+      "note": "Age band: the paper gives mean ages 19.3 ± 3.0 (M) / 20.3 ± 3.4 (F), cervical stage 6; 16–30 by owner ruling: about 1 SD below to 3 SD above the mean ages."
+    },
+    {
+      "measurement": "m28_LAFH",
+      "sex": "M",
+      "mean": 74.9,
+      "sd": 4.8,
+      "n": 25,
+      "unit": "mm",
+      "source": "Table 1, p. 206",
+      "definitionMatch": "same",
+      "ageBand": [
+        16,
+        30
+      ],
+      "note": "Age band: the paper gives mean ages 19.3 ± 3.0 (M) / 20.3 ± 3.4 (F), cervical stage 6; 16–30 by owner ruling: about 1 SD below to 3 SD above the mean ages."
+    },
+    {
+      "measurement": "m54_U1SN",
+      "sex": "F",
+      "mean": 115,
+      "sd": 7.5,
+      "n": 40,
+      "unit": "deg",
+      "source": "Table 1, p. 206",
+      "definitionMatch": "same",
+      "ageBand": [
+        16,
+        30
+      ],
+      "note": "Age band: the paper gives mean ages 19.3 ± 3.0 (M) / 20.3 ± 3.4 (F), cervical stage 6; 16–30 by owner ruling: about 1 SD below to 3 SD above the mean ages."
+    },
+    {
+      "measurement": "m54_U1SN",
+      "sex": "M",
+      "mean": 114.6,
+      "sd": 6.3,
+      "n": 25,
+      "unit": "deg",
+      "source": "Table 1, p. 206",
+      "definitionMatch": "same",
+      "ageBand": [
+        16,
+        30
+      ],
+      "note": "Age band: the paper gives mean ages 19.3 ± 3.0 (M) / 20.3 ± 3.4 (F), cervical stage 6; 16–30 by owner ruling: about 1 SD below to 3 SD above the mean ages."
+    },
+    {
+      "measurement": "m67_U1Avert",
+      "sex": "F",
+      "mean": 4.5,
+      "sd": 2.4,
+      "n": 40,
+      "unit": "mm",
+      "source": "Table 1, p. 206",
+      "definitionMatch": "close",
+      "definitionNote": "incisor point not stated; the paper follows McNamara 1984 (p. 206), who measured from the facial (labial) surface, not the tip the catalogue uses (C1)",
+      "ageBand": [
+        16,
+        30
+      ],
+      "note": "Age band: the paper gives mean ages 19.3 ± 3.0 (M) / 20.3 ± 3.4 (F), cervical stage 6; 16–30 by owner ruling: about 1 SD below to 3 SD above the mean ages."
+    },
+    {
+      "measurement": "m67_U1Avert",
+      "sex": "M",
+      "mean": 5.2,
+      "sd": 2.4,
+      "n": 25,
+      "unit": "mm",
+      "source": "Table 1, p. 206",
+      "definitionMatch": "close",
+      "definitionNote": "incisor point not stated; the paper follows McNamara 1984 (p. 206), who measured from the facial (labial) surface, not the tip the catalogue uses (C1)",
+      "ageBand": [
+        16,
+        30
+      ],
+      "note": "Age band: the paper gives mean ages 19.3 ± 3.0 (M) / 20.3 ± 3.4 (F), cervical stage 6; 16–30 by owner ruling: about 1 SD below to 3 SD above the mean ages."
+    },
+    {
+      "measurement": "m57_IMPAgome",
+      "sex": "F",
+      "mean": 94.5,
+      "sd": 7.1,
+      "n": 40,
+      "unit": "deg",
+      "source": "Table 1, p. 206",
+      "definitionMatch": "close",
+      "definitionNote": "mandibular plane not stated: the paper prints only 'IMPA (°)'. Mapped to Go–Me; a lower-border tangent is the other possibility",
+      "ageBand": [
+        16,
+        30
+      ],
+      "note": "Age band: the paper gives mean ages 19.3 ± 3.0 (M) / 20.3 ± 3.4 (F), cervical stage 6; 16–30 by owner ruling: about 1 SD below to 3 SD above the mean ages."
+    },
+    {
+      "measurement": "m57_IMPAgome",
+      "sex": "M",
+      "mean": 94.4,
+      "sd": 5.4,
+      "n": 25,
+      "unit": "deg",
+      "source": "Table 1, p. 206",
+      "definitionMatch": "close",
+      "definitionNote": "mandibular plane not stated: the paper prints only 'IMPA (°)'. Mapped to Go–Me; a lower-border tangent is the other possibility",
+      "ageBand": [
+        16,
+        30
+      ],
+      "note": "Age band: the paper gives mean ages 19.3 ± 3.0 (M) / 20.3 ± 3.4 (F), cervical stage 6; 16–30 by owner ruling: about 1 SD below to 3 SD above the mean ages."
+    },
+    {
+      "measurement": "m64_L1APog",
+      "sex": "F",
+      "mean": 4.1,
+      "sd": 1.9,
+      "n": 40,
+      "unit": "mm",
+      "source": "Table 1, p. 206",
+      "definitionMatch": "close",
+      "definitionNote": "incisor point not stated; the paper follows McNamara 1984 (p. 206), who measured from the facial (labial) surface, not the tip the catalogue uses (C1)",
+      "ageBand": [
+        16,
+        30
+      ],
+      "note": "Age band: the paper gives mean ages 19.3 ± 3.0 (M) / 20.3 ± 3.4 (F), cervical stage 6; 16–30 by owner ruling: about 1 SD below to 3 SD above the mean ages."
+    },
+    {
+      "measurement": "m64_L1APog",
+      "sex": "M",
+      "mean": 4.1,
+      "sd": 2.4,
+      "n": 25,
+      "unit": "mm",
+      "source": "Table 1, p. 206",
+      "definitionMatch": "close",
+      "definitionNote": "incisor point not stated; the paper follows McNamara 1984 (p. 206), who measured from the facial (labial) surface, not the tip the catalogue uses (C1)",
+      "ageBand": [
+        16,
+        30
+      ],
+      "note": "Age band: the paper gives mean ages 19.3 ± 3.0 (M) / 20.3 ± 3.4 (F), cervical stage 6; 16–30 by owner ruling: about 1 SD below to 3 SD above the mean ages."
+    },
+    {
+      "measurement": "m71_ULE",
+      "sex": "F",
+      "mean": -1.5,
+      "sd": 2.4,
+      "n": 40,
+      "unit": "mm",
+      "source": "Table 1, p. 206",
+      "definitionMatch": "same",
+      "note": "Ricketts' E line (Ricketts 1968 cited, p. 207). No sign rule printed; negative read as behind the line, as the catalogue. Age band: the paper gives mean ages 19.3 ± 3.0 (M) / 20.3 ± 3.4 (F), cervical stage 6; 16–30 by owner ruling: about 1 SD below to 3 SD above the mean ages.",
+      "ageBand": [
+        16,
+        30
+      ]
+    },
+    {
+      "measurement": "m71_ULE",
+      "sex": "M",
+      "mean": -0.3,
+      "sd": 2.2,
+      "n": 25,
+      "unit": "mm",
+      "source": "Table 1, p. 206",
+      "definitionMatch": "same",
+      "note": "Ricketts' E line (Ricketts 1968 cited, p. 207). No sign rule printed; negative read as behind the line, as the catalogue. Age band: the paper gives mean ages 19.3 ± 3.0 (M) / 20.3 ± 3.4 (F), cervical stage 6; 16–30 by owner ruling: about 1 SD below to 3 SD above the mean ages.",
+      "ageBand": [
+        16,
+        30
+      ]
+    },
+    {
+      "measurement": "m72_LLE",
+      "sex": "F",
+      "mean": 0.9,
+      "sd": 2.5,
+      "n": 40,
+      "unit": "mm",
+      "source": "Table 1, p. 206",
+      "definitionMatch": "same",
+      "note": "Ricketts' E line (Ricketts 1968 cited, p. 207). No sign rule printed; negative read as behind the line, as the catalogue. Age band: the paper gives mean ages 19.3 ± 3.0 (M) / 20.3 ± 3.4 (F), cervical stage 6; 16–30 by owner ruling: about 1 SD below to 3 SD above the mean ages.",
+      "ageBand": [
+        16,
+        30
+      ]
+    },
+    {
+      "measurement": "m72_LLE",
+      "sex": "M",
+      "mean": 1.7,
+      "sd": 2.2,
+      "n": 25,
+      "unit": "mm",
+      "source": "Table 1, p. 206",
+      "definitionMatch": "same",
+      "note": "Ricketts' E line (Ricketts 1968 cited, p. 207). No sign rule printed; negative read as behind the line, as the catalogue. Age band: the paper gives mean ages 19.3 ± 3.0 (M) / 20.3 ± 3.4 (F), cervical stage 6; 16–30 by owner ruling: about 1 SD below to 3 SD above the mean ages.",
+      "ageBand": [
+        16,
+        30
+      ]
+    },
+    {
+      "measurement": "m86_Nasolabial",
+      "sex": "F",
+      "mean": 103.6,
+      "sd": 9.9,
+      "n": 40,
+      "unit": "deg",
+      "source": "Table 1, p. 206",
+      "definitionMatch": "same",
+      "ageBand": [
+        16,
+        30
+      ],
+      "note": "Age band: the paper gives mean ages 19.3 ± 3.0 (M) / 20.3 ± 3.4 (F), cervical stage 6; 16–30 by owner ruling: about 1 SD below to 3 SD above the mean ages."
+    },
+    {
+      "measurement": "m86_Nasolabial",
+      "sex": "M",
+      "mean": 104.9,
+      "sd": 9.5,
+      "n": 25,
+      "unit": "deg",
+      "source": "Table 1, p. 206",
+      "definitionMatch": "same",
+      "ageBand": [
+        16,
+        30
+      ],
+      "note": "Age band: the paper gives mean ages 19.3 ± 3.0 (M) / 20.3 ± 3.4 (F), cervical stage 6; 16–30 by owner ruling: about 1 SD below to 3 SD above the mean ages."
+    }
+  ]
+}

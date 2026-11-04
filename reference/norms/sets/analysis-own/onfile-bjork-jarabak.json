@@ -1,0 +1,162 @@
+{
+  "id": "onfile-bjork-jarabak",
+  "kind": "analysis-own",
+  "analyses": [
+    "bjork-jarabak"
+  ],
+  "status": "website",
+  "citation": {
+    "authors": "[source removed]",
+    "title": "Björk-Jarabak Cephalometric Analysis: Posterior/Anterior Ratio, Sum of Angles",
+    "year": 2026,
+    "url": "[source removed]",
+    "openAccess": true
+  },
+  "population": {
+    "id": "analysis-own",
+    "label": "The analysis's own norms",
+    "ethnicity": []
+  },
+  "sample": {},
+  "selection": "unknown",
+  "modality": "unknown",
+  "scale": {
+    "kind": "not-stated"
+  },
+  "headPosition": "unknown",
+  "curation": {
+    "extractedBy": [
+      "AI reader A",
+      "AI reader B"
+    ],
+    "comparedOn": "2026-10-08",
+    "date": "2026-10-07",
+    "notes": "accessed 2026-10-07 (both extractors read the live page that day). onfile page 'Updated March 27, 2026'; [source removed] Dental page (no date shown) for #44 only, accessed 2026-10-07. onfile names Jarabak & Fizzell (1972) and Björk's original growth studies as its sources. Merge 2026-10-08 (Re-read with WebFetch on 2026-10-08, onfile 15:17 and [source removed] 15:18): #35, #36, #37, #38, #39, #40, #42 definitionMatch a 'same' / b 'close' -> close: the page defines gonion as constructed, the catalogue uses the AI's anatomical Go. #44 a 0.75 ([source removed]'s '~3:4' ideal, no SD) / b 0.799 ± 0.063 ([source removed]'s table, 79.9 ± 6.3 %) -> 0.799 ± 0.063 (merge-notes ruling; the table row is the printed norm, the '~3:4' is a rounded ideal). #43 b only (1.0, [source removed]'s '~1:1') -> omitted (merge-notes ruling: [source removed]'s table gives only the inverse ratio; see caveats). Every value re-read on the onfile page matched both extractions. Sources: b's row-specific wording."
+  },
+  "caveats": [
+    "Website values, not from a paper (status website; never coloured).",
+    "onfile's table has a column headed 'SD'; its ± values are stored as sd. Its 'Clinical Range' column is given in each entry's note.",
+    "onfile defines gonion as a CONSTRUCTED point (ramus tangent × mandibular-plane tangent; re-read 8 Oct). The catalogue's ruling C3 says 'onfile uses Go' and the app uses the AI's anatomical Go, so every entry that uses gonion is 'close'. The catalogue's C3 sentence needs correcting.",
+    "#37 upper gonial, #38 lower gonial and #42 Jarabak ratio: onfile prints the 'Mean Norm' as a band (52°–55°, 70°–75°, 62%–65%) with no SD; stored as range, the wider clinical range in the note.",
+    "#40 S–Go and #41 N–Me: onfile prints '~80 mm' and '~122 mm' (approximate) and says the clinical range is 'Sex/age dependent', with no separate values by sex or age.",
+    "#43 cranial base to body (S–N ÷ Go–Me): no website norm. onfile gives none; [source removed]'s table gives only the inverse, Go′–Me/S–N = 111.2 ± 6.3 %, and a rounded ideal '~1:1'. Omitted rather than inverted.",
+    "#44 posterior cranial base to ramus is from [source removed] Dental's 'Analysis Data (Jarabak)' table, not from onfile (onfile's page gives no value for it). [source removed] does not say which sample the table comes from.",
+    "Not in the catalogue ([source removed]): S–N 66.0 ± 3.4 mm, Ar–S 37.2 ± 5.2 mm, Ar–Go′ 46.3 ± 5.2 mm, Go′–Me 73.4 ± 4.9 mm. [source removed]'s angles and S–Go′/N–Me differ from onfile's; onfile's are entered, as briefed."
+  ],
+  "entries": [
+    {
+      "measurement": "m34_Saddle",
+      "sex": "pooled",
+      "mean": 123,
+      "sd": 5,
+      "unit": "deg",
+      "source": "[source removed] Björk–Jarabak page, norms table, row 'Saddle Angle (N-S-Ar)'",
+      "definitionMatch": "same",
+      "note": "Page column 'SD'. Clinical range 118°–128°"
+    },
+    {
+      "measurement": "m35_Articular",
+      "sex": "pooled",
+      "mean": 143,
+      "sd": 6,
+      "unit": "deg",
+      "source": "[source removed] Björk–Jarabak page, norms table, row 'Articular Angle (S-Ar-Go)'",
+      "definitionMatch": "close",
+      "definitionNote": "onfile constructs gonion (its page: gonion constructed where the ramus tangent meets the mandibular plane tangent, re-read 8 Oct); the catalogue uses the AI's anatomical Go (ruling C3a). Same points otherwise; the two differ most on a rounded jaw angle",
+      "note": "Page column 'SD'. Clinical range 137°–149°"
+    },
+    {
+      "measurement": "m36_Gonial",
+      "sex": "pooled",
+      "mean": 130,
+      "sd": 7,
+      "unit": "deg",
+      "source": "[source removed] Björk–Jarabak page, norms table, row 'Gonial Angle (Ar-Go-Me)'",
+      "definitionMatch": "close",
+      "definitionNote": "onfile constructs gonion (its page: gonion constructed where the ramus tangent meets the mandibular plane tangent, re-read 8 Oct); the catalogue uses the AI's anatomical Go (ruling C3a). Same points otherwise; the two differ most on a rounded jaw angle",
+      "note": "Page column 'SD'. Clinical range 123°–137°"
+    },
+    {
+      "measurement": "m37_UpperGonial",
+      "sex": "pooled",
+      "range": {
+        "low": 52,
+        "high": 55
+      },
+      "unit": "deg",
+      "source": "[source removed] Björk–Jarabak page, norms table, row 'Upper Gonial Angle (Ar-Go-N)'",
+      "definitionMatch": "close",
+      "definitionNote": "onfile constructs gonion (its page: gonion constructed where the ramus tangent meets the mandibular plane tangent, re-read 8 Oct); the catalogue uses the AI's anatomical Go (ruling C3a). Same points otherwise; the two differ most on a rounded jaw angle",
+      "note": "'Mean Norm' printed as the range 52°–55°, SD '—'. Clinical range 47°–60°"
+    },
+    {
+      "measurement": "m38_LowerGonial",
+      "sex": "pooled",
+      "range": {
+        "low": 70,
+        "high": 75
+      },
+      "unit": "deg",
+      "source": "[source removed] Björk–Jarabak page, norms table, row 'Lower Gonial Angle (N-Go-Me)'",
+      "definitionMatch": "close",
+      "definitionNote": "onfile constructs gonion (its page: gonion constructed where the ramus tangent meets the mandibular plane tangent, re-read 8 Oct); the catalogue uses the AI's anatomical Go (ruling C3a). Same points otherwise; the two differ most on a rounded jaw angle",
+      "note": "'Mean Norm' printed as the range 70°–75°, SD '—'. Clinical range 65°–80°"
+    },
+    {
+      "measurement": "m39_SumAngles",
+      "sex": "pooled",
+      "mean": 396,
+      "sd": 6,
+      "unit": "deg",
+      "source": "[source removed] Björk–Jarabak page, norms table, row 'Sum of Posterior Angles'",
+      "definitionMatch": "close",
+      "definitionNote": "onfile constructs gonion (its page: gonion constructed where the ramus tangent meets the mandibular plane tangent, re-read 8 Oct); the catalogue uses the AI's anatomical Go (ruling C3a). Same points otherwise; the two differ most on a rounded jaw angle",
+      "note": "Page column 'SD'. Clinical range 390°–402°; >402° = posterior rotation, <390° = anterior rotation"
+    },
+    {
+      "measurement": "m40_SGo",
+      "sex": "pooled",
+      "mean": 80,
+      "sd": 5,
+      "unit": "mm",
+      "source": "[source removed] Björk–Jarabak page, norms table, row 'Post. Facial Height (S-Go)'",
+      "definitionMatch": "close",
+      "definitionNote": "onfile constructs gonion (its page: gonion constructed where the ramus tangent meets the mandibular plane tangent, re-read 8 Oct); the catalogue uses the AI's anatomical Go (ruling C3a). Same points otherwise; the two differ most on a rounded jaw angle",
+      "note": "Page column 'SD'. Mean printed as '~80 mm' (approximate); clinical range 'Sex/age dependent'"
+    },
+    {
+      "measurement": "m41_NMe",
+      "sex": "pooled",
+      "mean": 122,
+      "sd": 6,
+      "unit": "mm",
+      "source": "[source removed] Björk–Jarabak page, norms table, row 'Ant. Facial Height (N-Me)'",
+      "definitionMatch": "same",
+      "note": "Page column 'SD'. Mean printed as '~122 mm' (approximate); clinical range 'Sex/age dependent'"
+    },
+    {
+      "measurement": "m42_Jarabak",
+      "sex": "pooled",
+      "range": {
+        "low": 62,
+        "high": 65
+      },
+      "unit": "%",
+      "source": "[source removed] Björk–Jarabak page, norms table, row 'PFH/AFH Ratio (S-Go/N-Me)'",
+      "definitionMatch": "close",
+      "definitionNote": "onfile constructs gonion (its page: gonion constructed where the ramus tangent meets the mandibular plane tangent, re-read 8 Oct); the catalogue uses the AI's anatomical Go (ruling C3a). Same points otherwise; the two differ most on a rounded jaw angle",
+      "note": "'Mean Norm' printed as the range 62%–65%, SD '—'. Clinical range 59%–68%; >65 = anterior rotation, <62% = posterior rotation (the page prints the first as '>65°', a typo)"
+    },
+    {
+      "measurement": "m44_ArStoArGo",
+      "sex": "pooled",
+      "mean": 0.799,
+      "sd": 0.063,
+      "unit": "",
+      "source": "[source removed] Dental, Björk–Jarabak page, 'Analysis Data (Jarabak)' table, row 'S‑Ar/Ar‑Go′ (%)'",
+      "definitionMatch": "close",
+      "definitionNote": "[source removed] uses Go′ (not defined on its page; usually the constructed gonion); the catalogue uses the AI's anatomical Go (C3a)",
+      "note": "[source removed] prints 'S‑Ar/Ar‑Go′ (%) | 79.9±6.3' (re-read 8 Oct); divided by 100 to the catalogue's plain ratio. The ± is stored as sd; on the 8 Oct re-read the table's columns read 'Norm' and 'Measured Value', so it is not shown to be an SD (website value, never coloured anyway). [source removed]'s stated ideal is '~3:4' (0.75). Not on onfile's page"
+    }
+  ]
+}

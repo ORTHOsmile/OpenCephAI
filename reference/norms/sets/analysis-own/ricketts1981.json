@@ -1,0 +1,1194 @@
+{
+  "id": "ricketts1981",
+  "kind": "analysis-own",
+  "analyses": [
+    "ricketts",
+    "e-line"
+  ],
+  "status": "verified",
+  "citation": {
+    "authors": "Ricketts RM",
+    "title": "Perspectives in the clinical application of cephalometrics. The first fifty years",
+    "journal": "The Angle Orthodontist",
+    "year": 1981,
+    "volume": "51",
+    "pages": "115-150",
+    "openAccess": true
+  },
+  "population": {
+    "id": "analysis-own",
+    "label": "The analysis's own norms",
+    "ethnicity": []
+  },
+  "sample": {},
+  "selection": "unknown",
+  "modality": "film",
+  "scale": {
+    "kind": "not-stated"
+  },
+  "headPosition": "unknown",
+  "ageRows": "interpolate",
+  "curation": {
+    "extractedBy": [
+      "AI reader A",
+      "AI reader B"
+    ],
+    "comparedOn": "2026-10-08",
+    "date": "2026-10-08",
+    "notes": "Compared 2026-10-08 (norms:compare a vs b exit 1). Scan with no text layer: every value re-read on the page images (PDF pages 9, 10, 13, 16, 17, 21, 22, 23 = pp. 123, 124, 127, 130, 131, 135, 136, 137). a and b agreed on every mean of every table row (Tables 1-7, cue sheet items 1, 4, 5, 10 at age 15) and on every definitionMatch; checked on the images: Table 1 83/84/85/86/87, males 88/89/90 (first age printed indistinctly, read 3 from the cue sheet 'age 3 = 83°' and the 3-year step); Table 2 28/27/26/25/24, males 23/22/21; Table 3 yearly 19.0 ... 27.4 (3-17), males 28.0/28.6/29.2 (18-20); Table 4 4.5/3.8/3.1/2.4/1.7, males 1.0/0.3/-0.4; Table 5 age 3 'Unerupted', 9/12/15/18, males 21/24 printed beside ages 18 and 21, nothing beside 24; Table 6 122/124/126, males 128/130; Table 7 0/-1.25/-2.50, males -3.75/-5.00; cue sheet item 10 age 15 = -3.0 ± 2. Differences: (1) SD on the age rows only in b (facial angle has it in both): MP ±4, interincisal ±5, lower lip ±2 (all age rows) -> kept, ruling P7 (a cue-sheet SD stated at one age applies to every age row); U6-PTV ±3 -> kept, checked on p. 136, which allows a deviation of ±3 mm, Ricketts' clinical deviation, the same kind of ± as the cue sheet's (doubt noted in the report). Mandibular bend SD 4.7 at age 8 only (both). (2) #64 a = 2 ± 2, b = 1 ± 2.5 -> 2 ± 2 from p. 135 with clinicalTarget '+1 mm ± 2.5' (ruling P8 revised; both sentences confirmed on the p. 135 image). (3) source wording (prose) -> each row names its table, page and tabulated age. Cue sheet p. 124 read in full from the page image: every row legible (items 1-11); the row earlier OCR could not read is legible on the image, nothing omitted for it. Item 11 prints 'age 8 ± 22.0°', a misprint for '= 22.0°' (Table 3), no SD taken from it. Rulings applied: #27 0 ± 3 from p. 131 with the 2.5 note (owner 7 Oct); P7; P8; facial axis Pt-Gn to Ba-N 90 ± 3; centre 'ideal' on the SD-less clinical norms (convexity, mandibular bend except age 8; owner B-2), no centre where an SD is printed; scale not-stated (magnification-research.md); P34/P36 — no band-less rows beside age rows and no overlapping bands. Fix round 1 (2026-10-08, owner rulings R-1 and R-2, ruling P38): the merge's nearest-age bands were replaced by the printed ages ([a, a]); the set is ageRows 'interpolate', so a known age between two printed ages is interpolated linearly (mean and SD; no SD where only one of the two rows has one). The last printed men's row is a point, except the facial angle's age-24 row, open [24, 99] because p. 127 says the angle reaches about 90° by adulthood. Each men-only adult row has a women's copy with the same values (fromOtherSex 'M'), flagged 'other-sex-values'. No value changed: only ageBand, notes, the added women's rows and ageRows."
+  },
+  "caveats": [
+    "Ricketts' norms are clinical norms collected over the years from various studies and clinical findings (p. 131); no sample, n, sex split or film scale is given. Table 1's heading describes the facial angle's mean behaviour in an American (Californian) Caucasian population.",
+    "The adult rows (ages 18 and over) of Tables 1-7 are bracketed 'Males'. Owner ruling R-2 (8 Oct): adult women are compared with the men's values; each such row has a women's copy (fromOtherSex 'M'), flagged 'other-sex-values' with 'Ricketts prints adult values for men only' in the source line. Child rows are pooled.",
+    "Ricketts prints values at single ages (owner ruling R-1): exactly on a printed age the row is used as printed; between two printed ages the norm is interpolated in a straight line between them, flagged 'interpolated' and named in the source line (e.g. interpolated between Ricketts 1981's ages 6 and 9). An interpolated value is not one Ricketts printed: it assumes the change between his two ages is even, which his own rates (in each row's note) say it roughly is. Before the first printed age, or after a last row that does not hold through adulthood, the end row is used, flagged 'age-mismatched' (no extrapolation). Only the facial angle's age-24 row holds for every older age (p. 127). With the age unknown, a man or woman gets the age-18 row (the youngest adult row); with sex and age both unknown, the oldest pooled row (age 15), flagged 'age-mismatched' and said (the source line says the oldest printed row, 15 y, was used).",
+    "SDs: Ricketts' clinical deviations, stated once on the cue sheet (facial angle ±3°, mandibular plane ±4°, interincisal ±5°, lower lip ±2 mm) or in the text (U6 to PTV '±3 mm', p. 136), applied to every age row of the measurement (ruling P7). Mandibular bend: SD 4.7° at age 8 only (Table 3 caption); the other ages carry no SD. Convexity carries none.",
+    "#27 palatal plane: 0° ± 3° from p. 131 (owner ruling 7 Oct); the cue sheet (item 5, p. 124) prints 'Clinical norm = 0° + 2.5°'.",
+    "#64 lower incisor to A-Po: 2 ± 2 mm is the figure from studies of untreated normal dentitions (p. 135); Ricketts' own objective, +1 mm ± 2.5 mm (p. 135; cue sheet item 7), is the clinical target (ruling P8).",
+    "#30 facial axis: 90° ± 3° (cue sheet item 1; p. 123); does not change with growth on average (change 0° ± 1.5° each five years, p. 123).",
+    "Cue sheet item 11 prints 'age 8 ± 22.0°' for the mandibular bend: a misprint for '= 22.0°' (Table 3 gives 22.0° at age 8); no SD taken from it.",
+    "Table 5 (U6 to PTV): age 3 'Unerupted' (no entry); no value is printed beside age 24 (only 21 and 24 mm beside ages 18 and 21), so after 21 the age-21 row is used, flagged age-mismatched.",
+    "#71 upper lip to E line: no number; p. 137 places the ideal upper lip about 2 mm further behind the line than the lower lip. Not entered.",
+    "Cue sheet changes stated as a rate are in each row's note: facial angle +1° each 3 years; mandibular plane −1° each 3 years; convexity −0.7 mm each 3 years; U6 to PTV +1 mm each year; interincisal +2° each 5 years; lower lip −0.25 mm each year; mandibular bend +0.6° each year.",
+    "Not in the catalogue: the frontal analysis (cue sheet p. 139, Tables 8-10: nasal width, maxillary and mandibular width, intermolar and intercuspid width, midlines, symmetry), Table 11 (divine-proportion measures) and the fossa / true-porion position data (Figs. 7-8).",
+    "Film scale not stated (magnification-research.md); the mm rows are used as printed (assumed true size, owner M-2)."
+  ],
+  "entries": [
+    {
+      "measurement": "m04_FacialAngle",
+      "sex": "pooled",
+      "ageBand": [
+        3,
+        3
+      ],
+      "mean": 83,
+      "unit": "deg",
+      "source": "Table 1, p. 127, age 3 row",
+      "definitionMatch": "same",
+      "sd": 3,
+      "note": "Printed for age 3. Between printed ages the norm is interpolated (owner R-1). SD 3°: p. 127 gives the morphological SD as 3°, and cue sheet item 2 (p. 124, age 3 = 83° ± 3°), applied to every age row (ruling P7). Increases 1° each 3 years to maturity (Table 1 title; cue sheet item 2). True porion, not the ear rod."
+    },
+    {
+      "measurement": "m04_FacialAngle",
+      "sex": "pooled",
+      "ageBand": [
+        6,
+        6
+      ],
+      "mean": 84,
+      "unit": "deg",
+      "source": "Table 1, p. 127, age 6 row",
+      "definitionMatch": "same",
+      "sd": 3,
+      "note": "Printed for age 6. Between printed ages the norm is interpolated (owner R-1). SD 3°: p. 127 gives the morphological SD as 3°, and cue sheet item 2 (p. 124, age 3 = 83° ± 3°), applied to every age row (ruling P7). Increases 1° each 3 years to maturity (Table 1 title; cue sheet item 2). True porion, not the ear rod."
+    },
+    {
+      "measurement": "m04_FacialAngle",
+      "sex": "pooled",
+      "ageBand": [
+        9,
+        9
+      ],
+      "mean": 85,
+      "unit": "deg",
+      "source": "Table 1, p. 127, age 9 row",
+      "definitionMatch": "same",
+      "sd": 3,
+      "note": "Printed for age 9. Between printed ages the norm is interpolated (owner R-1). SD 3°: p. 127 gives the morphological SD as 3°, and cue sheet item 2 (p. 124, age 3 = 83° ± 3°), applied to every age row (ruling P7). Increases 1° each 3 years to maturity (Table 1 title; cue sheet item 2). True porion, not the ear rod."
+    },
+    {
+      "measurement": "m04_FacialAngle",
+      "sex": "pooled",
+      "ageBand": [
+        12,
+        12
+      ],
+      "mean": 86,
+      "unit": "deg",
+      "source": "Table 1, p. 127, age 12 row",
+      "definitionMatch": "same",
+      "sd": 3,
+      "note": "Printed for age 12. Between printed ages the norm is interpolated (owner R-1). SD 3°: p. 127 gives the morphological SD as 3°, and cue sheet item 2 (p. 124, age 3 = 83° ± 3°), applied to every age row (ruling P7). Increases 1° each 3 years to maturity (Table 1 title; cue sheet item 2). True porion, not the ear rod."
+    },
+    {
+      "measurement": "m04_FacialAngle",
+      "sex": "pooled",
+      "ageBand": [
+        15,
+        15
+      ],
+      "mean": 87,
+      "unit": "deg",
+      "source": "Table 1, p. 127, age 15 row",
+      "definitionMatch": "same",
+      "sd": 3,
+      "note": "Printed for age 15. Between printed ages the norm is interpolated (owner R-1). SD 3°: p. 127 gives the morphological SD as 3°, and cue sheet item 2 (p. 124, age 3 = 83° ± 3°), applied to every age row (ruling P7). Increases 1° each 3 years to maturity (Table 1 title; cue sheet item 2). True porion, not the ear rod."
+    },
+    {
+      "measurement": "m04_FacialAngle",
+      "sex": "M",
+      "ageBand": [
+        18,
+        18
+      ],
+      "mean": 88,
+      "unit": "deg",
+      "source": "Table 1, p. 127, age 18 row (bracketed 'Males')",
+      "definitionMatch": "same",
+      "sd": 3,
+      "note": "Printed for age 18. Between printed ages the norm is interpolated (owner R-1). SD 3°: p. 127 gives the morphological SD as 3°, and cue sheet item 2 (p. 124, age 3 = 83° ± 3°), applied to every age row (ruling P7). Increases 1° each 3 years to maturity (Table 1 title; cue sheet item 2). True porion, not the ear rod."
+    },
+    {
+      "measurement": "m04_FacialAngle",
+      "sex": "F",
+      "ageBand": [
+        18,
+        18
+      ],
+      "mean": 88,
+      "unit": "deg",
+      "source": "Table 1, p. 127, age 18 row (bracketed 'Males')",
+      "definitionMatch": "same",
+      "sd": 3,
+      "note": "Ricketts prints adult values for men only; adult women are compared with them (owner ruling 8 Oct). Printed for age 18. Between printed ages the norm is interpolated (owner R-1). SD 3°: p. 127 gives the morphological SD as 3°, and cue sheet item 2 (p. 124, age 3 = 83° ± 3°), applied to every age row (ruling P7). Increases 1° each 3 years to maturity (Table 1 title; cue sheet item 2). True porion, not the ear rod.",
+      "fromOtherSex": "M"
+    },
+    {
+      "measurement": "m04_FacialAngle",
+      "sex": "M",
+      "ageBand": [
+        21,
+        21
+      ],
+      "mean": 89,
+      "unit": "deg",
+      "source": "Table 1, p. 127, age 21 row (bracketed 'Males')",
+      "definitionMatch": "same",
+      "sd": 3,
+      "note": "Printed for age 21. Between printed ages the norm is interpolated (owner R-1). SD 3°: p. 127 gives the morphological SD as 3°, and cue sheet item 2 (p. 124, age 3 = 83° ± 3°), applied to every age row (ruling P7). Increases 1° each 3 years to maturity (Table 1 title; cue sheet item 2). True porion, not the ear rod."
+    },
+    {
+      "measurement": "m04_FacialAngle",
+      "sex": "F",
+      "ageBand": [
+        21,
+        21
+      ],
+      "mean": 89,
+      "unit": "deg",
+      "source": "Table 1, p. 127, age 21 row (bracketed 'Males')",
+      "definitionMatch": "same",
+      "sd": 3,
+      "note": "Ricketts prints adult values for men only; adult women are compared with them (owner ruling 8 Oct). Printed for age 21. Between printed ages the norm is interpolated (owner R-1). SD 3°: p. 127 gives the morphological SD as 3°, and cue sheet item 2 (p. 124, age 3 = 83° ± 3°), applied to every age row (ruling P7). Increases 1° each 3 years to maturity (Table 1 title; cue sheet item 2). True porion, not the ear rod.",
+      "fromOtherSex": "M"
+    },
+    {
+      "measurement": "m04_FacialAngle",
+      "sex": "M",
+      "ageBand": [
+        24,
+        99
+      ],
+      "mean": 90,
+      "unit": "deg",
+      "source": "Table 1, p. 127, age 24 row (bracketed 'Males')",
+      "definitionMatch": "same",
+      "sd": 3,
+      "note": "Printed for age 24; holds through adulthood (p. 127: by adulthood, especially in men, the angle reaches about 90°), so this row is used for every older age. Between printed ages the norm is interpolated (owner R-1). SD 3°: p. 127 gives the morphological SD as 3°, and cue sheet item 2 (p. 124, age 3 = 83° ± 3°), applied to every age row (ruling P7). Increases 1° each 3 years to maturity (Table 1 title; cue sheet item 2). True porion, not the ear rod."
+    },
+    {
+      "measurement": "m04_FacialAngle",
+      "sex": "F",
+      "ageBand": [
+        24,
+        99
+      ],
+      "mean": 90,
+      "unit": "deg",
+      "source": "Table 1, p. 127, age 24 row (bracketed 'Males')",
+      "definitionMatch": "same",
+      "sd": 3,
+      "note": "Ricketts prints adult values for men only; adult women are compared with them (owner ruling 8 Oct). Printed for age 24; holds through adulthood (p. 127: by adulthood, especially in men, the angle reaches about 90°), so this row is used for every older age. Between printed ages the norm is interpolated (owner R-1). SD 3°: p. 127 gives the morphological SD as 3°, and cue sheet item 2 (p. 124, age 3 = 83° ± 3°), applied to every age row (ruling P7). Increases 1° each 3 years to maturity (Table 1 title; cue sheet item 2). True porion, not the ear rod.",
+      "fromOtherSex": "M"
+    },
+    {
+      "measurement": "m22_FHMPt",
+      "sex": "pooled",
+      "ageBand": [
+        3,
+        3
+      ],
+      "mean": 28,
+      "unit": "deg",
+      "source": "Table 2, p. 130, age 3 row",
+      "definitionMatch": "same",
+      "sd": 4,
+      "note": "Printed for age 3. Between printed ages the norm is interpolated (owner R-1). SD 4°: cue sheet item 3 (p. 124, age 3 = 28° ± 4°), applied to every age row (ruling P7). Reduces one degree each 3 years to maturity (cue sheet item 3). Ricketts' plane: FH to the lower border at the angle and menton, 'as described by Downs' (p. 127)."
+    },
+    {
+      "measurement": "m22_FHMPt",
+      "sex": "pooled",
+      "ageBand": [
+        6,
+        6
+      ],
+      "mean": 27,
+      "unit": "deg",
+      "source": "Table 2, p. 130, age 6 row",
+      "definitionMatch": "same",
+      "sd": 4,
+      "note": "Printed for age 6. Between printed ages the norm is interpolated (owner R-1). SD 4°: cue sheet item 3 (p. 124, age 3 = 28° ± 4°), applied to every age row (ruling P7). Reduces one degree each 3 years to maturity (cue sheet item 3). Ricketts' plane: FH to the lower border at the angle and menton, 'as described by Downs' (p. 127)."
+    },
+    {
+      "measurement": "m22_FHMPt",
+      "sex": "pooled",
+      "ageBand": [
+        9,
+        9
+      ],
+      "mean": 26,
+      "unit": "deg",
+      "source": "Table 2, p. 130, age 9 row",
+      "definitionMatch": "same",
+      "sd": 4,
+      "note": "Printed for age 9. Between printed ages the norm is interpolated (owner R-1). SD 4°: cue sheet item 3 (p. 124, age 3 = 28° ± 4°), applied to every age row (ruling P7). Reduces one degree each 3 years to maturity (cue sheet item 3). Ricketts' plane: FH to the lower border at the angle and menton, 'as described by Downs' (p. 127)."
+    },
+    {
+      "measurement": "m22_FHMPt",
+      "sex": "pooled",
+      "ageBand": [
+        12,
+        12
+      ],
+      "mean": 25,
+      "unit": "deg",
+      "source": "Table 2, p. 130, age 12 row",
+      "definitionMatch": "same",
+      "sd": 4,
+      "note": "Printed for age 12. Between printed ages the norm is interpolated (owner R-1). SD 4°: cue sheet item 3 (p. 124, age 3 = 28° ± 4°), applied to every age row (ruling P7). Reduces one degree each 3 years to maturity (cue sheet item 3). Ricketts' plane: FH to the lower border at the angle and menton, 'as described by Downs' (p. 127)."
+    },
+    {
+      "measurement": "m22_FHMPt",
+      "sex": "pooled",
+      "ageBand": [
+        15,
+        15
+      ],
+      "mean": 24,
+      "unit": "deg",
+      "source": "Table 2, p. 130, age 15 row",
+      "definitionMatch": "same",
+      "sd": 4,
+      "note": "Printed for age 15. Between printed ages the norm is interpolated (owner R-1). SD 4°: cue sheet item 3 (p. 124, age 3 = 28° ± 4°), applied to every age row (ruling P7). Reduces one degree each 3 years to maturity (cue sheet item 3). Ricketts' plane: FH to the lower border at the angle and menton, 'as described by Downs' (p. 127)."
+    },
+    {
+      "measurement": "m22_FHMPt",
+      "sex": "M",
+      "ageBand": [
+        18,
+        18
+      ],
+      "mean": 23,
+      "unit": "deg",
+      "source": "Table 2, p. 130, age 18 row (bracketed 'Males')",
+      "definitionMatch": "same",
+      "sd": 4,
+      "note": "Printed for age 18. Between printed ages the norm is interpolated (owner R-1). SD 4°: cue sheet item 3 (p. 124, age 3 = 28° ± 4°), applied to every age row (ruling P7). Reduces one degree each 3 years to maturity (cue sheet item 3). Ricketts' plane: FH to the lower border at the angle and menton, 'as described by Downs' (p. 127)."
+    },
+    {
+      "measurement": "m22_FHMPt",
+      "sex": "F",
+      "ageBand": [
+        18,
+        18
+      ],
+      "mean": 23,
+      "unit": "deg",
+      "source": "Table 2, p. 130, age 18 row (bracketed 'Males')",
+      "definitionMatch": "same",
+      "sd": 4,
+      "note": "Ricketts prints adult values for men only; adult women are compared with them (owner ruling 8 Oct). Printed for age 18. Between printed ages the norm is interpolated (owner R-1). SD 4°: cue sheet item 3 (p. 124, age 3 = 28° ± 4°), applied to every age row (ruling P7). Reduces one degree each 3 years to maturity (cue sheet item 3). Ricketts' plane: FH to the lower border at the angle and menton, 'as described by Downs' (p. 127).",
+      "fromOtherSex": "M"
+    },
+    {
+      "measurement": "m22_FHMPt",
+      "sex": "M",
+      "ageBand": [
+        21,
+        21
+      ],
+      "mean": 22,
+      "unit": "deg",
+      "source": "Table 2, p. 130, age 21 row (bracketed 'Males')",
+      "definitionMatch": "same",
+      "sd": 4,
+      "note": "Printed for age 21. Between printed ages the norm is interpolated (owner R-1). SD 4°: cue sheet item 3 (p. 124, age 3 = 28° ± 4°), applied to every age row (ruling P7). Reduces one degree each 3 years to maturity (cue sheet item 3). Ricketts' plane: FH to the lower border at the angle and menton, 'as described by Downs' (p. 127)."
+    },
+    {
+      "measurement": "m22_FHMPt",
+      "sex": "F",
+      "ageBand": [
+        21,
+        21
+      ],
+      "mean": 22,
+      "unit": "deg",
+      "source": "Table 2, p. 130, age 21 row (bracketed 'Males')",
+      "definitionMatch": "same",
+      "sd": 4,
+      "note": "Ricketts prints adult values for men only; adult women are compared with them (owner ruling 8 Oct). Printed for age 21. Between printed ages the norm is interpolated (owner R-1). SD 4°: cue sheet item 3 (p. 124, age 3 = 28° ± 4°), applied to every age row (ruling P7). Reduces one degree each 3 years to maturity (cue sheet item 3). Ricketts' plane: FH to the lower border at the angle and menton, 'as described by Downs' (p. 127).",
+      "fromOtherSex": "M"
+    },
+    {
+      "measurement": "m22_FHMPt",
+      "sex": "M",
+      "ageBand": [
+        24,
+        24
+      ],
+      "mean": 21,
+      "unit": "deg",
+      "source": "Table 2, p. 130, age 24 row (bracketed 'Males')",
+      "definitionMatch": "same",
+      "sd": 4,
+      "note": "Printed for age 24. Between printed ages the norm is interpolated (owner R-1). SD 4°: cue sheet item 3 (p. 124, age 3 = 28° ± 4°), applied to every age row (ruling P7). Reduces one degree each 3 years to maturity (cue sheet item 3). Ricketts' plane: FH to the lower border at the angle and menton, 'as described by Downs' (p. 127)."
+    },
+    {
+      "measurement": "m22_FHMPt",
+      "sex": "F",
+      "ageBand": [
+        24,
+        24
+      ],
+      "mean": 21,
+      "unit": "deg",
+      "source": "Table 2, p. 130, age 24 row (bracketed 'Males')",
+      "definitionMatch": "same",
+      "sd": 4,
+      "note": "Ricketts prints adult values for men only; adult women are compared with them (owner ruling 8 Oct). Printed for age 24. Between printed ages the norm is interpolated (owner R-1). SD 4°: cue sheet item 3 (p. 124, age 3 = 28° ± 4°), applied to every age row (ruling P7). Reduces one degree each 3 years to maturity (cue sheet item 3). Ricketts' plane: FH to the lower border at the angle and menton, 'as described by Downs' (p. 127).",
+      "fromOtherSex": "M"
+    },
+    {
+      "measurement": "m07_ANPog",
+      "sex": "pooled",
+      "ageBand": [
+        3,
+        3
+      ],
+      "mean": 4.5,
+      "unit": "mm",
+      "source": "Table 4, p. 131, age 3 row",
+      "definitionMatch": "same",
+      "centre": "ideal",
+      "note": "Printed for age 3. Between printed ages the norm is interpolated (owner R-1). Decreases 0.7 mm each 3 years (Table 4 title). No SD printed: a clinical norm (centre ideal, owner B-2). Collected over the years from various studies and clinical findings (p. 131)."
+    },
+    {
+      "measurement": "m07_ANPog",
+      "sex": "pooled",
+      "ageBand": [
+        6,
+        6
+      ],
+      "mean": 3.8,
+      "unit": "mm",
+      "source": "Table 4, p. 131, age 6 row",
+      "definitionMatch": "same",
+      "centre": "ideal",
+      "note": "Printed for age 6. Between printed ages the norm is interpolated (owner R-1). Decreases 0.7 mm each 3 years (Table 4 title). No SD printed: a clinical norm (centre ideal, owner B-2). Collected over the years from various studies and clinical findings (p. 131)."
+    },
+    {
+      "measurement": "m07_ANPog",
+      "sex": "pooled",
+      "ageBand": [
+        9,
+        9
+      ],
+      "mean": 3.1,
+      "unit": "mm",
+      "source": "Table 4, p. 131, age 9 row",
+      "definitionMatch": "same",
+      "centre": "ideal",
+      "note": "Printed for age 9. Between printed ages the norm is interpolated (owner R-1). Decreases 0.7 mm each 3 years (Table 4 title). No SD printed: a clinical norm (centre ideal, owner B-2). Collected over the years from various studies and clinical findings (p. 131)."
+    },
+    {
+      "measurement": "m07_ANPog",
+      "sex": "pooled",
+      "ageBand": [
+        12,
+        12
+      ],
+      "mean": 2.4,
+      "unit": "mm",
+      "source": "Table 4, p. 131, age 12 row",
+      "definitionMatch": "same",
+      "centre": "ideal",
+      "note": "Printed for age 12. Between printed ages the norm is interpolated (owner R-1). Decreases 0.7 mm each 3 years (Table 4 title). No SD printed: a clinical norm (centre ideal, owner B-2). Collected over the years from various studies and clinical findings (p. 131)."
+    },
+    {
+      "measurement": "m07_ANPog",
+      "sex": "pooled",
+      "ageBand": [
+        15,
+        15
+      ],
+      "mean": 1.7,
+      "unit": "mm",
+      "source": "Table 4, p. 131, age 15 row",
+      "definitionMatch": "same",
+      "centre": "ideal",
+      "note": "Printed for age 15. Between printed ages the norm is interpolated (owner R-1). Decreases 0.7 mm each 3 years (Table 4 title). No SD printed: a clinical norm (centre ideal, owner B-2). Collected over the years from various studies and clinical findings (p. 131)."
+    },
+    {
+      "measurement": "m07_ANPog",
+      "sex": "M",
+      "ageBand": [
+        18,
+        18
+      ],
+      "mean": 1,
+      "unit": "mm",
+      "source": "Table 4, p. 131, age 18 row (bracketed 'Males')",
+      "definitionMatch": "same",
+      "centre": "ideal",
+      "note": "Printed for age 18. Between printed ages the norm is interpolated (owner R-1). Decreases 0.7 mm each 3 years (Table 4 title). No SD printed: a clinical norm (centre ideal, owner B-2). Collected over the years from various studies and clinical findings (p. 131)."
+    },
+    {
+      "measurement": "m07_ANPog",
+      "sex": "F",
+      "ageBand": [
+        18,
+        18
+      ],
+      "mean": 1,
+      "unit": "mm",
+      "source": "Table 4, p. 131, age 18 row (bracketed 'Males')",
+      "definitionMatch": "same",
+      "centre": "ideal",
+      "note": "Ricketts prints adult values for men only; adult women are compared with them (owner ruling 8 Oct). Printed for age 18. Between printed ages the norm is interpolated (owner R-1). Decreases 0.7 mm each 3 years (Table 4 title). No SD printed: a clinical norm (centre ideal, owner B-2). Collected over the years from various studies and clinical findings (p. 131).",
+      "fromOtherSex": "M"
+    },
+    {
+      "measurement": "m07_ANPog",
+      "sex": "M",
+      "ageBand": [
+        21,
+        21
+      ],
+      "mean": 0.3,
+      "unit": "mm",
+      "source": "Table 4, p. 131, age 21 row (bracketed 'Males')",
+      "definitionMatch": "same",
+      "centre": "ideal",
+      "note": "Printed for age 21. Between printed ages the norm is interpolated (owner R-1). Decreases 0.7 mm each 3 years (Table 4 title). No SD printed: a clinical norm (centre ideal, owner B-2). Collected over the years from various studies and clinical findings (p. 131)."
+    },
+    {
+      "measurement": "m07_ANPog",
+      "sex": "F",
+      "ageBand": [
+        21,
+        21
+      ],
+      "mean": 0.3,
+      "unit": "mm",
+      "source": "Table 4, p. 131, age 21 row (bracketed 'Males')",
+      "definitionMatch": "same",
+      "centre": "ideal",
+      "note": "Ricketts prints adult values for men only; adult women are compared with them (owner ruling 8 Oct). Printed for age 21. Between printed ages the norm is interpolated (owner R-1). Decreases 0.7 mm each 3 years (Table 4 title). No SD printed: a clinical norm (centre ideal, owner B-2). Collected over the years from various studies and clinical findings (p. 131).",
+      "fromOtherSex": "M"
+    },
+    {
+      "measurement": "m07_ANPog",
+      "sex": "M",
+      "ageBand": [
+        24,
+        24
+      ],
+      "mean": -0.4,
+      "unit": "mm",
+      "source": "Table 4, p. 131, age 24 row (bracketed 'Males')",
+      "definitionMatch": "same",
+      "centre": "ideal",
+      "note": "Printed for age 24. Between printed ages the norm is interpolated (owner R-1). Decreases 0.7 mm each 3 years (Table 4 title). No SD printed: a clinical norm (centre ideal, owner B-2). Collected over the years from various studies and clinical findings (p. 131)."
+    },
+    {
+      "measurement": "m07_ANPog",
+      "sex": "F",
+      "ageBand": [
+        24,
+        24
+      ],
+      "mean": -0.4,
+      "unit": "mm",
+      "source": "Table 4, p. 131, age 24 row (bracketed 'Males')",
+      "definitionMatch": "same",
+      "centre": "ideal",
+      "note": "Ricketts prints adult values for men only; adult women are compared with them (owner ruling 8 Oct). Printed for age 24. Between printed ages the norm is interpolated (owner R-1). Decreases 0.7 mm each 3 years (Table 4 title). No SD printed: a clinical norm (centre ideal, owner B-2). Collected over the years from various studies and clinical findings (p. 131).",
+      "fromOtherSex": "M"
+    },
+    {
+      "measurement": "m19_U6PTV",
+      "sex": "pooled",
+      "ageBand": [
+        6,
+        6
+      ],
+      "mean": 9,
+      "unit": "mm",
+      "source": "Table 5, p. 136, age 6 row",
+      "definitionMatch": "same",
+      "sd": 3,
+      "note": "Printed for age 6. Between printed ages the norm is interpolated (owner R-1). SD 3 mm: p. 136 gives the rule of thumb as the patient's age plus 3 mm, with ±3 mm accepted, Ricketts' clinical deviation, applied to every age row. Increases 1 mm each year with maxillary growth and eruption (Table 5 title; cue sheet item 8: patient's age + 3 mm)."
+    },
+    {
+      "measurement": "m19_U6PTV",
+      "sex": "pooled",
+      "ageBand": [
+        9,
+        9
+      ],
+      "mean": 12,
+      "unit": "mm",
+      "source": "Table 5, p. 136, age 9 row",
+      "definitionMatch": "same",
+      "sd": 3,
+      "note": "Printed for age 9. Between printed ages the norm is interpolated (owner R-1). SD 3 mm: p. 136 gives the rule of thumb as the patient's age plus 3 mm, with ±3 mm accepted, Ricketts' clinical deviation, applied to every age row. Increases 1 mm each year with maxillary growth and eruption (Table 5 title; cue sheet item 8: patient's age + 3 mm)."
+    },
+    {
+      "measurement": "m19_U6PTV",
+      "sex": "pooled",
+      "ageBand": [
+        12,
+        12
+      ],
+      "mean": 15,
+      "unit": "mm",
+      "source": "Table 5, p. 136, age 12 row",
+      "definitionMatch": "same",
+      "sd": 3,
+      "note": "Printed for age 12. Between printed ages the norm is interpolated (owner R-1). SD 3 mm: p. 136 gives the rule of thumb as the patient's age plus 3 mm, with ±3 mm accepted, Ricketts' clinical deviation, applied to every age row. Increases 1 mm each year with maxillary growth and eruption (Table 5 title; cue sheet item 8: patient's age + 3 mm)."
+    },
+    {
+      "measurement": "m19_U6PTV",
+      "sex": "pooled",
+      "ageBand": [
+        15,
+        15
+      ],
+      "mean": 18,
+      "unit": "mm",
+      "source": "Table 5, p. 136, age 15 row",
+      "definitionMatch": "same",
+      "sd": 3,
+      "note": "Printed for age 15. Between printed ages the norm is interpolated (owner R-1). SD 3 mm: p. 136 gives the rule of thumb as the patient's age plus 3 mm, with ±3 mm accepted, Ricketts' clinical deviation, applied to every age row. Increases 1 mm each year with maxillary growth and eruption (Table 5 title; cue sheet item 8: patient's age + 3 mm)."
+    },
+    {
+      "measurement": "m19_U6PTV",
+      "sex": "M",
+      "ageBand": [
+        18,
+        18
+      ],
+      "mean": 21,
+      "unit": "mm",
+      "source": "Table 5, p. 136, age 18 row (bracketed 'Males')",
+      "definitionMatch": "same",
+      "sd": 3,
+      "note": "Printed for age 18. Between printed ages the norm is interpolated (owner R-1). SD 3 mm: p. 136 gives the rule of thumb as the patient's age plus 3 mm, with ±3 mm accepted, Ricketts' clinical deviation, applied to every age row. Increases 1 mm each year with maxillary growth and eruption (Table 5 title; cue sheet item 8: patient's age + 3 mm)."
+    },
+    {
+      "measurement": "m19_U6PTV",
+      "sex": "F",
+      "ageBand": [
+        18,
+        18
+      ],
+      "mean": 21,
+      "unit": "mm",
+      "source": "Table 5, p. 136, age 18 row (bracketed 'Males')",
+      "definitionMatch": "same",
+      "sd": 3,
+      "note": "Ricketts prints adult values for men only; adult women are compared with them (owner ruling 8 Oct). Printed for age 18. Between printed ages the norm is interpolated (owner R-1). SD 3 mm: p. 136 gives the rule of thumb as the patient's age plus 3 mm, with ±3 mm accepted, Ricketts' clinical deviation, applied to every age row. Increases 1 mm each year with maxillary growth and eruption (Table 5 title; cue sheet item 8: patient's age + 3 mm).",
+      "fromOtherSex": "M"
+    },
+    {
+      "measurement": "m19_U6PTV",
+      "sex": "M",
+      "ageBand": [
+        21,
+        21
+      ],
+      "mean": 24,
+      "unit": "mm",
+      "source": "Table 5, p. 136, age 21 row (bracketed 'Males')",
+      "definitionMatch": "same",
+      "sd": 3,
+      "note": "Printed for age 21. Between printed ages the norm is interpolated (owner R-1). SD 3 mm: p. 136 gives the rule of thumb as the patient's age plus 3 mm, with ±3 mm accepted, Ricketts' clinical deviation, applied to every age row. Increases 1 mm each year with maxillary growth and eruption (Table 5 title; cue sheet item 8: patient's age + 3 mm)."
+    },
+    {
+      "measurement": "m19_U6PTV",
+      "sex": "F",
+      "ageBand": [
+        21,
+        21
+      ],
+      "mean": 24,
+      "unit": "mm",
+      "source": "Table 5, p. 136, age 21 row (bracketed 'Males')",
+      "definitionMatch": "same",
+      "sd": 3,
+      "note": "Ricketts prints adult values for men only; adult women are compared with them (owner ruling 8 Oct). Printed for age 21. Between printed ages the norm is interpolated (owner R-1). SD 3 mm: p. 136 gives the rule of thumb as the patient's age plus 3 mm, with ±3 mm accepted, Ricketts' clinical deviation, applied to every age row. Increases 1 mm each year with maxillary growth and eruption (Table 5 title; cue sheet item 8: patient's age + 3 mm).",
+      "fromOtherSex": "M"
+    },
+    {
+      "measurement": "m53_Interincisal",
+      "sex": "pooled",
+      "ageBand": [
+        3,
+        3
+      ],
+      "mean": 122,
+      "unit": "deg",
+      "source": "Table 6, p. 136, age 3 row",
+      "definitionMatch": "same",
+      "sd": 5,
+      "note": "Printed for age 3. Between printed ages the norm is interpolated (owner R-1). SD 5°: cue sheet item 9 (p. 124, age 3 = 122° ± 5°), applied to every age row (ruling P7). Increases 2° each 5 years (cue sheet item 9). Ricketts' treatment objective is 125° to 126° (p. 136)."
+    },
+    {
+      "measurement": "m53_Interincisal",
+      "sex": "pooled",
+      "ageBand": [
+        8,
+        8
+      ],
+      "mean": 124,
+      "unit": "deg",
+      "source": "Table 6, p. 136, age 8 row",
+      "definitionMatch": "same",
+      "sd": 5,
+      "note": "Printed for age 8. Between printed ages the norm is interpolated (owner R-1). SD 5°: cue sheet item 9 (p. 124, age 3 = 122° ± 5°), applied to every age row (ruling P7). Increases 2° each 5 years (cue sheet item 9). Ricketts' treatment objective is 125° to 126° (p. 136)."
+    },
+    {
+      "measurement": "m53_Interincisal",
+      "sex": "pooled",
+      "ageBand": [
+        13,
+        13
+      ],
+      "mean": 126,
+      "unit": "deg",
+      "source": "Table 6, p. 136, age 13 row",
+      "definitionMatch": "same",
+      "sd": 5,
+      "note": "Printed for age 13. Between printed ages the norm is interpolated (owner R-1). SD 5°: cue sheet item 9 (p. 124, age 3 = 122° ± 5°), applied to every age row (ruling P7). Increases 2° each 5 years (cue sheet item 9). Ricketts' treatment objective is 125° to 126° (p. 136)."
+    },
+    {
+      "measurement": "m53_Interincisal",
+      "sex": "M",
+      "ageBand": [
+        18,
+        18
+      ],
+      "mean": 128,
+      "unit": "deg",
+      "source": "Table 6, p. 136, age 18 row (bracketed 'Males')",
+      "definitionMatch": "same",
+      "sd": 5,
+      "note": "Printed for age 18. Between printed ages the norm is interpolated (owner R-1). SD 5°: cue sheet item 9 (p. 124, age 3 = 122° ± 5°), applied to every age row (ruling P7). Increases 2° each 5 years (cue sheet item 9). Ricketts' treatment objective is 125° to 126° (p. 136)."
+    },
+    {
+      "measurement": "m53_Interincisal",
+      "sex": "F",
+      "ageBand": [
+        18,
+        18
+      ],
+      "mean": 128,
+      "unit": "deg",
+      "source": "Table 6, p. 136, age 18 row (bracketed 'Males')",
+      "definitionMatch": "same",
+      "sd": 5,
+      "note": "Ricketts prints adult values for men only; adult women are compared with them (owner ruling 8 Oct). Printed for age 18. Between printed ages the norm is interpolated (owner R-1). SD 5°: cue sheet item 9 (p. 124, age 3 = 122° ± 5°), applied to every age row (ruling P7). Increases 2° each 5 years (cue sheet item 9). Ricketts' treatment objective is 125° to 126° (p. 136).",
+      "fromOtherSex": "M"
+    },
+    {
+      "measurement": "m53_Interincisal",
+      "sex": "M",
+      "ageBand": [
+        23,
+        23
+      ],
+      "mean": 130,
+      "unit": "deg",
+      "source": "Table 6, p. 136, age 23 row (bracketed 'Males')",
+      "definitionMatch": "same",
+      "sd": 5,
+      "note": "Printed for age 23. Between printed ages the norm is interpolated (owner R-1). SD 5°: cue sheet item 9 (p. 124, age 3 = 122° ± 5°), applied to every age row (ruling P7). Increases 2° each 5 years (cue sheet item 9). Ricketts' treatment objective is 125° to 126° (p. 136)."
+    },
+    {
+      "measurement": "m53_Interincisal",
+      "sex": "F",
+      "ageBand": [
+        23,
+        23
+      ],
+      "mean": 130,
+      "unit": "deg",
+      "source": "Table 6, p. 136, age 23 row (bracketed 'Males')",
+      "definitionMatch": "same",
+      "sd": 5,
+      "note": "Ricketts prints adult values for men only; adult women are compared with them (owner ruling 8 Oct). Printed for age 23. Between printed ages the norm is interpolated (owner R-1). SD 5°: cue sheet item 9 (p. 124, age 3 = 122° ± 5°), applied to every age row (ruling P7). Increases 2° each 5 years (cue sheet item 9). Ricketts' treatment objective is 125° to 126° (p. 136).",
+      "fromOtherSex": "M"
+    },
+    {
+      "measurement": "m72_LLE",
+      "sex": "pooled",
+      "ageBand": [
+        3,
+        3
+      ],
+      "mean": 0,
+      "unit": "mm",
+      "source": "Table 7, p. 137, age 3 row",
+      "definitionMatch": "same",
+      "sd": 2,
+      "note": "Printed for age 3. Between printed ages the norm is interpolated (owner R-1). SD 2 mm: cue sheet item 10 (p. 124, ages 3 and 15, ± 2 mm), applied to every age row (ruling P7). Decreases 0.25 mm each year (Table 7 title; cue sheet item 10). Negative = behind the E line."
+    },
+    {
+      "measurement": "m72_LLE",
+      "sex": "pooled",
+      "ageBand": [
+        8,
+        8
+      ],
+      "mean": -1.25,
+      "unit": "mm",
+      "source": "Table 7, p. 137, age 8 row",
+      "definitionMatch": "same",
+      "sd": 2,
+      "note": "Printed for age 8. Between printed ages the norm is interpolated (owner R-1). SD 2 mm: cue sheet item 10 (p. 124, ages 3 and 15, ± 2 mm), applied to every age row (ruling P7). Decreases 0.25 mm each year (Table 7 title; cue sheet item 10). Negative = behind the E line."
+    },
+    {
+      "measurement": "m72_LLE",
+      "sex": "pooled",
+      "ageBand": [
+        13,
+        13
+      ],
+      "mean": -2.5,
+      "unit": "mm",
+      "source": "Table 7, p. 137, age 13 row",
+      "definitionMatch": "same",
+      "sd": 2,
+      "note": "Printed for age 13. Between printed ages the norm is interpolated (owner R-1). SD 2 mm: cue sheet item 10 (p. 124, ages 3 and 15, ± 2 mm), applied to every age row (ruling P7). Decreases 0.25 mm each year (Table 7 title; cue sheet item 10). Negative = behind the E line."
+    },
+    {
+      "measurement": "m72_LLE",
+      "sex": "M",
+      "ageBand": [
+        18,
+        18
+      ],
+      "mean": -3.75,
+      "unit": "mm",
+      "source": "Table 7, p. 137, age 18 row (bracketed 'Males')",
+      "definitionMatch": "same",
+      "sd": 2,
+      "note": "Printed for age 18. Between printed ages the norm is interpolated (owner R-1). SD 2 mm: cue sheet item 10 (p. 124, ages 3 and 15, ± 2 mm), applied to every age row (ruling P7). Decreases 0.25 mm each year (Table 7 title; cue sheet item 10). Negative = behind the E line."
+    },
+    {
+      "measurement": "m72_LLE",
+      "sex": "F",
+      "ageBand": [
+        18,
+        18
+      ],
+      "mean": -3.75,
+      "unit": "mm",
+      "source": "Table 7, p. 137, age 18 row (bracketed 'Males')",
+      "definitionMatch": "same",
+      "sd": 2,
+      "note": "Ricketts prints adult values for men only; adult women are compared with them (owner ruling 8 Oct). Printed for age 18. Between printed ages the norm is interpolated (owner R-1). SD 2 mm: cue sheet item 10 (p. 124, ages 3 and 15, ± 2 mm), applied to every age row (ruling P7). Decreases 0.25 mm each year (Table 7 title; cue sheet item 10). Negative = behind the E line.",
+      "fromOtherSex": "M"
+    },
+    {
+      "measurement": "m72_LLE",
+      "sex": "M",
+      "ageBand": [
+        23,
+        23
+      ],
+      "mean": -5,
+      "unit": "mm",
+      "source": "Table 7, p. 137, age 23 row (bracketed 'Males')",
+      "definitionMatch": "same",
+      "sd": 2,
+      "note": "Printed for age 23. Between printed ages the norm is interpolated (owner R-1). SD 2 mm: cue sheet item 10 (p. 124, ages 3 and 15, ± 2 mm), applied to every age row (ruling P7). Decreases 0.25 mm each year (Table 7 title; cue sheet item 10). Negative = behind the E line."
+    },
+    {
+      "measurement": "m72_LLE",
+      "sex": "F",
+      "ageBand": [
+        23,
+        23
+      ],
+      "mean": -5,
+      "unit": "mm",
+      "source": "Table 7, p. 137, age 23 row (bracketed 'Males')",
+      "definitionMatch": "same",
+      "sd": 2,
+      "note": "Ricketts prints adult values for men only; adult women are compared with them (owner ruling 8 Oct). Printed for age 23. Between printed ages the norm is interpolated (owner R-1). SD 2 mm: cue sheet item 10 (p. 124, ages 3 and 15, ± 2 mm), applied to every age row (ruling P7). Decreases 0.25 mm each year (Table 7 title; cue sheet item 10). Negative = behind the E line.",
+      "fromOtherSex": "M"
+    },
+    {
+      "measurement": "m72_LLE",
+      "sex": "pooled",
+      "ageBand": [
+        15,
+        15
+      ],
+      "mean": -3,
+      "unit": "mm",
+      "source": "Cue sheet item 10, p. 124, age 15 row",
+      "definitionMatch": "same",
+      "sd": 2,
+      "note": "Printed for age 15. Between printed ages the norm is interpolated (owner R-1). SD 2 mm as printed on the cue sheet ('age 15 = −3.0 mm ± 2 mm'); age 15 is not a row of Table 7. Decreases 0.25 mm each year. Negative = behind the E line."
+    },
+    {
+      "measurement": "m33_MandBend",
+      "sex": "pooled",
+      "ageBand": [
+        3,
+        3
+      ],
+      "mean": 19,
+      "unit": "deg",
+      "source": "Table 3, p. 130, age 3 row",
+      "definitionMatch": "same",
+      "centre": "ideal",
+      "note": "Printed for age 3. Between printed ages the norm is interpolated (owner R-1). Increases about 0.6° per year (p. 130; cue sheet item 11). Other ages: no SD printed, a clinical norm (centre ideal, owner B-2)."
+    },
+    {
+      "measurement": "m33_MandBend",
+      "sex": "pooled",
+      "ageBand": [
+        4,
+        4
+      ],
+      "mean": 19.6,
+      "unit": "deg",
+      "source": "Table 3, p. 130, age 4 row",
+      "definitionMatch": "same",
+      "centre": "ideal",
+      "note": "Printed for age 4. Between printed ages the norm is interpolated (owner R-1). Increases about 0.6° per year (p. 130; cue sheet item 11). Other ages: no SD printed, a clinical norm (centre ideal, owner B-2)."
+    },
+    {
+      "measurement": "m33_MandBend",
+      "sex": "pooled",
+      "ageBand": [
+        5,
+        5
+      ],
+      "mean": 20.2,
+      "unit": "deg",
+      "source": "Table 3, p. 130, age 5 row",
+      "definitionMatch": "same",
+      "centre": "ideal",
+      "note": "Printed for age 5. Between printed ages the norm is interpolated (owner R-1). Increases about 0.6° per year (p. 130; cue sheet item 11). Other ages: no SD printed, a clinical norm (centre ideal, owner B-2)."
+    },
+    {
+      "measurement": "m33_MandBend",
+      "sex": "pooled",
+      "ageBand": [
+        6,
+        6
+      ],
+      "mean": 20.8,
+      "unit": "deg",
+      "source": "Table 3, p. 130, age 6 row",
+      "definitionMatch": "same",
+      "centre": "ideal",
+      "note": "Printed for age 6. Between printed ages the norm is interpolated (owner R-1). Increases about 0.6° per year (p. 130; cue sheet item 11). Other ages: no SD printed, a clinical norm (centre ideal, owner B-2)."
+    },
+    {
+      "measurement": "m33_MandBend",
+      "sex": "pooled",
+      "ageBand": [
+        7,
+        7
+      ],
+      "mean": 21.4,
+      "unit": "deg",
+      "source": "Table 3, p. 130, age 7 row",
+      "definitionMatch": "same",
+      "centre": "ideal",
+      "note": "Printed for age 7. Between printed ages the norm is interpolated (owner R-1). Increases about 0.6° per year (p. 130; cue sheet item 11). Other ages: no SD printed, a clinical norm (centre ideal, owner B-2)."
+    },
+    {
+      "measurement": "m33_MandBend",
+      "sex": "pooled",
+      "ageBand": [
+        8,
+        8
+      ],
+      "mean": 22,
+      "unit": "deg",
+      "source": "Table 3, p. 130, age 8 row",
+      "definitionMatch": "same",
+      "sd": 4.7,
+      "note": "Printed for age 8. Between printed ages the norm is interpolated (owner R-1). SD 4.7° at age 8 only (the Table 3 caption gives an SD of 4.7° at eight years). Increases about 0.6° per year (p. 130; cue sheet item 11)."
+    },
+    {
+      "measurement": "m33_MandBend",
+      "sex": "pooled",
+      "ageBand": [
+        9,
+        9
+      ],
+      "mean": 22.5,
+      "unit": "deg",
+      "source": "Table 3, p. 130, age 9 row",
+      "definitionMatch": "same",
+      "centre": "ideal",
+      "note": "Printed for age 9. Between printed ages the norm is interpolated (owner R-1). Increases about 0.6° per year (p. 130; cue sheet item 11). Other ages: no SD printed, a clinical norm (centre ideal, owner B-2)."
+    },
+    {
+      "measurement": "m33_MandBend",
+      "sex": "pooled",
+      "ageBand": [
+        10,
+        10
+      ],
+      "mean": 23.2,
+      "unit": "deg",
+      "source": "Table 3, p. 130, age 10 row",
+      "definitionMatch": "same",
+      "centre": "ideal",
+      "note": "Printed for age 10. Between printed ages the norm is interpolated (owner R-1). Increases about 0.6° per year (p. 130; cue sheet item 11). Other ages: no SD printed, a clinical norm (centre ideal, owner B-2)."
+    },
+    {
+      "measurement": "m33_MandBend",
+      "sex": "pooled",
+      "ageBand": [
+        11,
+        11
+      ],
+      "mean": 23.8,
+      "unit": "deg",
+      "source": "Table 3, p. 130, age 11 row",
+      "definitionMatch": "same",
+      "centre": "ideal",
+      "note": "Printed for age 11. Between printed ages the norm is interpolated (owner R-1). Increases about 0.6° per year (p. 130; cue sheet item 11). Other ages: no SD printed, a clinical norm (centre ideal, owner B-2)."
+    },
+    {
+      "measurement": "m33_MandBend",
+      "sex": "pooled",
+      "ageBand": [
+        12,
+        12
+      ],
+      "mean": 24.4,
+      "unit": "deg",
+      "source": "Table 3, p. 130, age 12 row",
+      "definitionMatch": "same",
+      "centre": "ideal",
+      "note": "Printed for age 12. Between printed ages the norm is interpolated (owner R-1). Increases about 0.6° per year (p. 130; cue sheet item 11). Other ages: no SD printed, a clinical norm (centre ideal, owner B-2)."
+    },
+    {
+      "measurement": "m33_MandBend",
+      "sex": "pooled",
+      "ageBand": [
+        13,
+        13
+      ],
+      "mean": 25,
+      "unit": "deg",
+      "source": "Table 3, p. 130, age 13 row",
+      "definitionMatch": "same",
+      "centre": "ideal",
+      "note": "Printed for age 13. Between printed ages the norm is interpolated (owner R-1). Increases about 0.6° per year (p. 130; cue sheet item 11). Other ages: no SD printed, a clinical norm (centre ideal, owner B-2)."
+    },
+    {
+      "measurement": "m33_MandBend",
+      "sex": "pooled",
+      "ageBand": [
+        14,
+        14
+      ],
+      "mean": 25.6,
+      "unit": "deg",
+      "source": "Table 3, p. 130, age 14 row",
+      "definitionMatch": "same",
+      "centre": "ideal",
+      "note": "Printed for age 14. Between printed ages the norm is interpolated (owner R-1). Increases about 0.6° per year (p. 130; cue sheet item 11). Other ages: no SD printed, a clinical norm (centre ideal, owner B-2)."
+    },
+    {
+      "measurement": "m33_MandBend",
+      "sex": "pooled",
+      "ageBand": [
+        15,
+        15
+      ],
+      "mean": 26.2,
+      "unit": "deg",
+      "source": "Table 3, p. 130, age 15 row",
+      "definitionMatch": "same",
+      "centre": "ideal",
+      "note": "Printed for age 15. Between printed ages the norm is interpolated (owner R-1). Increases about 0.6° per year (p. 130; cue sheet item 11). Other ages: no SD printed, a clinical norm (centre ideal, owner B-2)."
+    },
+    {
+      "measurement": "m33_MandBend",
+      "sex": "pooled",
+      "ageBand": [
+        16,
+        16
+      ],
+      "mean": 26.8,
+      "unit": "deg",
+      "source": "Table 3, p. 130, age 16 row",
+      "definitionMatch": "same",
+      "centre": "ideal",
+      "note": "Printed for age 16. Between printed ages the norm is interpolated (owner R-1). Increases about 0.6° per year (p. 130; cue sheet item 11). Other ages: no SD printed, a clinical norm (centre ideal, owner B-2)."
+    },
+    {
+      "measurement": "m33_MandBend",
+      "sex": "pooled",
+      "ageBand": [
+        17,
+        17
+      ],
+      "mean": 27.4,
+      "unit": "deg",
+      "source": "Table 3, p. 130, age 17 row",
+      "definitionMatch": "same",
+      "centre": "ideal",
+      "note": "Printed for age 17. Between printed ages the norm is interpolated (owner R-1). Increases about 0.6° per year (p. 130; cue sheet item 11). Other ages: no SD printed, a clinical norm (centre ideal, owner B-2)."
+    },
+    {
+      "measurement": "m33_MandBend",
+      "sex": "M",
+      "ageBand": [
+        18,
+        18
+      ],
+      "mean": 28,
+      "unit": "deg",
+      "source": "Table 3, p. 130, age 18 row (bracketed 'Males')",
+      "definitionMatch": "same",
+      "centre": "ideal",
+      "note": "Printed for age 18. Between printed ages the norm is interpolated (owner R-1). Increases about 0.6° per year (p. 130; cue sheet item 11). Other ages: no SD printed, a clinical norm (centre ideal, owner B-2)."
+    },
+    {
+      "measurement": "m33_MandBend",
+      "sex": "F",
+      "ageBand": [
+        18,
+        18
+      ],
+      "mean": 28,
+      "unit": "deg",
+      "source": "Table 3, p. 130, age 18 row (bracketed 'Males')",
+      "definitionMatch": "same",
+      "centre": "ideal",
+      "note": "Ricketts prints adult values for men only; adult women are compared with them (owner ruling 8 Oct). Printed for age 18. Between printed ages the norm is interpolated (owner R-1). Increases about 0.6° per year (p. 130; cue sheet item 11). Other ages: no SD printed, a clinical norm (centre ideal, owner B-2).",
+      "fromOtherSex": "M"
+    },
+    {
+      "measurement": "m33_MandBend",
+      "sex": "M",
+      "ageBand": [
+        19,
+        19
+      ],
+      "mean": 28.6,
+      "unit": "deg",
+      "source": "Table 3, p. 130, age 19 row (bracketed 'Males')",
+      "definitionMatch": "same",
+      "centre": "ideal",
+      "note": "Printed for age 19. Between printed ages the norm is interpolated (owner R-1). Increases about 0.6° per year (p. 130; cue sheet item 11). Other ages: no SD printed, a clinical norm (centre ideal, owner B-2)."
+    },
+    {
+      "measurement": "m33_MandBend",
+      "sex": "F",
+      "ageBand": [
+        19,
+        19
+      ],
+      "mean": 28.6,
+      "unit": "deg",
+      "source": "Table 3, p. 130, age 19 row (bracketed 'Males')",
+      "definitionMatch": "same",
+      "centre": "ideal",
+      "note": "Ricketts prints adult values for men only; adult women are compared with them (owner ruling 8 Oct). Printed for age 19. Between printed ages the norm is interpolated (owner R-1). Increases about 0.6° per year (p. 130; cue sheet item 11). Other ages: no SD printed, a clinical norm (centre ideal, owner B-2).",
+      "fromOtherSex": "M"
+    },
+    {
+      "measurement": "m33_MandBend",
+      "sex": "M",
+      "ageBand": [
+        20,
+        20
+      ],
+      "mean": 29.2,
+      "unit": "deg",
+      "source": "Table 3, p. 130, age 20 row (bracketed 'Males')",
+      "definitionMatch": "same",
+      "centre": "ideal",
+      "note": "Printed for age 20. Between printed ages the norm is interpolated (owner R-1). Increases about 0.6° per year (p. 130; cue sheet item 11). Other ages: no SD printed, a clinical norm (centre ideal, owner B-2)."
+    },
+    {
+      "measurement": "m33_MandBend",
+      "sex": "F",
+      "ageBand": [
+        20,
+        20
+      ],
+      "mean": 29.2,
+      "unit": "deg",
+      "source": "Table 3, p. 130, age 20 row (bracketed 'Males')",
+      "definitionMatch": "same",
+      "centre": "ideal",
+      "note": "Ricketts prints adult values for men only; adult women are compared with them (owner ruling 8 Oct). Printed for age 20. Between printed ages the norm is interpolated (owner R-1). Increases about 0.6° per year (p. 130; cue sheet item 11). Other ages: no SD printed, a clinical norm (centre ideal, owner B-2).",
+      "fromOtherSex": "M"
+    },
+    {
+      "measurement": "m30_FacAxisR",
+      "sex": "pooled",
+      "mean": 90,
+      "sd": 3,
+      "unit": "deg",
+      "source": "Cue sheet item 1, p. 124; text p. 123",
+      "definitionMatch": "same",
+      "note": "Facial axis Pt–Gn to Ba–N. Mean 90°, SD 3° (p. 123). On average it does not change with growth: 0° ± 1.5° per five years (p. 123); the cue sheet gives 0° change, with a standard variation of 1.5° over 5 years and 2.0° over 10 years."
+    },
+    {
+      "measurement": "m32_OralGnomon",
+      "sex": "pooled",
+      "mean": 46,
+      "sd": 3,
+      "unit": "deg",
+      "source": "Cue sheet item 4, p. 124",
+      "definitionMatch": "same",
+      "note": "ANS–Xi–PM (p. 131). Cue sheet: 'Clinical norm = 46° ± 3°', change: none."
+    },
+    {
+      "measurement": "m27_PalFH",
+      "sex": "pooled",
+      "mean": 0,
+      "sd": 3,
+      "unit": "deg",
+      "source": "p. 131",
+      "definitionMatch": "same",
+      "note": "summary sheet p. 124 gives 0° ± 2.5°. Text p. 131: desired value 0° (180°), SD 3° (owner ruling 7 Oct). Cue sheet item 5 prints 'Clinical norm = 0° + 2.5°'; change: none."
+    },
+    {
+      "measurement": "m64_L1APog",
+      "sex": "pooled",
+      "mean": 2,
+      "sd": 2,
+      "unit": "mm",
+      "source": "p. 135",
+      "definitionMatch": "same",
+      "clinicalTarget": "+1 mm ± 2.5 (Ricketts' clinical objective, cue sheet item 7)",
+      "note": "Ruling P8: the descriptive figure — p. 135 reports that studies of untreated normal dentitions put the lower incisor about 2 mm ahead of the A-Po line, SD 2 mm. His own objective since the early 1950s is +1 mm to the A-Po line, ±2.5 mm (p. 135; cue sheet item 7 'Clinical norm = +1 mm'). Changes very little with growth (p. 135)."
+    }
+  ]
+}

@@ -1,0 +1,173 @@
+{
+  "id": "steiner1953",
+  "kind": "analysis-own",
+  "analyses": [
+    "steiner"
+  ],
+  "status": "verified",
+  "citation": {
+    "authors": "Steiner CC",
+    "title": "Cephalometrics for you and me",
+    "journal": "American Journal of Orthodontics",
+    "year": 1953,
+    "volume": "39",
+    "pages": "729-755",
+    "openAccess": false
+  },
+  "population": {
+    "id": "analysis-own",
+    "label": "The analysis's own norms",
+    "ethnicity": []
+  },
+  "sample": {},
+  "selection": "unknown",
+  "modality": "film",
+  "scale": {
+    "kind": "not-stated"
+  },
+  "headPosition": "unknown",
+  "curation": {
+    "extractedBy": [
+      "AI reader A",
+      "AI reader B"
+    ],
+    "comparedOn": "2026-10-08",
+    "date": "2026-10-08",
+    "notes": "Compared 2026-10-08 (norms:compare exit 1). a and b agree on every value, unit and definitionMatch for all 13 rows; the only differences were source wording (13 rows, prose) -> one wording citing Fig. 9 p. 741 and the text page. Every value re-read from the page image of Fig. 9 (p. 741, PDF page 13): SNA 82, SNB 80, Difference 2, GoGn SN 32, Occl to SN 14.5, 1 to 1 130, 1 to NA 4 mm / 22 deg, 1 to NB 4 mm / 25 deg, 1 to GoGn 93, 6 to NA 27, 6 to NB 23 - all match. Molar signs: both extractors stored -27/-23 from Steiner's own text (p. 750: the upper molar 27 mm behind NA; p. 749: the lower molar behind NB) against the catalogue sign (+ ahead); confirmed in the OCR text of pp. 749-750 (words only, no digits disputed). Rulings applied: every entry centre 'ideal' (owner B-2); no sd (Steiner prints none; SDs come only from a borrowed donor at resolve time, Task 4c); scale not-stated (no film scale stated; magnification-research.md); M1 incisor mm rows close (labial surface); molar rows kept, close, with Steiner's own judgement that the standard is useless (merge notes). #18 Pog-NB not in this paper (both extractors; not entered)."
+  },
+  "caveats": [
+    "Steiner's values are ideals from his Cephalometric Appraisal chart's 'Average' column, not statistics of a measured sample: the paper gives no sample, no n and no SD.",
+    "The Average column is printed identically on the charts of Fig. 9 (p. 741), Fig. 14 (p. 745) and Fig. 22 (p. 753); values taken from Fig. 9.",
+    "Molar to NA / NB (27 and 23 mm): Steiner judges a standard for this measurement useless, since the teeth in between are many and vary in size (p. 736), and records the molar only to follow it over time. Kept as printed, with the catalogue's sign (behind = negative).",
+    "The chart writes the incisor-to-line mm distance with a minus sign when the incisor is behind the line (Fig. 14, p. 745), so the incisor rows already follow the catalogue's '+ when ahead'; only the molar rows use the opposite convention and were sign-converted.",
+    "Not in the catalogue, not entered: CC'-SN and GnGn'-SN (angles), S to E and S to L (mm), existing and desired arch length difference - the Average column is blank for all of them.",
+    "#18 Pog-NB is not in the 1953 paper (catalogue cites Steiner's later papers); no entry.",
+    "Film scale not stated anywhere in the paper; the two mm incisor rows and the molar rows are used as printed (assumed true size, owner ruling M-2)."
+  ],
+  "entries": [
+    {
+      "measurement": "m01_SNA",
+      "sex": "pooled",
+      "mean": 82,
+      "unit": "deg",
+      "source": "Fig. 9 Cephalometric Appraisal, Average column, p. 741 (text p. 740)",
+      "definitionMatch": "same",
+      "centre": "ideal"
+    },
+    {
+      "measurement": "m02_SNB",
+      "sex": "pooled",
+      "mean": 80,
+      "unit": "deg",
+      "source": "Fig. 9 Cephalometric Appraisal, Average column, p. 741 (text p. 740)",
+      "definitionMatch": "same",
+      "centre": "ideal"
+    },
+    {
+      "measurement": "m03_ANB",
+      "sex": "pooled",
+      "mean": 2,
+      "unit": "deg",
+      "source": "Fig. 9 Cephalometric Appraisal, Average column, p. 741 row 'Difference' (text p. 740)",
+      "definitionMatch": "same",
+      "centre": "ideal",
+      "note": "Chart row 'Difference' (SNA minus SNB); the text (p. 740) calls it in reality the angle ANB."
+    },
+    {
+      "measurement": "m20_SNGoGn",
+      "sex": "pooled",
+      "mean": 32,
+      "unit": "deg",
+      "source": "Fig. 9 Cephalometric Appraisal, Average column, p. 741 row 'GoGn SN' (text p. 740)",
+      "definitionMatch": "same",
+      "centre": "ideal"
+    },
+    {
+      "measurement": "m60_OPSN",
+      "sex": "pooled",
+      "mean": 14.5,
+      "unit": "deg",
+      "source": "Fig. 9 Cephalometric Appraisal, Average column, p. 741 row 'Occl to S N' (text p. 740: 14½ degrees)",
+      "definitionMatch": "same",
+      "centre": "ideal"
+    },
+    {
+      "measurement": "m53_Interincisal",
+      "sex": "pooled",
+      "mean": 130,
+      "unit": "deg",
+      "source": "Fig. 9 Cephalometric Appraisal, Average column, p. 741 row '1 to 1'",
+      "definitionMatch": "same",
+      "centre": "ideal"
+    },
+    {
+      "measurement": "m46_U1NAmm",
+      "sex": "pooled",
+      "mean": 4,
+      "unit": "mm",
+      "source": "Fig. 9 Cephalometric Appraisal, Average column, p. 741 row '1 to NA (mm)' (text p. 734)",
+      "definitionMatch": "close",
+      "definitionNote": "Steiner measured from the labial surface; the catalogue measures from the incisal tip (owner ruling C1)",
+      "centre": "ideal"
+    },
+    {
+      "measurement": "m47_U1NAdeg",
+      "sex": "pooled",
+      "mean": 22,
+      "unit": "deg",
+      "source": "Fig. 9 Cephalometric Appraisal, Average column, p. 741 row '1 to NA (angle)' (text p. 734)",
+      "definitionMatch": "same",
+      "centre": "ideal"
+    },
+    {
+      "measurement": "m49_L1NBmm",
+      "sex": "pooled",
+      "mean": 4,
+      "unit": "mm",
+      "source": "Fig. 9 Cephalometric Appraisal, Average column, p. 741 row '1 to NB (mm)' (text p. 736)",
+      "definitionMatch": "close",
+      "definitionNote": "Steiner measured from the labial surface; the catalogue measures from the incisal tip (owner ruling C1)",
+      "centre": "ideal"
+    },
+    {
+      "measurement": "m50_L1NBdeg",
+      "sex": "pooled",
+      "mean": 25,
+      "unit": "deg",
+      "source": "Fig. 9 Cephalometric Appraisal, Average column, p. 741 row '1 to NB (angle)' (text p. 736)",
+      "definitionMatch": "same",
+      "centre": "ideal"
+    },
+    {
+      "measurement": "m59_L1GoGn",
+      "sex": "pooled",
+      "mean": 93,
+      "unit": "deg",
+      "source": "Fig. 9 Cephalometric Appraisal, Average column, p. 741 row '1 to GoGn' (text p. 742)",
+      "definitionMatch": "same",
+      "centre": "ideal"
+    },
+    {
+      "measurement": "m70a_U6NA",
+      "sex": "pooled",
+      "mean": -27,
+      "unit": "mm",
+      "source": "Fig. 9 Cephalometric Appraisal, Average column, p. 741 row '6 to NA (mm)'",
+      "definitionMatch": "close",
+      "definitionNote": "Steiner measured from the most mesial point of the molar crown (p. 736); the catalogue measures from the molar cusp point (U6).",
+      "centre": "ideal",
+      "note": "The chart prints 27 for a molar BEHIND NA (p. 750: the molar 27 mm behind NA); the catalogue's sign makes behind negative, so stored as -27. Steiner himself (p. 736) judges a standard for it useless, because the teeth in between are many and vary in size."
+    },
+    {
+      "measurement": "m70b_L6NB",
+      "sex": "pooled",
+      "mean": -23,
+      "unit": "mm",
+      "source": "Fig. 9 Cephalometric Appraisal, Average column, p. 741 row '6 to NB (mm)'",
+      "definitionMatch": "close",
+      "definitionNote": "Steiner measured from the most mesial point of the molar crown (p. 736); the catalogue measures from the molar cusp point (L6).",
+      "centre": "ideal",
+      "note": "The chart prints 23 for a molar behind NB (p. 749: in his example the lower molar is 19 mm behind NB, Fig. 14 chart 19); the catalogue's sign makes behind negative, so stored as -23. Steiner records it only to follow it later (p. 736) and calls a molar standard useless (p. 736)."
+    }
+  ]
+}

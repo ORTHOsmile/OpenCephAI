@@ -1,0 +1,19 @@
+[package]
+name = "ceph-bench"
+version = "0.1.0"
+edition.workspace = true
+license.workspace = true
+description = "Benchmark harness: MRE/SDR on Ceph-Biometrics-400 using the same ceph-infer pipeline the app ships"
+
+[dependencies]
+ceph-infer = { path = "../ceph-infer" }
+anyhow = "1"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+clap = { version = "4", features = ["derive"] }
+image = "0.25"
+sha2 = "0.10"
+ceph-model = { path = "../ceph-model" }
+
+[dev-dependencies]
+tempfile = "3"

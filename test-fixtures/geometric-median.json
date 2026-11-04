@@ -1,0 +1,5 @@
+{ "note": "Shared by crates/ceph-bench/src/xeval.rs and apps/desktop/src/crosscheck/keys.test.ts: the bench's median of voters and the app's key 4 must agree within 1e-6.",
+  "cases": [
+    { "points": [[0, 0], [1, 0], [100, 0]], "median": [1, 0] },
+    { "points": [[0, 0], [3, 1], [1, 5]], "median": [1.681928955985179, 1.4565932032438045] },
+    { "points": [[2, 4], [4, 8]], "median": [3, 6] } ] }

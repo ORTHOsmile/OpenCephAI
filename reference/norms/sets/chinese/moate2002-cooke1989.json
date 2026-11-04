@@ -1,0 +1,200 @@
+{
+  "id": "moate2002-cooke1989",
+  "kind": "population",
+  "status": "verified",
+  "citation": {
+    "authors": "Cooke MS, Wei SH",
+    "title": "A comparative study of southern Chinese and British Caucasian cephalometric standards",
+    "journal": "Angle Orthod",
+    "year": 1989,
+    "volume": "59(2)",
+    "pages": "131–8",
+    "openAccess": false
+  },
+  "population": {
+    "id": "chinese",
+    "label": "Chinese",
+    "ethnicity": [
+      "Southern Chinese"
+    ],
+    "region": "southern China"
+  },
+  "sample": {
+    "n": 120,
+    "nMale": 120,
+    "ageMean": 12
+  },
+  "selection": "random-unselected",
+  "modality": "unknown",
+  "scale": {
+    "kind": "not-stated"
+  },
+  "headPosition": "NHP",
+  "secondHand": {
+    "via": "Moate & Darendeliler 2002, Table II"
+  },
+  "curation": {
+    "extractedBy": [
+      "AI reader A",
+      "AI reader B"
+    ],
+    "date": "2026-10-08",
+    "notes": "Compared 2026-10-08: norms:compare a vs b exit 1, 23 differences (logs/task9a2-compare-<id>.log). Every mean and SD of both extractors re-read from the page images (PDF pp. 2-6 = journal pp. 20-24), and the settled file checked by script against a third, independent reading of the pages (the table in sets.test.ts). Decisions: (0) Source text normalised to one pattern giving table, page, row and column with sex and age (a and b worded it differently; prose only). (1) '1/-A Pog mm' 5 ± 2: a #64 (L1 to A-Pog) / b #63 (U1 to A-Pog) -> #63: the compilation writes the upper incisor '1/' and the lower '/1' (e.g. '/1-MP'); close, incisor point not stated. (2) Y axis, facial axis, gonial angle a same / b close -> close (no definitions in the compilation). Fix round 1 (8 Oct): facial axis -> different, not used (owner FAX-1). Page images: PDF pp. 2-6 = journal pp. 20-24 (Tables I-VI), rendered at 2000 px.",
+    "comparedOn": "2026-10-08"
+  },
+  "caveats": [
+    "Quoted second-hand from Moate & Darendeliler 2002 (Aust Orthod J 18:19-26, a compilation of published Chinese cephalometric norms), Table II; the original paper was not read. The compilation rounds every mean and SD to whole numbers (Lew's soft tissue to 0.5) and gives no landmark, plane or method definitions.",
+    "The compilation states no film scale or magnification for any study; assumed true size (owner ruling M-2).",
+    "120 randomly selected Chinese males aged 12 years, cephalograms in natural head position (text p. 21). Table II prints Cooke under '11 Years'; entered at 11, the table header (merge notes).",
+    "'Southern' is from the title; the compilation does not name the place.",
+    "Not entered (not catalogue measurements; no ratio computed): S-N (67 ± 3).",
+    "Table V (p. 24) averages several studies; it is not entered for this study (merge notes)."
+  ],
+  "entries": [
+    {
+      "measurement": "m01_SNA",
+      "sex": "M",
+      "ageBand": [
+        11,
+        11
+      ],
+      "mean": 84,
+      "sd": 4,
+      "n": 120,
+      "unit": "deg",
+      "source": "Table II, p. 21, row 'SNA', column Cooke (males, 11 y)",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m02_SNB",
+      "sex": "M",
+      "ageBand": [
+        11,
+        11
+      ],
+      "mean": 80,
+      "sd": 4,
+      "n": 120,
+      "unit": "deg",
+      "source": "Table II, p. 21, row 'SNB', column Cooke (males, 11 y)",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m03_ANB",
+      "sex": "M",
+      "ageBand": [
+        11,
+        11
+      ],
+      "mean": 4,
+      "sd": 1,
+      "n": 120,
+      "unit": "deg",
+      "source": "Table II, p. 21, row 'ANB', column Cooke (males, 11 y)",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m57_IMPAgome",
+      "sex": "M",
+      "ageBand": [
+        11,
+        11
+      ],
+      "mean": 101,
+      "sd": 7,
+      "n": 120,
+      "unit": "deg",
+      "source": "Table II, p. 21, row '/1–MP', column Cooke (males, 11 y)",
+      "definitionMatch": "close",
+      "definitionNote": "Lower incisor to MP (/1–MP): mandibular plane not stated in the compilation; mapped to Go–Me (#57)."
+    },
+    {
+      "measurement": "m53_Interincisal",
+      "sex": "M",
+      "ageBand": [
+        11,
+        11
+      ],
+      "mean": 115,
+      "sd": 11,
+      "n": 120,
+      "unit": "deg",
+      "source": "Table II, p. 21, row 'Interincisal', column Cooke (males, 11 y)",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m36_Gonial",
+      "sex": "M",
+      "ageBand": [
+        11,
+        11
+      ],
+      "mean": 121,
+      "sd": 6,
+      "n": 120,
+      "unit": "deg",
+      "source": "Table II, p. 21, row 'Gonial angle', column Cooke (males, 11 y)",
+      "definitionMatch": "close",
+      "definitionNote": "Gonial angle: points not stated in the compilation (catalogue: Ar–Go–Me)."
+    },
+    {
+      "measurement": "m35_Articular",
+      "sex": "M",
+      "ageBand": [
+        11,
+        11
+      ],
+      "mean": 151,
+      "sd": 6,
+      "n": 120,
+      "unit": "deg",
+      "source": "Table II, p. 21, row 'S–Ar–Go', column Cooke (males, 11 y)",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m63_U1APog",
+      "sex": "M",
+      "ageBand": [
+        11,
+        11
+      ],
+      "mean": 5,
+      "sd": 2,
+      "n": 120,
+      "unit": "mm",
+      "source": "Table II, p. 21, row '1/–A Pog', column Cooke (males, 11 y)",
+      "definitionMatch": "close",
+      "definitionNote": "Printed '1/–A Pog mm' (upper incisor, the compilation's '1/' notation; '/1' is the lower incisor): incisor point not stated in the compilation, nor the sign (catalogue: tip, + ahead)."
+    },
+    {
+      "measurement": "m30_FacAxisR",
+      "sex": "M",
+      "ageBand": [
+        11,
+        11
+      ],
+      "mean": 84,
+      "sd": 6,
+      "n": 120,
+      "unit": "deg",
+      "source": "Table II, p. 21, row 'Facial axis', column Cooke (males, 11 y)",
+      "definitionMatch": "different",
+      "definitionNote": "Not used (owner ruling 8 Oct): 80–85° with no definition in the compilation; Ricketts' facial axis is 90 ± 3.5, and these values fit Downs' facial angle at least as well — likely a different measurement."
+    },
+    {
+      "measurement": "m24_YAxis",
+      "sex": "M",
+      "ageBand": [
+        11,
+        11
+      ],
+      "mean": 66,
+      "sd": 6,
+      "n": 120,
+      "unit": "deg",
+      "source": "Table II, p. 21, row 'Y axis', column Cooke (males, 11 y)",
+      "definitionMatch": "close",
+      "definitionNote": "Y axis: definition not stated in the compilation. The catalogue's is Downs' S–Gn to FH (#24). The printed 66° sits about 5° above Zheng 2026's Chinese FH-based Y-axis (60.8–61.1°), which fits S–Gn to SN instead (SN is usually some 6–7° steeper than FH); it cannot be settled from the compilation, so close, not same."
+    }
+  ]
+}

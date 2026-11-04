@@ -1,0 +1,81 @@
+{
+  "id": "jacobson1975",
+  "kind": "analysis-own",
+  "analyses": [
+    "wits"
+  ],
+  "status": "verified",
+  "citation": {
+    "authors": "Jacobson A",
+    "title": "The \"Wits\" appraisal of jaw disharmony",
+    "journal": "American Journal of Orthodontics",
+    "year": 1975,
+    "volume": "67",
+    "pages": "125-138",
+    "doi": "10.1016/0002-9416(75)90065-2",
+    "pmid": "1054214",
+    "openAccess": false
+  },
+  "population": {
+    "id": "analysis-own",
+    "label": "The analysis's own norms",
+    "ethnicity": []
+  },
+  "sample": {
+    "n": 46,
+    "nMale": 21,
+    "nFemale": 25
+  },
+  "selection": "class-I",
+  "modality": "film",
+  "scale": {
+    "kind": "not-stated"
+  },
+  "headPosition": "unknown",
+  "curation": {
+    "extractedBy": [
+      "AI reader A",
+      "AI reader B"
+    ],
+    "comparedOn": "2026-10-08",
+    "date": "2026-10-08",
+    "notes": "Compared 2026-10-08 (norms:compare exit 1). Both extractors read the men's mean as printed, +1.17 (page image p. 474, PDF p. 5: mean 1.17, SD 1.9, range -2 to 4 mm, with no minus before 1.17) and both flagged that the same sentence places BO about 1 mm ahead of AO. Settled by OWNER RULING 7 Oct: men -1.17, SD 1.9, printed range not stored; women -0.10 +- 1.77 (range -4.5 to 1.5) as printed - all re-read from the image (the reprint prints the minus signs on -0.10, -2, -4.5 and the Class III examples). Differences settled: citation.doi a=10.1067/... b=10.1016/... -> 10.1016/S0889-5406(03)00540-7, the publisher's DOI (jacobson-1975.html); the reprint PDF prints doi:10.1067/S0889-5406(03)00540-7 (caveat). Source wording on both rows (prose). Selection a='ideal-aesthetic' b='class-I' -> class-I (chosen for excellent occlusion, p. 474; facial balance not stated). PMID 1054214 from the owner ruling (abstract). Scale not-stated. The old caveat 'reprint text lost its minus signs' is wrong and not carried (merge notes)."
+  },
+  "caveats": [
+    "Read from the Classic Article reprint, Am J Orthod Dentofacial Orthop 2003;124:470-9 (first published Am J Orthod, February 1975;67:125-38). The reprint PDF prints doi:10.1067/S0889-5406(03)00540-7; the publisher page gives 10.1016/S0889-5406(03)00540-7 (the reprint's DOI). The citation's doi is the 1975 original's, 10.1016/0002-9416(75)90065-2, as SOURCES.md gives it (final review M-1, 12 Oct; until then the reprint DOI was stored).",
+    "Men's mean: printed '1.17' without a sign (p. 474), but the same sentence places BO about 1 mm ahead of AO, the summary says the same, and by his own rule (p. 474) BO forward of AO is negative. Owner ruling 7 Oct: stored as -1.17 (SD 1.9); the printed range (-2 to 4 mm) fits the unsigned figure, not the ruling, so it is not stored.",
+    "Women: -0.10 mm, SD 1.77, range -4.5 to 1.5 as printed (the text says AO and BO usually fell together).",
+    "Sample: 21 adult men and 25 adult women chosen for excellent occlusion (p. 474). Ages, ethnicity, film scale and head position are not stated. The values are in running text, not a table.",
+    "Sign (p. 474): BO behind AO is a positive reading (Class II), BO ahead of AO negative (Class III) - the catalogue's sign for #13."
+  ],
+  "entries": [
+    {
+      "measurement": "m13_Wits",
+      "sex": "M",
+      "mean": -1.17,
+      "sd": 1.9,
+      "n": 21,
+      "unit": "mm",
+      "source": "p. 474 (2003 reprint), text under 'The \"Wits\" appraisal of jaw disharmony'; sign from the same sentence and the abstract (PMID 1054214)",
+      "definitionMatch": "close",
+      "note": "Printed as 1.17 without a sign; his text and abstract place BO 1 mm ahead of AO (negative by his rule); printed range -2 to 4 not stored (owner ruling 7 Oct).",
+      "definitionNote": "Measured on the functional occlusal plane (through the premolars); this app measures Wits on the occlusal plane through the molars and incisors (since 16 Oct 2026)"
+    },
+    {
+      "measurement": "m13_Wits",
+      "sex": "F",
+      "mean": -0.1,
+      "sd": 1.77,
+      "range": {
+        "low": -4.5,
+        "high": 1.5
+      },
+      "n": 25,
+      "unit": "mm",
+      "source": "p. 474 (2003 reprint), text under 'The \"Wits\" appraisal of jaw disharmony'",
+      "definitionMatch": "close",
+      "note": "As printed: -0.10 mm, SD 1.77, range -4.5 to 1.5 (minus signs printed on the page).",
+      "definitionNote": "Measured on the functional occlusal plane (through the premolars); this app measures Wits on the occlusal plane through the molars and incisors (since 16 Oct 2026)"
+    }
+  ]
+}

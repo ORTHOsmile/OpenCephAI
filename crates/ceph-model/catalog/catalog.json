@@ -1,0 +1,423 @@
+[
+ {
+  "id": "cwlachap-hrnet-w32",
+  "title": "HRNet-W32 (cwlachap)",
+  "tier": "standard",
+  "citation": "cwlachap, hrnet-cephalometric-landmark-detection (Hugging Face, 2025)",
+  "sizeMb": 350,
+  "licence": {
+   "version": "1",
+   "code": "MIT",
+   "weights": "Trained on ISBI 2015 films, treated as CC BY-NC 4.0 (unconfirmed)",
+   "summary": "Code under the MIT licence. Trained on the ISBI 2015 challenge films. Their organisers published no licence, so OpenCephAI treats the films as CC BY-NC 4.0: non-commercial use only. Not legal advice: check that your use is allowed.",
+   "url": "https://huggingface.co/cwlachap/hrnet-cephalometric-landmark-detection",
+   "nonCommercial": true
+  },
+  "source": {
+   "kind": "huggingface",
+   "repo": "cwlachap/hrnet-cephalometric-landmark-detection",
+   "revision": "2079887432b6db7f7a26ec1041b8e55689575b88",
+   "file": "best_model.pth",
+   "sha256": "20dd5827ba8c205c7ace12e39ee56ba0ff31fd4ffe5a7d7137c2980c06a48444"
+  },
+  "stateDict": [
+   "model_state_dict",
+   "state_dict",
+   ""
+  ],
+  "stripPrefixes": [
+   "module."
+  ],
+  "skeleton": "cwlachap-hrnet-w32.onnx",
+  "skeletonSha256": "57af69dbe035ddd153b33341efe4035057c590782cf2adcc3e0903c601b13db2",
+  "weightsSha256": "276772267f80e1f0d81b4ba40c2d0f0302672bc81da2d3862b16c471f075c46e",
+  "head": [
+   "final_layer.weight",
+   "final_layer.bias"
+  ],
+  "leakage": {
+   "ceph400": "leaked"
+  },
+  "manifest": {
+   "manifestVersion": 2,
+   "id": "cwlachap-hrnet-w32",
+   "version": "cwlachap-2025-07-18",
+   "title": "HRNet-W32 (cwlachap)",
+   "input": {
+    "name": "image",
+    "width": 768,
+    "height": 768,
+    "channels": 3,
+    "layout": "chw",
+    "resize": {
+     "kind": "letterbox",
+     "interp": "cv2-linear"
+    },
+    "normalize": {
+     "kind": "fixed",
+     "mean": [
+      0.485,
+      0.456,
+      0.406
+     ],
+     "std": [
+      0.229,
+      0.224,
+      0.225
+     ],
+     "scale": 255.0
+    }
+   },
+   "output": {
+    "name": "heatmaps",
+    "width": 192,
+    "height": 192,
+    "stride": 4,
+    "heatmapCenter": "corner",
+    "decode": {
+     "kind": "softargmax",
+     "window": 11
+    }
+   },
+   "runtime": "coreml-fp32",
+   "landmarkMap": [
+    "S",
+    "N",
+    "Or",
+    "Po",
+    "A",
+    "B",
+    "Pog",
+    "Me",
+    "Gn",
+    "Go",
+    "L1T",
+    "U1T",
+    "UL",
+    "LL",
+    "Sn",
+    "PogS",
+    "PNS",
+    "ANS",
+    "Ar"
+   ],
+   "trainingNote": "ISBI-2015 random 70/15/15 split: overlaps Ceph-Biometrics-400, so its scores there are optimistic"
+  }
+ },
+ {
+  "id": "gu2net-isbi19",
+  "title": "GU2Net",
+  "tier": "standard",
+  "citation": "Zhu et al., You Only Learn Once: Universal Anatomical Landmark Detection, MICCAI 2021",
+  "sizeMb": 50,
+  "licence": {
+   "version": "1",
+   "code": "MIT",
+   "weights": "Trained on ISBI 2015 films, treated as CC BY-NC 4.0 (unconfirmed)",
+   "summary": "Code under the MIT licence. Trained on the ISBI 2015 challenge films. Their organisers published no licence, so OpenCephAI treats the films as CC BY-NC 4.0: non-commercial use only. Not legal advice: check that your use is allowed.",
+   "url": "https://github.com/MIRACLE-Center/YOLO_Universal_Anatomical_Landmark_Detection",
+   "nonCommercial": true
+  },
+  "source": {
+   "kind": "gdrive",
+   "id": "1yQLjZTCqn_fWzyPPJSRxFycrnIoe4U3U",
+   "sha256": "185e01ef901d992e337aa5301a3b991e746fa539b34b452277727c9cc530566c",
+   "zipMember": "best.pt",
+   "page": "https://drive.google.com/file/d/1yQLjZTCqn_fWzyPPJSRxFycrnIoe4U3U/view"
+  },
+  "stateDict": [
+   "model_state_dict"
+  ],
+  "stripPrefixes": [
+   "module."
+  ],
+  "skeleton": "gu2net-isbi19.onnx",
+  "skeletonSha256": "c41e7116c098343bec27301b67fa3667be93b291bc102440202e67b7949d796b",
+  "weightsSha256": "36967440bef7147e1b89dd63839613d99ac03d5d8f5964ef7093f586e42ee6aa",
+  "head": [
+   "globalNet.out1.conv.weight",
+   "globalNet.out1.conv.bias",
+   "localNet.out1.conv.weight",
+   "localNet.out1.conv.bias"
+  ],
+  "leakage": {
+   "ceph400": "clean on test1/test2 (trained on ISBI 001–150)"
+  },
+  "manifest": {
+   "manifestVersion": 2,
+   "id": "gu2net-isbi19",
+   "version": "best.pt",
+   "title": "GU2Net",
+   "input": {
+    "name": "image",
+    "width": 416,
+    "height": 512,
+    "channels": 1,
+    "layout": "cwh",
+    "resize": {
+     "kind": "stretch",
+     "interp": "pil-bicubic",
+     "coords": "corner"
+    },
+    "normalize": {
+     "kind": "zscore"
+    }
+   },
+   "output": {
+    "name": "heatmaps",
+    "width": 416,
+    "height": 512,
+    "stride": 1,
+    "heatmapCenter": "corner",
+    "decode": {
+     "kind": "argmax"
+    }
+   },
+   "runtime": "cpu",
+   "landmarkMap": [
+    "S",
+    "N",
+    "Or",
+    "Po",
+    "A",
+    "B",
+    "Pog",
+    "Me",
+    "Gn",
+    "Go",
+    "L1T",
+    "U1T",
+    "UL",
+    "LL",
+    "Sn",
+    "PogS",
+    "PNS",
+    "ANS",
+    "Ar"
+   ],
+   "trainingNote": "ISBI-2015 training films 001–150: Test1/Test2 of Ceph-Biometrics-400 are clean"
+  }
+ },
+ {
+  "id": "srpose-cldet23",
+  "title": "SRPose (CL-Detection 2023)",
+  "tier": "optional",
+  "citation": "Wu et al., arXiv:2309.17143 (MICCAI CL-Detection 2023)",
+  "sizeMb": 270,
+  "licence": {
+   "version": "1",
+   "code": "Apache-2.0",
+   "weights": "CC BY-NC-ND 4.0 (training data)",
+   "summary": "Non-commercial use only, and changed versions may not be shared. OpenCephAI converts it on this Mac for your own use and never shares it. A fee-charging practice may count as commercial use. Not legal advice: check that your use is allowed.",
+   "url": "https://github.com/5k5000/CLdetection2023",
+   "nonCommercial": true
+  },
+  "source": {
+   "kind": "gdrive",
+   "id": "10HrNDBBpuECTcgNgcWNUt7kM6m4ZMXM4",
+   "sha256": "fb1a781ac1c83149b379cb15724e3b0fae06ba2d567978f35c61e9d06b46fdcc",
+   "page": "https://drive.google.com/file/d/10HrNDBBpuECTcgNgcWNUt7kM6m4ZMXM4/view"
+  },
+  "stateDict": [
+   "state_dict"
+  ],
+  "stripPrefixes": [],
+  "skeleton": "srpose-cldet23.onnx",
+  "skeletonSha256": "61b601aa6194e1142a39e5159fd498611257d82af0c68106bc18cc983228e368",
+  "weightsSha256": "70fe793b5a70a3bf419f0ab68168d455d3ee9de219ded109968fcd9e6fc5f40c",
+  "head": [
+   "head.converge.3.conv.weight",
+   "head.converge.3.conv.bias"
+  ],
+  "leakage": {
+   "ceph400": "leaked"
+  },
+  "manifest": {
+   "manifestVersion": 2,
+   "id": "srpose-cldet23",
+   "version": "cldet23-trainval-map2",
+   "title": "SRPose (CL-Detection 2023)",
+   "input": {
+    "name": "image",
+    "width": 1024,
+    "height": 1024,
+    "channels": 3,
+    "layout": "chw",
+    "resize": {
+     "kind": "topdown",
+     "padding": 1.25
+    },
+    "normalize": {
+     "kind": "fixed",
+     "mean": [
+      121.25,
+      121.25,
+      121.25
+     ],
+     "std": [
+      76.5,
+      76.5,
+      76.5
+     ],
+     "scale": 1.0
+    }
+   },
+   "output": {
+    "name": "heatmaps",
+    "width": 1024,
+    "height": 1024,
+    "stride": 1,
+    "heatmapCenter": "corner",
+    "decode": {
+     "kind": "dark",
+     "kernel": 11
+    }
+   },
+   "runtime": "coreml-fp32",
+   "landmarkMap": [
+    "S",
+    "N",
+    "Or",
+    "Po",
+    "A",
+    "B",
+    "Pog",
+    "Me",
+    "Gn",
+    "Go",
+    "L1T",
+    "U1T",
+    "UL",
+    "LL",
+    "Sn",
+    "PogS",
+    "PNS",
+    "ANS",
+    "Ar",
+    "D",
+    "U1A",
+    "L1A",
+    "Cm",
+    "PTM",
+    "Co",
+    "Prn",
+    "Ba",
+    "Pt",
+    "Bo",
+    "ULs",
+    "LLs",
+    "GnS",
+    "MeS",
+    "G",
+    "Ns",
+    "Cerv",
+    "U6",
+    "L6"
+   ],
+   "trainingNote": "CL-Detection 2023 train+val, which includes the ISBI-2015 films: Ceph-400 scores are optimistic"
+  }
+ },
+ {
+  "id": "aariz-cepha29",
+  "title": "Aariz (CEPHA29, HRNet-W32)",
+  "tier": "optional",
+  "format": "onnx",
+  "citation": "Khalid et al., Aariz dataset, Sci Data 2025, doi:10.1038/s41597-025-05542-3; model by M. N. Sh., huggingface.co/MuhammadNabeelSh/cephalometry-landmarks",
+  "sizeMb": 115,
+  "licence": {
+   "version": "1",
+   "code": "CC BY 4.0",
+   "weights": "CC BY 4.0 (Aariz dataset, CC BY 4.0)",
+   "summary": "Free to use, including in a practice, with credit to the authors. Research and education only: not a medical device.",
+   "url": "https://huggingface.co/MuhammadNabeelSh/cephalometry-landmarks",
+   "nonCommercial": false
+  },
+  "source": {
+   "kind": "huggingface",
+   "repo": "MuhammadNabeelSh/cephalometry-landmarks",
+   "revision": "99229d507ed072dca8ec78b442299aa452753e9e",
+   "file": "landmarks-cepha29.onnx",
+   "sha256": "cacd38201ada69fa7d3ea2566cb63b315302f35e3c66fb483a6eed32c88f14c5"
+  },
+  "leakage": {
+   "aariz": "trained on Aariz train (valid used for its reported score); test split not used, per the uploader",
+   "ceph400": "clean (not trained on ISBI films)"
+  },
+  "manifest": {
+   "manifestVersion": 2,
+   "id": "aariz-cepha29",
+   "version": "99229d5",
+   "title": "Aariz (CEPHA29, HRNet-W32)",
+   "input": {
+    "name": "input",
+    "width": 768,
+    "height": 768,
+    "channels": 3,
+    "layout": "chw",
+    "resize": {
+     "kind": "stretch",
+     "interp": "pil-bilinear",
+     "coords": "corner"
+    },
+    "normalize": {
+     "kind": "fixed",
+     "mean": [
+      0.485,
+      0.456,
+      0.406
+     ],
+     "std": [
+      0.229,
+      0.224,
+      0.225
+     ],
+     "scale": 255.0
+    }
+   },
+   "output": {
+    "name": "heatmaps",
+    "width": 192,
+    "height": 192,
+    "stride": 4,
+    "heatmapCenter": "corner",
+    "decode": {
+     "kind": "dark",
+     "kernel": 11
+    }
+   },
+   "runtime": "coreml-fp32",
+   "landmarkMap": [
+    "A",
+    "ANS",
+    "Ar",
+    "B",
+    "Co",
+    "Gn",
+    "Go",
+    "L1A",
+    "L1T",
+    "L6",
+    null,
+    "LL",
+    "UL",
+    "Me",
+    "N",
+    "Ns",
+    "Or",
+    "PNS",
+    "Prn",
+    "Po",
+    "Pog",
+    "PogS",
+    null,
+    "S",
+    "Sn",
+    "U1A",
+    "U1T",
+    "U6",
+    null
+   ],
+   "trainingNote": "Aariz train split (7 X-ray machines). The uploader reports MRE 1.24 mm on Aariz valid. OpenCephAI chose its decode (DARK) on Aariz valid; the Aariz test split is held out"
+  }
+ }
+]

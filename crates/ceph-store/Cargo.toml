@@ -1,0 +1,22 @@
+[package]
+name = "ceph-store"
+version = "0.1.0"
+edition.workspace = true
+license.workspace = true
+description = "CephTrace case library: SQLite (WAL) plus content-addressed images, all on this Mac"
+
+[dependencies]
+rusqlite = { version = "0.40", features = ["bundled", "backup"] }
+image = "0.25"
+ceph-label = { path = "../ceph-label" }
+sha2 = "0.10"
+uuid = { version = "1", features = ["v4"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+anyhow = "1"
+kamadak-exif = "0.6.1"
+
+[dev-dependencies]
+kamadak-exif = "0.6.1"
+sha2 = "0.10"
+tempfile = "3"

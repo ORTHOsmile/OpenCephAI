@@ -1,0 +1,11 @@
+export type { NormSex, DefinitionMatch, SetStatus, SetKind, NormEntry, NormSet, FilmScale } from './types';
+export { validateSet, plausibilityErrors, PLAUSIBLE_BOUNDS, PLAUSIBLE_OVERRIDES } from './validate';
+export { loadSets, loadSetsFrom, POPULATIONS } from './load';
+export { ageAt } from './age';
+export type { UserNorm, NormQuery, NormFlag, Resolved, SdDonor, NormPicks, NormChoice } from './resolve';
+export { resolveNorm, zScore, band, resolveAcross, normChoices, populationsOffered, shortCitation, AGE_NOT_ENTERED_WORDS, FILM_DATE_MISSING_WORDS, NORM_FLAGS, NO_ANALYSIS_LABEL } from './resolve';
+export { normSourcesFor, type NormSource } from './sources';
+export { FLAG_WORDS, OWN_NORMS_LABEL, SEX_NOT_RECORDED_HINT, choiceFacts } from './flags';
+export { severity, type Severity } from './severity';
+export { DEFAULT_MEANINGS, type Meaning } from './meanings';
+export { meaningPhrase } from './meanings-phrase';

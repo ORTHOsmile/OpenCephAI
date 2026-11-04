@@ -1,0 +1,38 @@
+[package]
+name = "cephtrace-desktop"
+version = "0.1.0"
+edition.workspace = true
+license.workspace = true
+description = "CephTrace desktop app (Tauri 2)"
+
+[lib]
+name = "cephtrace_desktop_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+tauri = { version = "2", features = ["macos-private-api", "protocol-asset"] }
+tauri-plugin-dialog = "2"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+anyhow = "1"
+ceph-infer = { path = "../../../crates/ceph-infer" }
+ceph-store = { path = "../../../crates/ceph-store" }
+ceph-label = { path = "../../../crates/ceph-label" }
+ceph-model = { path = "../../../crates/ceph-model" }
+reqwest = { version = "0.12", default-features = false, features = ["blocking", "rustls-tls"] }
+image = "0.25"
+
+[dev-dependencies]
+tempfile = "3"
+rusqlite = { version = "0.40", features = ["bundled"] }
+
+[target.'cfg(target_os = "macos")'.dependencies]
+window-vibrancy = "0.6"
+# The window buttons' centring (window_chrome.rs). Pinned to the versions tao/wry already use (Cargo.lock), with
+# default features off so no new crate is pulled in.
+objc2 = { version = "=0.6.4", default-features = false, features = ["std"] }
+objc2-app-kit = { version = "=0.3.2", default-features = false, features = ["std", "NSWindow", "NSButton", "NSControl", "NSView", "NSResponder", "NSGraphics"] }
+objc2-foundation = { version = "=0.3.2", default-features = false, features = ["std", "NSGeometry", "NSProcessInfo", "NSString"] }

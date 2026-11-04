@@ -1,0 +1,6 @@
+{
+  "_note": "Pre-flight D11 (spec 2026-10-17): the learnable new details and their length limit. Rust ceph_label::layout::{DETAIL_FIELDS, DETAIL_MAX_CHARS} and the screen's choose.ts {DETAIL_FIELDS, DETAIL_MAX} are each pinned to this file by a test. maxChars counts Unicode code points (Rust chars().count(), SQLite length()), not UTF-16 units (JS .length): measure with [...s].length in TS.",
+  "fields": ["patient_id", "xray_type", "xray_size", "practice"],
+  "maxChars": 200,
+  "counts": "code points"
+}

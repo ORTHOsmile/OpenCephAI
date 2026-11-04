@@ -1,0 +1,271 @@
+{
+  "id": "alshahrani2018",
+  "kind": "population",
+  "status": "verified",
+  "citation": {
+    "authors": "Alshahrani I, Kamran MA, Alhaizaey A, Abumelha N",
+    "title": "Evaluation of skeletal variations and establishment of Cephalometric Norms in Saudi Sub Population using Bjork Jarabak's analysis",
+    "journal": "Pakistan Journal of Medical Sciences",
+    "year": 2018,
+    "volume": "34(5)",
+    "pages": "1104-1109",
+    "doi": "10.12669/pjms.345.15556",
+    "pmid": "30344558",
+    "pmcid": "PMC6191777",
+    "openAccess": true
+  },
+  "population": {
+    "id": "saudi",
+    "label": "Saudi",
+    "ethnicity": [
+      "Saudi"
+    ],
+    "country": "Saudi Arabia",
+    "region": "Abha (King Khalid University)"
+  },
+  "sample": {
+    "n": 100,
+    "nMale": 50,
+    "nFemale": 50,
+    "ageMin": 17,
+    "ageMax": 22
+  },
+  "selection": "class-I",
+  "modality": "film",
+  "scale": {
+    "kind": "true-size",
+    "source": "Methods: calibrated with the Dolphin ruler"
+  },
+  "headPosition": "NHP",
+  "curation": {
+    "extractedBy": [
+      "AI reader A",
+      "AI reader B"
+    ],
+    "comparedOn": "2026-10-08",
+    "date": "2026-10-08",
+    "notes": "Set id alshahrani2018 (ruling P46): the extractions are named khan-bjork-jarabak.{a,b}.json after the brief's wrong author name. Compared 2026-10-08 (norms:compare a vs b exit 1, 14 differences, all source wording; logs/task9b2-compare-khan-bjork-jarabak.log). All 14 means, SDs and n agree; every one re-read from Tables III and IV with the PubMed full-text tool (PMC6191777, DOI 10.12669/pjms.345.15556; rule P44, article text not saved): agree. Decisions: source wording -> table, row and column with PMC6191777 (print page not given; article pp. 1104-1109) (merge notes). Citation authors as PubMed lists them (b; a wrote 'Khan et al.'). Rows using gonion close: Table I defines 'Gonion constructed' (C3). Women's sum 397.302 kept as printed (parts 395.352), ratio SD '± 3' as printed. Scale true-size: both extractors (Methods: the software was calibrated for magnification with a known distance on the Dolphin ruler). Selection class-I: BSI Class I incisors, normal occlusion, little or no crowding, no skeletal abnormality, no prior orthodontics (Methods); no facial-balance criterion."
+  },
+  "caveats": [
+    "Authors: PubMed lists Alshahrani I, Kamran MA, Alhaizaey A, Abumelha N; earlier briefs called this paper 'Khan' (corrected, ruling P46).",
+    "Sample: 100 non-growing Saudi patients (50 M, 50 F), 17-22 y, King Khalid University, Abha; normal occlusion (BSI Class I incisors), no orthodontic history, little or no crowding, no skeletal abnormality, parents and grandparents Saudi; convenience sampling (Methods).",
+    "Film cephalograms in natural head posture, scanned and traced in Dolphin Imaging 11 (Methods).",
+    "Gonion is constructed (Table I: 'Gonion constructed'); the app's Go is the AI's anatomical gonion (C3), so every row using Go is close.",
+    "Not in the catalogue: anterior cranial base S-N (M 74.644 ± 4.851, F 68.08 ± 4.851), posterior cranial base S-Ar (M 34.18 ± 5.591, F 31.11 ± 4.241), ramus height Ar-Go (M 49.340 ± 4.797, F 44.250 ± 5.597), mandibular body length Go-Me (M 78.327, SD printed '6626'; F 74.970 ± 6.135) mm. The catalogue's ratios #43 (S-N/Go-Me) and #44 (Ar-S/Ar-Go) are not tabled and are not computed from the means.",
+    "The men's Go-Me SD is printed '6626' (a missing decimal point); not entered (the length is not a catalogue measurement anyway).",
+    "Upper and lower gonial angles (#37, #38) are defined in Table I but no values are tabled.",
+    "Copy-editing slips in the paper: the Statistical Analysis and Discussion mention 'Pakistani adults'; Table II's p-values repeat some of Table III's. Values entered as printed.",
+    "Tables III-IV also print Jarabak's own norms beside the Saudi values; those are a separate set (jarabak-via-alshahrani2018)."
+  ],
+  "entries": [
+    {
+      "measurement": "m34_Saddle",
+      "sex": "M",
+      "ageBand": [
+        17,
+        22
+      ],
+      "mean": 125.65,
+      "sd": 5.163,
+      "n": 50,
+      "unit": "deg",
+      "source": "Table III, row 'Saddle Angle', Saudi males column, PMC6191777 (print page not given; article pp. 1104-1109)",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m34_Saddle",
+      "sex": "F",
+      "ageBand": [
+        17,
+        22
+      ],
+      "mean": 125.842,
+      "sd": 6.661,
+      "n": 50,
+      "unit": "deg",
+      "source": "Table IV, row 'Saddle Angle', Saudi females column, PMC6191777 (print page not given; article pp. 1104-1109)",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m35_Articular",
+      "sex": "M",
+      "ageBand": [
+        17,
+        22
+      ],
+      "mean": 139.806,
+      "sd": 6.302,
+      "n": 50,
+      "unit": "deg",
+      "source": "Table III, row 'Articular angle', Saudi males column, PMC6191777 (print page not given; article pp. 1104-1109)",
+      "definitionMatch": "close",
+      "definitionNote": "Alshahrani's gonion is constructed (Table I: 'Gonion constructed'); the catalogue uses the AI's anatomical Go (C3)."
+    },
+    {
+      "measurement": "m35_Articular",
+      "sex": "F",
+      "ageBand": [
+        17,
+        22
+      ],
+      "mean": 139.328,
+      "sd": 7.916,
+      "n": 50,
+      "unit": "deg",
+      "source": "Table IV, row 'Articular angle', Saudi females column, PMC6191777 (print page not given; article pp. 1104-1109)",
+      "definitionMatch": "close",
+      "definitionNote": "Alshahrani's gonion is constructed (Table I: 'Gonion constructed'); the catalogue uses the AI's anatomical Go (C3)."
+    },
+    {
+      "measurement": "m36_Gonial",
+      "sex": "M",
+      "ageBand": [
+        17,
+        22
+      ],
+      "mean": 130.412,
+      "sd": 6.413,
+      "n": 50,
+      "unit": "deg",
+      "source": "Table III, row 'Gonial Angle', Saudi males column, PMC6191777 (print page not given; article pp. 1104-1109)",
+      "definitionMatch": "close",
+      "definitionNote": "Alshahrani's gonion is constructed (Table I: 'Gonion constructed'); the catalogue uses the AI's anatomical Go (C3)."
+    },
+    {
+      "measurement": "m36_Gonial",
+      "sex": "F",
+      "ageBand": [
+        17,
+        22
+      ],
+      "mean": 130.182,
+      "sd": 4.134,
+      "n": 50,
+      "unit": "deg",
+      "source": "Table IV, row 'Gonial Angle', Saudi females column, PMC6191777 (print page not given; article pp. 1104-1109)",
+      "definitionMatch": "close",
+      "definitionNote": "Alshahrani's gonion is constructed (Table I: 'Gonion constructed'); the catalogue uses the AI's anatomical Go (C3)."
+    },
+    {
+      "measurement": "m39_SumAngles",
+      "sex": "M",
+      "ageBand": [
+        17,
+        22
+      ],
+      "mean": 395.932,
+      "sd": 4.604,
+      "n": 50,
+      "unit": "deg",
+      "source": "Table III, row 'Total Sum', Saudi males column, PMC6191777 (print page not given; article pp. 1104-1109)",
+      "definitionMatch": "close",
+      "definitionNote": "Alshahrani's gonion is constructed (Table I: 'Gonion constructed'); the catalogue uses the AI's anatomical Go (C3)."
+    },
+    {
+      "measurement": "m39_SumAngles",
+      "sex": "F",
+      "ageBand": [
+        17,
+        22
+      ],
+      "mean": 397.302,
+      "sd": 4.504,
+      "n": 50,
+      "unit": "deg",
+      "source": "Table IV, row 'Total Sum', Saudi females column, PMC6191777 (print page not given; article pp. 1104-1109)",
+      "definitionMatch": "close",
+      "definitionNote": "Alshahrani's gonion is constructed (Table I: 'Gonion constructed'); the catalogue uses the AI's anatomical Go (C3).",
+      "note": "As printed: 397.302, though the women's saddle, articular and gonial means add to 395.352."
+    },
+    {
+      "measurement": "m40_SGo",
+      "sex": "M",
+      "ageBand": [
+        17,
+        22
+      ],
+      "mean": 78.448,
+      "sd": 7.09,
+      "n": 50,
+      "unit": "mm",
+      "source": "Table III, row 'Posterior facial height', Saudi males column, PMC6191777 (print page not given; article pp. 1104-1109)",
+      "definitionMatch": "close",
+      "definitionNote": "Alshahrani's gonion is constructed (Table I: 'Gonion constructed'); the catalogue uses the AI's anatomical Go (C3)."
+    },
+    {
+      "measurement": "m40_SGo",
+      "sex": "F",
+      "ageBand": [
+        17,
+        22
+      ],
+      "mean": 72.02,
+      "sd": 6.192,
+      "n": 50,
+      "unit": "mm",
+      "source": "Table IV, row 'Posterior facial height', Saudi females column, PMC6191777 (print page not given; article pp. 1104-1109)",
+      "definitionMatch": "close",
+      "definitionNote": "Alshahrani's gonion is constructed (Table I: 'Gonion constructed'); the catalogue uses the AI's anatomical Go (C3)."
+    },
+    {
+      "measurement": "m41_NMe",
+      "sex": "M",
+      "ageBand": [
+        17,
+        22
+      ],
+      "mean": 120.608,
+      "sd": 6.009,
+      "n": 50,
+      "unit": "mm",
+      "source": "Table III, row 'Anterior facial height', Saudi males column, PMC6191777 (print page not given; article pp. 1104-1109)",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m41_NMe",
+      "sex": "F",
+      "ageBand": [
+        17,
+        22
+      ],
+      "mean": 112.118,
+      "sd": 6.099,
+      "n": 50,
+      "unit": "mm",
+      "source": "Table IV, row 'Anterior facial height', Saudi females column, PMC6191777 (print page not given; article pp. 1104-1109)",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m42_Jarabak",
+      "sex": "M",
+      "ageBand": [
+        17,
+        22
+      ],
+      "mean": 65.04,
+      "sd": 3,
+      "n": 50,
+      "unit": "%",
+      "source": "Table III, row 'Jarabak ratio', Saudi males column, PMC6191777 (print page not given; article pp. 1104-1109)",
+      "definitionMatch": "close",
+      "definitionNote": "Alshahrani's gonion is constructed (Table I: 'Gonion constructed'); the catalogue uses the AI's anatomical Go (C3).",
+      "note": "SD printed '± 3' without decimals; as printed."
+    },
+    {
+      "measurement": "m42_Jarabak",
+      "sex": "F",
+      "ageBand": [
+        17,
+        22
+      ],
+      "mean": 64.28,
+      "sd": 3,
+      "n": 50,
+      "unit": "%",
+      "source": "Table IV, row 'Jarabak ratio', Saudi females column, PMC6191777 (print page not given; article pp. 1104-1109)",
+      "definitionMatch": "close",
+      "definitionNote": "Alshahrani's gonion is constructed (Table I: 'Gonion constructed'); the catalogue uses the AI's anatomical Go (C3).",
+      "note": "SD printed '± 3' without decimals; as printed."
+    }
+  ]
+}

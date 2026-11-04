@@ -1,0 +1,406 @@
+{
+  "id": "alcalde1998",
+  "kind": "population",
+  "status": "verified",
+  "citation": {
+    "authors": "Alcalde RE, Jinno T, Pogrel MA, Matsumura T",
+    "title": "Cephalometric norms in Japanese adults",
+    "journal": "Journal of Oral and Maxillofacial Surgery",
+    "year": 1998,
+    "volume": "56",
+    "pages": "129-134",
+    "openAccess": false
+  },
+  "population": {
+    "id": "japanese",
+    "label": "Japanese",
+    "ethnicity": [
+      "Japanese"
+    ],
+    "country": "Japan",
+    "region": "Okayama"
+  },
+  "sample": {
+    "n": 217,
+    "nMale": 98,
+    "nFemale": 119,
+    "ageMin": 20,
+    "ageMax": 28
+  },
+  "selection": "class-I",
+  "modality": "film",
+  "scale": {
+    "kind": "not-stated"
+  },
+  "headPosition": "NHP",
+  "curation": {
+    "extractedBy": [
+      "AI reader A",
+      "AI reader B"
+    ],
+    "comparedOn": "2026-10-08",
+    "date": "2026-10-08",
+    "notes": "Compared 2026-10-08 (norms:compare a vs b exit 1, 21 differences). Every mean and SD agreed and was re-read from the page images of Table 4 (p. 133, PDF p. 5) and Tables 2-3 (p. 132, PDF p. 4): agree. Decisions: (1) range, 20 entries (a entered Table 4's Min-Max columns as range, b did not) → not entered: they are the sample's observed extremes, not a norm range (as for AlBarakati 2012); caveat. (2) #88 soft-tissue convexity a 'close', b 'same' → close: the paper prints the departure from straight (10.09) and the stored 169.91 is our conversion (merge notes). Merge-notes rulings applied: women's ANS-Gn 63.86 from Table 4 (Table 2 prints 63.20), noted on the row; HP is about SN − 7°, so the FH-referenced ids (#8, #9, #23, #61) are close; mandibular plane not stated → #23, #57 on Go-Me, close; Wits occlusal plane not stated → close. Selection class-I: Class I occlusion, minor or no crowding, good facial symmetry (p. 129); the sample was not chosen for its profile. Scale not-stated: no magnification statement. Table 4's by-sex hard-tissue rows used (Tables 1-2 repeat them, except the women's ANS-Gn and UI-NF height); Table 3 soft tissue is pooled (p. 130). Burstone's white columns not entered. Ruling P49 (8 Oct): #88 close -> same (the exact 180 − x conversion on the catalogue's own points is not a definition difference)."
+  },
+  "caveats": [
+    "Sample: 217 Japanese adults (98 men, 119 women), 20-28 y, with Japanese grandparents; Class I occlusion with minor or no crowding, good facial symmetry, no orthodontic treatment or surgery; all Okayama University students (p. 129).",
+    "Radiographs in natural head position, teeth in maximum intercuspation, lips in repose (Shimavision 1100); hand traced and digitised in Quick Ceph (pp. 129-130). Film magnification not stated.",
+    "Hard-tissue measurements follow Burstone's COGS: many are referenced to HP, a horizontal plane through N at 7° to SN (Fig 1, p. 130), not to FH, so every HP-based entry is close.",
+    "Table 4 also prints each sex's range, minimum and maximum: the sample's observed extremes, not a norm range; not entered.",
+    "Women's lower anterior face height ANS-Gn (HP): Table 2 prints 63.20, Table 4 63.86 (SD 4.98 in both); Table 4 is used. Table 2 and Table 4 also differ for the women's UI-NF dental height (28.50 vs 28.57), not a catalogue measurement.",
+    "Soft-tissue values (Table 3) are for both sexes together; the paper says they were not split by sex (p. 130). Table 3 prints no n; 217 is the whole sample.",
+    "Soft-tissue convexity G-Sn-Pg′ is printed as the departure from a straight profile (10.09°); stored as the full angle 169.91° (180 − 10.09) to match the catalogue - our conversion.",
+    "Not in the catalogue: Ar-PTM and PtM-N (HP) cranial base, N-B (HP), N-ANS and PNS-N (HP) face heights, UI-NF, LI-MP, UM-NF, LM-MP dental heights, PNS-ANS (pHP), Ar-Go and Go-Pog lengths, B-Pg chin depth (Table 4); G-Sn and G-Pg′ (HP), G-Sn/Sn-Me′, Sn-Gn′-C, Sn-Gn′/C-Gn′, lip protrusion to Sn-Pg′, mentolabial sulcus to Li-Pg′, Sn-Stms/Stmi-Me′, Stms-UI, Stms-Stmi (Table 3)."
+  ],
+  "entries": [
+    {
+      "measurement": "m05_Convexity",
+      "sex": "M",
+      "ageBand": [
+        20,
+        28
+      ],
+      "mean": 4.24,
+      "sd": 5.36,
+      "n": 98,
+      "unit": "deg",
+      "source": "Table 4, p. 133",
+      "definitionMatch": "same",
+      "note": "Paper's N-A-Pg 'Facial convexity' (Burstone COGS), the angle's departure from a straight line, as the catalogue's #5. The sign rule is not restated; the Japanese and white means are positive, read as convex = positive. Same mean and SD in Table 1, p. 131."
+    },
+    {
+      "measurement": "m08_ANperp",
+      "sex": "M",
+      "ageBand": [
+        20,
+        28
+      ],
+      "mean": -1.96,
+      "sd": 4.76,
+      "n": 98,
+      "unit": "mm",
+      "source": "Table 4, p. 133",
+      "definitionMatch": "close",
+      "definitionNote": "Paper's 'Maxillary protrusion N-A' (Burstone COGS): A measured from a vertical through N perpendicular to HP; HP is the paper's horizontal plane, drawn through N at 7° to SN (Burstone COGS, Fig 1, p. 130), not FH.",
+      "note": "Sign not restated; negative means (maxilla behind the vertical) read as the catalogue's + when A is ahead. Same mean and SD in Table 1, p. 131."
+    },
+    {
+      "measurement": "m09_PogNperp",
+      "sex": "M",
+      "ageBand": [
+        20,
+        28
+      ],
+      "mean": -8,
+      "sd": 8.62,
+      "n": 98,
+      "unit": "mm",
+      "source": "Table 4, p. 133",
+      "definitionMatch": "close",
+      "definitionNote": "Paper's 'Chin protrusion N-Pg' (Burstone COGS): Pog measured from a vertical through N perpendicular to HP; HP is the paper's horizontal plane, drawn through N at 7° to SN (Burstone COGS, Fig 1, p. 130), not FH.",
+      "note": "Sign not restated; negative means (chin behind the vertical) read as the catalogue's + when Pog is ahead. Same mean and SD in Table 1, p. 131."
+    },
+    {
+      "measurement": "m28_LAFH",
+      "sex": "M",
+      "ageBand": [
+        20,
+        28
+      ],
+      "mean": 68.83,
+      "sd": 4.99,
+      "n": 98,
+      "unit": "mm",
+      "source": "Table 4, p. 133",
+      "definitionMatch": "close",
+      "definitionNote": "Paper's ANS-Gn (HP): ANS to gnathion measured perpendicular to HP, not the straight ANS-Me distance; Gn, not Me.",
+      "note": "Same mean and SD in Table 1, p. 131."
+    },
+    {
+      "measurement": "m23_FHGoMe",
+      "sex": "M",
+      "ageBand": [
+        20,
+        28
+      ],
+      "mean": 25.21,
+      "sd": 5.49,
+      "n": 98,
+      "unit": "deg",
+      "source": "Table 4, p. 133",
+      "definitionMatch": "close",
+      "definitionNote": "Paper's MP-HP: mandibular plane to HP; HP is the paper's horizontal plane, drawn through N at 7° to SN (Burstone COGS, Fig 1, p. 130), not FH. Mandibular plane not stated (Fig 1 shows Go and Me only).",
+      "note": "Same mean and SD in Table 1, p. 131."
+    },
+    {
+      "measurement": "m36_Gonial",
+      "sex": "M",
+      "ageBand": [
+        20,
+        28
+      ],
+      "mean": 117.97,
+      "sd": 6.05,
+      "n": 98,
+      "unit": "deg",
+      "source": "Table 4, p. 133",
+      "definitionMatch": "close",
+      "definitionNote": "Paper's gonial angle is Ar-Go-Gn (gnathion); the catalogue's is Ar-Go-Me (menton).",
+      "note": "Same mean and SD in Table 1, p. 131."
+    },
+    {
+      "measurement": "m61_CantOP",
+      "sex": "M",
+      "ageBand": [
+        20,
+        28
+      ],
+      "mean": 8.77,
+      "sd": 5.02,
+      "n": 98,
+      "unit": "deg",
+      "source": "Table 4, p. 133",
+      "definitionMatch": "close",
+      "definitionNote": "Paper's OP-HP: occlusal plane to HP; HP is the paper's horizontal plane, drawn through N at 7° to SN (Burstone COGS, Fig 1, p. 130), not FH. The paper does not say which occlusal plane.",
+      "note": "Sign not restated; positive means read as the catalogue's +. Same mean and SD in Table 1, p. 131."
+    },
+    {
+      "measurement": "m13_Wits",
+      "sex": "M",
+      "ageBand": [
+        20,
+        28
+      ],
+      "mean": 0.4,
+      "sd": 3.16,
+      "n": 98,
+      "unit": "mm",
+      "source": "Table 4, p. 133",
+      "definitionMatch": "close",
+      "definitionNote": "Paper's 'Wits analysis A-B (OP)': occlusal plane not stated (this app uses the occlusal plane through the molars and incisors, since 16 Oct 2026); sign not restated.",
+      "note": "Sign taken as Jacobson's (BO ahead of AO positive); Burstone's white values in Tables 1-2 (−1.1 men, −0.40 women) fit that convention, but the paper does not state it. Same mean and SD in Table 1, p. 131."
+    },
+    {
+      "measurement": "m55_U1MxP",
+      "sex": "M",
+      "ageBand": [
+        20,
+        28
+      ],
+      "mean": 116.35,
+      "sd": 6.62,
+      "n": 98,
+      "unit": "deg",
+      "source": "Table 4, p. 133",
+      "definitionMatch": "close",
+      "definitionNote": "Paper's UI-NF (angle): upper incisor axis to NF (nasal floor); NF is not defined in the paper, taken as the palatal line ANS-PNS drawn in Fig 1.",
+      "note": "Same mean and SD in Table 1, p. 131."
+    },
+    {
+      "measurement": "m57_IMPAgome",
+      "sex": "M",
+      "ageBand": [
+        20,
+        28
+      ],
+      "mean": 95.09,
+      "sd": 6.67,
+      "n": 98,
+      "unit": "deg",
+      "source": "Table 4, p. 133",
+      "definitionMatch": "close",
+      "definitionNote": "Paper's LI-MP (angle): lower incisor axis to the mandibular plane; mandibular plane not stated (Fig 1 shows Go and Me only).",
+      "note": "Same mean and SD in Table 1, p. 131."
+    },
+    {
+      "measurement": "m05_Convexity",
+      "sex": "F",
+      "ageBand": [
+        20,
+        28
+      ],
+      "mean": 5.65,
+      "sd": 6.1,
+      "n": 119,
+      "unit": "deg",
+      "source": "Table 4, p. 133",
+      "definitionMatch": "same",
+      "note": "Paper's N-A-Pg 'Facial convexity' (Burstone COGS), the angle's departure from a straight line, as the catalogue's #5. The sign rule is not restated; the Japanese and white means are positive, read as convex = positive. Same mean and SD in Table 2, p. 132."
+    },
+    {
+      "measurement": "m08_ANperp",
+      "sex": "F",
+      "ageBand": [
+        20,
+        28
+      ],
+      "mean": -1.98,
+      "sd": 4,
+      "n": 119,
+      "unit": "mm",
+      "source": "Table 4, p. 133",
+      "definitionMatch": "close",
+      "definitionNote": "Paper's 'Maxillary protrusion N-A' (Burstone COGS): A measured from a vertical through N perpendicular to HP; HP is the paper's horizontal plane, drawn through N at 7° to SN (Burstone COGS, Fig 1, p. 130), not FH.",
+      "note": "Sign not restated; negative means (maxilla behind the vertical) read as the catalogue's + when A is ahead. Same mean and SD in Table 2, p. 132."
+    },
+    {
+      "measurement": "m09_PogNperp",
+      "sex": "F",
+      "ageBand": [
+        20,
+        28
+      ],
+      "mean": -9.16,
+      "sd": 8.16,
+      "n": 119,
+      "unit": "mm",
+      "source": "Table 4, p. 133",
+      "definitionMatch": "close",
+      "definitionNote": "Paper's 'Chin protrusion N-Pg' (Burstone COGS): Pog measured from a vertical through N perpendicular to HP; HP is the paper's horizontal plane, drawn through N at 7° to SN (Burstone COGS, Fig 1, p. 130), not FH.",
+      "note": "Sign not restated; negative means (chin behind the vertical) read as the catalogue's + when Pog is ahead. Same mean and SD in Table 2, p. 132."
+    },
+    {
+      "measurement": "m28_LAFH",
+      "sex": "F",
+      "ageBand": [
+        20,
+        28
+      ],
+      "mean": 63.86,
+      "sd": 4.98,
+      "n": 119,
+      "unit": "mm",
+      "source": "Table 4, p. 133",
+      "definitionMatch": "close",
+      "definitionNote": "Paper's ANS-Gn (HP): ANS to gnathion measured perpendicular to HP, not the straight ANS-Me distance; Gn, not Me.",
+      "note": "Table 2 (p. 132) prints the women's ANS-Gn (HP) mean as 63.20 (SD 4.98); Table 4 (p. 133) prints 63.86 (SD 4.98). Table 4, the by-sex table, is used (merge notes); both are plain on the page images."
+    },
+    {
+      "measurement": "m23_FHGoMe",
+      "sex": "F",
+      "ageBand": [
+        20,
+        28
+      ],
+      "mean": 27.08,
+      "sd": 6.27,
+      "n": 119,
+      "unit": "deg",
+      "source": "Table 4, p. 133",
+      "definitionMatch": "close",
+      "definitionNote": "Paper's MP-HP: mandibular plane to HP; HP is the paper's horizontal plane, drawn through N at 7° to SN (Burstone COGS, Fig 1, p. 130), not FH. Mandibular plane not stated (Fig 1 shows Go and Me only).",
+      "note": "Same mean and SD in Table 2, p. 132."
+    },
+    {
+      "measurement": "m36_Gonial",
+      "sex": "F",
+      "ageBand": [
+        20,
+        28
+      ],
+      "mean": 119.77,
+      "sd": 7.27,
+      "n": 119,
+      "unit": "deg",
+      "source": "Table 4, p. 133",
+      "definitionMatch": "close",
+      "definitionNote": "Paper's gonial angle is Ar-Go-Gn (gnathion); the catalogue's is Ar-Go-Me (menton).",
+      "note": "Same mean and SD in Table 2, p. 132."
+    },
+    {
+      "measurement": "m61_CantOP",
+      "sex": "F",
+      "ageBand": [
+        20,
+        28
+      ],
+      "mean": 10.85,
+      "sd": 4.8,
+      "n": 119,
+      "unit": "deg",
+      "source": "Table 4, p. 133",
+      "definitionMatch": "close",
+      "definitionNote": "Paper's OP-HP: occlusal plane to HP; HP is the paper's horizontal plane, drawn through N at 7° to SN (Burstone COGS, Fig 1, p. 130), not FH. The paper does not say which occlusal plane.",
+      "note": "Sign not restated; positive means read as the catalogue's +. Same mean and SD in Table 2, p. 132."
+    },
+    {
+      "measurement": "m13_Wits",
+      "sex": "F",
+      "ageBand": [
+        20,
+        28
+      ],
+      "mean": 1.3,
+      "sd": 3.05,
+      "n": 119,
+      "unit": "mm",
+      "source": "Table 4, p. 133",
+      "definitionMatch": "close",
+      "definitionNote": "Paper's 'Wits analysis A-B (OP)': occlusal plane not stated (this app uses the occlusal plane through the molars and incisors, since 16 Oct 2026); sign not restated.",
+      "note": "Sign taken as Jacobson's (BO ahead of AO positive); Burstone's white values in Tables 1-2 (−1.1 men, −0.40 women) fit that convention, but the paper does not state it. Same mean and SD in Table 2, p. 132."
+    },
+    {
+      "measurement": "m55_U1MxP",
+      "sex": "F",
+      "ageBand": [
+        20,
+        28
+      ],
+      "mean": 114.7,
+      "sd": 6.96,
+      "n": 119,
+      "unit": "deg",
+      "source": "Table 4, p. 133",
+      "definitionMatch": "close",
+      "definitionNote": "Paper's UI-NF (angle): upper incisor axis to NF (nasal floor); NF is not defined in the paper, taken as the palatal line ANS-PNS drawn in Fig 1.",
+      "note": "Same mean and SD in Table 2, p. 132."
+    },
+    {
+      "measurement": "m57_IMPAgome",
+      "sex": "F",
+      "ageBand": [
+        20,
+        28
+      ],
+      "mean": 94.32,
+      "sd": 6.99,
+      "n": 119,
+      "unit": "deg",
+      "source": "Table 4, p. 133",
+      "definitionMatch": "close",
+      "definitionNote": "Paper's LI-MP (angle): lower incisor axis to the mandibular plane; mandibular plane not stated (Fig 1 shows Go and Me only).",
+      "note": "Same mean and SD in Table 2, p. 132."
+    },
+    {
+      "measurement": "m86_Nasolabial",
+      "sex": "pooled",
+      "ageBand": [
+        20,
+        28
+      ],
+      "mean": 102.34,
+      "sd": 11.63,
+      "n": 217,
+      "unit": "deg",
+      "source": "Table 3, p. 132",
+      "definitionMatch": "same",
+      "note": "Paper's Cm-Sn-Ls (columella, subnasale, labrale superius; Legan & Burstone). Soft-tissue norms not split by sex (p. 130); n 217 is the whole sample (Table 3 prints no n)."
+    },
+    {
+      "measurement": "m88_STConvexity",
+      "sex": "pooled",
+      "ageBand": [
+        20,
+        28
+      ],
+      "mean": 169.91,
+      "sd": 5.75,
+      "n": 217,
+      "unit": "deg",
+      "source": "Table 3, p. 132",
+      "definitionMatch": "same",
+      "definitionNote": "Legan & Burstone's facial convexity G-Sn-Pg′ is printed as its departure from a straight profile (10.09°, convex positive); the catalogue's #88 is the full angle at Sn, so it is stored as 180 − 10.09 = 169.91, SD unchanged. The conversion is ours, not the paper's. Same (ruling P49, 8 Oct): an exact 180 − x conversion using the catalogue's own points is not a definition difference.",
+      "note": "Printed 10.09 ± 5.75 (Table 3, p. 132). Soft-tissue norms not split by sex (p. 130); n 217 is the whole sample (Table 3 prints no n)."
+    }
+  ]
+}

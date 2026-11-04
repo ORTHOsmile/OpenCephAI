@@ -1,0 +1,841 @@
+{
+  "id": "mcnamara1984-burlington",
+  "kind": "population",
+  "status": "verified",
+  "citation": {
+    "authors": "McNamara JA Jr",
+    "title": "A method of cephalometric evaluation",
+    "journal": "American Journal of Orthodontics",
+    "year": 1984,
+    "volume": "86",
+    "pages": "449-469",
+    "openAccess": false
+  },
+  "population": {
+    "id": "caucasian",
+    "label": "Caucasian (European background; used for Australian patients of European background)",
+    "ethnicity": [
+      "not stated in the paper"
+    ],
+    "country": "Canada",
+    "region": "Burlington, Ontario"
+  },
+  "sample": {
+    "ageMin": 6,
+    "ageMax": 20
+  },
+  "selection": "unknown",
+  "modality": "film",
+  "scale": {
+    "kind": "enlarged",
+    "percent": 8,
+    "source": "p. 451"
+  },
+  "headPosition": "unknown",
+  "curation": {
+    "extractedBy": [
+      "AI reader A",
+      "AI reader B"
+    ],
+    "comparedOn": "2026-10-08",
+    "date": "2026-10-08",
+    "notes": "Ruling P23: one set per McNamara sample. Ruling P24: Burlington (Table IV) compared as mcnamara1984-burlington.a.json against the Table IV rows of mcnamara1984-caucasian.b.json (script comparison 2026-10-08, positive control: two planted changes found): 56 rows, 0 differences in mean, SD and n. Every value re-read on the page image (PDF p. 6 = p. 454): agrees, including the men's two-decimal SDs (3.83, 4.15, 5.11, 5.70, 5.97, 6.00). Differential printed without SD ('—') -> no sd. Girls' Co-A 88.3 at 9 y and 87.3 at 12 y as printed, noted (merge notes). Selection unknown: p. 450 describes them only as normal children of the Burlington Orthodontic Research Centre, also followed over time, and gives no criteria (a: random-unselected; b: class-I-balanced for the paper as a whole) -> unknown, the merge notes' default. n per age and sex from the table. Scale enlarged 8% (p. 451; heading 'standardized 8% enlargement')."
+  },
+  "caveats": [
+    "'Caucasian' is our label: the paper never states the samples' ethnicity (it says nothing about ancestry).",
+    "Normal children of the Burlington Orthodontic Research Centre, also followed over time (p. 450); the paper gives no selection criteria and no whole-sample count (the n per age and sex in Table IV run from 17 to 58).",
+    "8% film enlargement: p. 451 says the measures from all these samples include an 8% enlargement wherever possible; the table heading says 'standardized 8% enlargement'. The app shows mm values at true size (÷ 1.08) with the printed value.",
+    "Values are printed at single ages (6, 9, 12, 14, 16, 18, 20 y). A child between two printed ages gets the nearest printed age, marked as not his age (no interpolation is used for this set).",
+    "The maxillomandibular differential is printed without an SD; it borrows one at display, said in the line.",
+    "Girls' midfacial length (Co-point A) is printed 88.3 at 9 y and 87.3 at 12 y, a fall against the trend; as printed.",
+    "Some values fall from 18 to 20 y (e.g. women's Co-Gn 118.9 at 18 y, n 22, and 116.8 at 20 y, n 44); the n differ by age, so the groups at each age are not all the same children. As printed."
+  ],
+  "entries": [
+    {
+      "measurement": "m11_CoGn",
+      "sex": "F",
+      "ageBand": [
+        6,
+        6
+      ],
+      "mean": 94.1,
+      "sd": 3.3,
+      "n": 56,
+      "unit": "mm",
+      "source": "Table IV, p. 454, row 'Mandibular length (Co-Gn)', females, 6 years",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m11_CoGn",
+      "sex": "F",
+      "ageBand": [
+        9,
+        9
+      ],
+      "mean": 103.3,
+      "sd": 5.3,
+      "n": 57,
+      "unit": "mm",
+      "source": "Table IV, p. 454, row 'Mandibular length (Co-Gn)', females, 9 years",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m11_CoGn",
+      "sex": "F",
+      "ageBand": [
+        12,
+        12
+      ],
+      "mean": 110.2,
+      "sd": 6.4,
+      "n": 56,
+      "unit": "mm",
+      "source": "Table IV, p. 454, row 'Mandibular length (Co-Gn)', females, 12 years",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m11_CoGn",
+      "sex": "F",
+      "ageBand": [
+        14,
+        14
+      ],
+      "mean": 114.9,
+      "sd": 7.1,
+      "n": 48,
+      "unit": "mm",
+      "source": "Table IV, p. 454, row 'Mandibular length (Co-Gn)', females, 14 years",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m11_CoGn",
+      "sex": "F",
+      "ageBand": [
+        16,
+        16
+      ],
+      "mean": 117.7,
+      "sd": 4.5,
+      "n": 54,
+      "unit": "mm",
+      "source": "Table IV, p. 454, row 'Mandibular length (Co-Gn)', females, 16 years",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m11_CoGn",
+      "sex": "F",
+      "ageBand": [
+        18,
+        18
+      ],
+      "mean": 118.9,
+      "sd": 4.7,
+      "n": 22,
+      "unit": "mm",
+      "source": "Table IV, p. 454, row 'Mandibular length (Co-Gn)', females, 18 years",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m11_CoGn",
+      "sex": "F",
+      "ageBand": [
+        20,
+        20
+      ],
+      "mean": 116.8,
+      "sd": 7.3,
+      "n": 44,
+      "unit": "mm",
+      "source": "Table IV, p. 454, row 'Mandibular length (Co-Gn)', females, 20 years",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m11_CoGn",
+      "sex": "M",
+      "ageBand": [
+        6,
+        6
+      ],
+      "mean": 96.6,
+      "sd": 3.83,
+      "n": 58,
+      "unit": "mm",
+      "source": "Table IV, p. 454, row 'Mandibular length (Co-Gn)', males, 6 years",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m11_CoGn",
+      "sex": "M",
+      "ageBand": [
+        9,
+        9
+      ],
+      "mean": 105.0,
+      "sd": 4.15,
+      "n": 49,
+      "unit": "mm",
+      "source": "Table IV, p. 454, row 'Mandibular length (Co-Gn)', males, 9 years",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m11_CoGn",
+      "sex": "M",
+      "ageBand": [
+        12,
+        12
+      ],
+      "mean": 113.0,
+      "sd": 5.11,
+      "n": 50,
+      "unit": "mm",
+      "source": "Table IV, p. 454, row 'Mandibular length (Co-Gn)', males, 12 years",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m11_CoGn",
+      "sex": "M",
+      "ageBand": [
+        14,
+        14
+      ],
+      "mean": 119.2,
+      "sd": 5.7,
+      "n": 51,
+      "unit": "mm",
+      "source": "Table IV, p. 454, row 'Mandibular length (Co-Gn)', males, 14 years",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m11_CoGn",
+      "sex": "M",
+      "ageBand": [
+        16,
+        16
+      ],
+      "mean": 124.5,
+      "sd": 5.97,
+      "n": 50,
+      "unit": "mm",
+      "source": "Table IV, p. 454, row 'Mandibular length (Co-Gn)', males, 16 years",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m11_CoGn",
+      "sex": "M",
+      "ageBand": [
+        18,
+        18
+      ],
+      "mean": 127.2,
+      "sd": 6.0,
+      "n": 17,
+      "unit": "mm",
+      "source": "Table IV, p. 454, row 'Mandibular length (Co-Gn)', males, 18 years",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m11_CoGn",
+      "sex": "M",
+      "ageBand": [
+        20,
+        20
+      ],
+      "mean": 128.2,
+      "sd": 4.2,
+      "n": 38,
+      "unit": "mm",
+      "source": "Table IV, p. 454, row 'Mandibular length (Co-Gn)', males, 20 years",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m10_CoA",
+      "sex": "F",
+      "ageBand": [
+        6,
+        6
+      ],
+      "mean": 78.6,
+      "sd": 3.1,
+      "n": 56,
+      "unit": "mm",
+      "source": "Table IV, p. 454, row 'Midfacial length (Co-point A)', females, 6 years",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m10_CoA",
+      "sex": "F",
+      "ageBand": [
+        9,
+        9
+      ],
+      "mean": 88.3,
+      "sd": 4.0,
+      "n": 57,
+      "unit": "mm",
+      "source": "Table IV, p. 454, row 'Midfacial length (Co-point A)', females, 9 years",
+      "definitionMatch": "same",
+      "note": "As printed: the girls' Co-point A falls from 88.3 at 9 y to 87.3 at 12 y (Table IV, p. 454), against the rising trend of every other row; the 9-year differential 15.0 (= 103.3 − 88.3) is consistent with the printed 88.3."
+    },
+    {
+      "measurement": "m10_CoA",
+      "sex": "F",
+      "ageBand": [
+        12,
+        12
+      ],
+      "mean": 87.3,
+      "sd": 4.6,
+      "n": 56,
+      "unit": "mm",
+      "source": "Table IV, p. 454, row 'Midfacial length (Co-point A)', females, 12 years",
+      "definitionMatch": "same",
+      "note": "As printed: the girls' Co-point A falls from 88.3 at 9 y to 87.3 at 12 y (Table IV, p. 454), against the rising trend of every other row; the 9-year differential 15.0 (= 103.3 − 88.3) is consistent with the printed 88.3."
+    },
+    {
+      "measurement": "m10_CoA",
+      "sex": "F",
+      "ageBand": [
+        14,
+        14
+      ],
+      "mean": 89.2,
+      "sd": 5.2,
+      "n": 48,
+      "unit": "mm",
+      "source": "Table IV, p. 454, row 'Midfacial length (Co-point A)', females, 14 years",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m10_CoA",
+      "sex": "F",
+      "ageBand": [
+        16,
+        16
+      ],
+      "mean": 90.9,
+      "sd": 4.1,
+      "n": 54,
+      "unit": "mm",
+      "source": "Table IV, p. 454, row 'Midfacial length (Co-point A)', females, 16 years",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m10_CoA",
+      "sex": "F",
+      "ageBand": [
+        18,
+        18
+      ],
+      "mean": 91.1,
+      "sd": 3.1,
+      "n": 22,
+      "unit": "mm",
+      "source": "Table IV, p. 454, row 'Midfacial length (Co-point A)', females, 18 years",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m10_CoA",
+      "sex": "F",
+      "ageBand": [
+        20,
+        20
+      ],
+      "mean": 90.7,
+      "sd": 5.2,
+      "n": 44,
+      "unit": "mm",
+      "source": "Table IV, p. 454, row 'Midfacial length (Co-point A)', females, 20 years",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m10_CoA",
+      "sex": "M",
+      "ageBand": [
+        6,
+        6
+      ],
+      "mean": 80.5,
+      "sd": 2.4,
+      "n": 58,
+      "unit": "mm",
+      "source": "Table IV, p. 454, row 'Midfacial length (Co-point A)', males, 6 years",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m10_CoA",
+      "sex": "M",
+      "ageBand": [
+        9,
+        9
+      ],
+      "mean": 84.9,
+      "sd": 2.5,
+      "n": 49,
+      "unit": "mm",
+      "source": "Table IV, p. 454, row 'Midfacial length (Co-point A)', males, 9 years",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m10_CoA",
+      "sex": "M",
+      "ageBand": [
+        12,
+        12
+      ],
+      "mean": 90.3,
+      "sd": 3.6,
+      "n": 50,
+      "unit": "mm",
+      "source": "Table IV, p. 454, row 'Midfacial length (Co-point A)', males, 12 years",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m10_CoA",
+      "sex": "M",
+      "ageBand": [
+        14,
+        14
+      ],
+      "mean": 93.9,
+      "sd": 4.6,
+      "n": 51,
+      "unit": "mm",
+      "source": "Table IV, p. 454, row 'Midfacial length (Co-point A)', males, 14 years",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m10_CoA",
+      "sex": "M",
+      "ageBand": [
+        16,
+        16
+      ],
+      "mean": 96.6,
+      "sd": 4.4,
+      "n": 50,
+      "unit": "mm",
+      "source": "Table IV, p. 454, row 'Midfacial length (Co-point A)', males, 16 years",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m10_CoA",
+      "sex": "M",
+      "ageBand": [
+        18,
+        18
+      ],
+      "mean": 96.6,
+      "sd": 4.7,
+      "n": 17,
+      "unit": "mm",
+      "source": "Table IV, p. 454, row 'Midfacial length (Co-point A)', males, 18 years",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m10_CoA",
+      "sex": "M",
+      "ageBand": [
+        20,
+        20
+      ],
+      "mean": 98.8,
+      "sd": 4.3,
+      "n": 38,
+      "unit": "mm",
+      "source": "Table IV, p. 454, row 'Midfacial length (Co-point A)', males, 20 years",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m12_MaxMandDiff",
+      "sex": "F",
+      "ageBand": [
+        6,
+        6
+      ],
+      "mean": 15.5,
+      "n": 56,
+      "unit": "mm",
+      "source": "Table IV, p. 454, row 'Maxillomandibular differential', females, 6 years",
+      "definitionMatch": "same",
+      "note": "Printed without an SD ('—', Table IV)."
+    },
+    {
+      "measurement": "m12_MaxMandDiff",
+      "sex": "F",
+      "ageBand": [
+        9,
+        9
+      ],
+      "mean": 15.0,
+      "n": 57,
+      "unit": "mm",
+      "source": "Table IV, p. 454, row 'Maxillomandibular differential', females, 9 years",
+      "definitionMatch": "same",
+      "note": "Printed without an SD ('—', Table IV)."
+    },
+    {
+      "measurement": "m12_MaxMandDiff",
+      "sex": "F",
+      "ageBand": [
+        12,
+        12
+      ],
+      "mean": 22.9,
+      "n": 56,
+      "unit": "mm",
+      "source": "Table IV, p. 454, row 'Maxillomandibular differential', females, 12 years",
+      "definitionMatch": "same",
+      "note": "Printed without an SD ('—', Table IV)."
+    },
+    {
+      "measurement": "m12_MaxMandDiff",
+      "sex": "F",
+      "ageBand": [
+        14,
+        14
+      ],
+      "mean": 25.7,
+      "n": 48,
+      "unit": "mm",
+      "source": "Table IV, p. 454, row 'Maxillomandibular differential', females, 14 years",
+      "definitionMatch": "same",
+      "note": "Printed without an SD ('—', Table IV)."
+    },
+    {
+      "measurement": "m12_MaxMandDiff",
+      "sex": "F",
+      "ageBand": [
+        16,
+        16
+      ],
+      "mean": 26.8,
+      "n": 54,
+      "unit": "mm",
+      "source": "Table IV, p. 454, row 'Maxillomandibular differential', females, 16 years",
+      "definitionMatch": "same",
+      "note": "Printed without an SD ('—', Table IV)."
+    },
+    {
+      "measurement": "m12_MaxMandDiff",
+      "sex": "F",
+      "ageBand": [
+        18,
+        18
+      ],
+      "mean": 27.8,
+      "n": 22,
+      "unit": "mm",
+      "source": "Table IV, p. 454, row 'Maxillomandibular differential', females, 18 years",
+      "definitionMatch": "same",
+      "note": "Printed without an SD ('—', Table IV)."
+    },
+    {
+      "measurement": "m12_MaxMandDiff",
+      "sex": "F",
+      "ageBand": [
+        20,
+        20
+      ],
+      "mean": 26.1,
+      "n": 44,
+      "unit": "mm",
+      "source": "Table IV, p. 454, row 'Maxillomandibular differential', females, 20 years",
+      "definitionMatch": "same",
+      "note": "Printed without an SD ('—', Table IV)."
+    },
+    {
+      "measurement": "m12_MaxMandDiff",
+      "sex": "M",
+      "ageBand": [
+        6,
+        6
+      ],
+      "mean": 16.1,
+      "n": 58,
+      "unit": "mm",
+      "source": "Table IV, p. 454, row 'Maxillomandibular differential', males, 6 years",
+      "definitionMatch": "same",
+      "note": "Printed without an SD ('—', Table IV)."
+    },
+    {
+      "measurement": "m12_MaxMandDiff",
+      "sex": "M",
+      "ageBand": [
+        9,
+        9
+      ],
+      "mean": 20.1,
+      "n": 49,
+      "unit": "mm",
+      "source": "Table IV, p. 454, row 'Maxillomandibular differential', males, 9 years",
+      "definitionMatch": "same",
+      "note": "Printed without an SD ('—', Table IV)."
+    },
+    {
+      "measurement": "m12_MaxMandDiff",
+      "sex": "M",
+      "ageBand": [
+        12,
+        12
+      ],
+      "mean": 22.7,
+      "n": 50,
+      "unit": "mm",
+      "source": "Table IV, p. 454, row 'Maxillomandibular differential', males, 12 years",
+      "definitionMatch": "same",
+      "note": "Printed without an SD ('—', Table IV)."
+    },
+    {
+      "measurement": "m12_MaxMandDiff",
+      "sex": "M",
+      "ageBand": [
+        14,
+        14
+      ],
+      "mean": 25.3,
+      "n": 51,
+      "unit": "mm",
+      "source": "Table IV, p. 454, row 'Maxillomandibular differential', males, 14 years",
+      "definitionMatch": "same",
+      "note": "Printed without an SD ('—', Table IV)."
+    },
+    {
+      "measurement": "m12_MaxMandDiff",
+      "sex": "M",
+      "ageBand": [
+        16,
+        16
+      ],
+      "mean": 27.9,
+      "n": 50,
+      "unit": "mm",
+      "source": "Table IV, p. 454, row 'Maxillomandibular differential', males, 16 years",
+      "definitionMatch": "same",
+      "note": "Printed without an SD ('—', Table IV)."
+    },
+    {
+      "measurement": "m12_MaxMandDiff",
+      "sex": "M",
+      "ageBand": [
+        18,
+        18
+      ],
+      "mean": 30.6,
+      "n": 17,
+      "unit": "mm",
+      "source": "Table IV, p. 454, row 'Maxillomandibular differential', males, 18 years",
+      "definitionMatch": "same",
+      "note": "Printed without an SD ('—', Table IV)."
+    },
+    {
+      "measurement": "m12_MaxMandDiff",
+      "sex": "M",
+      "ageBand": [
+        20,
+        20
+      ],
+      "mean": 29.4,
+      "n": 38,
+      "unit": "mm",
+      "source": "Table IV, p. 454, row 'Maxillomandibular differential', males, 20 years",
+      "definitionMatch": "same",
+      "note": "Printed without an SD ('—', Table IV)."
+    },
+    {
+      "measurement": "m28_LAFH",
+      "sex": "F",
+      "ageBand": [
+        6,
+        6
+      ],
+      "mean": 57.2,
+      "sd": 3.4,
+      "n": 56,
+      "unit": "mm",
+      "source": "Table IV, p. 454, row 'Lower anterior facial height', females, 6 years",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m28_LAFH",
+      "sex": "F",
+      "ageBand": [
+        9,
+        9
+      ],
+      "mean": 61.2,
+      "sd": 3.9,
+      "n": 57,
+      "unit": "mm",
+      "source": "Table IV, p. 454, row 'Lower anterior facial height', females, 9 years",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m28_LAFH",
+      "sex": "F",
+      "ageBand": [
+        12,
+        12
+      ],
+      "mean": 63.4,
+      "sd": 4.7,
+      "n": 56,
+      "unit": "mm",
+      "source": "Table IV, p. 454, row 'Lower anterior facial height', females, 12 years",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m28_LAFH",
+      "sex": "F",
+      "ageBand": [
+        14,
+        14
+      ],
+      "mean": 66.2,
+      "sd": 5.1,
+      "n": 48,
+      "unit": "mm",
+      "source": "Table IV, p. 454, row 'Lower anterior facial height', females, 14 years",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m28_LAFH",
+      "sex": "F",
+      "ageBand": [
+        16,
+        16
+      ],
+      "mean": 66.6,
+      "sd": 4.7,
+      "n": 54,
+      "unit": "mm",
+      "source": "Table IV, p. 454, row 'Lower anterior facial height', females, 16 years",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m28_LAFH",
+      "sex": "F",
+      "ageBand": [
+        18,
+        18
+      ],
+      "mean": 68.5,
+      "sd": 4.7,
+      "n": 22,
+      "unit": "mm",
+      "source": "Table IV, p. 454, row 'Lower anterior facial height', females, 18 years",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m28_LAFH",
+      "sex": "F",
+      "ageBand": [
+        20,
+        20
+      ],
+      "mean": 66.7,
+      "sd": 5.7,
+      "n": 44,
+      "unit": "mm",
+      "source": "Table IV, p. 454, row 'Lower anterior facial height', females, 20 years",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m28_LAFH",
+      "sex": "M",
+      "ageBand": [
+        6,
+        6
+      ],
+      "mean": 59.9,
+      "sd": 2.7,
+      "n": 58,
+      "unit": "mm",
+      "source": "Table IV, p. 454, row 'Lower anterior facial height', males, 6 years",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m28_LAFH",
+      "sex": "M",
+      "ageBand": [
+        9,
+        9
+      ],
+      "mean": 63.0,
+      "sd": 3.0,
+      "n": 49,
+      "unit": "mm",
+      "source": "Table IV, p. 454, row 'Lower anterior facial height', males, 9 years",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m28_LAFH",
+      "sex": "M",
+      "ageBand": [
+        12,
+        12
+      ],
+      "mean": 65.7,
+      "sd": 2.5,
+      "n": 50,
+      "unit": "mm",
+      "source": "Table IV, p. 454, row 'Lower anterior facial height', males, 12 years",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m28_LAFH",
+      "sex": "M",
+      "ageBand": [
+        14,
+        14
+      ],
+      "mean": 68.8,
+      "sd": 4.0,
+      "n": 51,
+      "unit": "mm",
+      "source": "Table IV, p. 454, row 'Lower anterior facial height', males, 14 years",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m28_LAFH",
+      "sex": "M",
+      "ageBand": [
+        16,
+        16
+      ],
+      "mean": 71.3,
+      "sd": 4.4,
+      "n": 50,
+      "unit": "mm",
+      "source": "Table IV, p. 454, row 'Lower anterior facial height', males, 16 years",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m28_LAFH",
+      "sex": "M",
+      "ageBand": [
+        18,
+        18
+      ],
+      "mean": 73.1,
+      "sd": 4.4,
+      "n": 17,
+      "unit": "mm",
+      "source": "Table IV, p. 454, row 'Lower anterior facial height', males, 18 years",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m28_LAFH",
+      "sex": "M",
+      "ageBand": [
+        20,
+        20
+      ],
+      "mean": 72.0,
+      "sd": 3.0,
+      "n": 38,
+      "unit": "mm",
+      "source": "Table IV, p. 454, row 'Lower anterior facial height', males, 20 years",
+      "definitionMatch": "same"
+    }
+  ]
+}

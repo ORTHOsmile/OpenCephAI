@@ -1,0 +1,12 @@
+{
+  "ruleVersion": "crosscheck/0-draft",
+  "status": "draft: spec 2026-10-13 §4 values (T 5.99, sigma0 0.3 mm, k 1, window 15 cells); tuned on Aariz valid in Task 7 and approved by the owner before Task 8",
+  "testResult": "not-run",
+  "voters": ["srpose-cldet23", "aariz-cepha29"],
+  "spreadWindowCells": 15,
+  "sigma0Mm": 0.3,
+  "tDefault": 5.99,
+  "t": {},
+  "k": { "cwlachap-hrnet-w32": 1.0, "gu2net-isbi19": 1.0, "srpose-cldet23": 1.0, "aariz-cepha29": 1.0 },
+  "assumedMmPerPx": 0.1
+}

@@ -1,0 +1,281 @@
+{
+  "id": "mohammad2011",
+  "kind": "population",
+  "status": "verified",
+  "citation": {
+    "authors": "Mohammad HA, Abu Hassan MI, Hussain SF",
+    "title": "Cephalometric evaluation for Malaysian Malay by Steiner analysis",
+    "journal": "Scientific Research and Essays",
+    "year": 2011,
+    "volume": "6(3)",
+    "pages": "627-634",
+    "doi": "10.5897/SRE10.869",
+    "url": "http://www.academicjournals.org/SRE",
+    "openAccess": true
+  },
+  "population": {
+    "id": "malay",
+    "label": "Malay",
+    "ethnicity": [
+      "Malaysian Malay"
+    ],
+    "country": "Malaysia",
+    "region": "Selangor"
+  },
+  "sample": {
+    "n": 60,
+    "nMale": 30,
+    "nFemale": 30,
+    "ageMin": 20,
+    "ageMax": 24
+  },
+  "selection": "class-I-balanced",
+  "modality": "digital",
+  "scale": {
+    "kind": "not-stated"
+  },
+  "headPosition": "NHP",
+  "curation": {
+    "extractedBy": [
+      "AI reader A",
+      "AI reader B"
+    ],
+    "date": "2026-10-08",
+    "notes": "Compared 2026-10-08 (norms:compare a vs b exit 1, 16 differences: 15 in the source text, 1 definitionMatch; every mean, SD and n agreed). All 15 values re-read from the page image of Tables 1-2 (p. 631, PDF p. 5): agree. Decisions: (1) source text normalised to 'Table 1, p. 631' / 'Table 2, p. 631'. (2) OP-SN: a 'same', b 'close' → close (occlusal plane undefined; merge notes). (3) U1-NA and L1-NB mm (merge notes: read the method): the paper gives no method beyond saying that tracing followed Steiner's analysis (p. 628) and Figure 4's landmark list; nothing shows a different reference point, so not 'different' - kept close (Steiner's labial-surface measure, M1) with a caveat on the implausible size. (4) Citation: the paper's header is used; it differs from SOURCES.md → caveat (merge notes). Ages 20-24 → ageBand [20,24], pooled only. Scale not-stated with the 1.13 caveat. Fix round 1 (2026-10-08, owner AGE-1 / MAL-1, rulings P42, P45, P47, review): owner MAL-1: U1-NA / L1-NB mm kept close; note and caveat cite p. 632 and the Norman 2020 cross-check.",
+    "comparedOn": "2026-10-08"
+  },
+  "caveats": [
+    "Planmeca '1.13 magnifications' stated (p. 628) but not whether values were corrected; assumed true size (owner ruling 8 Oct)",
+    "citation details differ from SOURCES.md; the paper's header is used",
+    "SOURCES.md gives the authors as 'Mohammad HA, Hassan A, Hussain SF'; the paper's header (p. 627) lists Mohammad H. A., Abu Hassan M. I. and Hussain S. F.; Sci Res Essays 6(3):627-634, 4 February 2011, DOI 10.5897/SRE10.869. The journal and DOI were not confirmed in PubMed or Crossref (SOURCES.md: LOCATE).",
+    "Sexes pooled: 60 Malaysian Malay adults aged 20-24 (30 men, 30 women; 70 recruited, 10 excluded for poor records) at Universiti Teknologi MARA, Selangor (p. 628). Tables 1-2 give the whole sample only (p. 628: the whole sample of 60, both sexes together); no values by sex.",
+    "Selection: Class I (British Standards Institute), both parents Malay for two generations, full permanent dentition, well-aligned arches, good facial symmetry and balanced profiles, no orthodontic treatment need (IOTN) (p. 628).",
+    "U1-NA 11.6 mm and L1-NB 11.0 mm are implausible for Steiner's measure (his ideal 4 mm; other Asian samples about 5-8 mm). The paper does not describe how these distances were measured (it says only that tracing followed Steiner's analysis, in VistaDent OC, p. 628), so it cannot be shown that they measure something else; kept as close, but read them with caution.",
+    "Digital cephalostat (Planmeca ProMax Dimax3), natural head position with FH parallel to the floor, teeth in maximum intercuspation, lips relaxed (p. 628); traced in VistaDent OC 4.2.61.",
+    "Not in the catalogue: Holdaway ratio (Table 2, p. 631: 10.4, SD 4.93). Not entered.",
+    "The paper describes these only as the linear distance of the upper or lower central incisor from the NA or NB line (p. 632) and names no incisor point; the values are internally consistent (Holdaway ratio 10.4 ≈ 11.0 − 0.8). Cross-check (owner, 8 Oct): Norman et al. 2020 (100 Malay adults) agrees on SNA, SNB, ANB and the interincisal angle but does not measure these two distances. Kept, close, by owner ruling MAL-1 (8 Oct)."
+  ],
+  "entries": [
+    {
+      "measurement": "m01_SNA",
+      "sex": "pooled",
+      "ageBand": [
+        20,
+        24
+      ],
+      "mean": 83.7,
+      "sd": 2.82,
+      "n": 60,
+      "unit": "deg",
+      "source": "Table 1, p. 631",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m02_SNB",
+      "sex": "pooled",
+      "ageBand": [
+        20,
+        24
+      ],
+      "mean": 81.2,
+      "sd": 2.86,
+      "n": 60,
+      "unit": "deg",
+      "source": "Table 1, p. 631",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m03_ANB",
+      "sex": "pooled",
+      "ageBand": [
+        20,
+        24
+      ],
+      "mean": 2.5,
+      "sd": 1.58,
+      "n": 60,
+      "unit": "deg",
+      "source": "Table 1, p. 631",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m87_SND",
+      "sex": "pooled",
+      "ageBand": [
+        20,
+        24
+      ],
+      "mean": 77.5,
+      "sd": 2.96,
+      "n": 60,
+      "unit": "deg",
+      "source": "Table 1, p. 631",
+      "definitionMatch": "same",
+      "note": "Table 1 prints the row as 'SDN'; the text and Tables 3-4 call it SND - a table typo."
+    },
+    {
+      "measurement": "m53_Interincisal",
+      "sex": "pooled",
+      "ageBand": [
+        20,
+        24
+      ],
+      "mean": 121,
+      "sd": 8.29,
+      "n": 60,
+      "unit": "deg",
+      "source": "Table 1, p. 631",
+      "definitionMatch": "same",
+      "note": "Paper label 'II'."
+    },
+    {
+      "measurement": "m60_OPSN",
+      "sex": "pooled",
+      "ageBand": [
+        20,
+        24
+      ],
+      "mean": 16.7,
+      "sd": 3.73,
+      "n": 60,
+      "unit": "deg",
+      "source": "Table 1, p. 631",
+      "definitionMatch": "close",
+      "definitionNote": "occlusal plane not defined: the paper traced 'according to Steiner analysis' in VistaDent (p. 628) without naming its occlusal plane; the catalogue uses the Downs occlusal plane",
+      "note": "Paper label 'SN_OcP'."
+    },
+    {
+      "measurement": "m20_SNGoGn",
+      "sex": "pooled",
+      "ageBand": [
+        20,
+        24
+      ],
+      "mean": 34.5,
+      "sd": 4.27,
+      "n": 60,
+      "unit": "deg",
+      "source": "Table 1, p. 631",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m47_U1NAdeg",
+      "sex": "pooled",
+      "ageBand": [
+        20,
+        24
+      ],
+      "mean": 24.1,
+      "sd": 5.63,
+      "n": 60,
+      "unit": "deg",
+      "source": "Table 1, p. 631",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m54_U1SN",
+      "sex": "pooled",
+      "ageBand": [
+        20,
+        24
+      ],
+      "mean": 107.3,
+      "sd": 6.25,
+      "n": 60,
+      "unit": "deg",
+      "source": "Table 1, p. 631",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m50_L1NBdeg",
+      "sex": "pooled",
+      "ageBand": [
+        20,
+        24
+      ],
+      "mean": 32.3,
+      "sd": 5.2,
+      "n": 60,
+      "unit": "deg",
+      "source": "Table 1, p. 631",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m46_U1NAmm",
+      "sex": "pooled",
+      "ageBand": [
+        20,
+        24
+      ],
+      "mean": 11.6,
+      "sd": 4.09,
+      "n": 60,
+      "unit": "mm",
+      "source": "Table 2, p. 631",
+      "definitionMatch": "close",
+      "definitionNote": "incisor point and method not described: the paper traced 'according to Steiner analysis' (p. 628), and Steiner measures from the labial surface, not the tip the catalogue uses (M1). The value (11.6 mm) is far above Steiner's 4 mm; see caveats",
+      "note": "Paper label '1u-NA'. The paper describes these only as the linear distance of the upper or lower central incisor from the NA or NB line (p. 632) and names no incisor point; the values are internally consistent (Holdaway ratio 10.4 ≈ 11.0 − 0.8). Cross-check (owner, 8 Oct): Norman et al. 2020 (100 Malay adults) agrees on SNA, SNB, ANB and the interincisal angle but does not measure these two distances. Kept by owner ruling MAL-1 (8 Oct)."
+    },
+    {
+      "measurement": "m49_L1NBmm",
+      "sex": "pooled",
+      "ageBand": [
+        20,
+        24
+      ],
+      "mean": 11,
+      "sd": 2.94,
+      "n": 60,
+      "unit": "mm",
+      "source": "Table 2, p. 631",
+      "definitionMatch": "close",
+      "definitionNote": "incisor point and method not described: the paper traced 'according to Steiner analysis' (p. 628), and Steiner measures from the labial surface, not the tip the catalogue uses (M1). The value (11.0 mm) is far above Steiner's 4 mm; see caveats",
+      "note": "Paper label '1l-NB'. The paper describes these only as the linear distance of the upper or lower central incisor from the NA or NB line (p. 632) and names no incisor point; the values are internally consistent (Holdaway ratio 10.4 ≈ 11.0 − 0.8). Cross-check (owner, 8 Oct): Norman et al. 2020 (100 Malay adults) agrees on SNA, SNB, ANB and the interincisal angle but does not measure these two distances. Kept by owner ruling MAL-1 (8 Oct)."
+    },
+    {
+      "measurement": "m18_PogNB",
+      "sex": "pooled",
+      "ageBand": [
+        20,
+        24
+      ],
+      "mean": 0.8,
+      "sd": 2.75,
+      "n": 60,
+      "unit": "mm",
+      "source": "Table 2, p. 631",
+      "definitionMatch": "same",
+      "note": "The paper reads a smaller value as a less prominent chin (p. 631), so + = Pog ahead of N–B, as the catalogue."
+    },
+    {
+      "measurement": "m71_ULE",
+      "sex": "pooled",
+      "ageBand": [
+        20,
+        24
+      ],
+      "mean": -2,
+      "sd": 2.79,
+      "n": 60,
+      "unit": "mm",
+      "source": "Table 2, p. 631",
+      "definitionMatch": "same",
+      "note": "Paper label 'Ls-Ns Pog': 'Ns' is the nose tip (Figure 4, p. 630), so Ns–Pog is Ricketts' E-line (p. 633: a line from the nose tip to soft-tissue pogonion). Sign as the catalogue: the paper quotes Ricketts' −4/−2 mm as behind the line."
+    },
+    {
+      "measurement": "m72_LLE",
+      "sex": "pooled",
+      "ageBand": [
+        20,
+        24
+      ],
+      "mean": 2.2,
+      "sd": 3.32,
+      "n": 60,
+      "unit": "mm",
+      "source": "Table 2, p. 631",
+      "definitionMatch": "same",
+      "note": "Paper label 'Li-Ns Pog': 'Ns' is the nose tip (Figure 4, p. 630), so Ns–Pog is Ricketts' E-line (p. 633: a line from the nose tip to soft-tissue pogonion). Sign as the catalogue: the paper quotes Ricketts' −4/−2 mm as behind the line."
+    }
+  ]
+}

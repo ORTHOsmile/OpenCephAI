@@ -1,0 +1,149 @@
+{
+  "id": "onfile-abo",
+  "kind": "analysis-own",
+  "analyses": [
+    "abo"
+  ],
+  "status": "website",
+  "citation": {
+    "authors": "[source removed]",
+    "title": "ABO Analysis: The American Board of Orthodontics Cephalometric Set",
+    "year": 2026,
+    "url": "[source removed]",
+    "openAccess": true
+  },
+  "population": {
+    "id": "analysis-own",
+    "label": "The analysis's own norms",
+    "ethnicity": []
+  },
+  "sample": {},
+  "selection": "unknown",
+  "modality": "unknown",
+  "scale": {
+    "kind": "not-stated"
+  },
+  "headPosition": "unknown",
+  "curation": {
+    "extractedBy": [
+      "AI reader A",
+      "AI reader B"
+    ],
+    "comparedOn": "2026-10-08",
+    "date": "2026-10-07",
+    "notes": "accessed 2026-10-07 (both extractors read the live page that day). Page dated June 12, 2026. The page names no source paper for the norms and describes no sample. Merge 2026-10-08: a and b agree on every value, unit and definitionMatch; only the source wording differed (b's row-specific wording kept). Re-read with WebFetch on 2026-10-08 (15:20): every value matched; the page says nothing on whether ± is an SD; the mandibular plane is written 'Go–Me' without saying which gonion, so #90–#92 stay 'close' (owner 8 Oct: ABO stays on the website values)."
+  },
+  "caveats": [
+    "Website values, not from a paper (status website; never coloured).",
+    "No source paper, sample, population, sex or age stated on the page.",
+    "The page prints every norm as 'x ± y' without saying whether y is an SD or a range; stored as sd with a note.",
+    "The page gives no norm for U1–NA (°) (#47) or L1–NB (°) (#50), which the catalogue's ABO list (ABO 2025 slides) includes — only the mm versions; those two have no norm. No interincisal angle (C6).",
+    "The page's SN-MP, FMA and IMPA use 'Go–Me' without saying which gonion; they are entered against the catalogue's ABO measurements #90, #91, #92 (constructed gonion, the ABO's own definition) as 'close'.",
+    "The owner's ABO tracing PDF is an example patient, not norms (owner 8 Oct); it was not used."
+  ],
+  "entries": [
+    {
+      "measurement": "m01_SNA",
+      "sex": "pooled",
+      "mean": 82,
+      "sd": 2,
+      "unit": "deg",
+      "source": "[source removed] ABO page, Skeletal table, row 'SNA'",
+      "definitionMatch": "same",
+      "note": "printed as ± on the website; not stated to be an SD"
+    },
+    {
+      "measurement": "m02_SNB",
+      "sex": "pooled",
+      "mean": 80,
+      "sd": 2,
+      "unit": "deg",
+      "source": "[source removed] ABO page, Skeletal table, row 'SNB'",
+      "definitionMatch": "same",
+      "note": "printed as ± on the website; not stated to be an SD"
+    },
+    {
+      "measurement": "m03_ANB",
+      "sex": "pooled",
+      "mean": 2,
+      "sd": 2,
+      "unit": "deg",
+      "source": "[source removed] ABO page, Skeletal table, row 'ANB'",
+      "definitionMatch": "same",
+      "note": "printed as ± on the website; not stated to be an SD"
+    },
+    {
+      "measurement": "m90_SNMP_ABO",
+      "sex": "pooled",
+      "mean": 32,
+      "sd": 5,
+      "unit": "deg",
+      "source": "[source removed] ABO page, Skeletal table, row 'SN-MP'",
+      "definitionMatch": "close",
+      "definitionNote": "The page writes the mandibular plane as 'Go–Me' and does not say which gonion (re-read 8 Oct). The catalogue's #90–#92 are the ABO's own definition: constructed gonion (ramus tangent × lower-border tangent) to menton (ABO 2025 workshop slides p. 8: the mandibular plane uses constructed gonion). Same lines otherwise; the two gonions differ most on a rounded jaw angle",
+      "note": "printed as ± on the website; not stated to be an SD"
+    },
+    {
+      "measurement": "m91_FMA_ABO",
+      "sex": "pooled",
+      "mean": 25,
+      "sd": 4,
+      "unit": "deg",
+      "source": "[source removed] ABO page, Skeletal table, row 'FMA'",
+      "definitionMatch": "close",
+      "definitionNote": "The page writes the mandibular plane as 'Go–Me' and does not say which gonion (re-read 8 Oct). The catalogue's #90–#92 are the ABO's own definition: constructed gonion (ramus tangent × lower-border tangent) to menton (ABO 2025 workshop slides p. 8: the mandibular plane uses constructed gonion). Same lines otherwise; the two gonions differ most on a rounded jaw angle. Page: 'Po–Or to Go–Me'",
+      "note": "printed as ± on the website; not stated to be an SD"
+    },
+    {
+      "measurement": "m54_U1SN",
+      "sex": "pooled",
+      "mean": 102,
+      "sd": 2,
+      "unit": "deg",
+      "source": "[source removed] ABO page, Dental table, row 'U1 to SN'",
+      "definitionMatch": "same",
+      "note": "printed as ± on the website; not stated to be an SD"
+    },
+    {
+      "measurement": "m46_U1NAmm",
+      "sex": "pooled",
+      "mean": 4,
+      "sd": 2,
+      "unit": "mm",
+      "source": "[source removed] ABO page, Dental table, row 'U1 to NA (mm)'",
+      "definitionMatch": "same",
+      "note": "printed as ± on the website; not stated to be an SD. Page: from the upper incisor tip; no sign rule stated"
+    },
+    {
+      "measurement": "m92_L1MP_ABO",
+      "sex": "pooled",
+      "mean": 90,
+      "sd": 5,
+      "unit": "deg",
+      "source": "[source removed] ABO page, Dental table, row 'L1 to MP (IMPA)'",
+      "definitionMatch": "close",
+      "definitionNote": "The page writes the mandibular plane as 'Go–Me' and does not say which gonion (re-read 8 Oct). The catalogue's #90–#92 are the ABO's own definition: constructed gonion (ramus tangent × lower-border tangent) to menton (ABO 2025 workshop slides p. 8: the mandibular plane uses constructed gonion). Same lines otherwise; the two gonions differ most on a rounded jaw angle",
+      "note": "printed as ± on the website; not stated to be an SD"
+    },
+    {
+      "measurement": "m49_L1NBmm",
+      "sex": "pooled",
+      "mean": 4,
+      "sd": 2,
+      "unit": "mm",
+      "source": "[source removed] ABO page, Dental table, row 'L1 to NB (mm)'",
+      "definitionMatch": "same",
+      "note": "printed as ± on the website; not stated to be an SD. Page: from the lower incisor tip; no sign rule stated"
+    },
+    {
+      "measurement": "m72_LLE",
+      "sex": "pooled",
+      "mean": -2,
+      "sd": 2,
+      "unit": "mm",
+      "source": "[source removed] ABO page, Soft tissue table, row 'Lower Lip to E-Plane'",
+      "definitionMatch": "same",
+      "note": "printed as ± on the website; not stated to be an SD. The page counts a lip ahead of the E-line (protrusive) as positive and one behind it as negative — the catalogue's sign; E-line Pronasale to soft-tissue Pogonion"
+    }
+  ]
+}

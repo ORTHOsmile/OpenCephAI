@@ -1,0 +1,241 @@
+{
+  "id": "moate2002-lou1981",
+  "kind": "population",
+  "status": "verified",
+  "citation": {
+    "authors": "Lou ZH",
+    "title": "Roentgenographic cephalometric study of 128 children with normal occlusion in Shanghai (author's translation)",
+    "journal": "Chung-Hua Kou Chiang Ko Tsa Chih (Chinese Journal of Stomatology)",
+    "year": 1981,
+    "volume": "16(2)",
+    "pages": "100–3",
+    "openAccess": false
+  },
+  "population": {
+    "id": "chinese",
+    "label": "Chinese",
+    "ethnicity": [
+      "Chinese"
+    ],
+    "country": "China",
+    "region": "Shanghai"
+  },
+  "sample": {
+    "n": 128,
+    "ageMin": 10,
+    "ageMax": 13
+  },
+  "selection": "class-I-balanced",
+  "modality": "unknown",
+  "scale": {
+    "kind": "not-stated"
+  },
+  "headPosition": "unknown",
+  "secondHand": {
+    "via": "Moate & Darendeliler 2002, Table III"
+  },
+  "curation": {
+    "extractedBy": [
+      "AI reader A",
+      "AI reader B"
+    ],
+    "date": "2026-10-08",
+    "notes": "Compared 2026-10-08: norms:compare a vs b exit 1, 17 differences (logs/task9a2-compare-<id>.log). Every mean and SD of both extractors re-read from the page images (PDF pp. 2-6 = journal pp. 20-24), and the settled file checked by script against a third, independent reading of the pages (the table in sets.test.ts). Decisions: (0) Source text normalised to one pattern giving table, page, row and column with sex and age (a and b worded it differently; prose only). b's UFH:LFH% rows (#29) not entered: the merge notes rule the printed UFH:LFH ratio is not a catalogue measurement (do not compute ratios). (1) a's Y axis males 13 y 66 ± 3 rejected: on Table III p. 22 the Y axis (66 ± 3) and facial axis (84 ± 3) values sit in the Fu columns, right-aligned at the right edge of the males and females groups, not in Lou's (b did not enter it). (2) Selection a unknown / b class-I-balanced -> class-I-balanced: chosen by occlusion and profile (text p. 21). Page images: PDF pp. 2-6 = journal pp. 20-24 (Tables I-VI), rendered at 2000 px.",
+    "comparedOn": "2026-10-08"
+  },
+  "caveats": [
+    "Quoted second-hand from Moate & Darendeliler 2002 (Aust Orthod J 18:19-26, a compilation of published Chinese cephalometric norms), Table III; the original paper was not read. The compilation rounds every mean and SD to whole numbers (Lew's soft tissue to 0.5) and gives no landmark, plane or method definitions.",
+    "The compilation states no film scale or magnification for any study; assumed true size (owner ruling M-2).",
+    "128 Chinese students in Shanghai selected on occlusion and profile (the title says normal occlusion), aged 10 and 13 years (text p. 21). Only 13-year values are tabled (Table III); group sizes are not given.",
+    "Not entered (not catalogue measurements; no ratio computed): N-ANS and UFH:LFH%.",
+    "Table V (p. 24) averages several studies; it is not entered for this study (merge notes)."
+  ],
+  "entries": [
+    {
+      "measurement": "m01_SNA",
+      "sex": "M",
+      "ageBand": [
+        13,
+        13
+      ],
+      "mean": 81,
+      "sd": 5,
+      "unit": "deg",
+      "source": "Table III, p. 22, row 'SNA', column Lou (males, 13 y)",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m02_SNB",
+      "sex": "M",
+      "ageBand": [
+        13,
+        13
+      ],
+      "mean": 78,
+      "sd": 4,
+      "unit": "deg",
+      "source": "Table III, p. 22, row 'SNB', column Lou (males, 13 y)",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m03_ANB",
+      "sex": "M",
+      "ageBand": [
+        13,
+        13
+      ],
+      "mean": 4,
+      "sd": 2,
+      "unit": "deg",
+      "source": "Table III, p. 22, row 'ANB', column Lou (males, 13 y)",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m21_SNGoMe",
+      "sex": "M",
+      "ageBand": [
+        13,
+        13
+      ],
+      "mean": 29,
+      "sd": 4,
+      "unit": "deg",
+      "source": "Table III, p. 22, row 'SN–MP', column Lou (males, 13 y)",
+      "definitionMatch": "close",
+      "definitionNote": "SN–MP: mandibular plane not stated in the compilation; mapped to Go–Me (#21). The original paper's plane may be Go–Gn or a tangent."
+    },
+    {
+      "measurement": "m57_IMPAgome",
+      "sex": "M",
+      "ageBand": [
+        13,
+        13
+      ],
+      "mean": 98,
+      "sd": 6,
+      "unit": "deg",
+      "source": "Table III, p. 22, row '/1–MP', column Lou (males, 13 y)",
+      "definitionMatch": "close",
+      "definitionNote": "Lower incisor to MP (/1–MP): mandibular plane not stated in the compilation; mapped to Go–Me (#57)."
+    },
+    {
+      "measurement": "m53_Interincisal",
+      "sex": "M",
+      "ageBand": [
+        13,
+        13
+      ],
+      "mean": 118,
+      "sd": 7,
+      "unit": "deg",
+      "source": "Table III, p. 22, row 'Interincisal', column Lou (males, 13 y)",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m28_LAFH",
+      "sex": "M",
+      "ageBand": [
+        13,
+        13
+      ],
+      "mean": 60,
+      "sd": 5,
+      "unit": "mm",
+      "source": "Table III, p. 22, row 'ANS–Me', column Lou (males, 13 y)",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m01_SNA",
+      "sex": "F",
+      "ageBand": [
+        13,
+        13
+      ],
+      "mean": 81,
+      "sd": 5,
+      "unit": "deg",
+      "source": "Table III, p. 22, row 'SNA', column Lou (females, 13 y)",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m02_SNB",
+      "sex": "F",
+      "ageBand": [
+        13,
+        13
+      ],
+      "mean": 77,
+      "sd": 4,
+      "unit": "deg",
+      "source": "Table III, p. 22, row 'SNB', column Lou (females, 13 y)",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m03_ANB",
+      "sex": "F",
+      "ageBand": [
+        13,
+        13
+      ],
+      "mean": 4,
+      "sd": 2,
+      "unit": "deg",
+      "source": "Table III, p. 22, row 'ANB', column Lou (females, 13 y)",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m21_SNGoMe",
+      "sex": "F",
+      "ageBand": [
+        13,
+        13
+      ],
+      "mean": 28,
+      "sd": 4,
+      "unit": "deg",
+      "source": "Table III, p. 22, row 'SN–MP', column Lou (females, 13 y)",
+      "definitionMatch": "close",
+      "definitionNote": "SN–MP: mandibular plane not stated in the compilation; mapped to Go–Me (#21). The original paper's plane may be Go–Gn or a tangent."
+    },
+    {
+      "measurement": "m57_IMPAgome",
+      "sex": "F",
+      "ageBand": [
+        13,
+        13
+      ],
+      "mean": 95,
+      "sd": 5,
+      "unit": "deg",
+      "source": "Table III, p. 22, row '/1–MP', column Lou (females, 13 y)",
+      "definitionMatch": "close",
+      "definitionNote": "Lower incisor to MP (/1–MP): mandibular plane not stated in the compilation; mapped to Go–Me (#57)."
+    },
+    {
+      "measurement": "m53_Interincisal",
+      "sex": "F",
+      "ageBand": [
+        13,
+        13
+      ],
+      "mean": 124,
+      "sd": 7,
+      "unit": "deg",
+      "source": "Table III, p. 22, row 'Interincisal', column Lou (females, 13 y)",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m28_LAFH",
+      "sex": "F",
+      "ageBand": [
+        13,
+        13
+      ],
+      "mean": 60,
+      "sd": 6,
+      "unit": "mm",
+      "source": "Table III, p. 22, row 'ANS–Me', column Lou (females, 13 y)",
+      "definitionMatch": "same"
+    }
+  ]
+}

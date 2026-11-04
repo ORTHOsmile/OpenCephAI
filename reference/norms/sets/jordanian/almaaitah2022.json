@@ -1,0 +1,124 @@
+{
+  "id": "almaaitah2022",
+  "kind": "population",
+  "status": "verified",
+  "citation": {
+    "authors": "Al Maaitah EF, Alomari S, Al-Khateeb SN, Abu Alhaija ES",
+    "title": "Cranial base measurements in different anteroposterior skeletal relationships using Bjork-Jarabak analysis",
+    "journal": "Angle Orthodontist",
+    "year": 2022,
+    "volume": "92(5)",
+    "pages": "613-618",
+    "doi": "10.2319/111321-838.1",
+    "openAccess": true
+  },
+  "population": {
+    "id": "jordanian",
+    "label": "Middle-Eastern / Jordanian",
+    "ethnicity": [
+      "Jordanian (the paper calls them Caucasians of the Jordanian population, p. 614)"
+    ],
+    "country": "Jordan",
+    "region": "Irbid"
+  },
+  "sample": {
+    "n": 94,
+    "nMale": 44,
+    "nFemale": 50,
+    "ageMin": 18
+  },
+  "selection": "class-I",
+  "modality": "film",
+  "scale": {
+    "kind": "true-size",
+    "source": "Cephalometric Analysis, p. 614: magnification adjusted with a radiopaque calibration ruler"
+  },
+  "headPosition": "unknown",
+  "curation": {
+    "extractedBy": [
+      "AI reader A",
+      "AI reader B"
+    ],
+    "comparedOn": "2026-10-13",
+    "date": "2026-10-13",
+    "notes": "Compared 2026-10-13 (norms:compare a vs b exit 1; self-test passed). All 4 means, SDs and n agreed; re-read at merge on the page image of Table 3 (PDF p. 3 = p. 615) and Table 2 for n 94: all agree. The only difference: ageBand (a none, b [18, 40]); settled [18, 40] (ruling, P18: adults over 18, p. 616, no upper age). Gonial and sum close (Ar-Go-Gn against the catalogue's Ar-Go-Me), saddle and articular same, as both readers. Set-level: selection mixed-occlusion (ruling, P37: 288 orthodontic patients before treatment, p. 614, split by ANB; both readers had class-I; superseded the same day by owner ruling KIMRANK-1: class-I, ranked as an ordinary Class I sample); population label the populations list's own (b had written its own label; moved the same day to the new population 'jordanian', owner ruling JORDAN-1); ageMin 18 (b); scale true-size (both: calibration ruler, p. 614). Table 4's by-sex rows pool all three classes: caveat only (P19). jarabak-via-almaaitah2022 was not created: the paper quotes only two cut-offs for Jarabak's sum of angles, no mean or SD (both readers)."
+  },
+  "caveats": [
+    "Norm group: the skeletal Class I group (ANB 2-4 degrees, p. 615) of 288 pretreatment orthodontic patients at Jordan University of Science and Technology clinics (p. 614). Class II (n 99) and Class III (n 95) groups in Table 3 are malocclusion groups and are not entered.",
+    "Ranked as an ordinary Class I sample (owner ruling KIMRANK-1, 13 Oct; replaces the P37 treatment-sample ruling of the same day): orthodontic patients before treatment, p. 614, picked for a skeletal Class I pattern; dental occlusion of the Class I group is not described.",
+    "ANB was used to pick the Class I group (2-4 degrees; Table 2, p. 615: Class I ANB 2.95 +/- 0.82, n 94) and is not entered as a norm (P45).",
+    "The whole sample was also restricted to an average maxillary-mandibular plane angle (MMPA 27 +/- 5 degrees, p. 614). The sum of polygon angles tracks vertical pattern, so its spread here is probably narrower than in an unselected sample; the paper itself links the similar sums across classes to this restriction (p. 617).",
+    "Sex: Table 4 (p. 616) gives men and women separately, but each pools Classes I, II and III together (men 142, women 146), so those rows are not a Class I norm and are not entered. Within Class I only both-sexes values are printed (Table 3).",
+    "Ages: adults only (over 18, p. 616). Mean age is given for the whole sample by sex only (women 21.24 +/- 2.72, men 22.94 +/- 3.28 years, p. 613-614), not for the Class I group; no upper age stated. Entries carry ageBand [18, 40] per the adult rule.",
+    "Gonion: Table 1 (p. 614) names point Gonion without saying whether it is anatomical or constructed; Figure 1 draws it at the mandibular angle where the ramus and Go-Gn lines meet.",
+    "Not in the catalogue: S-N, S-Ar, Ar-Go and Go-Gn lengths in mm (Table 3, p. 615). The catalogue's ratios #43 (S-N/Go-Me) and #44 (Ar-S/Ar-Go) are not printed and were not computed.",
+    "Upper and lower gonial angles (#37, #38), S-Go, N-Me and the Jarabak ratio (#40-#42) are not measured in this paper.",
+    "Film: lateral cephalograms hand traced (Orthoslice 1000 C with cephalostat, p. 614); head orientation (FH or natural head position) not stated; taken in centric occlusion.",
+    "Population: the paper calls its subjects Caucasians of the Jordanian population (p. 614); they are Jordanian adults, filed under their own population 'jordanian' (Middle-Eastern / Jordanian), owner ruling JORDAN-1, 13 Oct. They were first filed under 'caucasian', whose label speaks of European background.",
+    "Reference only, not entered: Class II and Class III columns of Table 3 (p. 615) and Table 4's by-sex rows (p. 616), which pool all three classes."
+  ],
+  "entries": [
+    {
+      "measurement": "m34_Saddle",
+      "sex": "pooled",
+      "ageBand": [
+        18,
+        40
+      ],
+      "mean": 124.12,
+      "sd": 5.08,
+      "n": 94,
+      "unit": "deg",
+      "source": "Table 3, Class I column, row 'Saddle angle', p. 615",
+      "definitionMatch": "same",
+      "note": "Adults over 18 with no upper age stated (p. 616); ageBand [18, 40] by the adult rule. n from Table 2."
+    },
+    {
+      "measurement": "m35_Articular",
+      "sex": "pooled",
+      "ageBand": [
+        18,
+        40
+      ],
+      "mean": 146.65,
+      "sd": 7.03,
+      "n": 94,
+      "unit": "deg",
+      "source": "Table 3, Class I column, row 'Articular angle', p. 615",
+      "definitionMatch": "same",
+      "note": "S-Ar-Go as the catalogue (Table 1, p. 614). The paper does not say whether its gonion is anatomical or constructed. Adults over 18, ageBand [18, 40] by the adult rule."
+    },
+    {
+      "measurement": "m36_Gonial",
+      "sex": "pooled",
+      "ageBand": [
+        18,
+        40
+      ],
+      "mean": 126.45,
+      "sd": 6.72,
+      "n": 94,
+      "unit": "deg",
+      "source": "Table 3, Class I column, row 'Gonial angle', p. 615",
+      "definitionMatch": "close",
+      "definitionNote": "The paper measures Ar-Go-Gn (gnathion, Table 1, p. 614); the catalogue measures Ar-Go-Me (menton). Gonion type (anatomical or constructed) not stated.",
+      "note": "Adults over 18, ageBand [18, 40] by the adult rule."
+    },
+    {
+      "measurement": "m39_SumAngles",
+      "sex": "pooled",
+      "ageBand": [
+        18,
+        40
+      ],
+      "mean": 397.21,
+      "sd": 7.65,
+      "n": 94,
+      "unit": "deg",
+      "source": "Table 3, Class I column, row 'Bjork sum angles', p. 615",
+      "definitionMatch": "close",
+      "definitionNote": "Sum of saddle, articular and gonial angles as the catalogue, but the paper's gonial angle uses gnathion (Ar-Go-Gn) where the catalogue uses menton (Ar-Go-Me).",
+      "note": "Sample restricted to average MMPA (27 +/- 5 degrees, p. 614), which likely narrows this SD. Adults over 18, ageBand [18, 40] by the adult rule."
+    }
+  ]
+}

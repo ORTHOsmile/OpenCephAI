@@ -1,0 +1,195 @@
+{
+  "id": "moate2002-chan1972",
+  "kind": "population",
+  "status": "verified",
+  "citation": {
+    "authors": "Chan GK",
+    "title": "A cephalometric appraisal of the Chinese",
+    "journal": "Am J Orthod",
+    "year": 1972,
+    "volume": "61(3)",
+    "pages": "279–85",
+    "openAccess": false
+  },
+  "population": {
+    "id": "chinese",
+    "label": "Chinese",
+    "ethnicity": [
+      "Chinese"
+    ]
+  },
+  "sample": {},
+  "selection": "unknown",
+  "modality": "unknown",
+  "scale": {
+    "kind": "not-stated"
+  },
+  "headPosition": "unknown",
+  "secondHand": {
+    "via": "Moate & Darendeliler 2002, Table IV"
+  },
+  "curation": {
+    "extractedBy": [
+      "AI reader A",
+      "AI reader B"
+    ],
+    "date": "2026-10-08",
+    "notes": "Compared 2026-10-08: norms:compare a vs b exit 1, 19 differences (logs/task9a2-compare-<id>.log). Every mean and SD of both extractors re-read from the page images (PDF pp. 2-6 = journal pp. 20-24), and the settled file checked by script against a third, independent reading of the pages (the table in sets.test.ts). Decisions: (0) Source text normalised to one pattern giving table, page, row and column with sex and age (a and b worded it differently; prose only). Adult rows: a gave [18, 40], b no band -> [18, 40] with the P18 note (merge notes). (1) U1-SN 107 ± 9: b only; Table IV p. 23 prints it in the Chan column -> kept (a put it under Wei). (2) '1/-A Pog mm' 10 ± 2: a #64 / b #63 -> #63 (upper incisor, '1/'), close. (3) Facial axis a same / b close -> close; fix round 1 (8 Oct): -> different, not used (owner FAX-1). Page images: PDF pp. 2-6 = journal pp. 20-24 (Tables I-VI), rendered at 2000 px.",
+    "comparedOn": "2026-10-08"
+  },
+  "caveats": [
+    "Quoted second-hand from Moate & Darendeliler 2002 (Aust Orthod J 18:19-26, a compilation of published Chinese cephalometric norms), Table IV; the original paper was not read. The compilation rounds every mean and SD to whole numbers (Lew's soft tissue to 0.5) and gives no landmark, plane or method definitions.",
+    "The compilation states no film scale or magnification for any study; assumed true size (owner ruling M-2).",
+    "Table IV heads this column 'Chan14', but reference 14 is Cheng 1986; the column was identified by the author name against Moate's reference list (Chan 1972 is reference 15), as both extractors did.",
+    "The compilation's text does not describe this study's sample (size, age, selection or place); only its table column and its reference-list entry are given.",
+    "Table IV prints Chan in the males columns only.",
+    "Table V (p. 24) averages several studies; it is not entered for this study (merge notes)."
+  ],
+  "entries": [
+    {
+      "measurement": "m01_SNA",
+      "sex": "M",
+      "ageBand": [
+        18,
+        40
+      ],
+      "mean": 84,
+      "sd": 3,
+      "unit": "deg",
+      "source": "Table IV, p. 23, row 'SNA', column Chan14 (males, 18 Years +)",
+      "definitionMatch": "same",
+      "note": "'18 Years +' (Table IV): upper bound not stated; 40 by convention (Miao's stated range 4–40), P18."
+    },
+    {
+      "measurement": "m02_SNB",
+      "sex": "M",
+      "ageBand": [
+        18,
+        40
+      ],
+      "mean": 80,
+      "sd": 4,
+      "unit": "deg",
+      "source": "Table IV, p. 23, row 'SNB', column Chan14 (males, 18 Years +)",
+      "definitionMatch": "same",
+      "note": "'18 Years +' (Table IV): upper bound not stated; 40 by convention (Miao's stated range 4–40), P18."
+    },
+    {
+      "measurement": "m03_ANB",
+      "sex": "M",
+      "ageBand": [
+        18,
+        40
+      ],
+      "mean": 4,
+      "sd": 2,
+      "unit": "deg",
+      "source": "Table IV, p. 23, row 'ANB', column Chan14 (males, 18 Years +)",
+      "definitionMatch": "same",
+      "note": "'18 Years +' (Table IV): upper bound not stated; 40 by convention (Miao's stated range 4–40), P18."
+    },
+    {
+      "measurement": "m21_SNGoMe",
+      "sex": "M",
+      "ageBand": [
+        18,
+        40
+      ],
+      "mean": 33,
+      "sd": 4,
+      "unit": "deg",
+      "source": "Table IV, p. 23, row 'SN–MP', column Chan14 (males, 18 Years +)",
+      "definitionMatch": "close",
+      "definitionNote": "SN–MP: mandibular plane not stated in the compilation; mapped to Go–Me (#21). The original paper's plane may be Go–Gn or a tangent.",
+      "note": "'18 Years +' (Table IV): upper bound not stated; 40 by convention (Miao's stated range 4–40), P18."
+    },
+    {
+      "measurement": "m57_IMPAgome",
+      "sex": "M",
+      "ageBand": [
+        18,
+        40
+      ],
+      "mean": 98,
+      "sd": 8,
+      "unit": "deg",
+      "source": "Table IV, p. 23, row '/1–MP', column Chan14 (males, 18 Years +)",
+      "definitionMatch": "close",
+      "definitionNote": "Lower incisor to MP (/1–MP): mandibular plane not stated in the compilation; mapped to Go–Me (#57).",
+      "note": "'18 Years +' (Table IV): upper bound not stated; 40 by convention (Miao's stated range 4–40), P18."
+    },
+    {
+      "measurement": "m53_Interincisal",
+      "sex": "M",
+      "ageBand": [
+        18,
+        40
+      ],
+      "mean": 122,
+      "sd": 8,
+      "unit": "deg",
+      "source": "Table IV, p. 23, row 'Interincisal', column Chan14 (males, 18 Years +)",
+      "definitionMatch": "same",
+      "note": "'18 Years +' (Table IV): upper bound not stated; 40 by convention (Miao's stated range 4–40), P18."
+    },
+    {
+      "measurement": "m54_U1SN",
+      "sex": "M",
+      "ageBand": [
+        18,
+        40
+      ],
+      "mean": 107,
+      "sd": 9,
+      "unit": "deg",
+      "source": "Table IV, p. 23, row '1/–SN', column Chan14 (males, 18 Years +)",
+      "definitionMatch": "same",
+      "note": "'18 Years +' (Table IV): upper bound not stated; 40 by convention (Miao's stated range 4–40), P18."
+    },
+    {
+      "measurement": "m60_OPSN",
+      "sex": "M",
+      "ageBand": [
+        18,
+        40
+      ],
+      "mean": 16,
+      "sd": 4,
+      "unit": "deg",
+      "source": "Table IV, p. 23, row 'SN–OP', column Chan14 (males, 18 Years +)",
+      "definitionMatch": "close",
+      "definitionNote": "SN–OP: occlusal plane not stated in the compilation (functional or bisecting); mapped to #60.",
+      "note": "'18 Years +' (Table IV): upper bound not stated; 40 by convention (Miao's stated range 4–40), P18."
+    },
+    {
+      "measurement": "m63_U1APog",
+      "sex": "M",
+      "ageBand": [
+        18,
+        40
+      ],
+      "mean": 10,
+      "sd": 2,
+      "unit": "mm",
+      "source": "Table IV, p. 23, row '1/–A Pog', column Chan14 (males, 18 Years +)",
+      "definitionMatch": "close",
+      "definitionNote": "Printed '1/–A Pog mm' (upper incisor, the compilation's '1/' notation; '/1' is the lower incisor): incisor point not stated in the compilation, nor the sign (catalogue: tip, + ahead).",
+      "note": "'18 Years +' (Table IV): upper bound not stated; 40 by convention (Miao's stated range 4–40), P18."
+    },
+    {
+      "measurement": "m30_FacAxisR",
+      "sex": "M",
+      "ageBand": [
+        18,
+        40
+      ],
+      "mean": 80,
+      "sd": 4,
+      "unit": "deg",
+      "source": "Table IV, p. 23, row 'Facial axis', column Chan14 (males, 18 Years +)",
+      "definitionMatch": "different",
+      "definitionNote": "Not used (owner ruling 8 Oct): 80–85° with no definition in the compilation; Ricketts' facial axis is 90 ± 3.5, and these values fit Downs' facial angle at least as well — likely a different measurement.",
+      "note": "'18 Years +' (Table IV): upper bound not stated; 40 by convention (Miao's stated range 4–40), P18."
+    }
+  ]
+}

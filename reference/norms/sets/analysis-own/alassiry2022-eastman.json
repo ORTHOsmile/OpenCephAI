@@ -1,0 +1,138 @@
+{
+  "id": "alassiry2022-eastman",
+  "kind": "analysis-own",
+  "analyses": [
+    "eastman"
+  ],
+  "status": "verified",
+  "citation": {
+    "authors": "Alassiry AM",
+    "title": "Cephalometric comparison of Eastman standards among caucasians and saudi population in the Najran region",
+    "journal": "Bioinformation",
+    "year": 2022,
+    "volume": "18(12)",
+    "pages": "1173-1176",
+    "doi": "10.6026/973206300181173",
+    "openAccess": true
+  },
+  "population": {
+    "id": "analysis-own",
+    "label": "The analysis's own norms",
+    "ethnicity": []
+  },
+  "sample": {},
+  "selection": "unknown",
+  "modality": "unknown",
+  "scale": {
+    "kind": "not-stated"
+  },
+  "headPosition": "unknown",
+  "secondHand": {
+    "via": "Alassiry 2022, Table 2 (Eastman columns), p. 1175"
+  },
+  "curation": {
+    "extractedBy": [
+      "AI reader A",
+      "AI reader B"
+    ],
+    "comparedOn": "2026-10-13",
+    "date": "2026-10-13",
+    "notes": "Compared 2026-10-13 (norms:compare a vs b exit 1; self-test passed). All 9 means and SDs agreed; re-read at merge on the page image of Table 2 (PDF p. 3 = p. 1175): all agree. Differences settled: source wording (a gave the PDF page 3, b the printed page 1175; printed page kept); definitionMatch for #25 MMPA and #64 L1-APog (a same, b close) settled close (ruling: the paper names no mandibular plane and no incisor point); #57 close in both. n left out (the Eastman column header repeats the Najran sample's n=60). Set-level: ethnicity left empty as for the other analysis-own sets (a had 'Caucasian'); secondHand.via names the printed page. The reference list dates Ballard 1956 (the text says 1948) and has no Mills 1982 entry. The Results text (p. 1175) swaps the two interincisal values (it gives 123.9 to the Caucasians); Table 2 is entered."
+  },
+  "caveats": [
+    "Second-hand: the Eastman standard values as this paper restates them in Table 2 (p. 1175). The paper says the Eastman standards come from the work of Ballard (1948), Mills (1982) and MacAllister and Rock (1992) (p. 1174, refs 4 and 5; its reference list gives Ballard CF, Trans Eur Orthod Soc 1956, and MacAllister MJ et al., Br J Orthod 1992 19:55-58). It says only that the Caucasian data were taken from previous studies; it does not say which source supplied which value.",
+    "Table 2's Eastman column header prints '(n=60)', the same as the Najran sample; the paper describes no Eastman sample, so this looks like a header carried over and is not entered as n. Sample, sex, age, film modality, enlargement and head position of the Eastman source are not stated.",
+    "All Eastman values are printed as whole numbers with an SD column; sex pooled, no age band.",
+    "The paper names no mandibular plane (Table 2 'MdP'; Figure 1 'Mandibular Plane'), so MMPA (#25) and the lower incisor angle (#57) are entered as close.",
+    "The paper's own sample (60 Najran Saudi adults aged 18-30, 30 M / 30 F, Class I molar and canine, pleasing profile, patients attending for orthodontic consultation; Table 1 by sex, p. 1175, and Table 2 pooled) is NOT entered in this set.",
+    "No Eastman value is printed for LAFH % (#29), which the catalogue's Eastman list includes; that measurement has no norm here.",
+    "Results text, p. 1175: the sentence on the interincisal angle attributes the Najran value (123.9) to the Caucasians and the Eastman value (131) to Najran; Table 2 prints them the other way round, and Table 2 is entered."
+  ],
+  "entries": [
+    {
+      "measurement": "m01_SNA",
+      "sex": "pooled",
+      "mean": 81,
+      "sd": 3,
+      "unit": "deg",
+      "source": "Table 2, p. 1175, row 'SNA (°)', Eastman columns",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m02_SNB",
+      "sex": "pooled",
+      "mean": 78,
+      "sd": 3,
+      "unit": "deg",
+      "source": "Table 2, p. 1175, row 'SNB (°)', Eastman columns",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m03_ANB",
+      "sex": "pooled",
+      "mean": 3,
+      "sd": 2,
+      "unit": "deg",
+      "source": "Table 2, p. 1175, row 'ANB (°)', Eastman columns",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m55_U1MxP",
+      "sex": "pooled",
+      "mean": 109,
+      "sd": 6,
+      "unit": "deg",
+      "source": "Table 2, p. 1175, row 'UI to MxP (°)', Eastman columns",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m57_IMPAgome",
+      "sex": "pooled",
+      "mean": 93,
+      "sd": 6,
+      "unit": "deg",
+      "source": "Table 2, p. 1175, row 'LI to MdP (°)', Eastman columns",
+      "definitionMatch": "close",
+      "definitionNote": "Lower incisor to the mandibular plane; the paper does not say which mandibular plane (the catalogue uses Go–Me)."
+    },
+    {
+      "measurement": "m53_Interincisal",
+      "sex": "pooled",
+      "mean": 131,
+      "sd": 6,
+      "unit": "deg",
+      "source": "Table 2, p. 1175, row 'U1 to L1 (°)', Eastman columns",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m25_MMPA",
+      "sex": "pooled",
+      "mean": 27,
+      "sd": 4,
+      "unit": "deg",
+      "source": "Table 2, p. 1175, row 'MMPA (°)', Eastman columns",
+      "definitionMatch": "close",
+      "definitionNote": "Maxillary to mandibular plane angle; the paper does not say which mandibular plane (the catalogue uses Go–Me)."
+    },
+    {
+      "measurement": "m26_SNMxP",
+      "sex": "pooled",
+      "mean": 8,
+      "sd": 3,
+      "unit": "deg",
+      "source": "Table 2, p. 1175, row 'SN to MxP (°)', Eastman columns",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m64_L1APog",
+      "sex": "pooled",
+      "mean": 1,
+      "sd": 2,
+      "unit": "mm",
+      "source": "Table 2, p. 1175, row 'L1 to APog (mm)', Eastman columns",
+      "definitionMatch": "close",
+      "definitionNote": "The paper does not say which point of the lower incisor is measured to A–Pog (the catalogue uses the incisal tip).",
+      "note": "Sign not stated; the text reads larger values as the incisor further forward (p. 1176), matching the catalogue's + when ahead."
+    }
+  ]
+}

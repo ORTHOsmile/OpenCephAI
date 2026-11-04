@@ -1,0 +1,19 @@
+name: Delete build logs
+# Owner's rule: no build logs are kept. Removes the logs of every finished run of the other workflows,
+# 15 minutes after it finishes (time to read the result). The run's pass/fail status stays visible.
+on:
+  workflow_run:
+    workflows: ["Check signing", "Build signed app"]
+    types: [completed]
+permissions:
+  actions: write
+jobs:
+  delete:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Wait 15 minutes
+        run: sleep 900
+      - name: Delete the finished run's logs
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh api -X DELETE "repos/${{ github.repository }}/actions/runs/${{ github.event.workflow_run.id }}/logs" && echo "logs deleted"

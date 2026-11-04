@@ -1,0 +1,862 @@
+{
+  "id": "zheng2026",
+  "kind": "population",
+  "status": "verified",
+  "citation": {
+    "authors": "Zheng HW, Meng CD, Chen HH, Song GY, Lai Y, Han B, Xu TM",
+    "title": "Cephalometric Norms for Chinese Individuals Based on Expert Consensus Evaluation of Lateral Cephalometric Radiographs",
+    "journal": "Chinese Journal of Dental Research",
+    "year": 2026,
+    "volume": "29(2)",
+    "pages": "151-161",
+    "doi": "10.3290/j.cjdr.b7044059",
+    "openAccess": false
+  },
+  "population": {
+    "id": "chinese",
+    "label": "Chinese",
+    "ethnicity": [
+      "Han Chinese"
+    ],
+    "country": "China",
+    "region": "Beijing (Peking University)"
+  },
+  "sample": {
+    "n": 120,
+    "nMale": 60,
+    "nFemale": 60,
+    "ageMin": 10,
+    "ageMax": 41
+  },
+  "selection": "class-I-balanced",
+  "modality": "unknown",
+  "scale": {
+    "kind": "not-stated"
+  },
+  "headPosition": "unknown",
+  "curation": {
+    "extractedBy": [
+      "AI reader A",
+      "AI reader B"
+    ],
+    "date": "2026-10-08",
+    "notes": "Compared 2026-10-08 (norms:compare a vs b exit 1, 62 differences, none in a mean/SD/n except L1/OP). All 54 values re-read from the page image of Table 4 (p. 156, PDF p. 6): both extractors agree with the page on every mean and SD. Decisions: (1) source text: b's wording (Table 4, p. 156, with the definition in Table 3, p. 155) used for every row (a cited only Table 4) - prose, no value. (2) m62 L1/OP: a stored the printed 113.0/112.8, b printed − 90 (23.0/22.8) → b, by merge-notes ruling (catalogue m62 is the deviation from 90°, the #31 precedent); close (Table 3 names the 'functional plane'). (3) m22 FMA and m56 IMPA: a 'same', b 'close'. Superseded in fix round 1 by ruling P47 (review): Table 3 (p. 155, read from the page image) calls Go–Gn 'the mandibular plane' in its GoGn/SN row, the same words it uses for FMA and IMPA → IMPA moved to #59 L1–GoGn, same; FMA stays on #22 close (no FH–Go–Gn id), its note giving the Table 3 evidence; FMIA same (L1 to FH, no mandibular plane). (4) m61 OP/FH and m60 OP/SN: a 'close', b 'same' → close, 'occlusal plane not stated' (merge notes; Table 3 names the functional plane only for L1/OP). (5) Wits same: Table 3 says 'the functional occlusal plane', as the catalogue; no sign rule printed, values fit the catalogue sign. E-line same: no sign rule printed, values fit. (6) selection: a 'ideal-aesthetic', b 'class-I-balanced' → class-I-balanced (neutral occlusion AND expert-judged harmonious profile, p. 153). Region: 'Beijing (Peking University)'. Adult SNA SD 3.7 (Table 4) kept, Table 5's 3.6 in the note (merge notes). Scale not-stated (merge notes). SL, SE in caveats. Fix round 1 (2026-10-08, owner AGE-1 / MAL-1, rulings P42, P45, P47, review): IMPA → #59 (P47); FMA note; Y-axis note (points not named; S–Gn assumed, the conventional Y-axis).",
+    "comparedOn": "2026-10-08"
+  },
+  "caveats": [
+    "Two groups, sexes pooled: adolescents n 60 (30 boys, 30 girls), age range 10-17 y (mean 14.40 ± 1.70), and adults n 60 (30 men, 30 women), age range 18-41 y (mean 24.33 ± 5.65) (p. 153). Table 4 gives no values by sex.",
+    "Selection: untreated Han Chinese orthodontic patients at Peking University (2022-2025), permanent dentition, neutral occlusion with normal overjet and overbite, straight profile judged harmonious by expert consensus (objective score < 3.30) (p. 153). These are 'harmonious' faces chosen by experts, so the spread is narrower than an unselected population's.",
+    "Measured on an online cephalometric platform (Zhejiang Aishinye); film or digital, film scale and head position are not stated. Anatomical porion used for FH (p. 154).",
+    "Not in the catalogue: SL (mm; pogonion projected onto SN, distance to sella) and SE (mm; posterior condyle projected onto SN, distance to sella), Peking University analysis (Table 3/4). Not entered.",
+    "L1/OP adult SD is printed 2.1 (adolescents 7.1; the other incisor angles have SDs of 6-10): possible typesetting error in the source. Kept as printed.",
+    "Adult SNA SD: Table 4 gives 3.7, Table 5 (p. 158) gives 3.6. Table 4, the norms table, is used.",
+    "Mandibular plane (ruling P47): Table 3 calls Go–Gn 'the mandibular plane' (GoGn/SN row) in the same words it uses for FMA and IMPA. IMPA is therefore entered as L1–GoGn (#59, same); FMA has no FH–Go–Gn id in the catalogue and stays on #22 (FH to the lower-border tangent), close. FMIA (L1 to FH) uses no mandibular plane and is same."
+  ],
+  "entries": [
+    {
+      "measurement": "m22_FHMPt",
+      "sex": "pooled",
+      "ageBand": [
+        10,
+        17
+      ],
+      "mean": 26.1,
+      "sd": 5.5,
+      "n": 60,
+      "unit": "deg",
+      "source": "Table 4, p. 156; definition Table 3, p. 155",
+      "definitionMatch": "close",
+      "definitionNote": "Table 3 (p. 155) uses the same term, 'the mandibular plane', for FMA, for IMPA and for the GoGn/SN row (which it defines as that plane against the anterior cranial base), so the paper's mandibular plane is Go–Gn; the catalogue has no FH–Go–Gn id, so FMA stays on the lower-border tangent id (#22), close (ruling P47)",
+      "note": "Paper label 'FMA (MPA)'."
+    },
+    {
+      "measurement": "m22_FHMPt",
+      "sex": "pooled",
+      "ageBand": [
+        18,
+        41
+      ],
+      "mean": 23.7,
+      "sd": 4.3,
+      "n": 60,
+      "unit": "deg",
+      "source": "Table 4, p. 156; definition Table 3, p. 155",
+      "definitionMatch": "close",
+      "definitionNote": "Table 3 (p. 155) uses the same term, 'the mandibular plane', for FMA, for IMPA and for the GoGn/SN row (which it defines as that plane against the anterior cranial base), so the paper's mandibular plane is Go–Gn; the catalogue has no FH–Go–Gn id, so FMA stays on the lower-border tangent id (#22), close (ruling P47)",
+      "note": "Paper label 'FMA (MPA)'."
+    },
+    {
+      "measurement": "m58_FMIA",
+      "sex": "pooled",
+      "ageBand": [
+        10,
+        17
+      ],
+      "mean": 58.9,
+      "sd": 7.5,
+      "n": 60,
+      "unit": "deg",
+      "source": "Table 4, p. 156; definition Table 3, p. 155",
+      "definitionMatch": "same",
+      "note": "L1 axis to FH (Table 3); the catalogue's FMIA is the L1 axis against FH and uses no mandibular plane, so same."
+    },
+    {
+      "measurement": "m58_FMIA",
+      "sex": "pooled",
+      "ageBand": [
+        18,
+        41
+      ],
+      "mean": 60.2,
+      "sd": 7.3,
+      "n": 60,
+      "unit": "deg",
+      "source": "Table 4, p. 156; definition Table 3, p. 155",
+      "definitionMatch": "same",
+      "note": "L1 axis to FH (Table 3); the catalogue's FMIA is the L1 axis against FH and uses no mandibular plane, so same."
+    },
+    {
+      "measurement": "m59_L1GoGn",
+      "sex": "pooled",
+      "ageBand": [
+        10,
+        17
+      ],
+      "mean": 96.2,
+      "sd": 7.3,
+      "n": 60,
+      "unit": "deg",
+      "source": "Table 4, p. 156; definition Table 3, p. 155",
+      "definitionMatch": "same",
+      "note": "Paper label 'IMPA (L1/MP)', defined in Table 3 as the lower central incisor's long axis against the mandibular plane; the GoGn/SN row of Table 3 calls Go–Gn 'the mandibular plane', so this is L1 to Go–Gn (ruling P47)."
+    },
+    {
+      "measurement": "m59_L1GoGn",
+      "sex": "pooled",
+      "ageBand": [
+        18,
+        41
+      ],
+      "mean": 95.7,
+      "sd": 6.8,
+      "n": 60,
+      "unit": "deg",
+      "source": "Table 4, p. 156; definition Table 3, p. 155",
+      "definitionMatch": "same",
+      "note": "Paper label 'IMPA (L1/MP)', defined in Table 3 as the lower central incisor's long axis against the mandibular plane; the GoGn/SN row of Table 3 calls Go–Gn 'the mandibular plane', so this is L1 to Go–Gn (ruling P47)."
+    },
+    {
+      "measurement": "m04_FacialAngle",
+      "sex": "pooled",
+      "ageBand": [
+        10,
+        17
+      ],
+      "mean": 88.3,
+      "sd": 2.8,
+      "n": 60,
+      "unit": "deg",
+      "source": "Table 4, p. 156; definition Table 3, p. 155",
+      "definitionMatch": "same",
+      "note": "Paper label 'NP/FH': posterior inferior angle between facial plane and FH."
+    },
+    {
+      "measurement": "m04_FacialAngle",
+      "sex": "pooled",
+      "ageBand": [
+        18,
+        41
+      ],
+      "mean": 89,
+      "sd": 3,
+      "n": 60,
+      "unit": "deg",
+      "source": "Table 4, p. 156; definition Table 3, p. 155",
+      "definitionMatch": "same",
+      "note": "Paper label 'NP/FH': posterior inferior angle between facial plane and FH."
+    },
+    {
+      "measurement": "m05_Convexity",
+      "sex": "pooled",
+      "ageBand": [
+        10,
+        17
+      ],
+      "mean": 4.1,
+      "sd": 4.7,
+      "n": 60,
+      "unit": "deg",
+      "source": "Table 4, p. 156; definition Table 3, p. 155",
+      "definitionMatch": "same",
+      "note": "Paper label 'NA/PA' (angle between N-A and Pog-A, read as its difference from a straight line)."
+    },
+    {
+      "measurement": "m05_Convexity",
+      "sex": "pooled",
+      "ageBand": [
+        18,
+        41
+      ],
+      "mean": 3.8,
+      "sd": 4.6,
+      "n": 60,
+      "unit": "deg",
+      "source": "Table 4, p. 156; definition Table 3, p. 155",
+      "definitionMatch": "same",
+      "note": "Paper label 'NA/PA' (angle between N-A and Pog-A, read as its difference from a straight line)."
+    },
+    {
+      "measurement": "m06_ABPlane",
+      "sex": "pooled",
+      "ageBand": [
+        10,
+        17
+      ],
+      "mean": -4.8,
+      "sd": 2.6,
+      "n": 60,
+      "unit": "deg",
+      "source": "Table 4, p. 156; definition Table 3, p. 155",
+      "definitionMatch": "same",
+      "note": "Paper label 'NP/AB'."
+    },
+    {
+      "measurement": "m06_ABPlane",
+      "sex": "pooled",
+      "ageBand": [
+        18,
+        41
+      ],
+      "mean": -4.6,
+      "sd": 2.9,
+      "n": 60,
+      "unit": "deg",
+      "source": "Table 4, p. 156; definition Table 3, p. 155",
+      "definitionMatch": "same",
+      "note": "Paper label 'NP/AB'."
+    },
+    {
+      "measurement": "m24_YAxis",
+      "sex": "pooled",
+      "ageBand": [
+        10,
+        17
+      ],
+      "mean": 60.8,
+      "sd": 2.6,
+      "n": 60,
+      "unit": "deg",
+      "source": "Table 4, p. 156; definition Table 3, p. 155",
+      "definitionMatch": "same",
+      "note": "points not named; S–Gn assumed (the conventional Y-axis). Inferior anterior angle with FH (Table 3)."
+    },
+    {
+      "measurement": "m24_YAxis",
+      "sex": "pooled",
+      "ageBand": [
+        18,
+        41
+      ],
+      "mean": 61.1,
+      "sd": 3,
+      "n": 60,
+      "unit": "deg",
+      "source": "Table 4, p. 156; definition Table 3, p. 155",
+      "definitionMatch": "same",
+      "note": "points not named; S–Gn assumed (the conventional Y-axis). Inferior anterior angle with FH (Table 3)."
+    },
+    {
+      "measurement": "m61_CantOP",
+      "sex": "pooled",
+      "ageBand": [
+        10,
+        17
+      ],
+      "mean": 7.9,
+      "sd": 3.8,
+      "n": 60,
+      "unit": "deg",
+      "source": "Table 4, p. 156; definition Table 3, p. 155",
+      "definitionMatch": "close",
+      "definitionNote": "occlusal plane not stated: Table 3 (p. 155) says only 'the occlusal plane' for OP/FH; the paper names the 'functional plane' only for L1/OP. The catalogue uses the Downs occlusal plane",
+      "note": "Paper label 'OP/FH'."
+    },
+    {
+      "measurement": "m61_CantOP",
+      "sex": "pooled",
+      "ageBand": [
+        18,
+        41
+      ],
+      "mean": 7,
+      "sd": 4.3,
+      "n": 60,
+      "unit": "deg",
+      "source": "Table 4, p. 156; definition Table 3, p. 155",
+      "definitionMatch": "close",
+      "definitionNote": "occlusal plane not stated: Table 3 (p. 155) says only 'the occlusal plane' for OP/FH; the paper names the 'functional plane' only for L1/OP. The catalogue uses the Downs occlusal plane",
+      "note": "Paper label 'OP/FH'."
+    },
+    {
+      "measurement": "m53_Interincisal",
+      "sex": "pooled",
+      "ageBand": [
+        10,
+        17
+      ],
+      "mean": 123.2,
+      "sd": 10.2,
+      "n": 60,
+      "unit": "deg",
+      "source": "Table 4, p. 156; definition Table 3, p. 155",
+      "definitionMatch": "same",
+      "note": "Paper label 'U1/L1'."
+    },
+    {
+      "measurement": "m53_Interincisal",
+      "sex": "pooled",
+      "ageBand": [
+        18,
+        41
+      ],
+      "mean": 123.2,
+      "sd": 8.6,
+      "n": 60,
+      "unit": "deg",
+      "source": "Table 4, p. 156; definition Table 3, p. 155",
+      "definitionMatch": "same",
+      "note": "Paper label 'U1/L1'."
+    },
+    {
+      "measurement": "m62_L1OPdev",
+      "sex": "pooled",
+      "ageBand": [
+        10,
+        17
+      ],
+      "mean": 23,
+      "sd": 7.1,
+      "n": 60,
+      "unit": "deg",
+      "source": "Table 4, p. 156; definition Table 3, p. 155",
+      "definitionMatch": "close",
+      "definitionNote": "Table 3 (p. 155) measures L1 to 'the functional plane' (functional occlusal plane); the catalogue uses the Downs occlusal plane",
+      "note": "Zheng prints the full angle (113.0°); stored as the deviation from 90° to match the catalogue (the #31 precedent). SD unchanged."
+    },
+    {
+      "measurement": "m62_L1OPdev",
+      "sex": "pooled",
+      "ageBand": [
+        18,
+        41
+      ],
+      "mean": 22.8,
+      "sd": 2.1,
+      "n": 60,
+      "unit": "deg",
+      "source": "Table 4, p. 156; definition Table 3, p. 155",
+      "definitionMatch": "close",
+      "definitionNote": "Table 3 (p. 155) measures L1 to 'the functional plane' (functional occlusal plane); the catalogue uses the Downs occlusal plane",
+      "note": "Zheng prints the full angle (112.8°); stored as the deviation from 90° to match the catalogue (the #31 precedent). SD unchanged. The adult SD 2.1 (adolescents 7.1) is as printed: possible typesetting error in the source."
+    },
+    {
+      "measurement": "m63_U1APog",
+      "sex": "pooled",
+      "ageBand": [
+        10,
+        17
+      ],
+      "mean": 7.4,
+      "sd": 2.4,
+      "n": 60,
+      "unit": "mm",
+      "source": "Table 4, p. 156; definition Table 3, p. 155",
+      "definitionMatch": "same",
+      "note": "From the incisal edge (Table 3), as the catalogue (C1)."
+    },
+    {
+      "measurement": "m63_U1APog",
+      "sex": "pooled",
+      "ageBand": [
+        18,
+        41
+      ],
+      "mean": 7.2,
+      "sd": 2.2,
+      "n": 60,
+      "unit": "mm",
+      "source": "Table 4, p. 156; definition Table 3, p. 155",
+      "definitionMatch": "same",
+      "note": "From the incisal edge (Table 3), as the catalogue (C1)."
+    },
+    {
+      "measurement": "m01_SNA",
+      "sex": "pooled",
+      "ageBand": [
+        10,
+        17
+      ],
+      "mean": 82.7,
+      "sd": 3.3,
+      "n": 60,
+      "unit": "deg",
+      "source": "Table 4, p. 156; definition Table 3, p. 155",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m01_SNA",
+      "sex": "pooled",
+      "ageBand": [
+        18,
+        41
+      ],
+      "mean": 83,
+      "sd": 3.7,
+      "n": 60,
+      "unit": "deg",
+      "source": "Table 4, p. 156; definition Table 3, p. 155",
+      "definitionMatch": "same",
+      "note": "Table 4 (the norms table) gives 83.0 ± 3.7; Table 5 (p. 158) gives 83.0 ± 3.6. Table 4 used."
+    },
+    {
+      "measurement": "m02_SNB",
+      "sex": "pooled",
+      "ageBand": [
+        10,
+        17
+      ],
+      "mean": 80.1,
+      "sd": 3.1,
+      "n": 60,
+      "unit": "deg",
+      "source": "Table 4, p. 156; definition Table 3, p. 155",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m02_SNB",
+      "sex": "pooled",
+      "ageBand": [
+        18,
+        41
+      ],
+      "mean": 81,
+      "sd": 4,
+      "n": 60,
+      "unit": "deg",
+      "source": "Table 4, p. 156; definition Table 3, p. 155",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m03_ANB",
+      "sex": "pooled",
+      "ageBand": [
+        10,
+        17
+      ],
+      "mean": 2.6,
+      "sd": 1.5,
+      "n": 60,
+      "unit": "deg",
+      "source": "Table 4, p. 156; definition Table 3, p. 155",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m03_ANB",
+      "sex": "pooled",
+      "ageBand": [
+        18,
+        41
+      ],
+      "mean": 2.1,
+      "sd": 1.4,
+      "n": 60,
+      "unit": "deg",
+      "source": "Table 4, p. 156; definition Table 3, p. 155",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m87_SND",
+      "sex": "pooled",
+      "ageBand": [
+        10,
+        17
+      ],
+      "mean": 77.5,
+      "sd": 3,
+      "n": 60,
+      "unit": "deg",
+      "source": "Table 4, p. 156; definition Table 3, p. 155",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m87_SND",
+      "sex": "pooled",
+      "ageBand": [
+        18,
+        41
+      ],
+      "mean": 77.8,
+      "sd": 4.3,
+      "n": 60,
+      "unit": "deg",
+      "source": "Table 4, p. 156; definition Table 3, p. 155",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m47_U1NAdeg",
+      "sex": "pooled",
+      "ageBand": [
+        10,
+        17
+      ],
+      "mean": 22.1,
+      "sd": 5.9,
+      "n": 60,
+      "unit": "deg",
+      "source": "Table 4, p. 156; definition Table 3, p. 155",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m47_U1NAdeg",
+      "sex": "pooled",
+      "ageBand": [
+        18,
+        41
+      ],
+      "mean": 22.5,
+      "sd": 6.3,
+      "n": 60,
+      "unit": "deg",
+      "source": "Table 4, p. 156; definition Table 3, p. 155",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m46_U1NAmm",
+      "sex": "pooled",
+      "ageBand": [
+        10,
+        17
+      ],
+      "mean": 5.7,
+      "sd": 2.5,
+      "n": 60,
+      "unit": "mm",
+      "source": "Table 4, p. 156; definition Table 3, p. 155",
+      "definitionMatch": "same",
+      "note": "From the incisal edge (Table 3), as the catalogue (C1)."
+    },
+    {
+      "measurement": "m46_U1NAmm",
+      "sex": "pooled",
+      "ageBand": [
+        18,
+        41
+      ],
+      "mean": 5.9,
+      "sd": 2.1,
+      "n": 60,
+      "unit": "mm",
+      "source": "Table 4, p. 156; definition Table 3, p. 155",
+      "definitionMatch": "same",
+      "note": "From the incisal edge (Table 3), as the catalogue (C1)."
+    },
+    {
+      "measurement": "m50_L1NBdeg",
+      "sex": "pooled",
+      "ageBand": [
+        10,
+        17
+      ],
+      "mean": 28.7,
+      "sd": 6.7,
+      "n": 60,
+      "unit": "deg",
+      "source": "Table 4, p. 156; definition Table 3, p. 155",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m50_L1NBdeg",
+      "sex": "pooled",
+      "ageBand": [
+        18,
+        41
+      ],
+      "mean": 28.1,
+      "sd": 6,
+      "n": 60,
+      "unit": "deg",
+      "source": "Table 4, p. 156; definition Table 3, p. 155",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m49_L1NBmm",
+      "sex": "pooled",
+      "ageBand": [
+        10,
+        17
+      ],
+      "mean": 6.5,
+      "sd": 2.6,
+      "n": 60,
+      "unit": "mm",
+      "source": "Table 4, p. 156; definition Table 3, p. 155",
+      "definitionMatch": "same",
+      "note": "From the incisal edge (Table 3), as the catalogue (C1)."
+    },
+    {
+      "measurement": "m49_L1NBmm",
+      "sex": "pooled",
+      "ageBand": [
+        18,
+        41
+      ],
+      "mean": 6.6,
+      "sd": 2.4,
+      "n": 60,
+      "unit": "mm",
+      "source": "Table 4, p. 156; definition Table 3, p. 155",
+      "definitionMatch": "same",
+      "note": "From the incisal edge (Table 3), as the catalogue (C1)."
+    },
+    {
+      "measurement": "m18_PogNB",
+      "sex": "pooled",
+      "ageBand": [
+        10,
+        17
+      ],
+      "mean": 1.5,
+      "sd": 1.3,
+      "n": 60,
+      "unit": "mm",
+      "source": "Table 4, p. 156; definition Table 3, p. 155",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m18_PogNB",
+      "sex": "pooled",
+      "ageBand": [
+        18,
+        41
+      ],
+      "mean": 1.7,
+      "sd": 1.1,
+      "n": 60,
+      "unit": "mm",
+      "source": "Table 4, p. 156; definition Table 3, p. 155",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m60_OPSN",
+      "sex": "pooled",
+      "ageBand": [
+        10,
+        17
+      ],
+      "mean": 16,
+      "sd": 6.6,
+      "n": 60,
+      "unit": "deg",
+      "source": "Table 4, p. 156; definition Table 3, p. 155",
+      "definitionMatch": "close",
+      "definitionNote": "occlusal plane not stated: Table 3 (p. 155) says only 'the occlusal plane' for OP/SN; the paper names the 'functional plane' only for L1/OP. The catalogue uses the Downs occlusal plane",
+      "note": "Paper label 'OP/SN'."
+    },
+    {
+      "measurement": "m60_OPSN",
+      "sex": "pooled",
+      "ageBand": [
+        18,
+        41
+      ],
+      "mean": 15.2,
+      "sd": 5.3,
+      "n": 60,
+      "unit": "deg",
+      "source": "Table 4, p. 156; definition Table 3, p. 155",
+      "definitionMatch": "close",
+      "definitionNote": "occlusal plane not stated: Table 3 (p. 155) says only 'the occlusal plane' for OP/SN; the paper names the 'functional plane' only for L1/OP. The catalogue uses the Downs occlusal plane",
+      "note": "Paper label 'OP/SN'."
+    },
+    {
+      "measurement": "m20_SNGoGn",
+      "sex": "pooled",
+      "ageBand": [
+        10,
+        17
+      ],
+      "mean": 33,
+      "sd": 6.1,
+      "n": 60,
+      "unit": "deg",
+      "source": "Table 4, p. 156; definition Table 3, p. 155",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m20_SNGoGn",
+      "sex": "pooled",
+      "ageBand": [
+        18,
+        41
+      ],
+      "mean": 31.6,
+      "sd": 4.8,
+      "n": 60,
+      "unit": "deg",
+      "source": "Table 4, p. 156; definition Table 3, p. 155",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m54_U1SN",
+      "sex": "pooled",
+      "ageBand": [
+        10,
+        17
+      ],
+      "mean": 105,
+      "sd": 6.6,
+      "n": 60,
+      "unit": "deg",
+      "source": "Table 4, p. 156; definition Table 3, p. 155",
+      "definitionMatch": "same",
+      "note": "Posterior inferior angle (Table 3)."
+    },
+    {
+      "measurement": "m54_U1SN",
+      "sex": "pooled",
+      "ageBand": [
+        18,
+        41
+      ],
+      "mean": 105.9,
+      "sd": 7.5,
+      "n": 60,
+      "unit": "deg",
+      "source": "Table 4, p. 156; definition Table 3, p. 155",
+      "definitionMatch": "same",
+      "note": "Posterior inferior angle (Table 3)."
+    },
+    {
+      "measurement": "m13_Wits",
+      "sex": "pooled",
+      "ageBand": [
+        10,
+        17
+      ],
+      "mean": -1.2,
+      "sd": 3,
+      "n": 60,
+      "unit": "mm",
+      "source": "Table 4, p. 156; definition Table 3, p. 155",
+      "definitionMatch": "close",
+      "note": "Functional occlusal plane (Table 3) (the catalogue used it until owner ruling NUS-OP-1, 16 Oct 2026). The paper states no sign rule; the values (−1.2, −1.3) fit the catalogue's (Jacobson's) sign.",
+      "definitionNote": "Measured on the functional occlusal plane (through the premolars); this app measures Wits on the occlusal plane through the molars and incisors (since 16 Oct 2026)"
+    },
+    {
+      "measurement": "m13_Wits",
+      "sex": "pooled",
+      "ageBand": [
+        18,
+        41
+      ],
+      "mean": -1.3,
+      "sd": 3.1,
+      "n": 60,
+      "unit": "mm",
+      "source": "Table 4, p. 156; definition Table 3, p. 155",
+      "definitionMatch": "close",
+      "note": "Functional occlusal plane (Table 3) (the catalogue used it until owner ruling NUS-OP-1, 16 Oct 2026). The paper states no sign rule; the values (−1.2, −1.3) fit the catalogue's (Jacobson's) sign.",
+      "definitionNote": "Measured on the functional occlusal plane (through the premolars); this app measures Wits on the occlusal plane through the molars and incisors (since 16 Oct 2026)"
+    },
+    {
+      "measurement": "m88_STConvexity",
+      "sex": "pooled",
+      "ageBand": [
+        10,
+        17
+      ],
+      "mean": 169.3,
+      "sd": 4.4,
+      "n": 60,
+      "unit": "deg",
+      "source": "Table 4, p. 156; definition Table 3, p. 155",
+      "definitionMatch": "same",
+      "note": "Paper label 'G-Sn-Pos': posterior angle between G–Sn and Sn–Pog′ (Table 3); the catalogue's #88 is sourced to this table."
+    },
+    {
+      "measurement": "m88_STConvexity",
+      "sex": "pooled",
+      "ageBand": [
+        18,
+        41
+      ],
+      "mean": 171.4,
+      "sd": 5.6,
+      "n": 60,
+      "unit": "deg",
+      "source": "Table 4, p. 156; definition Table 3, p. 155",
+      "definitionMatch": "same",
+      "note": "Paper label 'G-Sn-Pos': posterior angle between G–Sn and Sn–Pog′ (Table 3); the catalogue's #88 is sourced to this table."
+    },
+    {
+      "measurement": "m71_ULE",
+      "sex": "pooled",
+      "ageBand": [
+        10,
+        17
+      ],
+      "mean": -1.1,
+      "sd": 1.5,
+      "n": 60,
+      "unit": "mm",
+      "source": "Table 4, p. 156; definition Table 3, p. 155",
+      "definitionMatch": "same",
+      "note": "E-line from the nose tip to soft-tissue pogonion (Table 3). The paper states no sign rule; negative read as behind the line, as the catalogue."
+    },
+    {
+      "measurement": "m71_ULE",
+      "sex": "pooled",
+      "ageBand": [
+        18,
+        41
+      ],
+      "mean": -1.5,
+      "sd": 2,
+      "n": 60,
+      "unit": "mm",
+      "source": "Table 4, p. 156; definition Table 3, p. 155",
+      "definitionMatch": "same",
+      "note": "E-line from the nose tip to soft-tissue pogonion (Table 3). The paper states no sign rule; negative read as behind the line, as the catalogue."
+    },
+    {
+      "measurement": "m72_LLE",
+      "sex": "pooled",
+      "ageBand": [
+        10,
+        17
+      ],
+      "mean": -0.1,
+      "sd": 1.7,
+      "n": 60,
+      "unit": "mm",
+      "source": "Table 4, p. 156; definition Table 3, p. 155",
+      "definitionMatch": "same",
+      "note": "E-line from the nose tip to soft-tissue pogonion (Table 3). The paper states no sign rule; negative read as behind the line, as the catalogue."
+    },
+    {
+      "measurement": "m72_LLE",
+      "sex": "pooled",
+      "ageBand": [
+        18,
+        41
+      ],
+      "mean": -0.2,
+      "sd": 2.2,
+      "n": 60,
+      "unit": "mm",
+      "source": "Table 4, p. 156; definition Table 3, p. 155",
+      "definitionMatch": "same",
+      "note": "E-line from the nose tip to soft-tissue pogonion (Table 3). The paper states no sign rule; negative read as behind the line, as the catalogue."
+    }
+  ]
+}

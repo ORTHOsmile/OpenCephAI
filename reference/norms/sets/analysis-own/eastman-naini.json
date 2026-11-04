@@ -1,0 +1,54 @@
+{
+  "id": "eastman-naini",
+  "kind": "analysis-own",
+  "analyses": [
+    "eastman"
+  ],
+  "status": "verified",
+  "citation": {
+    "authors": "Naini FB",
+    "title": "Facial Aesthetics: Concepts and Clinical Diagnosis. Chapter 7: Cephalometry and Cephalometric Analysis",
+    "journal": "Blackwell Publishing Ltd (book, First Edition)",
+    "year": 2011,
+    "pages": "86-122",
+    "openAccess": false
+  },
+  "population": {
+    "id": "analysis-own",
+    "label": "The analysis's own norms",
+    "ethnicity": []
+  },
+  "sample": {},
+  "selection": "unknown",
+  "modality": "unknown",
+  "scale": {
+    "kind": "not-stated"
+  },
+  "headPosition": "unknown",
+  "curation": {
+    "extractedBy": [
+      "AI reader A",
+      "AI reader B"
+    ],
+    "comparedOn": "2026-10-08",
+    "date": "2026-10-08",
+    "notes": "Compared 2026-10-08 (norms:compare a vs b exit 1). The one entry agrees in value (109, SD 6), unit, sex and definitionMatch; the only difference was source wording (prose) -> one wording naming the line and figure. Value re-read from the born-digital text layer of PDF page 26 (printed p. 111): the line giving the Eastman Standard as 109° ± 6°, under the heading for the maxillary incisor to maxillary plane angle (MxI-MxP, Figure 7.33). Citation (merge notes): year and publisher as printed in the PDF footer of p. 86 (copyright 2011 Farhad B. Naini, published 2011 by Blackwell Publishing, first edition); 'Chichester' (b) dropped, not in the PDF; chapter pages 86-122 from the PDF's first and last page headers. Population fields reduced to the analysis-own defaults (b's country/region moved into a caveat). Rulings applied: one entry only (#55); scale not-stated (Naini states no film scale, magnification-research.md); a sample statistic as Naini presents it -> no centre; Riolo 1974 and Bhatia & Leighton 1993 values on the same page -> caveats, not entries."
+  },
+  "caveats": [
+    "Naini gives the Eastman Standards with no single source: the Note box (p. 111) describes them as standard values long used at the Eastman Dental Hospital, London, drawn from several UK and other European normative studies. No sample size, sex, age, modality or head position is given.",
+    "Only U1–MxP is taken from Naini; the rest of the Eastman analysis's own norms are a separate set (Alassiry 2022, Part C Task 10).",
+    "Same page, other sources, not entered (they are not the Eastman Standard): U1–MxP Riolo et al. (USA, 1974) male 112° ± 6°, female 111° ± 6°; Bhatia and Leighton (UK, 1993) male 112° ± 9°, female 109° ± 9°. U1–SN Riolo et al. male 105° ± 6°, female 103° ± 7°; Bishara (USA, 1981) 102° ± 6°; Bhatia and Leighton male 105° ± 9°, female 101° ± 9° (p. 111)."
+  ],
+  "entries": [
+    {
+      "measurement": "m55_U1MxP",
+      "sex": "pooled",
+      "mean": 109,
+      "sd": 6,
+      "unit": "deg",
+      "source": "Ch. 7, p. 111 ('Eastman Standard: 109° ± 6°', under Maxillary incisor to maxillary plane inclination, Fig. 7.33)",
+      "definitionMatch": "same",
+      "note": "Upper incisor long axis to the maxillary plane (ANS–PNS), the posterior angle, as the catalogue measures it."
+    }
+  ]
+}

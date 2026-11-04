@@ -1,0 +1,138 @@
+{
+  "id": "ricketts1960",
+  "kind": "analysis-own",
+  "analyses": [
+    "e-line"
+  ],
+  "status": "verified",
+  "citation": {
+    "authors": "Ricketts RM",
+    "title": "A foundation for cephalometric communication",
+    "journal": "American Journal of Orthodontics",
+    "year": 1960,
+    "volume": "46",
+    "pages": "330-357",
+    "doi": "10.1016/0002-9416(60)90047-6",
+    "openAccess": false
+  },
+  "population": {
+    "id": "analysis-own",
+    "label": "The analysis's own norms",
+    "ethnicity": []
+  },
+  "sample": {
+    "n": 1000,
+    "nMale": 454,
+    "nFemale": 546,
+    "ageMin": 3,
+    "ageMax": 44,
+    "ageMean": 8.9
+  },
+  "selection": "mixed-occlusion",
+  "modality": "film",
+  "scale": {
+    "kind": "not-stated"
+  },
+  "headPosition": "unknown",
+  "curation": {
+    "extractedBy": [
+      "AI reader A",
+      "AI reader B"
+    ],
+    "comparedOn": "2026-10-08",
+    "date": "2026-10-08",
+    "notes": "Compared 2026-10-08 (norms:compare a vs b exit 1). Where both extracted a row the values agree. Differences: (1) n on the Chart 2 age rows only in b (61, 497, 343, 66, 33) -> kept, checked on the page image of Chart 1, p. 333 (PDF page 4: ages 3 to 6, 61; 7 to 10, 497; 11 to 14, 343; 15 to 18, 66; 19 to 44, 33); (2) rows only in b (#4, #22, #63, #64 whole sample and age rows) and the rows in both for #7 and #66 -> not entered, ruling P10 (this set keeps only #71 and #72; Ricketts' own analysis uses ricketts1981); their values were checked on the text layer (pp. 335, 337, 338, 341, 343) and Chart 2's page image and are listed in caveats; (3) source wording (prose). Chart 2 (p. 339, PDF page 10) re-read on the page image: lower lip to E plane +0.9, +0.7, 0.0, −1.9, −4.0 for 3–6, 7–10, 11–14, 15–18, Adult. Text p. 343 (PDF page 14) re-read on the page image: lower lip 0.3 mm ahead, SD 3.0 mm, 1,000 cases; upper lip mean −0.7 mm in the first 800 cases. Rulings applied: P10 (only #71, #72); Chart 2 'Adult' -> [19, 44] per Chart 1; P36a — the lower lip has Chart 2 age rows, so its whole-sample row (0.3 ± 3.0, n 1,000) goes to caveats, not entries (it would overlap the age rows); the upper lip has no age rows, so its whole-sample row is entered with ageBand [3, 44]; sample statistics, no centre; scale not-stated (magnification-research.md); no SD invented for the age rows. Fix round 1 (2026-10-08, review Important #1): caveat count corrected, 958 → 901 aged 3–14 (61 + 497 + 343, Chart 1, p. 333)."
+  },
+  "caveats": [
+    "Sample: 1,000 consecutive orthodontic patients before treatment from Ricketts' private practice (p. 333): Class I 399, Class II div. 1 367, Class II div. 2 217, Class III 17; 546 female, 454 male; ages 3 to 44, mean 8.9 years, 901 of them aged 3–14 (61 + 497 + 343, Chart 1). Not a normal or ideal sample.",
+    "Lower lip, whole sample (not entered; ruling P36a, its age rows are entered instead): 0.3 mm ahead of the E plane, SD 3.0 mm, 1,000 cases (p. 343). It is the only E-line value in this paper with an SD; the age rows (Chart 2) have none.",
+    "Upper lip: −0.7 mm in the first 800 cases, no SD, no age breakdown (p. 343); entered as one row covering ages 3–44.",
+    "Chart 2 (p. 339) gives age-group means with no SD; the n on those rows is each age group's count in Chart 1 (p. 333). Chart 2's 'Adult' row is Chart 1's 19–44 group. There is no row between 18 and 19 (bands are in completed years, so 18.9 is in 15–18).",
+    "Not entered, ruling P10 (Ricketts' own analysis uses ricketts1981; these are pre-treatment sample values): facial angle 85.4° SD 3.7° (p. 335); mandibular plane 25.7° SD 5.9°, range −11° to +46° (p. 337); convexity A to N–Pog 4.1 mm SD 2.8 mm (p. 338), by age 5.5, 4.4, 3.7, 2.5, 1.7 mm (Chart 2); lower incisor tip to A–Pog 0.5 mm SD 2.7 mm, range +10 to −10 mm (p. 341; Fig. 11 prints 0.4 ± 2.7), by age −0.9, +0.4, +0.7, 0.0, 0.0 mm (Chart 2); lower incisor to A–Pog 20.5° SD 6.4° (p. 341, Fig. 12); upper incisor to A–Pog 5.7 mm SD 3 mm (Fig. 13).",
+    "Not in the catalogue: XY axis (Ba–N to S–Gn), mean +3.0 from 90°, SD 3° (p. 336); N–S–Ba 129.6°, range 114–144°, n 200 (p. 346); S–Gn–N 35°, range 25–42°, n 200 (p. 346); condyle axis to Ba–N −5.7° from 90°, range −19 to +20°, n 200 (p. 349).",
+    "Means and SDs are reported 'in round figures' where practical (p. 333). Film scale and head position are not stated; ethnicity is not stated (Pacific Palisades, California, private practice)."
+  ],
+  "entries": [
+    {
+      "measurement": "m71_ULE",
+      "sex": "pooled",
+      "ageBand": [
+        3,
+        44
+      ],
+      "mean": -0.7,
+      "n": 800,
+      "unit": "mm",
+      "source": "Text, p. 343 (mean −0.7 mm over the first 800 cases)",
+      "definitionMatch": "same",
+      "note": "Whole-sample row (ages 3–44, mostly children); the paper gives no age breakdown and no SD for the upper lip. Upper lip about 1.0 mm behind the lower lip (p. 343)."
+    },
+    {
+      "measurement": "m72_LLE",
+      "sex": "pooled",
+      "ageBand": [
+        3,
+        6
+      ],
+      "mean": 0.9,
+      "n": 61,
+      "unit": "mm",
+      "source": "Chart 2, p. 339 (n from Chart 1, p. 333)",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m72_LLE",
+      "sex": "pooled",
+      "ageBand": [
+        7,
+        10
+      ],
+      "mean": 0.7,
+      "n": 497,
+      "unit": "mm",
+      "source": "Chart 2, p. 339 (n from Chart 1, p. 333)",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m72_LLE",
+      "sex": "pooled",
+      "ageBand": [
+        11,
+        14
+      ],
+      "mean": 0,
+      "n": 343,
+      "unit": "mm",
+      "source": "Chart 2, p. 339 (n from Chart 1, p. 333)",
+      "definitionMatch": "same",
+      "note": "Text p. 343: in the 11- to 14-year group the average lower lip lay on the E plane (0 mm)."
+    },
+    {
+      "measurement": "m72_LLE",
+      "sex": "pooled",
+      "ageBand": [
+        15,
+        18
+      ],
+      "mean": -1.9,
+      "n": 66,
+      "unit": "mm",
+      "source": "Chart 2, p. 339 (n from Chart 1, p. 333)",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m72_LLE",
+      "sex": "pooled",
+      "ageBand": [
+        19,
+        44
+      ],
+      "mean": -4,
+      "n": 33,
+      "unit": "mm",
+      "source": "Chart 2, p. 339 (n from Chart 1, p. 333)",
+      "definitionMatch": "same",
+      "note": "Chart 2 row 'Adult'; ages 19–44 from Chart 1's adult group (p. 333). Text p. 343: the adult group differed by a full −4 mm."
+    }
+  ]
+}

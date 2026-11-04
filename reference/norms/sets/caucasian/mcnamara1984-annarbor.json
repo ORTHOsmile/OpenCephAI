@@ -1,0 +1,448 @@
+{
+  "id": "mcnamara1984-annarbor",
+  "kind": "population",
+  "status": "verified",
+  "citation": {
+    "authors": "McNamara JA Jr",
+    "title": "A method of cephalometric evaluation",
+    "journal": "American Journal of Orthodontics",
+    "year": 1984,
+    "volume": "86",
+    "pages": "449-469",
+    "openAccess": false
+  },
+  "population": {
+    "id": "caucasian",
+    "label": "Caucasian (European background; used for Australian patients of European background)",
+    "ethnicity": [
+      "not stated in the paper"
+    ],
+    "country": "USA",
+    "region": "Ann Arbor, Michigan"
+  },
+  "sample": {
+    "n": 111,
+    "nMale": 38,
+    "nFemale": 73
+  },
+  "selection": "class-I-balanced",
+  "modality": "film",
+  "scale": {
+    "kind": "enlarged",
+    "percent": 8,
+    "source": "p. 451"
+  },
+  "headPosition": "unknown",
+  "curation": {
+    "extractedBy": [
+      "AI reader B (mcnamara1984-caucasian.b)",
+      "Task 6 AI reader A and AI reader B (mcnamara1984.a/.b, Table I rows)"
+    ],
+    "comparedOn": "2026-10-08",
+    "date": "2026-10-08",
+    "notes": "Ruling P23: one set per McNamara sample. Ruling P24: mcnamara1984-caucasian.a.json is not an independent copy (it copied another extraction) and was not used; the Table I rows of mcnamara1984-caucasian.b.json were compared row by row against the two independent Task 6 extractions mcnamara1984.a.json and mcnamara1984.b.json, which typed Table I for the analysis's own set (script comparison 2026-10-08, positive control: two planted changes found). Result: 26 rows compared with Task 6 b, 0 differences; 24 with Task 6 a, 0 differences, a lacking SNA (2 rows). SNA checked on the page (Table I, p. 451, PDF p. 3): 82.4 ± 3.0 / 83.9 ± 3.2 -> kept. Facial axis: printed 0.2° / 0.5° (difference from 90°) -> 90.2 / 90.5 (owner ruling 7 Oct); definitionMatch same (Task 6 a and caucasian.b) over close (Task 6 b), as in the committed McNamara own set. Incisor distances close (facial surface, M1). Selection class-I-balanced: 111 young adults with good to excellent faces, Class I occlusion, good skeletal balance and a straight (orthognathic) profile (pp. 450-451). Band [18, 40] (P18): the paper gives only mean ages (women 26 y 8 m, men 30 y 9 m). Scale enlarged 8% (p. 451)."
+  },
+  "caveats": [
+    "'Caucasian' is our label: the paper never states the samples' ethnicity (it says nothing about ancestry).",
+    "Sample: 111 untreated young adults (73 women, 38 men) of Ann Arbor, Michigan, chosen by McNamara and co-workers for good to excellent facial configurations, Class I occlusion, good skeletal balance and an orthognathic profile (pp. 450-451). Only mean ages are given (women 26 y 8 m, men 30 y 9 m); the 18-40 band is the convention for adults (P18).",
+    "8% film enlargement: p. 451 says the measures from all these samples include an 8% enlargement wherever possible; the table heading says 'standardized 8% enlargement'. The app shows mm values at true size (÷ 1.08) with the printed value.",
+    "These are the Ann Arbor sample's own statistics; McNamara's composite clinical norms (Table II) are the separate analysis-own set mcnamara1984.",
+    "Incisor distances (upper incisor to A vertical, lower incisor to A-Po) are measured from the facial surface (M1), so they are close."
+  ],
+  "entries": [
+    {
+      "measurement": "m08_ANperp",
+      "sex": "F",
+      "ageBand": [
+        18,
+        40
+      ],
+      "mean": 0.4,
+      "sd": 2.3,
+      "n": 73,
+      "unit": "mm",
+      "source": "Table I, p. 451, row 'Nasion perpendicular to point A', females",
+      "definitionMatch": "same",
+      "note": "Adults: upper bound not stated; 40 by convention (P18). Mean age women 26 y 8 m, men 30 y 9 m (p. 450)."
+    },
+    {
+      "measurement": "m08_ANperp",
+      "sex": "M",
+      "ageBand": [
+        18,
+        40
+      ],
+      "mean": 1.1,
+      "sd": 2.7,
+      "n": 38,
+      "unit": "mm",
+      "source": "Table I, p. 451, row 'Nasion perpendicular to point A', males",
+      "definitionMatch": "same",
+      "note": "Adults: upper bound not stated; 40 by convention (P18). Mean age women 26 y 8 m, men 30 y 9 m (p. 450)."
+    },
+    {
+      "measurement": "m01_SNA",
+      "sex": "F",
+      "ageBand": [
+        18,
+        40
+      ],
+      "mean": 82.4,
+      "sd": 3.0,
+      "n": 73,
+      "unit": "deg",
+      "source": "Table I, p. 451, row 'SNA angle', females",
+      "definitionMatch": "same",
+      "note": "Found by one of the two readings of the Ann Arbor rows (and by the second Task 6 reading); checked on the page, Table I p. 451: 82.4 ± 3.0 / 83.9 ± 3.2. Adults: upper bound not stated; 40 by convention (P18). Mean age women 26 y 8 m, men 30 y 9 m (p. 450)."
+    },
+    {
+      "measurement": "m01_SNA",
+      "sex": "M",
+      "ageBand": [
+        18,
+        40
+      ],
+      "mean": 83.9,
+      "sd": 3.2,
+      "n": 38,
+      "unit": "deg",
+      "source": "Table I, p. 451, row 'SNA angle', males",
+      "definitionMatch": "same",
+      "note": "Found by one of the two readings of the Ann Arbor rows (and by the second Task 6 reading); checked on the page, Table I p. 451: 82.4 ± 3.0 / 83.9 ± 3.2. Adults: upper bound not stated; 40 by convention (P18). Mean age women 26 y 8 m, men 30 y 9 m (p. 450)."
+    },
+    {
+      "measurement": "m11_CoGn",
+      "sex": "F",
+      "ageBand": [
+        18,
+        40
+      ],
+      "mean": 120.2,
+      "sd": 5.3,
+      "n": 73,
+      "unit": "mm",
+      "source": "Table I, p. 451, row 'Effective mandibular length (condylion to gnathion)', females",
+      "definitionMatch": "same",
+      "note": "Adults: upper bound not stated; 40 by convention (P18). Mean age women 26 y 8 m, men 30 y 9 m (p. 450)."
+    },
+    {
+      "measurement": "m11_CoGn",
+      "sex": "M",
+      "ageBand": [
+        18,
+        40
+      ],
+      "mean": 134.3,
+      "sd": 6.8,
+      "n": 38,
+      "unit": "mm",
+      "source": "Table I, p. 451, row 'Effective mandibular length (condylion to gnathion)', males",
+      "definitionMatch": "same",
+      "note": "Adults: upper bound not stated; 40 by convention (P18). Mean age women 26 y 8 m, men 30 y 9 m (p. 450)."
+    },
+    {
+      "measurement": "m10_CoA",
+      "sex": "F",
+      "ageBand": [
+        18,
+        40
+      ],
+      "mean": 91.0,
+      "sd": 4.3,
+      "n": 73,
+      "unit": "mm",
+      "source": "Table I, p. 451, row 'Effective midfacial length (condylion to point A)', females",
+      "definitionMatch": "same",
+      "note": "Adults: upper bound not stated; 40 by convention (P18). Mean age women 26 y 8 m, men 30 y 9 m (p. 450)."
+    },
+    {
+      "measurement": "m10_CoA",
+      "sex": "M",
+      "ageBand": [
+        18,
+        40
+      ],
+      "mean": 99.8,
+      "sd": 6.0,
+      "n": 38,
+      "unit": "mm",
+      "source": "Table I, p. 451, row 'Effective midfacial length (condylion to point A)', males",
+      "definitionMatch": "same",
+      "note": "Adults: upper bound not stated; 40 by convention (P18). Mean age women 26 y 8 m, men 30 y 9 m (p. 450)."
+    },
+    {
+      "measurement": "m12_MaxMandDiff",
+      "sex": "F",
+      "ageBand": [
+        18,
+        40
+      ],
+      "mean": 29.2,
+      "sd": 3.3,
+      "n": 73,
+      "unit": "mm",
+      "source": "Table I, p. 451, row 'Maxillomandibular differential', females",
+      "definitionMatch": "same",
+      "note": "Adults: upper bound not stated; 40 by convention (P18). Mean age women 26 y 8 m, men 30 y 9 m (p. 450)."
+    },
+    {
+      "measurement": "m12_MaxMandDiff",
+      "sex": "M",
+      "ageBand": [
+        18,
+        40
+      ],
+      "mean": 34.5,
+      "sd": 4.0,
+      "n": 38,
+      "unit": "mm",
+      "source": "Table I, p. 451, row 'Maxillomandibular differential', males",
+      "definitionMatch": "same",
+      "note": "Adults: upper bound not stated; 40 by convention (P18). Mean age women 26 y 8 m, men 30 y 9 m (p. 450)."
+    },
+    {
+      "measurement": "m28_LAFH",
+      "sex": "F",
+      "ageBand": [
+        18,
+        40
+      ],
+      "mean": 66.7,
+      "sd": 4.1,
+      "n": 73,
+      "unit": "mm",
+      "source": "Table I, p. 451, row 'Lower anterior facial height (ANS to menton)', females",
+      "definitionMatch": "same",
+      "note": "Adults: upper bound not stated; 40 by convention (P18). Mean age women 26 y 8 m, men 30 y 9 m (p. 450)."
+    },
+    {
+      "measurement": "m28_LAFH",
+      "sex": "M",
+      "ageBand": [
+        18,
+        40
+      ],
+      "mean": 74.6,
+      "sd": 5.0,
+      "n": 38,
+      "unit": "mm",
+      "source": "Table I, p. 451, row 'Lower anterior facial height (ANS to menton)', males",
+      "definitionMatch": "same",
+      "note": "Adults: upper bound not stated; 40 by convention (P18). Mean age women 26 y 8 m, men 30 y 9 m (p. 450)."
+    },
+    {
+      "measurement": "m23_FHGoMe",
+      "sex": "F",
+      "ageBand": [
+        18,
+        40
+      ],
+      "mean": 22.7,
+      "sd": 4.3,
+      "n": 73,
+      "unit": "deg",
+      "source": "Table I, p. 451, row 'Mandibular plane angle', females",
+      "definitionMatch": "same",
+      "note": "McNamara's mandibular plane is gonion-menton (step 11c, p. 467), to FH. Adults: upper bound not stated; 40 by convention (P18). Mean age women 26 y 8 m, men 30 y 9 m (p. 450)."
+    },
+    {
+      "measurement": "m23_FHGoMe",
+      "sex": "M",
+      "ageBand": [
+        18,
+        40
+      ],
+      "mean": 21.3,
+      "sd": 3.9,
+      "n": 38,
+      "unit": "deg",
+      "source": "Table I, p. 451, row 'Mandibular plane angle', males",
+      "definitionMatch": "same",
+      "note": "McNamara's mandibular plane is gonion-menton (step 11c, p. 467), to FH. Adults: upper bound not stated; 40 by convention (P18). Mean age women 26 y 8 m, men 30 y 9 m (p. 450)."
+    },
+    {
+      "measurement": "m31_FacAxisM",
+      "sex": "F",
+      "ageBand": [
+        18,
+        40
+      ],
+      "mean": 90.2,
+      "sd": 3.2,
+      "n": 73,
+      "unit": "deg",
+      "source": "Table I, p. 451, row 'Facial axis angle', females",
+      "definitionMatch": "same",
+      "note": "McNamara tabulates the difference from 90° (printed 0.2°); stored as value + 90° (owner ruling 7 Oct). Adults: upper bound not stated; 40 by convention (P18). Mean age women 26 y 8 m, men 30 y 9 m (p. 450)."
+    },
+    {
+      "measurement": "m31_FacAxisM",
+      "sex": "M",
+      "ageBand": [
+        18,
+        40
+      ],
+      "mean": 90.5,
+      "sd": 3.5,
+      "n": 38,
+      "unit": "deg",
+      "source": "Table I, p. 451, row 'Facial axis angle', males",
+      "definitionMatch": "same",
+      "note": "McNamara tabulates the difference from 90° (printed 0.5°); stored as value + 90° (owner ruling 7 Oct). Adults: upper bound not stated; 40 by convention (P18). Mean age women 26 y 8 m, men 30 y 9 m (p. 450)."
+    },
+    {
+      "measurement": "m09_PogNperp",
+      "sex": "F",
+      "ageBand": [
+        18,
+        40
+      ],
+      "mean": -1.8,
+      "sd": 4.5,
+      "n": 73,
+      "unit": "mm",
+      "source": "Table I, p. 451, row 'Pogonion to nasion perpendicular', females",
+      "definitionMatch": "same",
+      "note": "Adults: upper bound not stated; 40 by convention (P18). Mean age women 26 y 8 m, men 30 y 9 m (p. 450)."
+    },
+    {
+      "measurement": "m09_PogNperp",
+      "sex": "M",
+      "ageBand": [
+        18,
+        40
+      ],
+      "mean": -0.3,
+      "sd": 3.8,
+      "n": 38,
+      "unit": "mm",
+      "source": "Table I, p. 451, row 'Pogonion to nasion perpendicular', males",
+      "definitionMatch": "same",
+      "note": "Adults: upper bound not stated; 40 by convention (P18). Mean age women 26 y 8 m, men 30 y 9 m (p. 450)."
+    },
+    {
+      "measurement": "m67_U1Avert",
+      "sex": "F",
+      "ageBand": [
+        18,
+        40
+      ],
+      "mean": 5.4,
+      "sd": 1.7,
+      "n": 73,
+      "unit": "mm",
+      "source": "Table I, p. 451, row 'Upper incisor to point A vertical', females",
+      "definitionMatch": "close",
+      "definitionNote": "McNamara measured from the facial surface of the incisor (M1); the catalogue uses the incisal tip (C1).",
+      "note": "Adults: upper bound not stated; 40 by convention (P18). Mean age women 26 y 8 m, men 30 y 9 m (p. 450)."
+    },
+    {
+      "measurement": "m67_U1Avert",
+      "sex": "M",
+      "ageBand": [
+        18,
+        40
+      ],
+      "mean": 5.3,
+      "sd": 2.0,
+      "n": 38,
+      "unit": "mm",
+      "source": "Table I, p. 451, row 'Upper incisor to point A vertical', males",
+      "definitionMatch": "close",
+      "definitionNote": "McNamara measured from the facial surface of the incisor (M1); the catalogue uses the incisal tip (C1).",
+      "note": "Adults: upper bound not stated; 40 by convention (P18). Mean age women 26 y 8 m, men 30 y 9 m (p. 450)."
+    },
+    {
+      "measurement": "m64_L1APog",
+      "sex": "F",
+      "ageBand": [
+        18,
+        40
+      ],
+      "mean": 2.7,
+      "sd": 1.7,
+      "n": 73,
+      "unit": "mm",
+      "source": "Table I, p. 451, row 'Lower incisor to A-Po line', females",
+      "definitionMatch": "close",
+      "definitionNote": "McNamara measured from the facial surface of the incisor (M1); the catalogue uses the incisal tip (C1).",
+      "note": "Adults: upper bound not stated; 40 by convention (P18). Mean age women 26 y 8 m, men 30 y 9 m (p. 450)."
+    },
+    {
+      "measurement": "m64_L1APog",
+      "sex": "M",
+      "ageBand": [
+        18,
+        40
+      ],
+      "mean": 2.3,
+      "sd": 2.1,
+      "n": 38,
+      "unit": "mm",
+      "source": "Table I, p. 451, row 'Lower incisor to A-Po line', males",
+      "definitionMatch": "close",
+      "definitionNote": "McNamara measured from the facial surface of the incisor (M1); the catalogue uses the incisal tip (C1).",
+      "note": "Adults: upper bound not stated; 40 by convention (P18). Mean age women 26 y 8 m, men 30 y 9 m (p. 450)."
+    },
+    {
+      "measurement": "m84_UpperPharynx",
+      "sex": "F",
+      "ageBand": [
+        18,
+        40
+      ],
+      "mean": 17.4,
+      "sd": 3.4,
+      "n": 73,
+      "unit": "mm",
+      "source": "Table I, p. 451, row 'Upper pharynx', females",
+      "definitionMatch": "same",
+      "note": "Adults: upper bound not stated; 40 by convention (P18). Mean age women 26 y 8 m, men 30 y 9 m (p. 450)."
+    },
+    {
+      "measurement": "m84_UpperPharynx",
+      "sex": "M",
+      "ageBand": [
+        18,
+        40
+      ],
+      "mean": 17.4,
+      "sd": 4.3,
+      "n": 38,
+      "unit": "mm",
+      "source": "Table I, p. 451, row 'Upper pharynx', males",
+      "definitionMatch": "same",
+      "note": "Adults: upper bound not stated; 40 by convention (P18). Mean age women 26 y 8 m, men 30 y 9 m (p. 450)."
+    },
+    {
+      "measurement": "m85_LowerPharynx",
+      "sex": "F",
+      "ageBand": [
+        18,
+        40
+      ],
+      "mean": 11.3,
+      "sd": 3.3,
+      "n": 73,
+      "unit": "mm",
+      "source": "Table I, p. 451, row 'Lower pharynx', females",
+      "definitionMatch": "same",
+      "note": "Adults: upper bound not stated; 40 by convention (P18). Mean age women 26 y 8 m, men 30 y 9 m (p. 450)."
+    },
+    {
+      "measurement": "m85_LowerPharynx",
+      "sex": "M",
+      "ageBand": [
+        18,
+        40
+      ],
+      "mean": 13.5,
+      "sd": 4.3,
+      "n": 38,
+      "unit": "mm",
+      "source": "Table I, p. 451, row 'Lower pharynx', males",
+      "definitionMatch": "same",
+      "note": "Adults: upper bound not stated; 40 by convention (P18). Mean age women 26 y 8 m, men 30 y 9 m (p. 450)."
+    }
+  ]
+}

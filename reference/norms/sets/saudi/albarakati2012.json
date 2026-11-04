@@ -1,0 +1,553 @@
+{
+  "id": "albarakati2012",
+  "kind": "population",
+  "status": "verified",
+  "citation": {
+    "authors": "AlBarakati SF, Bindayel NA",
+    "title": "Holdaway soft tissue cephalometric standards for Saudi adults",
+    "journal": "King Saud University Journal of Dental Sciences",
+    "year": 2012,
+    "volume": "3",
+    "pages": "27-32",
+    "doi": "10.1016/j.ksujds.2011.10.004",
+    "openAccess": false
+  },
+  "population": {
+    "id": "saudi",
+    "label": "Saudi",
+    "ethnicity": [
+      "Saudi Arab"
+    ],
+    "country": "Saudi Arabia",
+    "region": "Riyadh (King Saud University)"
+  },
+  "sample": {
+    "n": 61,
+    "nMale": 31,
+    "nFemale": 30,
+    "ageMin": 20,
+    "ageMax": 24
+  },
+  "selection": "class-I-balanced",
+  "modality": "film",
+  "scale": {
+    "kind": "true-size",
+    "source": "p. 28: calibrated in Dolphin"
+  },
+  "headPosition": "unknown",
+  "curation": {
+    "extractedBy": [
+      "AI reader A",
+      "AI reader B"
+    ],
+    "comparedOn": "2026-10-08",
+    "date": "2026-10-08",
+    "notes": "Compared 2026-10-08 (norms:compare a vs b exit 0: all 33 entries agree on measurement, sex, age band, mean, SD, n, unit, source and definitionMatch; the tool compares no prose). Every value re-read from the page images of Table 1 (p. 29, PDF p. 3) and Table 2 (p. 30, PDF p. 4): agree. Set fields settled (merge notes; the tool does not compare them): modality a 'digital', b 'film' → film (the films were scanned, Epson 4990, p. 28); headPosition a 'FH', b 'unknown' → unknown (ear rods and head holder; FH or NHP not stated, p. 28); scale → true-size, 'p. 28: calibrated in Dolphin' (ruling P27; both extractions pre-date the scale field and wrote magnificationCorrected: true); openAccess a and b true → false: the PDF prints a 2011 King Saud University copyright notice (hosted by Elsevier, all rights reserved) and no open-access licence (p. 27). Authors as 'AlBarakati SF' (the existing Holdaway set's spelling; the paper's running head prints 'ALBarakati'). SS depth pooled SD 1.37 (Tables 1 and 3) vs 1.367 (Table 2) → 1.37, noted on the pooled row. Signs: none stated in the paper; Holdaway's convention, as the catalogue (which takes its #73-#83 definitions from this paper). Saudi columns only: Holdaway's own column is holdaway1983-via-albarakati2012; the Turkish and Japanese columns of Table 3 are not entered."
+  },
+  "caveats": [
+    "Sample: 61 Saudi adults aged 20-24 (30 women, 31 men), King Saud University, Riyadh; Class I molar and canine, normal overjet and overbite, no crowding, competent lips, no previous orthodontic or orthognathic treatment (p. 28); the abstract (p. 27) describes Class I occlusion with a balanced facial profile. Mean age not given.",
+    "Films scanned (Epson Perfection 4990) and traced in Dolphin 11; magnification was corrected by calibrating against a known distance between two points on the Dolphin ruler (p. 28), so mm values are taken as true size (ruling P27).",
+    "Head position: set by the ear rods and the head holder (p. 28); FH or NHP not stated. Lips at rest, teeth in occlusion.",
+    "Sign conventions are not stated in the paper; signs follow Holdaway 1983 as the catalogue does. Table 1's minima of −4.5 mm (convexity) and −4.2 mm (LL-H line) show these are signed measures.",
+    "Table 1 also prints the sample's minimum and maximum for each variable; these are observed extremes of 61 people, not a norm range, and are not entered.",
+    "#79 Upper lip strain is not a row in Tables 1-3; not entered (not computed from #77 and #78).",
+    "Holdaway's own values (Table 3) are the separate set holdaway1983-via-albarakati2012; the Anatolian Turkish and Japanese (Alcalde 2000) columns of Table 3 are restatements and are not entered here."
+  ],
+  "entries": [
+    {
+      "measurement": "m07_ANPog",
+      "sex": "pooled",
+      "ageBand": [
+        20,
+        24
+      ],
+      "mean": 1.75,
+      "sd": 2.3,
+      "n": 61,
+      "unit": "mm",
+      "source": "Table 1, p. 29",
+      "definitionMatch": "same",
+      "note": "Paper row 'Convexity (mm)'. The paper defines it as the distance from point A to the bony nasion–pogonion line (Na-Pog) (Holdaway's skeletal profile convexity). Sign not stated; positive mean and Holdaway's convention read + when A is ahead, as the catalogue."
+    },
+    {
+      "measurement": "m73_STFacial",
+      "sex": "pooled",
+      "ageBand": [
+        20,
+        24
+      ],
+      "mean": 89.66,
+      "sd": 3.54,
+      "n": 61,
+      "unit": "deg",
+      "source": "Table 1, p. 29",
+      "definitionMatch": "same",
+      "note": "Paper row 'Face angle (°)'. Paper: inner angle of soft-tissue nasion to soft-tissue suprapogonion line with FH."
+    },
+    {
+      "measurement": "m74_NoseProm",
+      "sex": "pooled",
+      "ageBand": [
+        20,
+        24
+      ],
+      "mean": 13.46,
+      "sd": 3.22,
+      "n": 61,
+      "unit": "mm",
+      "source": "Table 1, p. 29",
+      "definitionMatch": "same",
+      "note": "Paper row 'Nose prom (mm)'. Paper: line perpendicular to FH tangent to the upper-lip vermilion, to the tip of the nose."
+    },
+    {
+      "measurement": "m75_SupSulcus",
+      "sex": "pooled",
+      "ageBand": [
+        20,
+        24
+      ],
+      "mean": 2.92,
+      "sd": 1.37,
+      "n": 61,
+      "unit": "mm",
+      "source": "Table 1, p. 29",
+      "definitionMatch": "same",
+      "note": "Paper row 'SS depth (mm)'. Paper: upper-lip sulcus to a line perpendicular to FH through the vermilion. Positive = depth behind the line. Pooled SD: Table 1 and Table 3 print 1.37, Table 2 prints 1.367; 1.37 used (merge notes)."
+    },
+    {
+      "measurement": "m76_SnH",
+      "sex": "pooled",
+      "ageBand": [
+        20,
+        24
+      ],
+      "mean": 5.03,
+      "sd": 2.09,
+      "n": 61,
+      "unit": "mm",
+      "source": "Table 1, p. 29",
+      "definitionMatch": "same",
+      "note": "Paper row 'Sub-H line (mm)'. Paper: subnasale to H line. Positive = behind the line, as the catalogue."
+    },
+    {
+      "measurement": "m77_BasicUL",
+      "sex": "pooled",
+      "ageBand": [
+        20,
+        24
+      ],
+      "mean": 15.69,
+      "sd": 2.09,
+      "n": 61,
+      "unit": "mm",
+      "source": "Table 1, p. 29",
+      "definitionMatch": "same",
+      "note": "Paper row 'UL-A point (mm)'. Paper: a point about 3 mm below point A to the drape of the upper lip."
+    },
+    {
+      "measurement": "m78_ULThick",
+      "sex": "pooled",
+      "ageBand": [
+        20,
+        24
+      ],
+      "mean": 12.36,
+      "sd": 2.17,
+      "n": 61,
+      "unit": "mm",
+      "source": "Table 1, p. 29",
+      "definitionMatch": "same",
+      "note": "Paper row 'UL-vermilion (mm)'. Paper: labial surface of upper incisors to the vermilion border of the upper lip."
+    },
+    {
+      "measurement": "m80_HAngle",
+      "sex": "pooled",
+      "ageBand": [
+        20,
+        24
+      ],
+      "mean": 15.16,
+      "sd": 3.22,
+      "n": 61,
+      "unit": "deg",
+      "source": "Table 1, p. 29",
+      "definitionMatch": "same",
+      "note": "Paper row 'H angle (°)'. Paper: angle of the H line to the soft-tissue facial plane. No sign rule is stated; every value is positive (Table 1 minimum 8.2°), stored as printed under the catalogue's + when the upper lip is ahead."
+    },
+    {
+      "measurement": "m81_LLH",
+      "sex": "pooled",
+      "ageBand": [
+        20,
+        24
+      ],
+      "mean": 0.86,
+      "sd": 1.55,
+      "n": 61,
+      "unit": "mm",
+      "source": "Table 1, p. 29",
+      "definitionMatch": "same",
+      "note": "Paper row 'LL-H line (mm)'. Paper: lower lip to H line (tangent from chin to upper-lip vermilion). Sign not stated explicitly; discussion reads positive as 'more protrusive', i.e. + when ahead, as the catalogue."
+    },
+    {
+      "measurement": "m82_InfSulcusH",
+      "sex": "pooled",
+      "ageBand": [
+        20,
+        24
+      ],
+      "mean": 4.22,
+      "sd": 1.55,
+      "n": 61,
+      "unit": "mm",
+      "source": "Table 1, p. 29",
+      "definitionMatch": "same",
+      "note": "Paper row 'IS-H line (mm)'. Paper: point of maximum curvature on the lower lip (inferior sulcus) to the H line. Positive = depth behind the line."
+    },
+    {
+      "measurement": "m83_ChinThick",
+      "sex": "pooled",
+      "ageBand": [
+        20,
+        24
+      ],
+      "mean": 11.33,
+      "sd": 2.24,
+      "n": 61,
+      "unit": "mm",
+      "source": "Table 1, p. 29",
+      "definitionMatch": "same",
+      "note": "Paper row 'Chin thick (mm)'. Paper: between hard- and soft-tissue facial planes at the level of Ricketts' suprapogonion."
+    },
+    {
+      "measurement": "m07_ANPog",
+      "sex": "F",
+      "ageBand": [
+        20,
+        24
+      ],
+      "mean": 2.05,
+      "sd": 2.14,
+      "n": 30,
+      "unit": "mm",
+      "source": "Table 2, p. 30",
+      "definitionMatch": "same",
+      "note": "Paper row 'Convexity (mm)'. The paper defines it as the distance from point A to the bony nasion–pogonion line (Na-Pog) (Holdaway's skeletal profile convexity). Sign not stated; positive mean and Holdaway's convention read + when A is ahead, as the catalogue."
+    },
+    {
+      "measurement": "m73_STFacial",
+      "sex": "F",
+      "ageBand": [
+        20,
+        24
+      ],
+      "mean": 90.44,
+      "sd": 3.03,
+      "n": 30,
+      "unit": "deg",
+      "source": "Table 2, p. 30",
+      "definitionMatch": "same",
+      "note": "Paper row 'Face angle (°)'. Paper: inner angle of soft-tissue nasion to soft-tissue suprapogonion line with FH."
+    },
+    {
+      "measurement": "m74_NoseProm",
+      "sex": "F",
+      "ageBand": [
+        20,
+        24
+      ],
+      "mean": 12.54,
+      "sd": 3,
+      "n": 30,
+      "unit": "mm",
+      "source": "Table 2, p. 30",
+      "definitionMatch": "same",
+      "note": "Paper row 'Nose prom (mm)'. Paper: line perpendicular to FH tangent to the upper-lip vermilion, to the tip of the nose."
+    },
+    {
+      "measurement": "m75_SupSulcus",
+      "sex": "F",
+      "ageBand": [
+        20,
+        24
+      ],
+      "mean": 2.43,
+      "sd": 1.02,
+      "n": 30,
+      "unit": "mm",
+      "source": "Table 2, p. 30",
+      "definitionMatch": "same",
+      "note": "Paper row 'SS depth (mm)'. Paper: upper-lip sulcus to a line perpendicular to FH through the vermilion. Positive = depth behind the line."
+    },
+    {
+      "measurement": "m76_SnH",
+      "sex": "F",
+      "ageBand": [
+        20,
+        24
+      ],
+      "mean": 4.51,
+      "sd": 2.14,
+      "n": 30,
+      "unit": "mm",
+      "source": "Table 2, p. 30",
+      "definitionMatch": "same",
+      "note": "Paper row 'Sub-H line (mm)'. Paper: subnasale to H line. Positive = behind the line, as the catalogue."
+    },
+    {
+      "measurement": "m77_BasicUL",
+      "sex": "F",
+      "ageBand": [
+        20,
+        24
+      ],
+      "mean": 14.57,
+      "sd": 1.58,
+      "n": 30,
+      "unit": "mm",
+      "source": "Table 2, p. 30",
+      "definitionMatch": "same",
+      "note": "Paper row 'UL-A point (mm)'. Paper: a point about 3 mm below point A to the drape of the upper lip."
+    },
+    {
+      "measurement": "m78_ULThick",
+      "sex": "F",
+      "ageBand": [
+        20,
+        24
+      ],
+      "mean": 11.07,
+      "sd": 1.65,
+      "n": 30,
+      "unit": "mm",
+      "source": "Table 2, p. 30",
+      "definitionMatch": "same",
+      "note": "Paper row 'UL-vermilion (mm)'. Paper: labial surface of upper incisors to the vermilion border of the upper lip."
+    },
+    {
+      "measurement": "m80_HAngle",
+      "sex": "F",
+      "ageBand": [
+        20,
+        24
+      ],
+      "mean": 15.03,
+      "sd": 3.45,
+      "n": 30,
+      "unit": "deg",
+      "source": "Table 2, p. 30",
+      "definitionMatch": "same",
+      "note": "Paper row 'H angle (°)'. Paper: angle of the H line to the soft-tissue facial plane. No sign rule is stated; every value is positive (Table 1 minimum 8.2°), stored as printed under the catalogue's + when the upper lip is ahead."
+    },
+    {
+      "measurement": "m81_LLH",
+      "sex": "F",
+      "ageBand": [
+        20,
+        24
+      ],
+      "mean": 0.73,
+      "sd": 1.36,
+      "n": 30,
+      "unit": "mm",
+      "source": "Table 2, p. 30",
+      "definitionMatch": "same",
+      "note": "Paper row 'LL-H line (mm)'. Paper: lower lip to H line (tangent from chin to upper-lip vermilion). Sign not stated explicitly; discussion reads positive as 'more protrusive', i.e. + when ahead, as the catalogue."
+    },
+    {
+      "measurement": "m82_InfSulcusH",
+      "sex": "F",
+      "ageBand": [
+        20,
+        24
+      ],
+      "mean": 4.03,
+      "sd": 1.56,
+      "n": 30,
+      "unit": "mm",
+      "source": "Table 2, p. 30",
+      "definitionMatch": "same",
+      "note": "Paper row 'IS-H line (mm)'. Paper: point of maximum curvature on the lower lip (inferior sulcus) to the H line. Positive = depth behind the line."
+    },
+    {
+      "measurement": "m83_ChinThick",
+      "sex": "F",
+      "ageBand": [
+        20,
+        24
+      ],
+      "mean": 10.78,
+      "sd": 2.25,
+      "n": 30,
+      "unit": "mm",
+      "source": "Table 2, p. 30",
+      "definitionMatch": "same",
+      "note": "Paper row 'Chin thick (mm)'. Paper: between hard- and soft-tissue facial planes at the level of Ricketts' suprapogonion."
+    },
+    {
+      "measurement": "m07_ANPog",
+      "sex": "M",
+      "ageBand": [
+        20,
+        24
+      ],
+      "mean": 1.47,
+      "sd": 2.45,
+      "n": 31,
+      "unit": "mm",
+      "source": "Table 2, p. 30",
+      "definitionMatch": "same",
+      "note": "Paper row 'Convexity (mm)'. The paper defines it as the distance from point A to the bony nasion–pogonion line (Na-Pog) (Holdaway's skeletal profile convexity). Sign not stated; positive mean and Holdaway's convention read + when A is ahead, as the catalogue."
+    },
+    {
+      "measurement": "m73_STFacial",
+      "sex": "M",
+      "ageBand": [
+        20,
+        24
+      ],
+      "mean": 88.9,
+      "sd": 3.87,
+      "n": 31,
+      "unit": "deg",
+      "source": "Table 2, p. 30",
+      "definitionMatch": "same",
+      "note": "Paper row 'Face angle (°)'. Paper: inner angle of soft-tissue nasion to soft-tissue suprapogonion line with FH."
+    },
+    {
+      "measurement": "m74_NoseProm",
+      "sex": "M",
+      "ageBand": [
+        20,
+        24
+      ],
+      "mean": 14.36,
+      "sd": 3.21,
+      "n": 31,
+      "unit": "mm",
+      "source": "Table 2, p. 30",
+      "definitionMatch": "same",
+      "note": "Paper row 'Nose prom (mm)'. Paper: line perpendicular to FH tangent to the upper-lip vermilion, to the tip of the nose."
+    },
+    {
+      "measurement": "m75_SupSulcus",
+      "sex": "M",
+      "ageBand": [
+        20,
+        24
+      ],
+      "mean": 3.39,
+      "sd": 1.51,
+      "n": 31,
+      "unit": "mm",
+      "source": "Table 2, p. 30",
+      "definitionMatch": "same",
+      "note": "Paper row 'SS depth (mm)'. Paper: upper-lip sulcus to a line perpendicular to FH through the vermilion. Positive = depth behind the line."
+    },
+    {
+      "measurement": "m76_SnH",
+      "sex": "M",
+      "ageBand": [
+        20,
+        24
+      ],
+      "mean": 5.53,
+      "sd": 1.95,
+      "n": 31,
+      "unit": "mm",
+      "source": "Table 2, p. 30",
+      "definitionMatch": "same",
+      "note": "Paper row 'Sub-H line (mm)'. Paper: subnasale to H line. Positive = behind the line, as the catalogue."
+    },
+    {
+      "measurement": "m77_BasicUL",
+      "sex": "M",
+      "ageBand": [
+        20,
+        24
+      ],
+      "mean": 16.76,
+      "sd": 1.98,
+      "n": 31,
+      "unit": "mm",
+      "source": "Table 2, p. 30",
+      "definitionMatch": "same",
+      "note": "Paper row 'UL-A point (mm)'. Paper: a point about 3 mm below point A to the drape of the upper lip."
+    },
+    {
+      "measurement": "m78_ULThick",
+      "sex": "M",
+      "ageBand": [
+        20,
+        24
+      ],
+      "mean": 13.6,
+      "sd": 1.89,
+      "n": 31,
+      "unit": "mm",
+      "source": "Table 2, p. 30",
+      "definitionMatch": "same",
+      "note": "Paper row 'UL-vermilion (mm)'. Paper: labial surface of upper incisors to the vermilion border of the upper lip."
+    },
+    {
+      "measurement": "m80_HAngle",
+      "sex": "M",
+      "ageBand": [
+        20,
+        24
+      ],
+      "mean": 15.28,
+      "sd": 3.04,
+      "n": 31,
+      "unit": "deg",
+      "source": "Table 2, p. 30",
+      "definitionMatch": "same",
+      "note": "Paper row 'H angle (°)'. Paper: angle of the H line to the soft-tissue facial plane. No sign rule is stated; every value is positive (Table 1 minimum 8.2°), stored as printed under the catalogue's + when the upper lip is ahead."
+    },
+    {
+      "measurement": "m81_LLH",
+      "sex": "M",
+      "ageBand": [
+        20,
+        24
+      ],
+      "mean": 0.98,
+      "sd": 1.73,
+      "n": 31,
+      "unit": "mm",
+      "source": "Table 2, p. 30",
+      "definitionMatch": "same",
+      "note": "Paper row 'LL-H line (mm)'. Paper: lower lip to H line (tangent from chin to upper-lip vermilion). Sign not stated explicitly; discussion reads positive as 'more protrusive', i.e. + when ahead, as the catalogue."
+    },
+    {
+      "measurement": "m82_InfSulcusH",
+      "sex": "M",
+      "ageBand": [
+        20,
+        24
+      ],
+      "mean": 4.4,
+      "sd": 1.53,
+      "n": 31,
+      "unit": "mm",
+      "source": "Table 2, p. 30",
+      "definitionMatch": "same",
+      "note": "Paper row 'IS-H line (mm)'. Paper: point of maximum curvature on the lower lip (inferior sulcus) to the H line. Positive = depth behind the line."
+    },
+    {
+      "measurement": "m83_ChinThick",
+      "sex": "M",
+      "ageBand": [
+        20,
+        24
+      ],
+      "mean": 11.86,
+      "sd": 2.13,
+      "n": 31,
+      "unit": "mm",
+      "source": "Table 2, p. 30",
+      "definitionMatch": "same",
+      "note": "Paper row 'Chin thick (mm)'. Paper: between hard- and soft-tissue facial planes at the level of Ricketts' suprapogonion."
+    }
+  ]
+}

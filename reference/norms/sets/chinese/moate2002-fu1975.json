@@ -1,0 +1,874 @@
+{
+  "id": "moate2002-fu1975",
+  "kind": "population",
+  "status": "verified",
+  "citation": {
+    "authors": "Fu M-K, Mao ST",
+    "title": "A roentgenographic cephalometric study of 144 Chinese with normal occlusion",
+    "journal": "Chung-Hua Kou Chiang Ko Tsa Chih (Chinese Journal of Stomatology)",
+    "year": 1975,
+    "volume": "12",
+    "pages": "865–7",
+    "openAccess": false
+  },
+  "population": {
+    "id": "chinese",
+    "label": "Chinese",
+    "ethnicity": [
+      "Chinese"
+    ],
+    "country": "China",
+    "region": "Beijing"
+  },
+  "sample": {
+    "n": 144
+  },
+  "selection": "class-I-balanced",
+  "modality": "unknown",
+  "scale": {
+    "kind": "not-stated"
+  },
+  "headPosition": "unknown",
+  "secondHand": {
+    "via": "Moate & Darendeliler 2002, Tables I, II, III and IV"
+  },
+  "curation": {
+    "extractedBy": [
+      "AI reader A",
+      "AI reader B"
+    ],
+    "date": "2026-10-08",
+    "notes": "Compared 2026-10-08: norms:compare a vs b exit 1, 87 differences (logs/task9a2-compare-<id>.log). Every mean and SD of both extractors re-read from the page images (PDF pp. 2-6 = journal pp. 20-24), and the settled file checked by script against a third, independent reading of the pages (the table in sets.test.ts). Decisions: (0) Source text normalised to one pattern giving table, page, row and column with sex and age (a and b worded it differently; prose only). Adult rows: a gave [18, 40], b no band -> [18, 40] with the P18 note (merge notes). b's UFH:LFH% rows (#29) not entered: the merge notes rule the printed UFH:LFH ratio is not a catalogue measurement (do not compute ratios). (1) b only, each confirmed on Table II p. 21 and kept: facial axis males 11 y 83 ± 1 (Fu male column); Y axis 66 ± 3 males and females 11 y (Fu columns); gonial angle females 11 y 124 ± 9 (right-aligned under 'Female Fu'; a missed all four). (2) Y axis and facial axis a same / b close -> close: the compilation defines neither (see each definitionNote). Fix round 1 (8 Oct): facial axis rows -> different, not used (owner FAX-1); each 11-year row carries the 'may not be a separate group' note. (3) Selection a class-I / b class-I-balanced -> class-I-balanced: Class I occlusion with a good-looking profile (text p. 21). Page images: PDF pp. 2-6 = journal pp. 20-24 (Tables I-VI), rendered at 2000 px.",
+    "comparedOn": "2026-10-08"
+  },
+  "caveats": [
+    "Quoted second-hand from Moate & Darendeliler 2002 (Aust Orthod J 18:19-26, a compilation of published Chinese cephalometric norms), Tables I, II, III and IV; the original paper was not read. The compilation rounds every mean and SD to whole numbers (Lew's soft tissue to 0.5) and gives no landmark, plane or method definitions.",
+    "The compilation states no film scale or magnification for any study; assumed true size (owner ruling M-2).",
+    "144 Chinese students in Beijing selected for Class I occlusion and a pleasing profile, in three average-age groups: 9, 13.9 and 18.6 years (text p. 21). The sex split and group sizes are not given. Table III's 13-year column is read as the 13.9-year group and Table IV's '18 Years +' as the 18.6-year group (18-40 by convention).",
+    "Table II prints Fu 11-year columns (males and females), but the text names only the 9, 13.9 and 18.6-year groups, and most 11-year values repeat the 13-year ones (SNA 83, SNB 79, ANB 4, ANS-Me 67 and 62): the 11-year group may not be a real group. Kept as tabled (merge notes).",
+    "Fu's 11-year facial axis SD is printed ± 1 (Table II, p. 21), much narrower than every other facial-axis SD in the compilation (3-6); kept as printed.",
+    "Not entered (not catalogue measurements; no ratio computed): N-ANS and UFH:LFH% (every group).",
+    "Table V (p. 24) averages several studies; it is not entered for this study (merge notes)."
+  ],
+  "entries": [
+    {
+      "measurement": "m01_SNA",
+      "sex": "M",
+      "ageBand": [
+        9,
+        9
+      ],
+      "mean": 82,
+      "sd": 3,
+      "unit": "deg",
+      "source": "Table I, p. 20, row 'SNA', column Fu (males, 9 y)",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m01_SNA",
+      "sex": "M",
+      "ageBand": [
+        11,
+        11
+      ],
+      "mean": 83,
+      "sd": 3,
+      "unit": "deg",
+      "source": "Table II, p. 21, row 'SNA', column Fu (males, 11 y)",
+      "definitionMatch": "same",
+      "note": "Fu & Mao's text names groups at 9, 13.9 and 18.6 y; this 11-year column largely repeats the 13-year one — may not be a separate group."
+    },
+    {
+      "measurement": "m01_SNA",
+      "sex": "M",
+      "ageBand": [
+        13,
+        13
+      ],
+      "mean": 83,
+      "sd": 3,
+      "unit": "deg",
+      "source": "Table III, p. 22, row 'SNA', column Fu (males, 13 y)",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m01_SNA",
+      "sex": "M",
+      "ageBand": [
+        18,
+        40
+      ],
+      "mean": 84,
+      "sd": 4,
+      "unit": "deg",
+      "source": "Table IV, p. 23, row 'SNA', column Fu (males, 18 Years +)",
+      "definitionMatch": "same",
+      "note": "'18 Years +' (Table IV): upper bound not stated; 40 by convention (Miao's stated range 4–40), P18."
+    },
+    {
+      "measurement": "m01_SNA",
+      "sex": "F",
+      "ageBand": [
+        9,
+        9
+      ],
+      "mean": 82,
+      "sd": 3,
+      "unit": "deg",
+      "source": "Table I, p. 20, row 'SNA', column Fu (females, 9 y)",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m01_SNA",
+      "sex": "F",
+      "ageBand": [
+        11,
+        11
+      ],
+      "mean": 83,
+      "sd": 3,
+      "unit": "deg",
+      "source": "Table II, p. 21, row 'SNA', column Fu (females, 11 y)",
+      "definitionMatch": "same",
+      "note": "Fu & Mao's text names groups at 9, 13.9 and 18.6 y; this 11-year column largely repeats the 13-year one — may not be a separate group."
+    },
+    {
+      "measurement": "m01_SNA",
+      "sex": "F",
+      "ageBand": [
+        13,
+        13
+      ],
+      "mean": 83,
+      "sd": 3,
+      "unit": "deg",
+      "source": "Table III, p. 22, row 'SNA', column Fu (females, 13 y)",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m01_SNA",
+      "sex": "F",
+      "ageBand": [
+        18,
+        40
+      ],
+      "mean": 84,
+      "sd": 4,
+      "unit": "deg",
+      "source": "Table IV, p. 23, row 'SNA', column Fu (females, 18 Years +)",
+      "definitionMatch": "same",
+      "note": "'18 Years +' (Table IV): upper bound not stated; 40 by convention (Miao's stated range 4–40), P18."
+    },
+    {
+      "measurement": "m02_SNB",
+      "sex": "M",
+      "ageBand": [
+        9,
+        9
+      ],
+      "mean": 77,
+      "sd": 3,
+      "unit": "deg",
+      "source": "Table I, p. 20, row 'SNB', column Fu (males, 9 y)",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m02_SNB",
+      "sex": "M",
+      "ageBand": [
+        11,
+        11
+      ],
+      "mean": 79,
+      "sd": 3,
+      "unit": "deg",
+      "source": "Table II, p. 21, row 'SNB', column Fu (males, 11 y)",
+      "definitionMatch": "same",
+      "note": "Fu & Mao's text names groups at 9, 13.9 and 18.6 y; this 11-year column largely repeats the 13-year one — may not be a separate group."
+    },
+    {
+      "measurement": "m02_SNB",
+      "sex": "M",
+      "ageBand": [
+        13,
+        13
+      ],
+      "mean": 79,
+      "sd": 3,
+      "unit": "deg",
+      "source": "Table III, p. 22, row 'SNB', column Fu (males, 13 y)",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m02_SNB",
+      "sex": "M",
+      "ageBand": [
+        18,
+        40
+      ],
+      "mean": 81,
+      "sd": 4,
+      "unit": "deg",
+      "source": "Table IV, p. 23, row 'SNB', column Fu (males, 18 Years +)",
+      "definitionMatch": "same",
+      "note": "'18 Years +' (Table IV): upper bound not stated; 40 by convention (Miao's stated range 4–40), P18."
+    },
+    {
+      "measurement": "m02_SNB",
+      "sex": "F",
+      "ageBand": [
+        9,
+        9
+      ],
+      "mean": 77,
+      "sd": 3,
+      "unit": "deg",
+      "source": "Table I, p. 20, row 'SNB', column Fu (females, 9 y)",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m02_SNB",
+      "sex": "F",
+      "ageBand": [
+        11,
+        11
+      ],
+      "mean": 79,
+      "sd": 3,
+      "unit": "deg",
+      "source": "Table II, p. 21, row 'SNB', column Fu (females, 11 y)",
+      "definitionMatch": "same",
+      "note": "Fu & Mao's text names groups at 9, 13.9 and 18.6 y; this 11-year column largely repeats the 13-year one — may not be a separate group."
+    },
+    {
+      "measurement": "m02_SNB",
+      "sex": "F",
+      "ageBand": [
+        13,
+        13
+      ],
+      "mean": 79,
+      "sd": 3,
+      "unit": "deg",
+      "source": "Table III, p. 22, row 'SNB', column Fu (females, 13 y)",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m02_SNB",
+      "sex": "F",
+      "ageBand": [
+        18,
+        40
+      ],
+      "mean": 81,
+      "sd": 4,
+      "unit": "deg",
+      "source": "Table IV, p. 23, row 'SNB', column Fu (females, 18 Years +)",
+      "definitionMatch": "same",
+      "note": "'18 Years +' (Table IV): upper bound not stated; 40 by convention (Miao's stated range 4–40), P18."
+    },
+    {
+      "measurement": "m03_ANB",
+      "sex": "M",
+      "ageBand": [
+        9,
+        9
+      ],
+      "mean": 5,
+      "sd": 2,
+      "unit": "deg",
+      "source": "Table I, p. 20, row 'ANB', column Fu (males, 9 y)",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m03_ANB",
+      "sex": "M",
+      "ageBand": [
+        11,
+        11
+      ],
+      "mean": 4,
+      "sd": 1,
+      "unit": "deg",
+      "source": "Table II, p. 21, row 'ANB', column Fu (males, 11 y)",
+      "definitionMatch": "same",
+      "note": "Fu & Mao's text names groups at 9, 13.9 and 18.6 y; this 11-year column largely repeats the 13-year one — may not be a separate group."
+    },
+    {
+      "measurement": "m03_ANB",
+      "sex": "M",
+      "ageBand": [
+        13,
+        13
+      ],
+      "mean": 4,
+      "sd": 2,
+      "unit": "deg",
+      "source": "Table III, p. 22, row 'ANB', column Fu (males, 13 y)",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m03_ANB",
+      "sex": "M",
+      "ageBand": [
+        18,
+        40
+      ],
+      "mean": 3,
+      "sd": 2,
+      "unit": "deg",
+      "source": "Table IV, p. 23, row 'ANB', column Fu (males, 18 Years +)",
+      "definitionMatch": "same",
+      "note": "'18 Years +' (Table IV): upper bound not stated; 40 by convention (Miao's stated range 4–40), P18."
+    },
+    {
+      "measurement": "m03_ANB",
+      "sex": "F",
+      "ageBand": [
+        9,
+        9
+      ],
+      "mean": 5,
+      "sd": 2,
+      "unit": "deg",
+      "source": "Table I, p. 20, row 'ANB', column Fu (females, 9 y)",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m03_ANB",
+      "sex": "F",
+      "ageBand": [
+        11,
+        11
+      ],
+      "mean": 4,
+      "sd": 2,
+      "unit": "deg",
+      "source": "Table II, p. 21, row 'ANB', column Fu (females, 11 y)",
+      "definitionMatch": "same",
+      "note": "Fu & Mao's text names groups at 9, 13.9 and 18.6 y; this 11-year column largely repeats the 13-year one — may not be a separate group."
+    },
+    {
+      "measurement": "m03_ANB",
+      "sex": "F",
+      "ageBand": [
+        13,
+        13
+      ],
+      "mean": 4,
+      "sd": 2,
+      "unit": "deg",
+      "source": "Table III, p. 22, row 'ANB', column Fu (females, 13 y)",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m03_ANB",
+      "sex": "F",
+      "ageBand": [
+        18,
+        40
+      ],
+      "mean": 3,
+      "sd": 2,
+      "unit": "deg",
+      "source": "Table IV, p. 23, row 'ANB', column Fu (females, 18 Years +)",
+      "definitionMatch": "same",
+      "note": "'18 Years +' (Table IV): upper bound not stated; 40 by convention (Miao's stated range 4–40), P18."
+    },
+    {
+      "measurement": "m21_SNGoMe",
+      "sex": "M",
+      "ageBand": [
+        9,
+        9
+      ],
+      "mean": 32,
+      "sd": 6,
+      "unit": "deg",
+      "source": "Table I, p. 20, row 'SN–MP', column Fu (males, 9 y)",
+      "definitionMatch": "close",
+      "definitionNote": "SN–MP: mandibular plane not stated in the compilation; mapped to Go–Me (#21). The original paper's plane may be Go–Gn or a tangent."
+    },
+    {
+      "measurement": "m21_SNGoMe",
+      "sex": "F",
+      "ageBand": [
+        9,
+        9
+      ],
+      "mean": 32,
+      "sd": 3,
+      "unit": "deg",
+      "source": "Table I, p. 20, row 'SN–MP', column Fu (females, 9 y)",
+      "definitionMatch": "close",
+      "definitionNote": "SN–MP: mandibular plane not stated in the compilation; mapped to Go–Me (#21). The original paper's plane may be Go–Gn or a tangent."
+    },
+    {
+      "measurement": "m57_IMPAgome",
+      "sex": "M",
+      "ageBand": [
+        9,
+        9
+      ],
+      "mean": 96,
+      "sd": 6,
+      "unit": "deg",
+      "source": "Table I, p. 20, row '/1–MP', column Fu (males, 9 y)",
+      "definitionMatch": "close",
+      "definitionNote": "Lower incisor to MP (/1–MP): mandibular plane not stated in the compilation; mapped to Go–Me (#57)."
+    },
+    {
+      "measurement": "m57_IMPAgome",
+      "sex": "M",
+      "ageBand": [
+        11,
+        11
+      ],
+      "mean": 97,
+      "sd": 5,
+      "unit": "deg",
+      "source": "Table II, p. 21, row '/1–MP', column Fu (males, 11 y)",
+      "definitionMatch": "close",
+      "definitionNote": "Lower incisor to MP (/1–MP): mandibular plane not stated in the compilation; mapped to Go–Me (#57).",
+      "note": "Fu & Mao's text names groups at 9, 13.9 and 18.6 y; this 11-year column largely repeats the 13-year one — may not be a separate group."
+    },
+    {
+      "measurement": "m57_IMPAgome",
+      "sex": "M",
+      "ageBand": [
+        18,
+        40
+      ],
+      "mean": 97,
+      "sd": 7,
+      "unit": "deg",
+      "source": "Table IV, p. 23, row '/1–MP', column Fu (males, 18 Years +)",
+      "definitionMatch": "close",
+      "definitionNote": "Lower incisor to MP (/1–MP): mandibular plane not stated in the compilation; mapped to Go–Me (#57).",
+      "note": "'18 Years +' (Table IV): upper bound not stated; 40 by convention (Miao's stated range 4–40), P18."
+    },
+    {
+      "measurement": "m57_IMPAgome",
+      "sex": "F",
+      "ageBand": [
+        9,
+        9
+      ],
+      "mean": 98,
+      "sd": 6,
+      "unit": "deg",
+      "source": "Table I, p. 20, row '/1–MP', column Fu (females, 9 y)",
+      "definitionMatch": "close",
+      "definitionNote": "Lower incisor to MP (/1–MP): mandibular plane not stated in the compilation; mapped to Go–Me (#57)."
+    },
+    {
+      "measurement": "m57_IMPAgome",
+      "sex": "F",
+      "ageBand": [
+        11,
+        11
+      ],
+      "mean": 97,
+      "sd": 5,
+      "unit": "deg",
+      "source": "Table II, p. 21, row '/1–MP', column Fu (females, 11 y)",
+      "definitionMatch": "close",
+      "definitionNote": "Lower incisor to MP (/1–MP): mandibular plane not stated in the compilation; mapped to Go–Me (#57).",
+      "note": "Fu & Mao's text names groups at 9, 13.9 and 18.6 y; this 11-year column largely repeats the 13-year one — may not be a separate group."
+    },
+    {
+      "measurement": "m57_IMPAgome",
+      "sex": "F",
+      "ageBand": [
+        18,
+        40
+      ],
+      "mean": 97,
+      "sd": 7,
+      "unit": "deg",
+      "source": "Table IV, p. 23, row '/1–MP', column Fu (females, 18 Years +)",
+      "definitionMatch": "close",
+      "definitionNote": "Lower incisor to MP (/1–MP): mandibular plane not stated in the compilation; mapped to Go–Me (#57).",
+      "note": "'18 Years +' (Table IV): upper bound not stated; 40 by convention (Miao's stated range 4–40), P18."
+    },
+    {
+      "measurement": "m53_Interincisal",
+      "sex": "M",
+      "ageBand": [
+        9,
+        9
+      ],
+      "mean": 122,
+      "sd": 8,
+      "unit": "deg",
+      "source": "Table I, p. 20, row 'Interincisal', column Fu (males, 9 y)",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m53_Interincisal",
+      "sex": "M",
+      "ageBand": [
+        11,
+        11
+      ],
+      "mean": 124,
+      "sd": 6,
+      "unit": "deg",
+      "source": "Table II, p. 21, row 'Interincisal', column Fu (males, 11 y)",
+      "definitionMatch": "same",
+      "note": "Fu & Mao's text names groups at 9, 13.9 and 18.6 y; this 11-year column largely repeats the 13-year one — may not be a separate group."
+    },
+    {
+      "measurement": "m53_Interincisal",
+      "sex": "M",
+      "ageBand": [
+        13,
+        13
+      ],
+      "mean": 124,
+      "sd": 7,
+      "unit": "deg",
+      "source": "Table III, p. 22, row 'Interincisal', column Fu (males, 13 y)",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m53_Interincisal",
+      "sex": "M",
+      "ageBand": [
+        18,
+        40
+      ],
+      "mean": 125,
+      "sd": 8,
+      "unit": "deg",
+      "source": "Table IV, p. 23, row 'Interincisal', column Fu (males, 18 Years +)",
+      "definitionMatch": "same",
+      "note": "'18 Years +' (Table IV): upper bound not stated; 40 by convention (Miao's stated range 4–40), P18."
+    },
+    {
+      "measurement": "m53_Interincisal",
+      "sex": "F",
+      "ageBand": [
+        9,
+        9
+      ],
+      "mean": 122,
+      "sd": 9,
+      "unit": "deg",
+      "source": "Table I, p. 20, row 'Interincisal', column Fu (females, 9 y)",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m53_Interincisal",
+      "sex": "F",
+      "ageBand": [
+        11,
+        11
+      ],
+      "mean": 124,
+      "sd": 6,
+      "unit": "deg",
+      "source": "Table II, p. 21, row 'Interincisal', column Fu (females, 11 y)",
+      "definitionMatch": "same",
+      "note": "Fu & Mao's text names groups at 9, 13.9 and 18.6 y; this 11-year column largely repeats the 13-year one — may not be a separate group."
+    },
+    {
+      "measurement": "m53_Interincisal",
+      "sex": "F",
+      "ageBand": [
+        18,
+        40
+      ],
+      "mean": 125,
+      "sd": 8,
+      "unit": "deg",
+      "source": "Table IV, p. 23, row 'Interincisal', column Fu (females, 18 Years +)",
+      "definitionMatch": "same",
+      "note": "'18 Years +' (Table IV): upper bound not stated; 40 by convention (Miao's stated range 4–40), P18."
+    },
+    {
+      "measurement": "m36_Gonial",
+      "sex": "F",
+      "ageBand": [
+        11,
+        11
+      ],
+      "mean": 124,
+      "sd": 9,
+      "unit": "deg",
+      "source": "Table II, p. 21, row 'Gonial angle', column Fu (females, 11 y)",
+      "definitionMatch": "close",
+      "definitionNote": "Gonial angle: points not stated in the compilation (catalogue: Ar–Go–Me).",
+      "note": "Fu & Mao's text names groups at 9, 13.9 and 18.6 y; this 11-year column largely repeats the 13-year one — may not be a separate group."
+    },
+    {
+      "measurement": "m28_LAFH",
+      "sex": "M",
+      "ageBand": [
+        9,
+        9
+      ],
+      "mean": 60,
+      "sd": 5,
+      "unit": "mm",
+      "source": "Table I, p. 20, row 'ANS–Me', column Fu (males, 9 y)",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m28_LAFH",
+      "sex": "M",
+      "ageBand": [
+        11,
+        11
+      ],
+      "mean": 67,
+      "sd": 5,
+      "unit": "mm",
+      "source": "Table II, p. 21, row 'ANS–Me', column Fu (males, 11 y)",
+      "definitionMatch": "same",
+      "note": "Fu & Mao's text names groups at 9, 13.9 and 18.6 y; this 11-year column largely repeats the 13-year one — may not be a separate group."
+    },
+    {
+      "measurement": "m28_LAFH",
+      "sex": "M",
+      "ageBand": [
+        13,
+        13
+      ],
+      "mean": 67,
+      "sd": 5,
+      "unit": "mm",
+      "source": "Table III, p. 22, row 'ANS–Me', column Fu (males, 13 y)",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m28_LAFH",
+      "sex": "M",
+      "ageBand": [
+        18,
+        40
+      ],
+      "mean": 72,
+      "sd": 5,
+      "unit": "mm",
+      "source": "Table IV, p. 23, row 'ANS–Me', column Fu (males, 18 Years +)",
+      "definitionMatch": "same",
+      "note": "'18 Years +' (Table IV): upper bound not stated; 40 by convention (Miao's stated range 4–40), P18."
+    },
+    {
+      "measurement": "m28_LAFH",
+      "sex": "F",
+      "ageBand": [
+        9,
+        9
+      ],
+      "mean": 58,
+      "sd": 5,
+      "unit": "mm",
+      "source": "Table I, p. 20, row 'ANS–Me', column Fu (females, 9 y)",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m28_LAFH",
+      "sex": "F",
+      "ageBand": [
+        11,
+        11
+      ],
+      "mean": 62,
+      "sd": 3,
+      "unit": "mm",
+      "source": "Table II, p. 21, row 'ANS–Me', column Fu (females, 11 y)",
+      "definitionMatch": "same",
+      "note": "Fu & Mao's text names groups at 9, 13.9 and 18.6 y; this 11-year column largely repeats the 13-year one — may not be a separate group."
+    },
+    {
+      "measurement": "m28_LAFH",
+      "sex": "F",
+      "ageBand": [
+        13,
+        13
+      ],
+      "mean": 62,
+      "sd": 3,
+      "unit": "mm",
+      "source": "Table III, p. 22, row 'ANS–Me', column Fu (females, 13 y)",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m28_LAFH",
+      "sex": "F",
+      "ageBand": [
+        18,
+        40
+      ],
+      "mean": 66,
+      "sd": 4,
+      "unit": "mm",
+      "source": "Table IV, p. 23, row 'ANS–Me', column Fu (females, 18 Years +)",
+      "definitionMatch": "same",
+      "note": "'18 Years +' (Table IV): upper bound not stated; 40 by convention (Miao's stated range 4–40), P18."
+    },
+    {
+      "measurement": "m30_FacAxisR",
+      "sex": "M",
+      "ageBand": [
+        11,
+        11
+      ],
+      "mean": 83,
+      "sd": 1,
+      "unit": "deg",
+      "source": "Table II, p. 21, row 'Facial axis', column Fu (males, 11 y)",
+      "definitionMatch": "different",
+      "definitionNote": "Not used (owner ruling 8 Oct): 80–85° with no definition in the compilation; Ricketts' facial axis is 90 ± 3.5, and these values fit Downs' facial angle at least as well — likely a different measurement.",
+      "note": "Fu & Mao's text names groups at 9, 13.9 and 18.6 y; this 11-year column largely repeats the 13-year one — may not be a separate group."
+    },
+    {
+      "measurement": "m30_FacAxisR",
+      "sex": "M",
+      "ageBand": [
+        13,
+        13
+      ],
+      "mean": 84,
+      "sd": 3,
+      "unit": "deg",
+      "source": "Table III, p. 22, row 'Facial axis', column Fu (males, 13 y)",
+      "definitionMatch": "different",
+      "definitionNote": "Not used (owner ruling 8 Oct): 80–85° with no definition in the compilation; Ricketts' facial axis is 90 ± 3.5, and these values fit Downs' facial angle at least as well — likely a different measurement."
+    },
+    {
+      "measurement": "m30_FacAxisR",
+      "sex": "M",
+      "ageBand": [
+        18,
+        40
+      ],
+      "mean": 85,
+      "sd": 4,
+      "unit": "deg",
+      "source": "Table IV, p. 23, row 'Facial axis', column Fu (males, 18 Years +)",
+      "definitionMatch": "different",
+      "definitionNote": "Not used (owner ruling 8 Oct): 80–85° with no definition in the compilation; Ricketts' facial axis is 90 ± 3.5, and these values fit Downs' facial angle at least as well — likely a different measurement.",
+      "note": "'18 Years +' (Table IV): upper bound not stated; 40 by convention (Miao's stated range 4–40), P18."
+    },
+    {
+      "measurement": "m30_FacAxisR",
+      "sex": "F",
+      "ageBand": [
+        13,
+        13
+      ],
+      "mean": 84,
+      "sd": 3,
+      "unit": "deg",
+      "source": "Table III, p. 22, row 'Facial axis', column Fu (females, 13 y)",
+      "definitionMatch": "different",
+      "definitionNote": "Not used (owner ruling 8 Oct): 80–85° with no definition in the compilation; Ricketts' facial axis is 90 ± 3.5, and these values fit Downs' facial angle at least as well — likely a different measurement."
+    },
+    {
+      "measurement": "m30_FacAxisR",
+      "sex": "F",
+      "ageBand": [
+        18,
+        40
+      ],
+      "mean": 85,
+      "sd": 4,
+      "unit": "deg",
+      "source": "Table IV, p. 23, row 'Facial axis', column Fu (females, 18 Years +)",
+      "definitionMatch": "different",
+      "definitionNote": "Not used (owner ruling 8 Oct): 80–85° with no definition in the compilation; Ricketts' facial axis is 90 ± 3.5, and these values fit Downs' facial angle at least as well — likely a different measurement.",
+      "note": "'18 Years +' (Table IV): upper bound not stated; 40 by convention (Miao's stated range 4–40), P18."
+    },
+    {
+      "measurement": "m24_YAxis",
+      "sex": "M",
+      "ageBand": [
+        11,
+        11
+      ],
+      "mean": 66,
+      "sd": 3,
+      "unit": "deg",
+      "source": "Table II, p. 21, row 'Y axis', column Fu (males, 11 y)",
+      "definitionMatch": "close",
+      "definitionNote": "Y axis: definition not stated in the compilation. The catalogue's is Downs' S–Gn to FH (#24). The printed 66° sits about 5° above Zheng 2026's Chinese FH-based Y-axis (60.8–61.1°), which fits S–Gn to SN instead (SN is usually some 6–7° steeper than FH); it cannot be settled from the compilation, so close, not same.",
+      "note": "Fu & Mao's text names groups at 9, 13.9 and 18.6 y; this 11-year column largely repeats the 13-year one — may not be a separate group."
+    },
+    {
+      "measurement": "m24_YAxis",
+      "sex": "M",
+      "ageBand": [
+        13,
+        13
+      ],
+      "mean": 66,
+      "sd": 3,
+      "unit": "deg",
+      "source": "Table III, p. 22, row 'Y axis', column Fu (males, 13 y)",
+      "definitionMatch": "close",
+      "definitionNote": "Y axis: definition not stated in the compilation. The catalogue's is Downs' S–Gn to FH (#24). The printed 66° sits about 5° above Zheng 2026's Chinese FH-based Y-axis (60.8–61.1°), which fits S–Gn to SN instead (SN is usually some 6–7° steeper than FH); it cannot be settled from the compilation, so close, not same."
+    },
+    {
+      "measurement": "m24_YAxis",
+      "sex": "M",
+      "ageBand": [
+        18,
+        40
+      ],
+      "mean": 66,
+      "sd": 4,
+      "unit": "deg",
+      "source": "Table IV, p. 23, row 'Y axis', column Fu (males, 18 Years +)",
+      "definitionMatch": "close",
+      "definitionNote": "Y axis: definition not stated in the compilation. The catalogue's is Downs' S–Gn to FH (#24). The printed 66° sits about 5° above Zheng 2026's Chinese FH-based Y-axis (60.8–61.1°), which fits S–Gn to SN instead (SN is usually some 6–7° steeper than FH); it cannot be settled from the compilation, so close, not same.",
+      "note": "'18 Years +' (Table IV): upper bound not stated; 40 by convention (Miao's stated range 4–40), P18."
+    },
+    {
+      "measurement": "m24_YAxis",
+      "sex": "F",
+      "ageBand": [
+        11,
+        11
+      ],
+      "mean": 66,
+      "sd": 3,
+      "unit": "deg",
+      "source": "Table II, p. 21, row 'Y axis', column Fu (females, 11 y)",
+      "definitionMatch": "close",
+      "definitionNote": "Y axis: definition not stated in the compilation. The catalogue's is Downs' S–Gn to FH (#24). The printed 66° sits about 5° above Zheng 2026's Chinese FH-based Y-axis (60.8–61.1°), which fits S–Gn to SN instead (SN is usually some 6–7° steeper than FH); it cannot be settled from the compilation, so close, not same.",
+      "note": "Fu & Mao's text names groups at 9, 13.9 and 18.6 y; this 11-year column largely repeats the 13-year one — may not be a separate group."
+    },
+    {
+      "measurement": "m24_YAxis",
+      "sex": "F",
+      "ageBand": [
+        13,
+        13
+      ],
+      "mean": 66,
+      "sd": 3,
+      "unit": "deg",
+      "source": "Table III, p. 22, row 'Y axis', column Fu (females, 13 y)",
+      "definitionMatch": "close",
+      "definitionNote": "Y axis: definition not stated in the compilation. The catalogue's is Downs' S–Gn to FH (#24). The printed 66° sits about 5° above Zheng 2026's Chinese FH-based Y-axis (60.8–61.1°), which fits S–Gn to SN instead (SN is usually some 6–7° steeper than FH); it cannot be settled from the compilation, so close, not same."
+    },
+    {
+      "measurement": "m24_YAxis",
+      "sex": "F",
+      "ageBand": [
+        18,
+        40
+      ],
+      "mean": 66,
+      "sd": 4,
+      "unit": "deg",
+      "source": "Table IV, p. 23, row 'Y axis', column Fu (females, 18 Years +)",
+      "definitionMatch": "close",
+      "definitionNote": "Y axis: definition not stated in the compilation. The catalogue's is Downs' S–Gn to FH (#24). The printed 66° sits about 5° above Zheng 2026's Chinese FH-based Y-axis (60.8–61.1°), which fits S–Gn to SN instead (SN is usually some 6–7° steeper than FH); it cannot be settled from the compilation, so close, not same.",
+      "note": "'18 Years +' (Table IV): upper bound not stated; 40 by convention (Miao's stated range 4–40), P18."
+    }
+  ]
+}

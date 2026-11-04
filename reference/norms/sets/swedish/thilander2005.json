@@ -1,0 +1,4864 @@
+{
+  "id": "thilander2005",
+  "kind": "population",
+  "status": "verified",
+  "citation": {
+    "authors": "Thilander B, Persson M, Adolfsson U",
+    "title": "Roentgen-cephalometric standards for a Swedish population. A longitudinal study between the ages of 5 and 31 years",
+    "journal": "European Journal of Orthodontics",
+    "year": 2005,
+    "volume": "27",
+    "pages": "370-389",
+    "doi": "10.1093/ejo/cji033",
+    "openAccess": false
+  },
+  "population": {
+    "id": "swedish",
+    "label": "Swedish",
+    "ethnicity": [
+      "Swedish"
+    ],
+    "country": "Sweden",
+    "region": "Umeå (group U) and Enköping (group E)"
+  },
+  "sample": {
+    "n": 469,
+    "nMale": 205,
+    "nFemale": 264,
+    "ageMin": 4.2,
+    "ageMax": 32.2
+  },
+  "selection": "class-I-balanced",
+  "modality": "film",
+  "scale": {
+    "kind": "enlarged",
+    "percent": 10,
+    "source": "p. 372"
+  },
+  "headPosition": "unknown",
+  "curation": {
+    "extractedBy": [
+      "AI reader A",
+      "AI reader B"
+    ],
+    "comparedOn": "2026-10-08",
+    "date": "2026-10-08",
+    "notes": "Compared 2026-10-08 (norms:compare a vs b exit 1, 394 differences: set n by sex 2 (a left them out); source wording 238; definitionMatch 84 (NL/NSL, ML/NSL, n–ss–pg, UIL/NL, UIL/n–ss mm, LIL/n–sm mm, 14 rows each); 70 rows only b entered (n–gn, s–tgo, sp′–gn, sp′–gn/n–gn, SPg–npgL × 2 sexes × 7 ages). Every mean, SD and n of the 238 rows both entered agreed. Checked against the page images: all of Table 6 (p. 376; b read it from the text layer, merge notes) and all 70 b-only rows on Tables 5-8 (pp. 375-378) - agree; the convexity conversions (e.g. men 170.2 → 9.8 ... 181.2 → −1.2) re-done from the image. Decisions: (1) definitionMatch: NL/NSL #26 and UIL/NL #55 a same, b close → close (nasal line through pm, not PNS; merge notes); ML/NSL #90 a same, b close → close (tangent ML vs constructed gonion-menton; merge notes); n–ss–pg #5 a close, b same → same (same points; 180 − full angle is the catalogue's departure from straight, + convex; the conversion is noted on each row); incisor mm #46/#49 a same, b close → close (point and sign not stated; merge notes). (2) b-only rows kept after the page check: n–gn → #41 close (gn not Me); s–tgo → #40 close (constructed gonion); sp′–gn → #28 close and sp′–gn/n–gn → #29 close (sp′ and gn for ANS and Me); SPg–npgL → #83 different, kept but never used (soft-tissue pogonion level, perpendicular to N–Pog; the catalogue measures at suprapogonion level between the two facial lines). (3) Source: one wording, table, page, paper row and age group. (4) Age bands: Table 4's observed range of each age group (both extractors), written in completed years ([4,5], [6,8], [9,11], [12,13], [14,17], [18,20], [29,32]) because the resolver places a patient by completed years (P12): a band of 6.6–8.2 would leave out a child of 6 y 9 m, who is '6' in completed years though inside the group's observed range. The nominal ages (5, 7, ...) were not used: as single-age bands they would leave most ages uncovered. Bands of one measurement and sex do not overlap. (5) Selection a class-I, b class-I-balanced → class-I-balanced: the inclusion criteria include a 'straight' profile without obvious asymmetry (p. 371). (6) Scale enlarged 10%, p. 372 (the 10 per cent enlargement was not corrected in the linear distances; each table's caption repeats the 10 per cent magnification). n per row: Table 3's radiographs for that sex and age group. Ruling P50 (8 Oct): SPg–npgL #83 different -> close (same quantity at another level/direction). Caveat added: identical male and female SDs of sp′–gn/n–gn in all seven age groups."
+  },
+  "caveats": [
+    "Sample: 'normal' Swedes from two groups, Umeå (group U, 7-31 y, mixed-longitudinal then longitudinal) and Enköping (group E, 5-13 y, longitudinal): Angle Class I molar/canine relationship, normal transverse occlusion, overjet and overbite 1-3 mm, no congenitally missing teeth or crowding, a 'straight' profile without obvious asymmetry, no orthodontic treatment (pp. 371-372). Groups U and E did not differ at 7, 10 and 13 y and were combined (p. 372).",
+    "The counts are radiographs, not people: the same children were filmed at several ages (Table 3, p. 372; Figure 2), so the 469 films (205 male, 264 female) come from far fewer individuals, and the age groups are not independent samples.",
+    "Linear (mm) values include the films' 10% enlargement (p. 372: the 10 per cent enlargement was not corrected in the linear distances); the app shows them at true size (÷ 1.10) with the printed value. Angles and % are unaffected.",
+    "Age bands are each group's observed age range (Table 4, p. 373, both sexes together), written in completed years: 4-5, 6-8, 9-11, 12-13, 14-17, 18-20 and 29-32 y. Ages 21-28 have no group.",
+    "Landmarks follow Björk (1947): sp′ (nasal line ∩ n–pg line) and tgo (mandibular line ∩ ramus line) are constructed points, the nasal line runs through pm (pterygomaxillare) and the mandibular line is the lower-border tangent through gn (pp. 373-374, Fig 3). Rows using them are close.",
+    "Convexity n–ss–pg is printed as the full angle (168.7-181.4°); stored as 180 minus the printed mean (the departure from straight, + convex), SD unchanged.",
+    "Soft-tissue chin SPg–npgL (Tables 7-8) is entered as #83, close (ruling P50): the same quantity, soft-tissue chin thickness, but measured at soft-tissue pogonion, perpendicular to N–Pog, while the catalogue's #83 is at suprapogonion level between the bony and soft-tissue facial lines.",
+    "Head position: cephalostat, maximal intercuspal position (p. 372); no reference plane for orientation is stated, and FH is not used in any measurement.",
+    "Not in the catalogue: n–s–ba; s–n; s–ar; sp′–pm (maxillary length); n–sp′ and n–sp′/n–gn (%); s–n–pg; ar–tgo; tgo–gn; ar–pg; n–gn/s–tgo (%) (the reciprocal of the Jarabak ratio: not converted, as the SD of a reciprocal cannot be derived from the printed SD); soft-tissue P–, Sn–, SLS–, Ls–, St–, Li– and ILS–npgL (Tables 5-8). Body height (Figure 5) is not a cephalometric measurement.",
+    "sp′–gn/n–gn (%) (#29): identical male and female SDs in all seven age groups, as printed in both tables — possibly a misprint."
+  ],
+  "entries": [
+    {
+      "measurement": "m34_Saddle",
+      "sex": "M",
+      "ageBand": [
+        4,
+        5
+      ],
+      "mean": 121.9,
+      "sd": 4.4,
+      "n": 20,
+      "unit": "deg",
+      "source": "Table 5, p. 375, row n–s–ar, 5 years",
+      "definitionMatch": "same",
+      "note": "Age group 5 y: observed ages 4.2–5.8 (Table 4, p. 373), as completed years 4–5; men's mean age 5.1 ± 0.4 y, n 20 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m34_Saddle",
+      "sex": "M",
+      "ageBand": [
+        6,
+        8
+      ],
+      "mean": 122.3,
+      "sd": 5,
+      "n": 37,
+      "unit": "deg",
+      "source": "Table 5, p. 375, row n–s–ar, 7 years",
+      "definitionMatch": "same",
+      "note": "Age group 7 y: observed ages 6.6–8.2 (Table 4, p. 373), as completed years 6–8; men's mean age 7.4 ± 0.4 y, n 37 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m34_Saddle",
+      "sex": "M",
+      "ageBand": [
+        9,
+        11
+      ],
+      "mean": 122.2,
+      "sd": 4.5,
+      "n": 43,
+      "unit": "deg",
+      "source": "Table 5, p. 375, row n–s–ar, 10 years",
+      "definitionMatch": "same",
+      "note": "Age group 10 y: observed ages 9.5–11.2 (Table 4, p. 373), as completed years 9–11; men's mean age 10.4 ± 0.5 y, n 43 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m34_Saddle",
+      "sex": "M",
+      "ageBand": [
+        12,
+        13
+      ],
+      "mean": 121.9,
+      "sd": 4.6,
+      "n": 53,
+      "unit": "deg",
+      "source": "Table 5, p. 375, row n–s–ar, 13 years",
+      "definitionMatch": "same",
+      "note": "Age group 13 y: observed ages 12.3–13.8 (Table 4, p. 373), as completed years 12–13; men's mean age 13.1 ± 0.4 y, n 53 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m34_Saddle",
+      "sex": "M",
+      "ageBand": [
+        14,
+        17
+      ],
+      "mean": 121.9,
+      "sd": 4.6,
+      "n": 25,
+      "unit": "deg",
+      "source": "Table 5, p. 375, row n–s–ar, 16 years",
+      "definitionMatch": "same",
+      "note": "Age group 16 y: observed ages 14.9–17.1 (Table 4, p. 373), as completed years 14–17; men's mean age 15.8 ± 0.5 y, n 25 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m34_Saddle",
+      "sex": "M",
+      "ageBand": [
+        18,
+        20
+      ],
+      "mean": 122.3,
+      "sd": 3.8,
+      "n": 16,
+      "unit": "deg",
+      "source": "Table 5, p. 375, row n–s–ar, 19 years",
+      "definitionMatch": "same",
+      "note": "Age group 19 y: observed ages 18.4–20.5 (Table 4, p. 373), as completed years 18–20; men's mean age 19.5 ± 0.5 y, n 16 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m34_Saddle",
+      "sex": "M",
+      "ageBand": [
+        29,
+        32
+      ],
+      "mean": 120.7,
+      "sd": 4.5,
+      "n": 11,
+      "unit": "deg",
+      "source": "Table 5, p. 375, row n–s–ar, 31 years",
+      "definitionMatch": "same",
+      "note": "Age group 31 y: observed ages 29.7–32.2 (Table 4, p. 373), as completed years 29–32; men's mean age 30.9 ± 0.6 y, n 11 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m34_Saddle",
+      "sex": "F",
+      "ageBand": [
+        4,
+        5
+      ],
+      "mean": 123.9,
+      "sd": 5,
+      "n": 27,
+      "unit": "deg",
+      "source": "Table 6, p. 376, row n–s–ar, 5 years",
+      "definitionMatch": "same",
+      "note": "Age group 5 y: observed ages 4.2–5.8 (Table 4, p. 373), as completed years 4–5; women's mean age 4.9 ± 0.3 y, n 27 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m34_Saddle",
+      "sex": "F",
+      "ageBand": [
+        6,
+        8
+      ],
+      "mean": 123.8,
+      "sd": 5,
+      "n": 46,
+      "unit": "deg",
+      "source": "Table 6, p. 376, row n–s–ar, 7 years",
+      "definitionMatch": "same",
+      "note": "Age group 7 y: observed ages 6.6–8.2 (Table 4, p. 373), as completed years 6–8; women's mean age 7.4 ± 0.4 y, n 46 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m34_Saddle",
+      "sex": "F",
+      "ageBand": [
+        9,
+        11
+      ],
+      "mean": 123.5,
+      "sd": 4.1,
+      "n": 56,
+      "unit": "deg",
+      "source": "Table 6, p. 376, row n–s–ar, 10 years",
+      "definitionMatch": "same",
+      "note": "Age group 10 y: observed ages 9.5–11.2 (Table 4, p. 373), as completed years 9–11; women's mean age 10.4 ± 0.4 y, n 56 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m34_Saddle",
+      "sex": "F",
+      "ageBand": [
+        12,
+        13
+      ],
+      "mean": 123.2,
+      "sd": 4.1,
+      "n": 69,
+      "unit": "deg",
+      "source": "Table 6, p. 376, row n–s–ar, 13 years",
+      "definitionMatch": "same",
+      "note": "Age group 13 y: observed ages 12.3–13.8 (Table 4, p. 373), as completed years 12–13; women's mean age 13.0 ± 0.4 y, n 69 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m34_Saddle",
+      "sex": "F",
+      "ageBand": [
+        14,
+        17
+      ],
+      "mean": 123.2,
+      "sd": 4.8,
+      "n": 30,
+      "unit": "deg",
+      "source": "Table 6, p. 376, row n–s–ar, 16 years",
+      "definitionMatch": "same",
+      "note": "Age group 16 y: observed ages 14.9–17.1 (Table 4, p. 373), as completed years 14–17; women's mean age 15.8 ± 0.5 y, n 30 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m34_Saddle",
+      "sex": "F",
+      "ageBand": [
+        18,
+        20
+      ],
+      "mean": 122.4,
+      "sd": 4.6,
+      "n": 17,
+      "unit": "deg",
+      "source": "Table 6, p. 376, row n–s–ar, 19 years",
+      "definitionMatch": "same",
+      "note": "Age group 19 y: observed ages 18.4–20.5 (Table 4, p. 373), as completed years 18–20; women's mean age 19.1 ± 0.6 y, n 17 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m34_Saddle",
+      "sex": "F",
+      "ageBand": [
+        29,
+        32
+      ],
+      "mean": 122.3,
+      "sd": 3.5,
+      "n": 19,
+      "unit": "deg",
+      "source": "Table 6, p. 376, row n–s–ar, 31 years",
+      "definitionMatch": "same",
+      "note": "Age group 31 y: observed ages 29.7–32.2 (Table 4, p. 373), as completed years 29–32; women's mean age 31.1 ± 0.5 y, n 19 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m01_SNA",
+      "sex": "M",
+      "ageBand": [
+        4,
+        5
+      ],
+      "mean": 81.8,
+      "sd": 3,
+      "n": 20,
+      "unit": "deg",
+      "source": "Table 5, p. 375, row s–n–ss (SNA), 5 years",
+      "definitionMatch": "same",
+      "note": "Age group 5 y: observed ages 4.2–5.8 (Table 4, p. 373), as completed years 4–5; men's mean age 5.1 ± 0.4 y, n 20 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m01_SNA",
+      "sex": "M",
+      "ageBand": [
+        6,
+        8
+      ],
+      "mean": 81.3,
+      "sd": 3.2,
+      "n": 37,
+      "unit": "deg",
+      "source": "Table 5, p. 375, row s–n–ss (SNA), 7 years",
+      "definitionMatch": "same",
+      "note": "Age group 7 y: observed ages 6.6–8.2 (Table 4, p. 373), as completed years 6–8; men's mean age 7.4 ± 0.4 y, n 37 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m01_SNA",
+      "sex": "M",
+      "ageBand": [
+        9,
+        11
+      ],
+      "mean": 81.2,
+      "sd": 3.2,
+      "n": 43,
+      "unit": "deg",
+      "source": "Table 5, p. 375, row s–n–ss (SNA), 10 years",
+      "definitionMatch": "same",
+      "note": "Age group 10 y: observed ages 9.5–11.2 (Table 4, p. 373), as completed years 9–11; men's mean age 10.4 ± 0.5 y, n 43 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m01_SNA",
+      "sex": "M",
+      "ageBand": [
+        12,
+        13
+      ],
+      "mean": 82.3,
+      "sd": 3.4,
+      "n": 53,
+      "unit": "deg",
+      "source": "Table 5, p. 375, row s–n–ss (SNA), 13 years",
+      "definitionMatch": "same",
+      "note": "Age group 13 y: observed ages 12.3–13.8 (Table 4, p. 373), as completed years 12–13; men's mean age 13.1 ± 0.4 y, n 53 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m01_SNA",
+      "sex": "M",
+      "ageBand": [
+        14,
+        17
+      ],
+      "mean": 82.7,
+      "sd": 3.7,
+      "n": 25,
+      "unit": "deg",
+      "source": "Table 5, p. 375, row s–n–ss (SNA), 16 years",
+      "definitionMatch": "same",
+      "note": "Age group 16 y: observed ages 14.9–17.1 (Table 4, p. 373), as completed years 14–17; men's mean age 15.8 ± 0.5 y, n 25 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m01_SNA",
+      "sex": "M",
+      "ageBand": [
+        18,
+        20
+      ],
+      "mean": 82.5,
+      "sd": 3.9,
+      "n": 16,
+      "unit": "deg",
+      "source": "Table 5, p. 375, row s–n–ss (SNA), 19 years",
+      "definitionMatch": "same",
+      "note": "Age group 19 y: observed ages 18.4–20.5 (Table 4, p. 373), as completed years 18–20; men's mean age 19.5 ± 0.5 y, n 16 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m01_SNA",
+      "sex": "M",
+      "ageBand": [
+        29,
+        32
+      ],
+      "mean": 82.2,
+      "sd": 3.3,
+      "n": 11,
+      "unit": "deg",
+      "source": "Table 5, p. 375, row s–n–ss (SNA), 31 years",
+      "definitionMatch": "same",
+      "note": "Age group 31 y: observed ages 29.7–32.2 (Table 4, p. 373), as completed years 29–32; men's mean age 30.9 ± 0.6 y, n 11 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m01_SNA",
+      "sex": "F",
+      "ageBand": [
+        4,
+        5
+      ],
+      "mean": 82.6,
+      "sd": 2.7,
+      "n": 27,
+      "unit": "deg",
+      "source": "Table 6, p. 376, row s–n–ss (SNA), 5 years",
+      "definitionMatch": "same",
+      "note": "Age group 5 y: observed ages 4.2–5.8 (Table 4, p. 373), as completed years 4–5; women's mean age 4.9 ± 0.3 y, n 27 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m01_SNA",
+      "sex": "F",
+      "ageBand": [
+        6,
+        8
+      ],
+      "mean": 81.8,
+      "sd": 3,
+      "n": 46,
+      "unit": "deg",
+      "source": "Table 6, p. 376, row s–n–ss (SNA), 7 years",
+      "definitionMatch": "same",
+      "note": "Age group 7 y: observed ages 6.6–8.2 (Table 4, p. 373), as completed years 6–8; women's mean age 7.4 ± 0.4 y, n 46 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m01_SNA",
+      "sex": "F",
+      "ageBand": [
+        9,
+        11
+      ],
+      "mean": 82.6,
+      "sd": 2.7,
+      "n": 56,
+      "unit": "deg",
+      "source": "Table 6, p. 376, row s–n–ss (SNA), 10 years",
+      "definitionMatch": "same",
+      "note": "Age group 10 y: observed ages 9.5–11.2 (Table 4, p. 373), as completed years 9–11; women's mean age 10.4 ± 0.4 y, n 56 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m01_SNA",
+      "sex": "F",
+      "ageBand": [
+        12,
+        13
+      ],
+      "mean": 83.4,
+      "sd": 3,
+      "n": 69,
+      "unit": "deg",
+      "source": "Table 6, p. 376, row s–n–ss (SNA), 13 years",
+      "definitionMatch": "same",
+      "note": "Age group 13 y: observed ages 12.3–13.8 (Table 4, p. 373), as completed years 12–13; women's mean age 13.0 ± 0.4 y, n 69 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m01_SNA",
+      "sex": "F",
+      "ageBand": [
+        14,
+        17
+      ],
+      "mean": 83.5,
+      "sd": 4.1,
+      "n": 30,
+      "unit": "deg",
+      "source": "Table 6, p. 376, row s–n–ss (SNA), 16 years",
+      "definitionMatch": "same",
+      "note": "Age group 16 y: observed ages 14.9–17.1 (Table 4, p. 373), as completed years 14–17; women's mean age 15.8 ± 0.5 y, n 30 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m01_SNA",
+      "sex": "F",
+      "ageBand": [
+        18,
+        20
+      ],
+      "mean": 83.1,
+      "sd": 2.8,
+      "n": 17,
+      "unit": "deg",
+      "source": "Table 6, p. 376, row s–n–ss (SNA), 19 years",
+      "definitionMatch": "same",
+      "note": "Age group 19 y: observed ages 18.4–20.5 (Table 4, p. 373), as completed years 18–20; women's mean age 19.1 ± 0.6 y, n 17 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m01_SNA",
+      "sex": "F",
+      "ageBand": [
+        29,
+        32
+      ],
+      "mean": 83.2,
+      "sd": 3,
+      "n": 19,
+      "unit": "deg",
+      "source": "Table 6, p. 376, row s–n–ss (SNA), 31 years",
+      "definitionMatch": "same",
+      "note": "Age group 31 y: observed ages 29.7–32.2 (Table 4, p. 373), as completed years 29–32; women's mean age 31.1 ± 0.5 y, n 19 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m02_SNB",
+      "sex": "M",
+      "ageBand": [
+        4,
+        5
+      ],
+      "mean": 77.2,
+      "sd": 3,
+      "n": 20,
+      "unit": "deg",
+      "source": "Table 5, p. 375, row s–n–sm (SNB), 5 years",
+      "definitionMatch": "same",
+      "note": "Age group 5 y: observed ages 4.2–5.8 (Table 4, p. 373), as completed years 4–5; men's mean age 5.1 ± 0.4 y, n 20 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m02_SNB",
+      "sex": "M",
+      "ageBand": [
+        6,
+        8
+      ],
+      "mean": 77.7,
+      "sd": 3.1,
+      "n": 37,
+      "unit": "deg",
+      "source": "Table 5, p. 375, row s–n–sm (SNB), 7 years",
+      "definitionMatch": "same",
+      "note": "Age group 7 y: observed ages 6.6–8.2 (Table 4, p. 373), as completed years 6–8; men's mean age 7.4 ± 0.4 y, n 37 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m02_SNB",
+      "sex": "M",
+      "ageBand": [
+        9,
+        11
+      ],
+      "mean": 78.5,
+      "sd": 3.1,
+      "n": 43,
+      "unit": "deg",
+      "source": "Table 5, p. 375, row s–n–sm (SNB), 10 years",
+      "definitionMatch": "same",
+      "note": "Age group 10 y: observed ages 9.5–11.2 (Table 4, p. 373), as completed years 9–11; men's mean age 10.4 ± 0.5 y, n 43 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m02_SNB",
+      "sex": "M",
+      "ageBand": [
+        12,
+        13
+      ],
+      "mean": 79.7,
+      "sd": 3,
+      "n": 53,
+      "unit": "deg",
+      "source": "Table 5, p. 375, row s–n–sm (SNB), 13 years",
+      "definitionMatch": "same",
+      "note": "Age group 13 y: observed ages 12.3–13.8 (Table 4, p. 373), as completed years 12–13; men's mean age 13.1 ± 0.4 y, n 53 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m02_SNB",
+      "sex": "M",
+      "ageBand": [
+        14,
+        17
+      ],
+      "mean": 80.6,
+      "sd": 2.9,
+      "n": 25,
+      "unit": "deg",
+      "source": "Table 5, p. 375, row s–n–sm (SNB), 16 years",
+      "definitionMatch": "same",
+      "note": "Age group 16 y: observed ages 14.9–17.1 (Table 4, p. 373), as completed years 14–17; men's mean age 15.8 ± 0.5 y, n 25 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m02_SNB",
+      "sex": "M",
+      "ageBand": [
+        18,
+        20
+      ],
+      "mean": 80.8,
+      "sd": 3.7,
+      "n": 16,
+      "unit": "deg",
+      "source": "Table 5, p. 375, row s–n–sm (SNB), 19 years",
+      "definitionMatch": "same",
+      "note": "Age group 19 y: observed ages 18.4–20.5 (Table 4, p. 373), as completed years 18–20; men's mean age 19.5 ± 0.5 y, n 16 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m02_SNB",
+      "sex": "M",
+      "ageBand": [
+        29,
+        32
+      ],
+      "mean": 80.9,
+      "sd": 2.8,
+      "n": 11,
+      "unit": "deg",
+      "source": "Table 5, p. 375, row s–n–sm (SNB), 31 years",
+      "definitionMatch": "same",
+      "note": "Age group 31 y: observed ages 29.7–32.2 (Table 4, p. 373), as completed years 29–32; men's mean age 30.9 ± 0.6 y, n 11 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m02_SNB",
+      "sex": "F",
+      "ageBand": [
+        4,
+        5
+      ],
+      "mean": 77.5,
+      "sd": 2.6,
+      "n": 27,
+      "unit": "deg",
+      "source": "Table 6, p. 376, row s–n–sm (SNB), 5 years",
+      "definitionMatch": "same",
+      "note": "Age group 5 y: observed ages 4.2–5.8 (Table 4, p. 373), as completed years 4–5; women's mean age 4.9 ± 0.3 y, n 27 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m02_SNB",
+      "sex": "F",
+      "ageBand": [
+        6,
+        8
+      ],
+      "mean": 77.8,
+      "sd": 2.6,
+      "n": 46,
+      "unit": "deg",
+      "source": "Table 6, p. 376, row s–n–sm (SNB), 7 years",
+      "definitionMatch": "same",
+      "note": "Age group 7 y: observed ages 6.6–8.2 (Table 4, p. 373), as completed years 6–8; women's mean age 7.4 ± 0.4 y, n 46 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m02_SNB",
+      "sex": "F",
+      "ageBand": [
+        9,
+        11
+      ],
+      "mean": 79,
+      "sd": 2.6,
+      "n": 56,
+      "unit": "deg",
+      "source": "Table 6, p. 376, row s–n–sm (SNB), 10 years",
+      "definitionMatch": "same",
+      "note": "Age group 10 y: observed ages 9.5–11.2 (Table 4, p. 373), as completed years 9–11; women's mean age 10.4 ± 0.4 y, n 56 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m02_SNB",
+      "sex": "F",
+      "ageBand": [
+        12,
+        13
+      ],
+      "mean": 80.5,
+      "sd": 2.8,
+      "n": 69,
+      "unit": "deg",
+      "source": "Table 6, p. 376, row s–n–sm (SNB), 13 years",
+      "definitionMatch": "same",
+      "note": "Age group 13 y: observed ages 12.3–13.8 (Table 4, p. 373), as completed years 12–13; women's mean age 13.0 ± 0.4 y, n 69 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m02_SNB",
+      "sex": "F",
+      "ageBand": [
+        14,
+        17
+      ],
+      "mean": 81.5,
+      "sd": 3.5,
+      "n": 30,
+      "unit": "deg",
+      "source": "Table 6, p. 376, row s–n–sm (SNB), 16 years",
+      "definitionMatch": "same",
+      "note": "Age group 16 y: observed ages 14.9–17.1 (Table 4, p. 373), as completed years 14–17; women's mean age 15.8 ± 0.5 y, n 30 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m02_SNB",
+      "sex": "F",
+      "ageBand": [
+        18,
+        20
+      ],
+      "mean": 81.3,
+      "sd": 2.9,
+      "n": 17,
+      "unit": "deg",
+      "source": "Table 6, p. 376, row s–n–sm (SNB), 19 years",
+      "definitionMatch": "same",
+      "note": "Age group 19 y: observed ages 18.4–20.5 (Table 4, p. 373), as completed years 18–20; women's mean age 19.1 ± 0.6 y, n 17 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m02_SNB",
+      "sex": "F",
+      "ageBand": [
+        29,
+        32
+      ],
+      "mean": 81.5,
+      "sd": 2.3,
+      "n": 19,
+      "unit": "deg",
+      "source": "Table 6, p. 376, row s–n–sm (SNB), 31 years",
+      "definitionMatch": "same",
+      "note": "Age group 31 y: observed ages 29.7–32.2 (Table 4, p. 373), as completed years 29–32; women's mean age 31.1 ± 0.5 y, n 19 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m03_ANB",
+      "sex": "M",
+      "ageBand": [
+        4,
+        5
+      ],
+      "mean": 4.6,
+      "sd": 1.2,
+      "n": 20,
+      "unit": "deg",
+      "source": "Table 5, p. 375, row ss–n–sm (ANB), 5 years",
+      "definitionMatch": "same",
+      "note": "Age group 5 y: observed ages 4.2–5.8 (Table 4, p. 373), as completed years 4–5; men's mean age 5.1 ± 0.4 y, n 20 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m03_ANB",
+      "sex": "M",
+      "ageBand": [
+        6,
+        8
+      ],
+      "mean": 3.6,
+      "sd": 1.8,
+      "n": 37,
+      "unit": "deg",
+      "source": "Table 5, p. 375, row ss–n–sm (ANB), 7 years",
+      "definitionMatch": "same",
+      "note": "Age group 7 y: observed ages 6.6–8.2 (Table 4, p. 373), as completed years 6–8; men's mean age 7.4 ± 0.4 y, n 37 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m03_ANB",
+      "sex": "M",
+      "ageBand": [
+        9,
+        11
+      ],
+      "mean": 2.8,
+      "sd": 1.8,
+      "n": 43,
+      "unit": "deg",
+      "source": "Table 5, p. 375, row ss–n–sm (ANB), 10 years",
+      "definitionMatch": "same",
+      "note": "Age group 10 y: observed ages 9.5–11.2 (Table 4, p. 373), as completed years 9–11; men's mean age 10.4 ± 0.5 y, n 43 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m03_ANB",
+      "sex": "M",
+      "ageBand": [
+        12,
+        13
+      ],
+      "mean": 2.6,
+      "sd": 1.8,
+      "n": 53,
+      "unit": "deg",
+      "source": "Table 5, p. 375, row ss–n–sm (ANB), 13 years",
+      "definitionMatch": "same",
+      "note": "Age group 13 y: observed ages 12.3–13.8 (Table 4, p. 373), as completed years 12–13; men's mean age 13.1 ± 0.4 y, n 53 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m03_ANB",
+      "sex": "M",
+      "ageBand": [
+        14,
+        17
+      ],
+      "mean": 2,
+      "sd": 2.6,
+      "n": 25,
+      "unit": "deg",
+      "source": "Table 5, p. 375, row ss–n–sm (ANB), 16 years",
+      "definitionMatch": "same",
+      "note": "Age group 16 y: observed ages 14.9–17.1 (Table 4, p. 373), as completed years 14–17; men's mean age 15.8 ± 0.5 y, n 25 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m03_ANB",
+      "sex": "M",
+      "ageBand": [
+        18,
+        20
+      ],
+      "mean": 1.7,
+      "sd": 2.7,
+      "n": 16,
+      "unit": "deg",
+      "source": "Table 5, p. 375, row ss–n–sm (ANB), 19 years",
+      "definitionMatch": "same",
+      "note": "Age group 19 y: observed ages 18.4–20.5 (Table 4, p. 373), as completed years 18–20; men's mean age 19.5 ± 0.5 y, n 16 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m03_ANB",
+      "sex": "M",
+      "ageBand": [
+        29,
+        32
+      ],
+      "mean": 1.3,
+      "sd": 2.9,
+      "n": 11,
+      "unit": "deg",
+      "source": "Table 5, p. 375, row ss–n–sm (ANB), 31 years",
+      "definitionMatch": "same",
+      "note": "Age group 31 y: observed ages 29.7–32.2 (Table 4, p. 373), as completed years 29–32; men's mean age 30.9 ± 0.6 y, n 11 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m03_ANB",
+      "sex": "F",
+      "ageBand": [
+        4,
+        5
+      ],
+      "mean": 5.1,
+      "sd": 1.7,
+      "n": 27,
+      "unit": "deg",
+      "source": "Table 6, p. 376, row ss–n–sm (ANB), 5 years",
+      "definitionMatch": "same",
+      "note": "Age group 5 y: observed ages 4.2–5.8 (Table 4, p. 373), as completed years 4–5; women's mean age 4.9 ± 0.3 y, n 27 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m03_ANB",
+      "sex": "F",
+      "ageBand": [
+        6,
+        8
+      ],
+      "mean": 4,
+      "sd": 2.3,
+      "n": 46,
+      "unit": "deg",
+      "source": "Table 6, p. 376, row ss–n–sm (ANB), 7 years",
+      "definitionMatch": "same",
+      "note": "Age group 7 y: observed ages 6.6–8.2 (Table 4, p. 373), as completed years 6–8; women's mean age 7.4 ± 0.4 y, n 46 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m03_ANB",
+      "sex": "F",
+      "ageBand": [
+        9,
+        11
+      ],
+      "mean": 3.6,
+      "sd": 1.8,
+      "n": 56,
+      "unit": "deg",
+      "source": "Table 6, p. 376, row ss–n–sm (ANB), 10 years",
+      "definitionMatch": "same",
+      "note": "Age group 10 y: observed ages 9.5–11.2 (Table 4, p. 373), as completed years 9–11; women's mean age 10.4 ± 0.4 y, n 56 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m03_ANB",
+      "sex": "F",
+      "ageBand": [
+        12,
+        13
+      ],
+      "mean": 2.9,
+      "sd": 1.7,
+      "n": 69,
+      "unit": "deg",
+      "source": "Table 6, p. 376, row ss–n–sm (ANB), 13 years",
+      "definitionMatch": "same",
+      "note": "Age group 13 y: observed ages 12.3–13.8 (Table 4, p. 373), as completed years 12–13; women's mean age 13.0 ± 0.4 y, n 69 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m03_ANB",
+      "sex": "F",
+      "ageBand": [
+        14,
+        17
+      ],
+      "mean": 2,
+      "sd": 1.7,
+      "n": 30,
+      "unit": "deg",
+      "source": "Table 6, p. 376, row ss–n–sm (ANB), 16 years",
+      "definitionMatch": "same",
+      "note": "Age group 16 y: observed ages 14.9–17.1 (Table 4, p. 373), as completed years 14–17; women's mean age 15.8 ± 0.5 y, n 30 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m03_ANB",
+      "sex": "F",
+      "ageBand": [
+        18,
+        20
+      ],
+      "mean": 1.9,
+      "sd": 1.2,
+      "n": 17,
+      "unit": "deg",
+      "source": "Table 6, p. 376, row ss–n–sm (ANB), 19 years",
+      "definitionMatch": "same",
+      "note": "Age group 19 y: observed ages 18.4–20.5 (Table 4, p. 373), as completed years 18–20; women's mean age 19.1 ± 0.6 y, n 17 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m03_ANB",
+      "sex": "F",
+      "ageBand": [
+        29,
+        32
+      ],
+      "mean": 1.7,
+      "sd": 2.1,
+      "n": 19,
+      "unit": "deg",
+      "source": "Table 6, p. 376, row ss–n–sm (ANB), 31 years",
+      "definitionMatch": "same",
+      "note": "Age group 31 y: observed ages 29.7–32.2 (Table 4, p. 373), as completed years 29–32; women's mean age 31.1 ± 0.5 y, n 19 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m05_Convexity",
+      "sex": "M",
+      "ageBand": [
+        4,
+        5
+      ],
+      "mean": 9.8,
+      "sd": 3.4,
+      "n": 20,
+      "unit": "deg",
+      "source": "Table 5, p. 375, row n–ss–pg, 5 years",
+      "definitionMatch": "same",
+      "note": "The paper prints the full angle n–ss–pg (printed 170.2); stored as 180 − 170.2 = 9.8, the departure from a straight line, SD unchanged, to match the catalogue's #5 (same points, + when A is ahead: the full angle is under 180° for a convex face). Age group 5 y: observed ages 4.2–5.8 (Table 4, p. 373), as completed years 4–5; men's mean age 5.1 ± 0.4 y, n 20 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m05_Convexity",
+      "sex": "M",
+      "ageBand": [
+        6,
+        8
+      ],
+      "mean": 6.5,
+      "sd": 4.5,
+      "n": 37,
+      "unit": "deg",
+      "source": "Table 5, p. 375, row n–ss–pg, 7 years",
+      "definitionMatch": "same",
+      "note": "The paper prints the full angle n–ss–pg (printed 173.5); stored as 180 − 173.5 = 6.5, the departure from a straight line, SD unchanged, to match the catalogue's #5 (same points, + when A is ahead: the full angle is under 180° for a convex face). Age group 7 y: observed ages 6.6–8.2 (Table 4, p. 373), as completed years 6–8; men's mean age 7.4 ± 0.4 y, n 37 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m05_Convexity",
+      "sex": "M",
+      "ageBand": [
+        9,
+        11
+      ],
+      "mean": 3.7,
+      "sd": 4.7,
+      "n": 43,
+      "unit": "deg",
+      "source": "Table 5, p. 375, row n–ss–pg, 10 years",
+      "definitionMatch": "same",
+      "note": "The paper prints the full angle n–ss–pg (printed 176.3); stored as 180 − 176.3 = 3.7, the departure from a straight line, SD unchanged, to match the catalogue's #5 (same points, + when A is ahead: the full angle is under 180° for a convex face). Age group 10 y: observed ages 9.5–11.2 (Table 4, p. 373), as completed years 9–11; men's mean age 10.4 ± 0.5 y, n 43 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m05_Convexity",
+      "sex": "M",
+      "ageBand": [
+        12,
+        13
+      ],
+      "mean": 2.8,
+      "sd": 4.3,
+      "n": 53,
+      "unit": "deg",
+      "source": "Table 5, p. 375, row n–ss–pg, 13 years",
+      "definitionMatch": "same",
+      "note": "The paper prints the full angle n–ss–pg (printed 177.2); stored as 180 − 177.2 = 2.8, the departure from a straight line, SD unchanged, to match the catalogue's #5 (same points, + when A is ahead: the full angle is under 180° for a convex face). Age group 13 y: observed ages 12.3–13.8 (Table 4, p. 373), as completed years 12–13; men's mean age 13.1 ± 0.4 y, n 53 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m05_Convexity",
+      "sex": "M",
+      "ageBand": [
+        14,
+        17
+      ],
+      "mean": 1.2,
+      "sd": 5.9,
+      "n": 25,
+      "unit": "deg",
+      "source": "Table 5, p. 375, row n–ss–pg, 16 years",
+      "definitionMatch": "same",
+      "note": "The paper prints the full angle n–ss–pg (printed 178.8); stored as 180 − 178.8 = 1.2, the departure from a straight line, SD unchanged, to match the catalogue's #5 (same points, + when A is ahead: the full angle is under 180° for a convex face). Age group 16 y: observed ages 14.9–17.1 (Table 4, p. 373), as completed years 14–17; men's mean age 15.8 ± 0.5 y, n 25 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m05_Convexity",
+      "sex": "M",
+      "ageBand": [
+        18,
+        20
+      ],
+      "mean": 0.8,
+      "sd": 4.5,
+      "n": 16,
+      "unit": "deg",
+      "source": "Table 5, p. 375, row n–ss–pg, 19 years",
+      "definitionMatch": "same",
+      "note": "The paper prints the full angle n–ss–pg (printed 179.2); stored as 180 − 179.2 = 0.8, the departure from a straight line, SD unchanged, to match the catalogue's #5 (same points, + when A is ahead: the full angle is under 180° for a convex face). Age group 19 y: observed ages 18.4–20.5 (Table 4, p. 373), as completed years 18–20; men's mean age 19.5 ± 0.5 y, n 16 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m05_Convexity",
+      "sex": "M",
+      "ageBand": [
+        29,
+        32
+      ],
+      "mean": -1.2,
+      "sd": 7.7,
+      "n": 11,
+      "unit": "deg",
+      "source": "Table 5, p. 375, row n–ss–pg, 31 years",
+      "definitionMatch": "same",
+      "note": "The paper prints the full angle n–ss–pg (printed 181.2); stored as 180 − 181.2 = -1.2, the departure from a straight line, SD unchanged, to match the catalogue's #5 (same points, + when A is ahead: the full angle is under 180° for a convex face). Age group 31 y: observed ages 29.7–32.2 (Table 4, p. 373), as completed years 29–32; men's mean age 30.9 ± 0.6 y, n 11 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m05_Convexity",
+      "sex": "F",
+      "ageBand": [
+        4,
+        5
+      ],
+      "mean": 11.3,
+      "sd": 4.3,
+      "n": 27,
+      "unit": "deg",
+      "source": "Table 6, p. 376, row n–ss–pg, 5 years",
+      "definitionMatch": "same",
+      "note": "The paper prints the full angle n–ss–pg (printed 168.7); stored as 180 − 168.7 = 11.3, the departure from a straight line, SD unchanged, to match the catalogue's #5 (same points, + when A is ahead: the full angle is under 180° for a convex face). Age group 5 y: observed ages 4.2–5.8 (Table 4, p. 373), as completed years 4–5; women's mean age 4.9 ± 0.3 y, n 27 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m05_Convexity",
+      "sex": "F",
+      "ageBand": [
+        6,
+        8
+      ],
+      "mean": 6.4,
+      "sd": 5.6,
+      "n": 46,
+      "unit": "deg",
+      "source": "Table 6, p. 376, row n–ss–pg, 7 years",
+      "definitionMatch": "same",
+      "note": "The paper prints the full angle n–ss–pg (printed 173.6); stored as 180 − 173.6 = 6.4, the departure from a straight line, SD unchanged, to match the catalogue's #5 (same points, + when A is ahead: the full angle is under 180° for a convex face). Age group 7 y: observed ages 6.6–8.2 (Table 4, p. 373), as completed years 6–8; women's mean age 7.4 ± 0.4 y, n 46 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m05_Convexity",
+      "sex": "F",
+      "ageBand": [
+        9,
+        11
+      ],
+      "mean": 5.9,
+      "sd": 4.7,
+      "n": 56,
+      "unit": "deg",
+      "source": "Table 6, p. 376, row n–ss–pg, 10 years",
+      "definitionMatch": "same",
+      "note": "The paper prints the full angle n–ss–pg (printed 174.1); stored as 180 − 174.1 = 5.9, the departure from a straight line, SD unchanged, to match the catalogue's #5 (same points, + when A is ahead: the full angle is under 180° for a convex face). Age group 10 y: observed ages 9.5–11.2 (Table 4, p. 373), as completed years 9–11; women's mean age 10.4 ± 0.4 y, n 56 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m05_Convexity",
+      "sex": "F",
+      "ageBand": [
+        12,
+        13
+      ],
+      "mean": 3.8,
+      "sd": 4.4,
+      "n": 69,
+      "unit": "deg",
+      "source": "Table 6, p. 376, row n–ss–pg, 13 years",
+      "definitionMatch": "same",
+      "note": "The paper prints the full angle n–ss–pg (printed 176.2); stored as 180 − 176.2 = 3.8, the departure from a straight line, SD unchanged, to match the catalogue's #5 (same points, + when A is ahead: the full angle is under 180° for a convex face). Age group 13 y: observed ages 12.3–13.8 (Table 4, p. 373), as completed years 12–13; women's mean age 13.0 ± 0.4 y, n 69 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m05_Convexity",
+      "sex": "F",
+      "ageBand": [
+        14,
+        17
+      ],
+      "mean": 1.4,
+      "sd": 4.4,
+      "n": 30,
+      "unit": "deg",
+      "source": "Table 6, p. 376, row n–ss–pg, 16 years",
+      "definitionMatch": "same",
+      "note": "The paper prints the full angle n–ss–pg (printed 178.6); stored as 180 − 178.6 = 1.4, the departure from a straight line, SD unchanged, to match the catalogue's #5 (same points, + when A is ahead: the full angle is under 180° for a convex face). Age group 16 y: observed ages 14.9–17.1 (Table 4, p. 373), as completed years 14–17; women's mean age 15.8 ± 0.5 y, n 30 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m05_Convexity",
+      "sex": "F",
+      "ageBand": [
+        18,
+        20
+      ],
+      "mean": 0.5,
+      "sd": 4.5,
+      "n": 17,
+      "unit": "deg",
+      "source": "Table 6, p. 376, row n–ss–pg, 19 years",
+      "definitionMatch": "same",
+      "note": "The paper prints the full angle n–ss–pg (printed 179.5); stored as 180 − 179.5 = 0.5, the departure from a straight line, SD unchanged, to match the catalogue's #5 (same points, + when A is ahead: the full angle is under 180° for a convex face). Age group 19 y: observed ages 18.4–20.5 (Table 4, p. 373), as completed years 18–20; women's mean age 19.1 ± 0.6 y, n 17 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m05_Convexity",
+      "sex": "F",
+      "ageBand": [
+        29,
+        32
+      ],
+      "mean": -1.4,
+      "sd": 5.1,
+      "n": 19,
+      "unit": "deg",
+      "source": "Table 6, p. 376, row n–ss–pg, 31 years",
+      "definitionMatch": "same",
+      "note": "The paper prints the full angle n–ss–pg (printed 181.4); stored as 180 − 181.4 = -1.4, the departure from a straight line, SD unchanged, to match the catalogue's #5 (same points, + when A is ahead: the full angle is under 180° for a convex face). Age group 31 y: observed ages 29.7–32.2 (Table 4, p. 373), as completed years 29–32; women's mean age 31.1 ± 0.5 y, n 19 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m26_SNMxP",
+      "sex": "M",
+      "ageBand": [
+        4,
+        5
+      ],
+      "mean": 6.9,
+      "sd": 2.6,
+      "n": 20,
+      "unit": "deg",
+      "source": "Table 5, p. 375, row NL/NSL, 5 years",
+      "definitionMatch": "close",
+      "definitionNote": "NL/NSL: the nasal line NL runs through sp and pm (pterygomaxillare), not ANS-PNS; the catalogue's MxP is ANS-PNS.",
+      "note": "Age group 5 y: observed ages 4.2–5.8 (Table 4, p. 373), as completed years 4–5; men's mean age 5.1 ± 0.4 y, n 20 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m26_SNMxP",
+      "sex": "M",
+      "ageBand": [
+        6,
+        8
+      ],
+      "mean": 6.3,
+      "sd": 3.3,
+      "n": 37,
+      "unit": "deg",
+      "source": "Table 5, p. 375, row NL/NSL, 7 years",
+      "definitionMatch": "close",
+      "definitionNote": "NL/NSL: the nasal line NL runs through sp and pm (pterygomaxillare), not ANS-PNS; the catalogue's MxP is ANS-PNS.",
+      "note": "Age group 7 y: observed ages 6.6–8.2 (Table 4, p. 373), as completed years 6–8; men's mean age 7.4 ± 0.4 y, n 37 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m26_SNMxP",
+      "sex": "M",
+      "ageBand": [
+        9,
+        11
+      ],
+      "mean": 6.7,
+      "sd": 2.8,
+      "n": 43,
+      "unit": "deg",
+      "source": "Table 5, p. 375, row NL/NSL, 10 years",
+      "definitionMatch": "close",
+      "definitionNote": "NL/NSL: the nasal line NL runs through sp and pm (pterygomaxillare), not ANS-PNS; the catalogue's MxP is ANS-PNS.",
+      "note": "Age group 10 y: observed ages 9.5–11.2 (Table 4, p. 373), as completed years 9–11; men's mean age 10.4 ± 0.5 y, n 43 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m26_SNMxP",
+      "sex": "M",
+      "ageBand": [
+        12,
+        13
+      ],
+      "mean": 6.3,
+      "sd": 2.7,
+      "n": 53,
+      "unit": "deg",
+      "source": "Table 5, p. 375, row NL/NSL, 13 years",
+      "definitionMatch": "close",
+      "definitionNote": "NL/NSL: the nasal line NL runs through sp and pm (pterygomaxillare), not ANS-PNS; the catalogue's MxP is ANS-PNS.",
+      "note": "Age group 13 y: observed ages 12.3–13.8 (Table 4, p. 373), as completed years 12–13; men's mean age 13.1 ± 0.4 y, n 53 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m26_SNMxP",
+      "sex": "M",
+      "ageBand": [
+        14,
+        17
+      ],
+      "mean": 6.8,
+      "sd": 2.5,
+      "n": 25,
+      "unit": "deg",
+      "source": "Table 5, p. 375, row NL/NSL, 16 years",
+      "definitionMatch": "close",
+      "definitionNote": "NL/NSL: the nasal line NL runs through sp and pm (pterygomaxillare), not ANS-PNS; the catalogue's MxP is ANS-PNS.",
+      "note": "Age group 16 y: observed ages 14.9–17.1 (Table 4, p. 373), as completed years 14–17; men's mean age 15.8 ± 0.5 y, n 25 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m26_SNMxP",
+      "sex": "M",
+      "ageBand": [
+        18,
+        20
+      ],
+      "mean": 6.6,
+      "sd": 2.6,
+      "n": 16,
+      "unit": "deg",
+      "source": "Table 5, p. 375, row NL/NSL, 19 years",
+      "definitionMatch": "close",
+      "definitionNote": "NL/NSL: the nasal line NL runs through sp and pm (pterygomaxillare), not ANS-PNS; the catalogue's MxP is ANS-PNS.",
+      "note": "Age group 19 y: observed ages 18.4–20.5 (Table 4, p. 373), as completed years 18–20; men's mean age 19.5 ± 0.5 y, n 16 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m26_SNMxP",
+      "sex": "M",
+      "ageBand": [
+        29,
+        32
+      ],
+      "mean": 6.4,
+      "sd": 2.5,
+      "n": 11,
+      "unit": "deg",
+      "source": "Table 5, p. 375, row NL/NSL, 31 years",
+      "definitionMatch": "close",
+      "definitionNote": "NL/NSL: the nasal line NL runs through sp and pm (pterygomaxillare), not ANS-PNS; the catalogue's MxP is ANS-PNS.",
+      "note": "Age group 31 y: observed ages 29.7–32.2 (Table 4, p. 373), as completed years 29–32; men's mean age 30.9 ± 0.6 y, n 11 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m26_SNMxP",
+      "sex": "F",
+      "ageBand": [
+        4,
+        5
+      ],
+      "mean": 7.3,
+      "sd": 2.5,
+      "n": 27,
+      "unit": "deg",
+      "source": "Table 6, p. 376, row NL/NSL, 5 years",
+      "definitionMatch": "close",
+      "definitionNote": "NL/NSL: the nasal line NL runs through sp and pm (pterygomaxillare), not ANS-PNS; the catalogue's MxP is ANS-PNS.",
+      "note": "Age group 5 y: observed ages 4.2–5.8 (Table 4, p. 373), as completed years 4–5; women's mean age 4.9 ± 0.3 y, n 27 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m26_SNMxP",
+      "sex": "F",
+      "ageBand": [
+        6,
+        8
+      ],
+      "mean": 7.5,
+      "sd": 2.9,
+      "n": 46,
+      "unit": "deg",
+      "source": "Table 6, p. 376, row NL/NSL, 7 years",
+      "definitionMatch": "close",
+      "definitionNote": "NL/NSL: the nasal line NL runs through sp and pm (pterygomaxillare), not ANS-PNS; the catalogue's MxP is ANS-PNS.",
+      "note": "Age group 7 y: observed ages 6.6–8.2 (Table 4, p. 373), as completed years 6–8; women's mean age 7.4 ± 0.4 y, n 46 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m26_SNMxP",
+      "sex": "F",
+      "ageBand": [
+        9,
+        11
+      ],
+      "mean": 7.7,
+      "sd": 2.8,
+      "n": 56,
+      "unit": "deg",
+      "source": "Table 6, p. 376, row NL/NSL, 10 years",
+      "definitionMatch": "close",
+      "definitionNote": "NL/NSL: the nasal line NL runs through sp and pm (pterygomaxillare), not ANS-PNS; the catalogue's MxP is ANS-PNS.",
+      "note": "Age group 10 y: observed ages 9.5–11.2 (Table 4, p. 373), as completed years 9–11; women's mean age 10.4 ± 0.4 y, n 56 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m26_SNMxP",
+      "sex": "F",
+      "ageBand": [
+        12,
+        13
+      ],
+      "mean": 6.8,
+      "sd": 3.2,
+      "n": 69,
+      "unit": "deg",
+      "source": "Table 6, p. 376, row NL/NSL, 13 years",
+      "definitionMatch": "close",
+      "definitionNote": "NL/NSL: the nasal line NL runs through sp and pm (pterygomaxillare), not ANS-PNS; the catalogue's MxP is ANS-PNS.",
+      "note": "Age group 13 y: observed ages 12.3–13.8 (Table 4, p. 373), as completed years 12–13; women's mean age 13.0 ± 0.4 y, n 69 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m26_SNMxP",
+      "sex": "F",
+      "ageBand": [
+        14,
+        17
+      ],
+      "mean": 5.9,
+      "sd": 2.7,
+      "n": 30,
+      "unit": "deg",
+      "source": "Table 6, p. 376, row NL/NSL, 16 years",
+      "definitionMatch": "close",
+      "definitionNote": "NL/NSL: the nasal line NL runs through sp and pm (pterygomaxillare), not ANS-PNS; the catalogue's MxP is ANS-PNS.",
+      "note": "Age group 16 y: observed ages 14.9–17.1 (Table 4, p. 373), as completed years 14–17; women's mean age 15.8 ± 0.5 y, n 30 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m26_SNMxP",
+      "sex": "F",
+      "ageBand": [
+        18,
+        20
+      ],
+      "mean": 6,
+      "sd": 2.6,
+      "n": 17,
+      "unit": "deg",
+      "source": "Table 6, p. 376, row NL/NSL, 19 years",
+      "definitionMatch": "close",
+      "definitionNote": "NL/NSL: the nasal line NL runs through sp and pm (pterygomaxillare), not ANS-PNS; the catalogue's MxP is ANS-PNS.",
+      "note": "Age group 19 y: observed ages 18.4–20.5 (Table 4, p. 373), as completed years 18–20; women's mean age 19.1 ± 0.6 y, n 17 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m26_SNMxP",
+      "sex": "F",
+      "ageBand": [
+        29,
+        32
+      ],
+      "mean": 5.3,
+      "sd": 2.7,
+      "n": 19,
+      "unit": "deg",
+      "source": "Table 6, p. 376, row NL/NSL, 31 years",
+      "definitionMatch": "close",
+      "definitionNote": "NL/NSL: the nasal line NL runs through sp and pm (pterygomaxillare), not ANS-PNS; the catalogue's MxP is ANS-PNS.",
+      "note": "Age group 31 y: observed ages 29.7–32.2 (Table 4, p. 373), as completed years 29–32; women's mean age 31.1 ± 0.5 y, n 19 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m90_SNMP_ABO",
+      "sex": "M",
+      "ageBand": [
+        4,
+        5
+      ],
+      "mean": 35.2,
+      "sd": 4.1,
+      "n": 20,
+      "unit": "deg",
+      "source": "Table 5, p. 375, row ML/NSL, 5 years",
+      "definitionMatch": "close",
+      "definitionNote": "ML/NSL: Björk's mandibular line ML is the lower-border tangent through gn (Fig 3); the catalogue's #90 uses constructed gonion to menton. The catalogue has no SN-to-tangent id.",
+      "note": "Age group 5 y: observed ages 4.2–5.8 (Table 4, p. 373), as completed years 4–5; men's mean age 5.1 ± 0.4 y, n 20 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m90_SNMP_ABO",
+      "sex": "M",
+      "ageBand": [
+        6,
+        8
+      ],
+      "mean": 33.5,
+      "sd": 5.3,
+      "n": 37,
+      "unit": "deg",
+      "source": "Table 5, p. 375, row ML/NSL, 7 years",
+      "definitionMatch": "close",
+      "definitionNote": "ML/NSL: Björk's mandibular line ML is the lower-border tangent through gn (Fig 3); the catalogue's #90 uses constructed gonion to menton. The catalogue has no SN-to-tangent id.",
+      "note": "Age group 7 y: observed ages 6.6–8.2 (Table 4, p. 373), as completed years 6–8; men's mean age 7.4 ± 0.4 y, n 37 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m90_SNMP_ABO",
+      "sex": "M",
+      "ageBand": [
+        9,
+        11
+      ],
+      "mean": 32.2,
+      "sd": 5.3,
+      "n": 43,
+      "unit": "deg",
+      "source": "Table 5, p. 375, row ML/NSL, 10 years",
+      "definitionMatch": "close",
+      "definitionNote": "ML/NSL: Björk's mandibular line ML is the lower-border tangent through gn (Fig 3); the catalogue's #90 uses constructed gonion to menton. The catalogue has no SN-to-tangent id.",
+      "note": "Age group 10 y: observed ages 9.5–11.2 (Table 4, p. 373), as completed years 9–11; men's mean age 10.4 ± 0.5 y, n 43 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m90_SNMP_ABO",
+      "sex": "M",
+      "ageBand": [
+        12,
+        13
+      ],
+      "mean": 30.7,
+      "sd": 4.3,
+      "n": 53,
+      "unit": "deg",
+      "source": "Table 5, p. 375, row ML/NSL, 13 years",
+      "definitionMatch": "close",
+      "definitionNote": "ML/NSL: Björk's mandibular line ML is the lower-border tangent through gn (Fig 3); the catalogue's #90 uses constructed gonion to menton. The catalogue has no SN-to-tangent id.",
+      "note": "Age group 13 y: observed ages 12.3–13.8 (Table 4, p. 373), as completed years 12–13; men's mean age 13.1 ± 0.4 y, n 53 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m90_SNMP_ABO",
+      "sex": "M",
+      "ageBand": [
+        14,
+        17
+      ],
+      "mean": 28.6,
+      "sd": 3.9,
+      "n": 25,
+      "unit": "deg",
+      "source": "Table 5, p. 375, row ML/NSL, 16 years",
+      "definitionMatch": "close",
+      "definitionNote": "ML/NSL: Björk's mandibular line ML is the lower-border tangent through gn (Fig 3); the catalogue's #90 uses constructed gonion to menton. The catalogue has no SN-to-tangent id.",
+      "note": "Age group 16 y: observed ages 14.9–17.1 (Table 4, p. 373), as completed years 14–17; men's mean age 15.8 ± 0.5 y, n 25 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m90_SNMP_ABO",
+      "sex": "M",
+      "ageBand": [
+        18,
+        20
+      ],
+      "mean": 28.8,
+      "sd": 4.6,
+      "n": 16,
+      "unit": "deg",
+      "source": "Table 5, p. 375, row ML/NSL, 19 years",
+      "definitionMatch": "close",
+      "definitionNote": "ML/NSL: Björk's mandibular line ML is the lower-border tangent through gn (Fig 3); the catalogue's #90 uses constructed gonion to menton. The catalogue has no SN-to-tangent id.",
+      "note": "Age group 19 y: observed ages 18.4–20.5 (Table 4, p. 373), as completed years 18–20; men's mean age 19.5 ± 0.5 y, n 16 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m90_SNMP_ABO",
+      "sex": "M",
+      "ageBand": [
+        29,
+        32
+      ],
+      "mean": 27.8,
+      "sd": 5.1,
+      "n": 11,
+      "unit": "deg",
+      "source": "Table 5, p. 375, row ML/NSL, 31 years",
+      "definitionMatch": "close",
+      "definitionNote": "ML/NSL: Björk's mandibular line ML is the lower-border tangent through gn (Fig 3); the catalogue's #90 uses constructed gonion to menton. The catalogue has no SN-to-tangent id.",
+      "note": "Age group 31 y: observed ages 29.7–32.2 (Table 4, p. 373), as completed years 29–32; men's mean age 30.9 ± 0.6 y, n 11 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m90_SNMP_ABO",
+      "sex": "F",
+      "ageBand": [
+        4,
+        5
+      ],
+      "mean": 34.2,
+      "sd": 4,
+      "n": 27,
+      "unit": "deg",
+      "source": "Table 6, p. 376, row ML/NSL, 5 years",
+      "definitionMatch": "close",
+      "definitionNote": "ML/NSL: Björk's mandibular line ML is the lower-border tangent through gn (Fig 3); the catalogue's #90 uses constructed gonion to menton. The catalogue has no SN-to-tangent id.",
+      "note": "Age group 5 y: observed ages 4.2–5.8 (Table 4, p. 373), as completed years 4–5; women's mean age 4.9 ± 0.3 y, n 27 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m90_SNMP_ABO",
+      "sex": "F",
+      "ageBand": [
+        6,
+        8
+      ],
+      "mean": 32.8,
+      "sd": 4.2,
+      "n": 46,
+      "unit": "deg",
+      "source": "Table 6, p. 376, row ML/NSL, 7 years",
+      "definitionMatch": "close",
+      "definitionNote": "ML/NSL: Björk's mandibular line ML is the lower-border tangent through gn (Fig 3); the catalogue's #90 uses constructed gonion to menton. The catalogue has no SN-to-tangent id.",
+      "note": "Age group 7 y: observed ages 6.6–8.2 (Table 4, p. 373), as completed years 6–8; women's mean age 7.4 ± 0.4 y, n 46 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m90_SNMP_ABO",
+      "sex": "F",
+      "ageBand": [
+        9,
+        11
+      ],
+      "mean": 31.7,
+      "sd": 4.2,
+      "n": 56,
+      "unit": "deg",
+      "source": "Table 6, p. 376, row ML/NSL, 10 years",
+      "definitionMatch": "close",
+      "definitionNote": "ML/NSL: Björk's mandibular line ML is the lower-border tangent through gn (Fig 3); the catalogue's #90 uses constructed gonion to menton. The catalogue has no SN-to-tangent id.",
+      "note": "Age group 10 y: observed ages 9.5–11.2 (Table 4, p. 373), as completed years 9–11; women's mean age 10.4 ± 0.4 y, n 56 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m90_SNMP_ABO",
+      "sex": "F",
+      "ageBand": [
+        12,
+        13
+      ],
+      "mean": 29.9,
+      "sd": 4.3,
+      "n": 69,
+      "unit": "deg",
+      "source": "Table 6, p. 376, row ML/NSL, 13 years",
+      "definitionMatch": "close",
+      "definitionNote": "ML/NSL: Björk's mandibular line ML is the lower-border tangent through gn (Fig 3); the catalogue's #90 uses constructed gonion to menton. The catalogue has no SN-to-tangent id.",
+      "note": "Age group 13 y: observed ages 12.3–13.8 (Table 4, p. 373), as completed years 12–13; women's mean age 13.0 ± 0.4 y, n 69 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m90_SNMP_ABO",
+      "sex": "F",
+      "ageBand": [
+        14,
+        17
+      ],
+      "mean": 28.2,
+      "sd": 5.4,
+      "n": 30,
+      "unit": "deg",
+      "source": "Table 6, p. 376, row ML/NSL, 16 years",
+      "definitionMatch": "close",
+      "definitionNote": "ML/NSL: Björk's mandibular line ML is the lower-border tangent through gn (Fig 3); the catalogue's #90 uses constructed gonion to menton. The catalogue has no SN-to-tangent id.",
+      "note": "Age group 16 y: observed ages 14.9–17.1 (Table 4, p. 373), as completed years 14–17; women's mean age 15.8 ± 0.5 y, n 30 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m90_SNMP_ABO",
+      "sex": "F",
+      "ageBand": [
+        18,
+        20
+      ],
+      "mean": 28.3,
+      "sd": 4.3,
+      "n": 17,
+      "unit": "deg",
+      "source": "Table 6, p. 376, row ML/NSL, 19 years",
+      "definitionMatch": "close",
+      "definitionNote": "ML/NSL: Björk's mandibular line ML is the lower-border tangent through gn (Fig 3); the catalogue's #90 uses constructed gonion to menton. The catalogue has no SN-to-tangent id.",
+      "note": "Age group 19 y: observed ages 18.4–20.5 (Table 4, p. 373), as completed years 18–20; women's mean age 19.1 ± 0.6 y, n 17 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m90_SNMP_ABO",
+      "sex": "F",
+      "ageBand": [
+        29,
+        32
+      ],
+      "mean": 26.4,
+      "sd": 4.8,
+      "n": 19,
+      "unit": "deg",
+      "source": "Table 6, p. 376, row ML/NSL, 31 years",
+      "definitionMatch": "close",
+      "definitionNote": "ML/NSL: Björk's mandibular line ML is the lower-border tangent through gn (Fig 3); the catalogue's #90 uses constructed gonion to menton. The catalogue has no SN-to-tangent id.",
+      "note": "Age group 31 y: observed ages 29.7–32.2 (Table 4, p. 373), as completed years 29–32; women's mean age 31.1 ± 0.5 y, n 19 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m25_MMPA",
+      "sex": "M",
+      "ageBand": [
+        4,
+        5
+      ],
+      "mean": 28.3,
+      "sd": 3.3,
+      "n": 20,
+      "unit": "deg",
+      "source": "Table 5, p. 375, row ML/NL, 5 years",
+      "definitionMatch": "close",
+      "definitionNote": "ML/NL: Björk's mandibular line ML is the lower-border tangent through gn (Fig 3), and the nasal line NL runs through sp and pm (pterygomaxillare), not ANS-PNS; the catalogue's MMPA is Go-Me to ANS-PNS.",
+      "note": "Age group 5 y: observed ages 4.2–5.8 (Table 4, p. 373), as completed years 4–5; men's mean age 5.1 ± 0.4 y, n 20 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m25_MMPA",
+      "sex": "M",
+      "ageBand": [
+        6,
+        8
+      ],
+      "mean": 27.3,
+      "sd": 4.9,
+      "n": 37,
+      "unit": "deg",
+      "source": "Table 5, p. 375, row ML/NL, 7 years",
+      "definitionMatch": "close",
+      "definitionNote": "ML/NL: Björk's mandibular line ML is the lower-border tangent through gn (Fig 3), and the nasal line NL runs through sp and pm (pterygomaxillare), not ANS-PNS; the catalogue's MMPA is Go-Me to ANS-PNS.",
+      "note": "Age group 7 y: observed ages 6.6–8.2 (Table 4, p. 373), as completed years 6–8; men's mean age 7.4 ± 0.4 y, n 37 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m25_MMPA",
+      "sex": "M",
+      "ageBand": [
+        9,
+        11
+      ],
+      "mean": 25.5,
+      "sd": 4.9,
+      "n": 43,
+      "unit": "deg",
+      "source": "Table 5, p. 375, row ML/NL, 10 years",
+      "definitionMatch": "close",
+      "definitionNote": "ML/NL: Björk's mandibular line ML is the lower-border tangent through gn (Fig 3), and the nasal line NL runs through sp and pm (pterygomaxillare), not ANS-PNS; the catalogue's MMPA is Go-Me to ANS-PNS.",
+      "note": "Age group 10 y: observed ages 9.5–11.2 (Table 4, p. 373), as completed years 9–11; men's mean age 10.4 ± 0.5 y, n 43 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m25_MMPA",
+      "sex": "M",
+      "ageBand": [
+        12,
+        13
+      ],
+      "mean": 24.4,
+      "sd": 4.5,
+      "n": 53,
+      "unit": "deg",
+      "source": "Table 5, p. 375, row ML/NL, 13 years",
+      "definitionMatch": "close",
+      "definitionNote": "ML/NL: Björk's mandibular line ML is the lower-border tangent through gn (Fig 3), and the nasal line NL runs through sp and pm (pterygomaxillare), not ANS-PNS; the catalogue's MMPA is Go-Me to ANS-PNS.",
+      "note": "Age group 13 y: observed ages 12.3–13.8 (Table 4, p. 373), as completed years 12–13; men's mean age 13.1 ± 0.4 y, n 53 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m25_MMPA",
+      "sex": "M",
+      "ageBand": [
+        14,
+        17
+      ],
+      "mean": 21.9,
+      "sd": 4.5,
+      "n": 25,
+      "unit": "deg",
+      "source": "Table 5, p. 375, row ML/NL, 16 years",
+      "definitionMatch": "close",
+      "definitionNote": "ML/NL: Björk's mandibular line ML is the lower-border tangent through gn (Fig 3), and the nasal line NL runs through sp and pm (pterygomaxillare), not ANS-PNS; the catalogue's MMPA is Go-Me to ANS-PNS.",
+      "note": "Age group 16 y: observed ages 14.9–17.1 (Table 4, p. 373), as completed years 14–17; men's mean age 15.8 ± 0.5 y, n 25 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m25_MMPA",
+      "sex": "M",
+      "ageBand": [
+        18,
+        20
+      ],
+      "mean": 22.2,
+      "sd": 5.7,
+      "n": 16,
+      "unit": "deg",
+      "source": "Table 5, p. 375, row ML/NL, 19 years",
+      "definitionMatch": "close",
+      "definitionNote": "ML/NL: Björk's mandibular line ML is the lower-border tangent through gn (Fig 3), and the nasal line NL runs through sp and pm (pterygomaxillare), not ANS-PNS; the catalogue's MMPA is Go-Me to ANS-PNS.",
+      "note": "Age group 19 y: observed ages 18.4–20.5 (Table 4, p. 373), as completed years 18–20; men's mean age 19.5 ± 0.5 y, n 16 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m25_MMPA",
+      "sex": "M",
+      "ageBand": [
+        29,
+        32
+      ],
+      "mean": 21.3,
+      "sd": 5.9,
+      "n": 11,
+      "unit": "deg",
+      "source": "Table 5, p. 375, row ML/NL, 31 years",
+      "definitionMatch": "close",
+      "definitionNote": "ML/NL: Björk's mandibular line ML is the lower-border tangent through gn (Fig 3), and the nasal line NL runs through sp and pm (pterygomaxillare), not ANS-PNS; the catalogue's MMPA is Go-Me to ANS-PNS.",
+      "note": "Age group 31 y: observed ages 29.7–32.2 (Table 4, p. 373), as completed years 29–32; men's mean age 30.9 ± 0.6 y, n 11 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m25_MMPA",
+      "sex": "F",
+      "ageBand": [
+        4,
+        5
+      ],
+      "mean": 26.8,
+      "sd": 4,
+      "n": 27,
+      "unit": "deg",
+      "source": "Table 6, p. 376, row ML/NL, 5 years",
+      "definitionMatch": "close",
+      "definitionNote": "ML/NL: Björk's mandibular line ML is the lower-border tangent through gn (Fig 3), and the nasal line NL runs through sp and pm (pterygomaxillare), not ANS-PNS; the catalogue's MMPA is Go-Me to ANS-PNS.",
+      "note": "Age group 5 y: observed ages 4.2–5.8 (Table 4, p. 373), as completed years 4–5; women's mean age 4.9 ± 0.3 y, n 27 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m25_MMPA",
+      "sex": "F",
+      "ageBand": [
+        6,
+        8
+      ],
+      "mean": 25.2,
+      "sd": 4.6,
+      "n": 46,
+      "unit": "deg",
+      "source": "Table 6, p. 376, row ML/NL, 7 years",
+      "definitionMatch": "close",
+      "definitionNote": "ML/NL: Björk's mandibular line ML is the lower-border tangent through gn (Fig 3), and the nasal line NL runs through sp and pm (pterygomaxillare), not ANS-PNS; the catalogue's MMPA is Go-Me to ANS-PNS.",
+      "note": "Age group 7 y: observed ages 6.6–8.2 (Table 4, p. 373), as completed years 6–8; women's mean age 7.4 ± 0.4 y, n 46 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m25_MMPA",
+      "sex": "F",
+      "ageBand": [
+        9,
+        11
+      ],
+      "mean": 24,
+      "sd": 4.2,
+      "n": 56,
+      "unit": "deg",
+      "source": "Table 6, p. 376, row ML/NL, 10 years",
+      "definitionMatch": "close",
+      "definitionNote": "ML/NL: Björk's mandibular line ML is the lower-border tangent through gn (Fig 3), and the nasal line NL runs through sp and pm (pterygomaxillare), not ANS-PNS; the catalogue's MMPA is Go-Me to ANS-PNS.",
+      "note": "Age group 10 y: observed ages 9.5–11.2 (Table 4, p. 373), as completed years 9–11; women's mean age 10.4 ± 0.4 y, n 56 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m25_MMPA",
+      "sex": "F",
+      "ageBand": [
+        12,
+        13
+      ],
+      "mean": 23.1,
+      "sd": 4.4,
+      "n": 69,
+      "unit": "deg",
+      "source": "Table 6, p. 376, row ML/NL, 13 years",
+      "definitionMatch": "close",
+      "definitionNote": "ML/NL: Björk's mandibular line ML is the lower-border tangent through gn (Fig 3), and the nasal line NL runs through sp and pm (pterygomaxillare), not ANS-PNS; the catalogue's MMPA is Go-Me to ANS-PNS.",
+      "note": "Age group 13 y: observed ages 12.3–13.8 (Table 4, p. 373), as completed years 12–13; women's mean age 13.0 ± 0.4 y, n 69 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m25_MMPA",
+      "sex": "F",
+      "ageBand": [
+        14,
+        17
+      ],
+      "mean": 22.3,
+      "sd": 5.1,
+      "n": 30,
+      "unit": "deg",
+      "source": "Table 6, p. 376, row ML/NL, 16 years",
+      "definitionMatch": "close",
+      "definitionNote": "ML/NL: Björk's mandibular line ML is the lower-border tangent through gn (Fig 3), and the nasal line NL runs through sp and pm (pterygomaxillare), not ANS-PNS; the catalogue's MMPA is Go-Me to ANS-PNS.",
+      "note": "Age group 16 y: observed ages 14.9–17.1 (Table 4, p. 373), as completed years 14–17; women's mean age 15.8 ± 0.5 y, n 30 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m25_MMPA",
+      "sex": "F",
+      "ageBand": [
+        18,
+        20
+      ],
+      "mean": 21.3,
+      "sd": 4.2,
+      "n": 17,
+      "unit": "deg",
+      "source": "Table 6, p. 376, row ML/NL, 19 years",
+      "definitionMatch": "close",
+      "definitionNote": "ML/NL: Björk's mandibular line ML is the lower-border tangent through gn (Fig 3), and the nasal line NL runs through sp and pm (pterygomaxillare), not ANS-PNS; the catalogue's MMPA is Go-Me to ANS-PNS.",
+      "note": "Age group 19 y: observed ages 18.4–20.5 (Table 4, p. 373), as completed years 18–20; women's mean age 19.1 ± 0.6 y, n 17 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m25_MMPA",
+      "sex": "F",
+      "ageBand": [
+        29,
+        32
+      ],
+      "mean": 21.1,
+      "sd": 4.9,
+      "n": 19,
+      "unit": "deg",
+      "source": "Table 6, p. 376, row ML/NL, 31 years",
+      "definitionMatch": "close",
+      "definitionNote": "ML/NL: Björk's mandibular line ML is the lower-border tangent through gn (Fig 3), and the nasal line NL runs through sp and pm (pterygomaxillare), not ANS-PNS; the catalogue's MMPA is Go-Me to ANS-PNS.",
+      "note": "Age group 31 y: observed ages 29.7–32.2 (Table 4, p. 373), as completed years 29–32; women's mean age 31.1 ± 0.5 y, n 19 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m36_Gonial",
+      "sex": "M",
+      "ageBand": [
+        4,
+        5
+      ],
+      "mean": 132.1,
+      "sd": 2.9,
+      "n": 20,
+      "unit": "deg",
+      "source": "Table 5, p. 375, row RL/ML, 5 years",
+      "definitionMatch": "close",
+      "definitionNote": "RL/ML: the angle between the ramus line and the mandibular tangent, meeting at the constructed point tgo (ML ∩ RL); the catalogue's gonial angle is Ar-Go-Me at the AI's anatomical gonion.",
+      "note": "Age group 5 y: observed ages 4.2–5.8 (Table 4, p. 373), as completed years 4–5; men's mean age 5.1 ± 0.4 y, n 20 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m36_Gonial",
+      "sex": "M",
+      "ageBand": [
+        6,
+        8
+      ],
+      "mean": 128.4,
+      "sd": 4.6,
+      "n": 37,
+      "unit": "deg",
+      "source": "Table 5, p. 375, row RL/ML, 7 years",
+      "definitionMatch": "close",
+      "definitionNote": "RL/ML: the angle between the ramus line and the mandibular tangent, meeting at the constructed point tgo (ML ∩ RL); the catalogue's gonial angle is Ar-Go-Me at the AI's anatomical gonion.",
+      "note": "Age group 7 y: observed ages 6.6–8.2 (Table 4, p. 373), as completed years 6–8; men's mean age 7.4 ± 0.4 y, n 37 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m36_Gonial",
+      "sex": "M",
+      "ageBand": [
+        9,
+        11
+      ],
+      "mean": 126.6,
+      "sd": 4.6,
+      "n": 43,
+      "unit": "deg",
+      "source": "Table 5, p. 375, row RL/ML, 10 years",
+      "definitionMatch": "close",
+      "definitionNote": "RL/ML: the angle between the ramus line and the mandibular tangent, meeting at the constructed point tgo (ML ∩ RL); the catalogue's gonial angle is Ar-Go-Me at the AI's anatomical gonion.",
+      "note": "Age group 10 y: observed ages 9.5–11.2 (Table 4, p. 373), as completed years 9–11; men's mean age 10.4 ± 0.5 y, n 43 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m36_Gonial",
+      "sex": "M",
+      "ageBand": [
+        12,
+        13
+      ],
+      "mean": 125.1,
+      "sd": 4.2,
+      "n": 53,
+      "unit": "deg",
+      "source": "Table 5, p. 375, row RL/ML, 13 years",
+      "definitionMatch": "close",
+      "definitionNote": "RL/ML: the angle between the ramus line and the mandibular tangent, meeting at the constructed point tgo (ML ∩ RL); the catalogue's gonial angle is Ar-Go-Me at the AI's anatomical gonion.",
+      "note": "Age group 13 y: observed ages 12.3–13.8 (Table 4, p. 373), as completed years 12–13; men's mean age 13.1 ± 0.4 y, n 53 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m36_Gonial",
+      "sex": "M",
+      "ageBand": [
+        14,
+        17
+      ],
+      "mean": 121.4,
+      "sd": 4.9,
+      "n": 25,
+      "unit": "deg",
+      "source": "Table 5, p. 375, row RL/ML, 16 years",
+      "definitionMatch": "close",
+      "definitionNote": "RL/ML: the angle between the ramus line and the mandibular tangent, meeting at the constructed point tgo (ML ∩ RL); the catalogue's gonial angle is Ar-Go-Me at the AI's anatomical gonion.",
+      "note": "Age group 16 y: observed ages 14.9–17.1 (Table 4, p. 373), as completed years 14–17; men's mean age 15.8 ± 0.5 y, n 25 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m36_Gonial",
+      "sex": "M",
+      "ageBand": [
+        18,
+        20
+      ],
+      "mean": 121,
+      "sd": 3.8,
+      "n": 16,
+      "unit": "deg",
+      "source": "Table 5, p. 375, row RL/ML, 19 years",
+      "definitionMatch": "close",
+      "definitionNote": "RL/ML: the angle between the ramus line and the mandibular tangent, meeting at the constructed point tgo (ML ∩ RL); the catalogue's gonial angle is Ar-Go-Me at the AI's anatomical gonion.",
+      "note": "Age group 19 y: observed ages 18.4–20.5 (Table 4, p. 373), as completed years 18–20; men's mean age 19.5 ± 0.5 y, n 16 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m36_Gonial",
+      "sex": "M",
+      "ageBand": [
+        29,
+        32
+      ],
+      "mean": 120.2,
+      "sd": 5.9,
+      "n": 11,
+      "unit": "deg",
+      "source": "Table 5, p. 375, row RL/ML, 31 years",
+      "definitionMatch": "close",
+      "definitionNote": "RL/ML: the angle between the ramus line and the mandibular tangent, meeting at the constructed point tgo (ML ∩ RL); the catalogue's gonial angle is Ar-Go-Me at the AI's anatomical gonion.",
+      "note": "Age group 31 y: observed ages 29.7–32.2 (Table 4, p. 373), as completed years 29–32; men's mean age 30.9 ± 0.6 y, n 11 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m36_Gonial",
+      "sex": "F",
+      "ageBand": [
+        4,
+        5
+      ],
+      "mean": 132.3,
+      "sd": 4.9,
+      "n": 27,
+      "unit": "deg",
+      "source": "Table 6, p. 376, row RL/ML, 5 years",
+      "definitionMatch": "close",
+      "definitionNote": "RL/ML: the angle between the ramus line and the mandibular tangent, meeting at the constructed point tgo (ML ∩ RL); the catalogue's gonial angle is Ar-Go-Me at the AI's anatomical gonion.",
+      "note": "Age group 5 y: observed ages 4.2–5.8 (Table 4, p. 373), as completed years 4–5; women's mean age 4.9 ± 0.3 y, n 27 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m36_Gonial",
+      "sex": "F",
+      "ageBand": [
+        6,
+        8
+      ],
+      "mean": 127.4,
+      "sd": 5.7,
+      "n": 46,
+      "unit": "deg",
+      "source": "Table 6, p. 376, row RL/ML, 7 years",
+      "definitionMatch": "close",
+      "definitionNote": "RL/ML: the angle between the ramus line and the mandibular tangent, meeting at the constructed point tgo (ML ∩ RL); the catalogue's gonial angle is Ar-Go-Me at the AI's anatomical gonion.",
+      "note": "Age group 7 y: observed ages 6.6–8.2 (Table 4, p. 373), as completed years 6–8; women's mean age 7.4 ± 0.4 y, n 46 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m36_Gonial",
+      "sex": "F",
+      "ageBand": [
+        9,
+        11
+      ],
+      "mean": 125.4,
+      "sd": 5.4,
+      "n": 56,
+      "unit": "deg",
+      "source": "Table 6, p. 376, row RL/ML, 10 years",
+      "definitionMatch": "close",
+      "definitionNote": "RL/ML: the angle between the ramus line and the mandibular tangent, meeting at the constructed point tgo (ML ∩ RL); the catalogue's gonial angle is Ar-Go-Me at the AI's anatomical gonion.",
+      "note": "Age group 10 y: observed ages 9.5–11.2 (Table 4, p. 373), as completed years 9–11; women's mean age 10.4 ± 0.4 y, n 56 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m36_Gonial",
+      "sex": "F",
+      "ageBand": [
+        12,
+        13
+      ],
+      "mean": 124.5,
+      "sd": 5.1,
+      "n": 69,
+      "unit": "deg",
+      "source": "Table 6, p. 376, row RL/ML, 13 years",
+      "definitionMatch": "close",
+      "definitionNote": "RL/ML: the angle between the ramus line and the mandibular tangent, meeting at the constructed point tgo (ML ∩ RL); the catalogue's gonial angle is Ar-Go-Me at the AI's anatomical gonion.",
+      "note": "Age group 13 y: observed ages 12.3–13.8 (Table 4, p. 373), as completed years 12–13; women's mean age 13.0 ± 0.4 y, n 69 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m36_Gonial",
+      "sex": "F",
+      "ageBand": [
+        14,
+        17
+      ],
+      "mean": 121.6,
+      "sd": 6.3,
+      "n": 30,
+      "unit": "deg",
+      "source": "Table 6, p. 376, row RL/ML, 16 years",
+      "definitionMatch": "close",
+      "definitionNote": "RL/ML: the angle between the ramus line and the mandibular tangent, meeting at the constructed point tgo (ML ∩ RL); the catalogue's gonial angle is Ar-Go-Me at the AI's anatomical gonion.",
+      "note": "Age group 16 y: observed ages 14.9–17.1 (Table 4, p. 373), as completed years 14–17; women's mean age 15.8 ± 0.5 y, n 30 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m36_Gonial",
+      "sex": "F",
+      "ageBand": [
+        18,
+        20
+      ],
+      "mean": 120.8,
+      "sd": 3.1,
+      "n": 17,
+      "unit": "deg",
+      "source": "Table 6, p. 376, row RL/ML, 19 years",
+      "definitionMatch": "close",
+      "definitionNote": "RL/ML: the angle between the ramus line and the mandibular tangent, meeting at the constructed point tgo (ML ∩ RL); the catalogue's gonial angle is Ar-Go-Me at the AI's anatomical gonion.",
+      "note": "Age group 19 y: observed ages 18.4–20.5 (Table 4, p. 373), as completed years 18–20; women's mean age 19.1 ± 0.6 y, n 17 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m36_Gonial",
+      "sex": "F",
+      "ageBand": [
+        29,
+        32
+      ],
+      "mean": 117.3,
+      "sd": 5.6,
+      "n": 19,
+      "unit": "deg",
+      "source": "Table 6, p. 376, row RL/ML, 31 years",
+      "definitionMatch": "close",
+      "definitionNote": "RL/ML: the angle between the ramus line and the mandibular tangent, meeting at the constructed point tgo (ML ∩ RL); the catalogue's gonial angle is Ar-Go-Me at the AI's anatomical gonion.",
+      "note": "Age group 31 y: observed ages 29.7–32.2 (Table 4, p. 373), as completed years 29–32; women's mean age 31.1 ± 0.5 y, n 19 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m35_Articular",
+      "sex": "M",
+      "ageBand": [
+        4,
+        5
+      ],
+      "mean": 141.1,
+      "sd": 4.8,
+      "n": 20,
+      "unit": "deg",
+      "source": "Table 5, p. 375, row s–ar–tgo, 5 years",
+      "definitionMatch": "close",
+      "definitionNote": "s–ar–tgo: tgo is constructed (the intersection of the mandibular and ramus lines), not the AI's anatomical gonion.",
+      "note": "Age group 5 y: observed ages 4.2–5.8 (Table 4, p. 373), as completed years 4–5; men's mean age 5.1 ± 0.4 y, n 20 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m35_Articular",
+      "sex": "M",
+      "ageBand": [
+        6,
+        8
+      ],
+      "mean": 142.7,
+      "sd": 5.8,
+      "n": 37,
+      "unit": "deg",
+      "source": "Table 5, p. 375, row s–ar–tgo, 7 years",
+      "definitionMatch": "close",
+      "definitionNote": "s–ar–tgo: tgo is constructed (the intersection of the mandibular and ramus lines), not the AI's anatomical gonion.",
+      "note": "Age group 7 y: observed ages 6.6–8.2 (Table 4, p. 373), as completed years 6–8; men's mean age 7.4 ± 0.4 y, n 37 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m35_Articular",
+      "sex": "M",
+      "ageBand": [
+        9,
+        11
+      ],
+      "mean": 143.5,
+      "sd": 5.8,
+      "n": 43,
+      "unit": "deg",
+      "source": "Table 5, p. 375, row s–ar–tgo, 10 years",
+      "definitionMatch": "close",
+      "definitionNote": "s–ar–tgo: tgo is constructed (the intersection of the mandibular and ramus lines), not the AI's anatomical gonion.",
+      "note": "Age group 10 y: observed ages 9.5–11.2 (Table 4, p. 373), as completed years 9–11; men's mean age 10.4 ± 0.5 y, n 43 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m35_Articular",
+      "sex": "M",
+      "ageBand": [
+        12,
+        13
+      ],
+      "mean": 143.7,
+      "sd": 6.1,
+      "n": 53,
+      "unit": "deg",
+      "source": "Table 5, p. 375, row s–ar–tgo, 13 years",
+      "definitionMatch": "close",
+      "definitionNote": "s–ar–tgo: tgo is constructed (the intersection of the mandibular and ramus lines), not the AI's anatomical gonion.",
+      "note": "Age group 13 y: observed ages 12.3–13.8 (Table 4, p. 373), as completed years 12–13; men's mean age 13.1 ± 0.4 y, n 53 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m35_Articular",
+      "sex": "M",
+      "ageBand": [
+        14,
+        17
+      ],
+      "mean": 144.9,
+      "sd": 5.9,
+      "n": 25,
+      "unit": "deg",
+      "source": "Table 5, p. 375, row s–ar–tgo, 16 years",
+      "definitionMatch": "close",
+      "definitionNote": "s–ar–tgo: tgo is constructed (the intersection of the mandibular and ramus lines), not the AI's anatomical gonion.",
+      "note": "Age group 16 y: observed ages 14.9–17.1 (Table 4, p. 373), as completed years 14–17; men's mean age 15.8 ± 0.5 y, n 25 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m35_Articular",
+      "sex": "M",
+      "ageBand": [
+        18,
+        20
+      ],
+      "mean": 145.5,
+      "sd": 6.5,
+      "n": 16,
+      "unit": "deg",
+      "source": "Table 5, p. 375, row s–ar–tgo, 19 years",
+      "definitionMatch": "close",
+      "definitionNote": "s–ar–tgo: tgo is constructed (the intersection of the mandibular and ramus lines), not the AI's anatomical gonion.",
+      "note": "Age group 19 y: observed ages 18.4–20.5 (Table 4, p. 373), as completed years 18–20; men's mean age 19.5 ± 0.5 y, n 16 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m35_Articular",
+      "sex": "M",
+      "ageBand": [
+        29,
+        32
+      ],
+      "mean": 146.8,
+      "sd": 6.5,
+      "n": 11,
+      "unit": "deg",
+      "source": "Table 5, p. 375, row s–ar–tgo, 31 years",
+      "definitionMatch": "close",
+      "definitionNote": "s–ar–tgo: tgo is constructed (the intersection of the mandibular and ramus lines), not the AI's anatomical gonion.",
+      "note": "Age group 31 y: observed ages 29.7–32.2 (Table 4, p. 373), as completed years 29–32; men's mean age 30.9 ± 0.6 y, n 11 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m35_Articular",
+      "sex": "F",
+      "ageBand": [
+        4,
+        5
+      ],
+      "mean": 138,
+      "sd": 6.7,
+      "n": 27,
+      "unit": "deg",
+      "source": "Table 6, p. 376, row s–ar–tgo, 5 years",
+      "definitionMatch": "close",
+      "definitionNote": "s–ar–tgo: tgo is constructed (the intersection of the mandibular and ramus lines), not the AI's anatomical gonion.",
+      "note": "Age group 5 y: observed ages 4.2–5.8 (Table 4, p. 373), as completed years 4–5; women's mean age 4.9 ± 0.3 y, n 27 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m35_Articular",
+      "sex": "F",
+      "ageBand": [
+        6,
+        8
+      ],
+      "mean": 141.6,
+      "sd": 6.5,
+      "n": 46,
+      "unit": "deg",
+      "source": "Table 6, p. 376, row s–ar–tgo, 7 years",
+      "definitionMatch": "close",
+      "definitionNote": "s–ar–tgo: tgo is constructed (the intersection of the mandibular and ramus lines), not the AI's anatomical gonion.",
+      "note": "Age group 7 y: observed ages 6.6–8.2 (Table 4, p. 373), as completed years 6–8; women's mean age 7.4 ± 0.4 y, n 46 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m35_Articular",
+      "sex": "F",
+      "ageBand": [
+        9,
+        11
+      ],
+      "mean": 142.8,
+      "sd": 5.8,
+      "n": 56,
+      "unit": "deg",
+      "source": "Table 6, p. 376, row s–ar–tgo, 10 years",
+      "definitionMatch": "close",
+      "definitionNote": "s–ar–tgo: tgo is constructed (the intersection of the mandibular and ramus lines), not the AI's anatomical gonion.",
+      "note": "Age group 10 y: observed ages 9.5–11.2 (Table 4, p. 373), as completed years 9–11; women's mean age 10.4 ± 0.4 y, n 56 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m35_Articular",
+      "sex": "F",
+      "ageBand": [
+        12,
+        13
+      ],
+      "mean": 142.2,
+      "sd": 5.1,
+      "n": 69,
+      "unit": "deg",
+      "source": "Table 6, p. 376, row s–ar–tgo, 13 years",
+      "definitionMatch": "close",
+      "definitionNote": "s–ar–tgo: tgo is constructed (the intersection of the mandibular and ramus lines), not the AI's anatomical gonion.",
+      "note": "Age group 13 y: observed ages 12.3–13.8 (Table 4, p. 373), as completed years 12–13; women's mean age 13.0 ± 0.4 y, n 69 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m35_Articular",
+      "sex": "F",
+      "ageBand": [
+        14,
+        17
+      ],
+      "mean": 143.5,
+      "sd": 5,
+      "n": 30,
+      "unit": "deg",
+      "source": "Table 6, p. 376, row s–ar–tgo, 16 years",
+      "definitionMatch": "close",
+      "definitionNote": "s–ar–tgo: tgo is constructed (the intersection of the mandibular and ramus lines), not the AI's anatomical gonion.",
+      "note": "Age group 16 y: observed ages 14.9–17.1 (Table 4, p. 373), as completed years 14–17; women's mean age 15.8 ± 0.5 y, n 30 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m35_Articular",
+      "sex": "F",
+      "ageBand": [
+        18,
+        20
+      ],
+      "mean": 145.5,
+      "sd": 6.4,
+      "n": 17,
+      "unit": "deg",
+      "source": "Table 6, p. 376, row s–ar–tgo, 19 years",
+      "definitionMatch": "close",
+      "definitionNote": "s–ar–tgo: tgo is constructed (the intersection of the mandibular and ramus lines), not the AI's anatomical gonion.",
+      "note": "Age group 19 y: observed ages 18.4–20.5 (Table 4, p. 373), as completed years 18–20; women's mean age 19.1 ± 0.6 y, n 17 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m35_Articular",
+      "sex": "F",
+      "ageBand": [
+        29,
+        32
+      ],
+      "mean": 146.8,
+      "sd": 5.1,
+      "n": 19,
+      "unit": "deg",
+      "source": "Table 6, p. 376, row s–ar–tgo, 31 years",
+      "definitionMatch": "close",
+      "definitionNote": "s–ar–tgo: tgo is constructed (the intersection of the mandibular and ramus lines), not the AI's anatomical gonion.",
+      "note": "Age group 31 y: observed ages 29.7–32.2 (Table 4, p. 373), as completed years 29–32; women's mean age 31.1 ± 0.5 y, n 19 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m40_SGo",
+      "sex": "M",
+      "ageBand": [
+        4,
+        5
+      ],
+      "mean": 61.3,
+      "sd": 3.5,
+      "n": 20,
+      "unit": "mm",
+      "source": "Table 5, p. 375, row s–tgo, 5 years",
+      "definitionMatch": "close",
+      "definitionNote": "s–tgo: tgo is constructed (the intersection of the mandibular and ramus lines), not the AI's anatomical gonion.",
+      "note": "Age group 5 y: observed ages 4.2–5.8 (Table 4, p. 373), as completed years 4–5; men's mean age 5.1 ± 0.4 y, n 20 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m40_SGo",
+      "sex": "M",
+      "ageBand": [
+        6,
+        8
+      ],
+      "mean": 67.5,
+      "sd": 4.6,
+      "n": 37,
+      "unit": "mm",
+      "source": "Table 5, p. 375, row s–tgo, 7 years",
+      "definitionMatch": "close",
+      "definitionNote": "s–tgo: tgo is constructed (the intersection of the mandibular and ramus lines), not the AI's anatomical gonion.",
+      "note": "Age group 7 y: observed ages 6.6–8.2 (Table 4, p. 373), as completed years 6–8; men's mean age 7.4 ± 0.4 y, n 37 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m40_SGo",
+      "sex": "M",
+      "ageBand": [
+        9,
+        11
+      ],
+      "mean": 73.5,
+      "sd": 4.9,
+      "n": 43,
+      "unit": "mm",
+      "source": "Table 5, p. 375, row s–tgo, 10 years",
+      "definitionMatch": "close",
+      "definitionNote": "s–tgo: tgo is constructed (the intersection of the mandibular and ramus lines), not the AI's anatomical gonion.",
+      "note": "Age group 10 y: observed ages 9.5–11.2 (Table 4, p. 373), as completed years 9–11; men's mean age 10.4 ± 0.5 y, n 43 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m40_SGo",
+      "sex": "M",
+      "ageBand": [
+        12,
+        13
+      ],
+      "mean": 79.4,
+      "sd": 4.5,
+      "n": 53,
+      "unit": "mm",
+      "source": "Table 5, p. 375, row s–tgo, 13 years",
+      "definitionMatch": "close",
+      "definitionNote": "s–tgo: tgo is constructed (the intersection of the mandibular and ramus lines), not the AI's anatomical gonion.",
+      "note": "Age group 13 y: observed ages 12.3–13.8 (Table 4, p. 373), as completed years 12–13; men's mean age 13.1 ± 0.4 y, n 53 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m40_SGo",
+      "sex": "M",
+      "ageBand": [
+        14,
+        17
+      ],
+      "mean": 88.7,
+      "sd": 4.4,
+      "n": 25,
+      "unit": "mm",
+      "source": "Table 5, p. 375, row s–tgo, 16 years",
+      "definitionMatch": "close",
+      "definitionNote": "s–tgo: tgo is constructed (the intersection of the mandibular and ramus lines), not the AI's anatomical gonion.",
+      "note": "Age group 16 y: observed ages 14.9–17.1 (Table 4, p. 373), as completed years 14–17; men's mean age 15.8 ± 0.5 y, n 25 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m40_SGo",
+      "sex": "M",
+      "ageBand": [
+        18,
+        20
+      ],
+      "mean": 92.2,
+      "sd": 4.9,
+      "n": 16,
+      "unit": "mm",
+      "source": "Table 5, p. 375, row s–tgo, 19 years",
+      "definitionMatch": "close",
+      "definitionNote": "s–tgo: tgo is constructed (the intersection of the mandibular and ramus lines), not the AI's anatomical gonion.",
+      "note": "Age group 19 y: observed ages 18.4–20.5 (Table 4, p. 373), as completed years 18–20; men's mean age 19.5 ± 0.5 y, n 16 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m40_SGo",
+      "sex": "M",
+      "ageBand": [
+        29,
+        32
+      ],
+      "mean": 93.5,
+      "sd": 4.2,
+      "n": 11,
+      "unit": "mm",
+      "source": "Table 5, p. 375, row s–tgo, 31 years",
+      "definitionMatch": "close",
+      "definitionNote": "s–tgo: tgo is constructed (the intersection of the mandibular and ramus lines), not the AI's anatomical gonion.",
+      "note": "Age group 31 y: observed ages 29.7–32.2 (Table 4, p. 373), as completed years 29–32; men's mean age 30.9 ± 0.6 y, n 11 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m40_SGo",
+      "sex": "F",
+      "ageBand": [
+        4,
+        5
+      ],
+      "mean": 59.2,
+      "sd": 3.6,
+      "n": 27,
+      "unit": "mm",
+      "source": "Table 6, p. 376, row s–tgo, 5 years",
+      "definitionMatch": "close",
+      "definitionNote": "s–tgo: tgo is constructed (the intersection of the mandibular and ramus lines), not the AI's anatomical gonion.",
+      "note": "Age group 5 y: observed ages 4.2–5.8 (Table 4, p. 373), as completed years 4–5; women's mean age 4.9 ± 0.3 y, n 27 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m40_SGo",
+      "sex": "F",
+      "ageBand": [
+        6,
+        8
+      ],
+      "mean": 65.1,
+      "sd": 4.1,
+      "n": 46,
+      "unit": "mm",
+      "source": "Table 6, p. 376, row s–tgo, 7 years",
+      "definitionMatch": "close",
+      "definitionNote": "s–tgo: tgo is constructed (the intersection of the mandibular and ramus lines), not the AI's anatomical gonion.",
+      "note": "Age group 7 y: observed ages 6.6–8.2 (Table 4, p. 373), as completed years 6–8; women's mean age 7.4 ± 0.4 y, n 46 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m40_SGo",
+      "sex": "F",
+      "ageBand": [
+        9,
+        11
+      ],
+      "mean": 70.8,
+      "sd": 4.7,
+      "n": 56,
+      "unit": "mm",
+      "source": "Table 6, p. 376, row s–tgo, 10 years",
+      "definitionMatch": "close",
+      "definitionNote": "s–tgo: tgo is constructed (the intersection of the mandibular and ramus lines), not the AI's anatomical gonion.",
+      "note": "Age group 10 y: observed ages 9.5–11.2 (Table 4, p. 373), as completed years 9–11; women's mean age 10.4 ± 0.4 y, n 56 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m40_SGo",
+      "sex": "F",
+      "ageBand": [
+        12,
+        13
+      ],
+      "mean": 75.8,
+      "sd": 4.4,
+      "n": 69,
+      "unit": "mm",
+      "source": "Table 6, p. 376, row s–tgo, 13 years",
+      "definitionMatch": "close",
+      "definitionNote": "s–tgo: tgo is constructed (the intersection of the mandibular and ramus lines), not the AI's anatomical gonion.",
+      "note": "Age group 13 y: observed ages 12.3–13.8 (Table 4, p. 373), as completed years 12–13; women's mean age 13.0 ± 0.4 y, n 69 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m40_SGo",
+      "sex": "F",
+      "ageBand": [
+        14,
+        17
+      ],
+      "mean": 81.2,
+      "sd": 3.8,
+      "n": 30,
+      "unit": "mm",
+      "source": "Table 6, p. 376, row s–tgo, 16 years",
+      "definitionMatch": "close",
+      "definitionNote": "s–tgo: tgo is constructed (the intersection of the mandibular and ramus lines), not the AI's anatomical gonion.",
+      "note": "Age group 16 y: observed ages 14.9–17.1 (Table 4, p. 373), as completed years 14–17; women's mean age 15.8 ± 0.5 y, n 30 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m40_SGo",
+      "sex": "F",
+      "ageBand": [
+        18,
+        20
+      ],
+      "mean": 82.8,
+      "sd": 3.5,
+      "n": 17,
+      "unit": "mm",
+      "source": "Table 6, p. 376, row s–tgo, 19 years",
+      "definitionMatch": "close",
+      "definitionNote": "s–tgo: tgo is constructed (the intersection of the mandibular and ramus lines), not the AI's anatomical gonion.",
+      "note": "Age group 19 y: observed ages 18.4–20.5 (Table 4, p. 373), as completed years 18–20; women's mean age 19.1 ± 0.6 y, n 17 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m40_SGo",
+      "sex": "F",
+      "ageBand": [
+        29,
+        32
+      ],
+      "mean": 84.6,
+      "sd": 4.3,
+      "n": 19,
+      "unit": "mm",
+      "source": "Table 6, p. 376, row s–tgo, 31 years",
+      "definitionMatch": "close",
+      "definitionNote": "s–tgo: tgo is constructed (the intersection of the mandibular and ramus lines), not the AI's anatomical gonion.",
+      "note": "Age group 31 y: observed ages 29.7–32.2 (Table 4, p. 373), as completed years 29–32; women's mean age 31.1 ± 0.5 y, n 19 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m41_NMe",
+      "sex": "M",
+      "ageBand": [
+        4,
+        5
+      ],
+      "mean": 96.8,
+      "sd": 4.9,
+      "n": 20,
+      "unit": "mm",
+      "source": "Table 5, p. 375, row n–gn, 5 years",
+      "definitionMatch": "close",
+      "definitionNote": "n–gn: to gnathion, not menton.",
+      "note": "Age group 5 y: observed ages 4.2–5.8 (Table 4, p. 373), as completed years 4–5; men's mean age 5.1 ± 0.4 y, n 20 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m41_NMe",
+      "sex": "M",
+      "ageBand": [
+        6,
+        8
+      ],
+      "mean": 103.7,
+      "sd": 4.9,
+      "n": 37,
+      "unit": "mm",
+      "source": "Table 5, p. 375, row n–gn, 7 years",
+      "definitionMatch": "close",
+      "definitionNote": "n–gn: to gnathion, not menton.",
+      "note": "Age group 7 y: observed ages 6.6–8.2 (Table 4, p. 373), as completed years 6–8; men's mean age 7.4 ± 0.4 y, n 37 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m41_NMe",
+      "sex": "M",
+      "ageBand": [
+        9,
+        11
+      ],
+      "mean": 110.6,
+      "sd": 5.1,
+      "n": 43,
+      "unit": "mm",
+      "source": "Table 5, p. 375, row n–gn, 10 years",
+      "definitionMatch": "close",
+      "definitionNote": "n–gn: to gnathion, not menton.",
+      "note": "Age group 10 y: observed ages 9.5–11.2 (Table 4, p. 373), as completed years 9–11; men's mean age 10.4 ± 0.5 y, n 43 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m41_NMe",
+      "sex": "M",
+      "ageBand": [
+        12,
+        13
+      ],
+      "mean": 116.4,
+      "sd": 5.6,
+      "n": 53,
+      "unit": "mm",
+      "source": "Table 5, p. 375, row n–gn, 13 years",
+      "definitionMatch": "close",
+      "definitionNote": "n–gn: to gnathion, not menton.",
+      "note": "Age group 13 y: observed ages 12.3–13.8 (Table 4, p. 373), as completed years 12–13; men's mean age 13.1 ± 0.4 y, n 53 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m41_NMe",
+      "sex": "M",
+      "ageBand": [
+        14,
+        17
+      ],
+      "mean": 126.5,
+      "sd": 5.8,
+      "n": 25,
+      "unit": "mm",
+      "source": "Table 5, p. 375, row n–gn, 16 years",
+      "definitionMatch": "close",
+      "definitionNote": "n–gn: to gnathion, not menton.",
+      "note": "Age group 16 y: observed ages 14.9–17.1 (Table 4, p. 373), as completed years 14–17; men's mean age 15.8 ± 0.5 y, n 25 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m41_NMe",
+      "sex": "M",
+      "ageBand": [
+        18,
+        20
+      ],
+      "mean": 131,
+      "sd": 5.1,
+      "n": 16,
+      "unit": "mm",
+      "source": "Table 5, p. 375, row n–gn, 19 years",
+      "definitionMatch": "close",
+      "definitionNote": "n–gn: to gnathion, not menton.",
+      "note": "Age group 19 y: observed ages 18.4–20.5 (Table 4, p. 373), as completed years 18–20; men's mean age 19.5 ± 0.5 y, n 16 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m41_NMe",
+      "sex": "M",
+      "ageBand": [
+        29,
+        32
+      ],
+      "mean": 132.5,
+      "sd": 4.6,
+      "n": 11,
+      "unit": "mm",
+      "source": "Table 5, p. 375, row n–gn, 31 years",
+      "definitionMatch": "close",
+      "definitionNote": "n–gn: to gnathion, not menton.",
+      "note": "Age group 31 y: observed ages 29.7–32.2 (Table 4, p. 373), as completed years 29–32; men's mean age 30.9 ± 0.6 y, n 11 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m41_NMe",
+      "sex": "F",
+      "ageBand": [
+        4,
+        5
+      ],
+      "mean": 92,
+      "sd": 2.6,
+      "n": 27,
+      "unit": "mm",
+      "source": "Table 6, p. 376, row n–gn, 5 years",
+      "definitionMatch": "close",
+      "definitionNote": "n–gn: to gnathion, not menton.",
+      "note": "Age group 5 y: observed ages 4.2–5.8 (Table 4, p. 373), as completed years 4–5; women's mean age 4.9 ± 0.3 y, n 27 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m41_NMe",
+      "sex": "F",
+      "ageBand": [
+        6,
+        8
+      ],
+      "mean": 99.5,
+      "sd": 4,
+      "n": 46,
+      "unit": "mm",
+      "source": "Table 6, p. 376, row n–gn, 7 years",
+      "definitionMatch": "close",
+      "definitionNote": "n–gn: to gnathion, not menton.",
+      "note": "Age group 7 y: observed ages 6.6–8.2 (Table 4, p. 373), as completed years 6–8; women's mean age 7.4 ± 0.4 y, n 46 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m41_NMe",
+      "sex": "F",
+      "ageBand": [
+        9,
+        11
+      ],
+      "mean": 106.5,
+      "sd": 4.6,
+      "n": 56,
+      "unit": "mm",
+      "source": "Table 6, p. 376, row n–gn, 10 years",
+      "definitionMatch": "close",
+      "definitionNote": "n–gn: to gnathion, not menton.",
+      "note": "Age group 10 y: observed ages 9.5–11.2 (Table 4, p. 373), as completed years 9–11; women's mean age 10.4 ± 0.4 y, n 56 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m41_NMe",
+      "sex": "F",
+      "ageBand": [
+        12,
+        13
+      ],
+      "mean": 110.8,
+      "sd": 4.9,
+      "n": 69,
+      "unit": "mm",
+      "source": "Table 6, p. 376, row n–gn, 13 years",
+      "definitionMatch": "close",
+      "definitionNote": "n–gn: to gnathion, not menton.",
+      "note": "Age group 13 y: observed ages 12.3–13.8 (Table 4, p. 373), as completed years 12–13; women's mean age 13.0 ± 0.4 y, n 69 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m41_NMe",
+      "sex": "F",
+      "ageBand": [
+        14,
+        17
+      ],
+      "mean": 116.5,
+      "sd": 5.1,
+      "n": 30,
+      "unit": "mm",
+      "source": "Table 6, p. 376, row n–gn, 16 years",
+      "definitionMatch": "close",
+      "definitionNote": "n–gn: to gnathion, not menton.",
+      "note": "Age group 16 y: observed ages 14.9–17.1 (Table 4, p. 373), as completed years 14–17; women's mean age 15.8 ± 0.5 y, n 30 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m41_NMe",
+      "sex": "F",
+      "ageBand": [
+        18,
+        20
+      ],
+      "mean": 118,
+      "sd": 4.9,
+      "n": 17,
+      "unit": "mm",
+      "source": "Table 6, p. 376, row n–gn, 19 years",
+      "definitionMatch": "close",
+      "definitionNote": "n–gn: to gnathion, not menton.",
+      "note": "Age group 19 y: observed ages 18.4–20.5 (Table 4, p. 373), as completed years 18–20; women's mean age 19.1 ± 0.6 y, n 17 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m41_NMe",
+      "sex": "F",
+      "ageBand": [
+        29,
+        32
+      ],
+      "mean": 118.3,
+      "sd": 6,
+      "n": 19,
+      "unit": "mm",
+      "source": "Table 6, p. 376, row n–gn, 31 years",
+      "definitionMatch": "close",
+      "definitionNote": "n–gn: to gnathion, not menton.",
+      "note": "Age group 31 y: observed ages 29.7–32.2 (Table 4, p. 373), as completed years 29–32; women's mean age 31.1 ± 0.5 y, n 19 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m28_LAFH",
+      "sex": "M",
+      "ageBand": [
+        4,
+        5
+      ],
+      "mean": 54.1,
+      "sd": 3,
+      "n": 20,
+      "unit": "mm",
+      "source": "Table 5, p. 375, row sp′–gn, 5 years",
+      "definitionMatch": "close",
+      "definitionNote": "sp′–gn: sp′ is the intersection of the nasal line with the n–pg line (not ANS), and gn not Me.",
+      "note": "Age group 5 y: observed ages 4.2–5.8 (Table 4, p. 373), as completed years 4–5; men's mean age 5.1 ± 0.4 y, n 20 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m28_LAFH",
+      "sex": "M",
+      "ageBand": [
+        6,
+        8
+      ],
+      "mean": 57.4,
+      "sd": 2.9,
+      "n": 37,
+      "unit": "mm",
+      "source": "Table 5, p. 375, row sp′–gn, 7 years",
+      "definitionMatch": "close",
+      "definitionNote": "sp′–gn: sp′ is the intersection of the nasal line with the n–pg line (not ANS), and gn not Me.",
+      "note": "Age group 7 y: observed ages 6.6–8.2 (Table 4, p. 373), as completed years 6–8; men's mean age 7.4 ± 0.4 y, n 37 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m28_LAFH",
+      "sex": "M",
+      "ageBand": [
+        9,
+        11
+      ],
+      "mean": 60.4,
+      "sd": 2.6,
+      "n": 43,
+      "unit": "mm",
+      "source": "Table 5, p. 375, row sp′–gn, 10 years",
+      "definitionMatch": "close",
+      "definitionNote": "sp′–gn: sp′ is the intersection of the nasal line with the n–pg line (not ANS), and gn not Me.",
+      "note": "Age group 10 y: observed ages 9.5–11.2 (Table 4, p. 373), as completed years 9–11; men's mean age 10.4 ± 0.5 y, n 43 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m28_LAFH",
+      "sex": "M",
+      "ageBand": [
+        12,
+        13
+      ],
+      "mean": 63,
+      "sd": 4,
+      "n": 53,
+      "unit": "mm",
+      "source": "Table 5, p. 375, row sp′–gn, 13 years",
+      "definitionMatch": "close",
+      "definitionNote": "sp′–gn: sp′ is the intersection of the nasal line with the n–pg line (not ANS), and gn not Me.",
+      "note": "Age group 13 y: observed ages 12.3–13.8 (Table 4, p. 373), as completed years 12–13; men's mean age 13.1 ± 0.4 y, n 53 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m28_LAFH",
+      "sex": "M",
+      "ageBand": [
+        14,
+        17
+      ],
+      "mean": 68.3,
+      "sd": 4.9,
+      "n": 25,
+      "unit": "mm",
+      "source": "Table 5, p. 375, row sp′–gn, 16 years",
+      "definitionMatch": "close",
+      "definitionNote": "sp′–gn: sp′ is the intersection of the nasal line with the n–pg line (not ANS), and gn not Me.",
+      "note": "Age group 16 y: observed ages 14.9–17.1 (Table 4, p. 373), as completed years 14–17; men's mean age 15.8 ± 0.5 y, n 25 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m28_LAFH",
+      "sex": "M",
+      "ageBand": [
+        18,
+        20
+      ],
+      "mean": 72.6,
+      "sd": 3.7,
+      "n": 16,
+      "unit": "mm",
+      "source": "Table 5, p. 375, row sp′–gn, 19 years",
+      "definitionMatch": "close",
+      "definitionNote": "sp′–gn: sp′ is the intersection of the nasal line with the n–pg line (not ANS), and gn not Me.",
+      "note": "Age group 19 y: observed ages 18.4–20.5 (Table 4, p. 373), as completed years 18–20; men's mean age 19.5 ± 0.5 y, n 16 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m28_LAFH",
+      "sex": "M",
+      "ageBand": [
+        29,
+        32
+      ],
+      "mean": 73.4,
+      "sd": 4.5,
+      "n": 11,
+      "unit": "mm",
+      "source": "Table 5, p. 375, row sp′–gn, 31 years",
+      "definitionMatch": "close",
+      "definitionNote": "sp′–gn: sp′ is the intersection of the nasal line with the n–pg line (not ANS), and gn not Me.",
+      "note": "Age group 31 y: observed ages 29.7–32.2 (Table 4, p. 373), as completed years 29–32; men's mean age 30.9 ± 0.6 y, n 11 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m28_LAFH",
+      "sex": "F",
+      "ageBand": [
+        4,
+        5
+      ],
+      "mean": 50.5,
+      "sd": 2.3,
+      "n": 27,
+      "unit": "mm",
+      "source": "Table 6, p. 376, row sp′–gn, 5 years",
+      "definitionMatch": "close",
+      "definitionNote": "sp′–gn: sp′ is the intersection of the nasal line with the n–pg line (not ANS), and gn not Me.",
+      "note": "Age group 5 y: observed ages 4.2–5.8 (Table 4, p. 373), as completed years 4–5; women's mean age 4.9 ± 0.3 y, n 27 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m28_LAFH",
+      "sex": "F",
+      "ageBand": [
+        6,
+        8
+      ],
+      "mean": 54,
+      "sd": 2.9,
+      "n": 46,
+      "unit": "mm",
+      "source": "Table 6, p. 376, row sp′–gn, 7 years",
+      "definitionMatch": "close",
+      "definitionNote": "sp′–gn: sp′ is the intersection of the nasal line with the n–pg line (not ANS), and gn not Me.",
+      "note": "Age group 7 y: observed ages 6.6–8.2 (Table 4, p. 373), as completed years 6–8; women's mean age 7.4 ± 0.4 y, n 46 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m28_LAFH",
+      "sex": "F",
+      "ageBand": [
+        9,
+        11
+      ],
+      "mean": 57.1,
+      "sd": 3.4,
+      "n": 56,
+      "unit": "mm",
+      "source": "Table 6, p. 376, row sp′–gn, 10 years",
+      "definitionMatch": "close",
+      "definitionNote": "sp′–gn: sp′ is the intersection of the nasal line with the n–pg line (not ANS), and gn not Me.",
+      "note": "Age group 10 y: observed ages 9.5–11.2 (Table 4, p. 373), as completed years 9–11; women's mean age 10.4 ± 0.4 y, n 56 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m28_LAFH",
+      "sex": "F",
+      "ageBand": [
+        12,
+        13
+      ],
+      "mean": 59.8,
+      "sd": 3.9,
+      "n": 69,
+      "unit": "mm",
+      "source": "Table 6, p. 376, row sp′–gn, 13 years",
+      "definitionMatch": "close",
+      "definitionNote": "sp′–gn: sp′ is the intersection of the nasal line with the n–pg line (not ANS), and gn not Me.",
+      "note": "Age group 13 y: observed ages 12.3–13.8 (Table 4, p. 373), as completed years 12–13; women's mean age 13.0 ± 0.4 y, n 69 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m28_LAFH",
+      "sex": "F",
+      "ageBand": [
+        14,
+        17
+      ],
+      "mean": 64,
+      "sd": 4.5,
+      "n": 30,
+      "unit": "mm",
+      "source": "Table 6, p. 376, row sp′–gn, 16 years",
+      "definitionMatch": "close",
+      "definitionNote": "sp′–gn: sp′ is the intersection of the nasal line with the n–pg line (not ANS), and gn not Me.",
+      "note": "Age group 16 y: observed ages 14.9–17.1 (Table 4, p. 373), as completed years 14–17; women's mean age 15.8 ± 0.5 y, n 30 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m28_LAFH",
+      "sex": "F",
+      "ageBand": [
+        18,
+        20
+      ],
+      "mean": 64.9,
+      "sd": 3.2,
+      "n": 17,
+      "unit": "mm",
+      "source": "Table 6, p. 376, row sp′–gn, 19 years",
+      "definitionMatch": "close",
+      "definitionNote": "sp′–gn: sp′ is the intersection of the nasal line with the n–pg line (not ANS), and gn not Me.",
+      "note": "Age group 19 y: observed ages 18.4–20.5 (Table 4, p. 373), as completed years 18–20; women's mean age 19.1 ± 0.6 y, n 17 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m28_LAFH",
+      "sex": "F",
+      "ageBand": [
+        29,
+        32
+      ],
+      "mean": 65.9,
+      "sd": 4.8,
+      "n": 19,
+      "unit": "mm",
+      "source": "Table 6, p. 376, row sp′–gn, 31 years",
+      "definitionMatch": "close",
+      "definitionNote": "sp′–gn: sp′ is the intersection of the nasal line with the n–pg line (not ANS), and gn not Me.",
+      "note": "Age group 31 y: observed ages 29.7–32.2 (Table 4, p. 373), as completed years 29–32; women's mean age 31.1 ± 0.5 y, n 19 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m29_LAFHpct",
+      "sex": "M",
+      "ageBand": [
+        4,
+        5
+      ],
+      "mean": 55.9,
+      "sd": 2.3,
+      "n": 20,
+      "unit": "%",
+      "source": "Table 5, p. 375, row sp′–gn/n–gn (%), 5 years",
+      "definitionMatch": "close",
+      "definitionNote": "sp′–gn/n–gn: sp′ (nasal line ∩ n–pg line) and gn in place of ANS and Me.",
+      "note": "Age group 5 y: observed ages 4.2–5.8 (Table 4, p. 373), as completed years 4–5; men's mean age 5.1 ± 0.4 y, n 20 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m29_LAFHpct",
+      "sex": "M",
+      "ageBand": [
+        6,
+        8
+      ],
+      "mean": 55.3,
+      "sd": 1.8,
+      "n": 37,
+      "unit": "%",
+      "source": "Table 5, p. 375, row sp′–gn/n–gn (%), 7 years",
+      "definitionMatch": "close",
+      "definitionNote": "sp′–gn/n–gn: sp′ (nasal line ∩ n–pg line) and gn in place of ANS and Me.",
+      "note": "Age group 7 y: observed ages 6.6–8.2 (Table 4, p. 373), as completed years 6–8; men's mean age 7.4 ± 0.4 y, n 37 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m29_LAFHpct",
+      "sex": "M",
+      "ageBand": [
+        9,
+        11
+      ],
+      "mean": 54.6,
+      "sd": 2.1,
+      "n": 43,
+      "unit": "%",
+      "source": "Table 5, p. 375, row sp′–gn/n–gn (%), 10 years",
+      "definitionMatch": "close",
+      "definitionNote": "sp′–gn/n–gn: sp′ (nasal line ∩ n–pg line) and gn in place of ANS and Me.",
+      "note": "Age group 10 y: observed ages 9.5–11.2 (Table 4, p. 373), as completed years 9–11; men's mean age 10.4 ± 0.5 y, n 43 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m29_LAFHpct",
+      "sex": "M",
+      "ageBand": [
+        12,
+        13
+      ],
+      "mean": 54.1,
+      "sd": 1.9,
+      "n": 53,
+      "unit": "%",
+      "source": "Table 5, p. 375, row sp′–gn/n–gn (%), 13 years",
+      "definitionMatch": "close",
+      "definitionNote": "sp′–gn/n–gn: sp′ (nasal line ∩ n–pg line) and gn in place of ANS and Me.",
+      "note": "Age group 13 y: observed ages 12.3–13.8 (Table 4, p. 373), as completed years 12–13; men's mean age 13.1 ± 0.4 y, n 53 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m29_LAFHpct",
+      "sex": "M",
+      "ageBand": [
+        14,
+        17
+      ],
+      "mean": 54,
+      "sd": 2.3,
+      "n": 25,
+      "unit": "%",
+      "source": "Table 5, p. 375, row sp′–gn/n–gn (%), 16 years",
+      "definitionMatch": "close",
+      "definitionNote": "sp′–gn/n–gn: sp′ (nasal line ∩ n–pg line) and gn in place of ANS and Me.",
+      "note": "Age group 16 y: observed ages 14.9–17.1 (Table 4, p. 373), as completed years 14–17; men's mean age 15.8 ± 0.5 y, n 25 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m29_LAFHpct",
+      "sex": "M",
+      "ageBand": [
+        18,
+        20
+      ],
+      "mean": 55.2,
+      "sd": 1.9,
+      "n": 16,
+      "unit": "%",
+      "source": "Table 5, p. 375, row sp′–gn/n–gn (%), 19 years",
+      "definitionMatch": "close",
+      "definitionNote": "sp′–gn/n–gn: sp′ (nasal line ∩ n–pg line) and gn in place of ANS and Me.",
+      "note": "Age group 19 y: observed ages 18.4–20.5 (Table 4, p. 373), as completed years 18–20; men's mean age 19.5 ± 0.5 y, n 16 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m29_LAFHpct",
+      "sex": "M",
+      "ageBand": [
+        29,
+        32
+      ],
+      "mean": 54.8,
+      "sd": 2.1,
+      "n": 11,
+      "unit": "%",
+      "source": "Table 5, p. 375, row sp′–gn/n–gn (%), 31 years",
+      "definitionMatch": "close",
+      "definitionNote": "sp′–gn/n–gn: sp′ (nasal line ∩ n–pg line) and gn in place of ANS and Me.",
+      "note": "Age group 31 y: observed ages 29.7–32.2 (Table 4, p. 373), as completed years 29–32; men's mean age 30.9 ± 0.6 y, n 11 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m29_LAFHpct",
+      "sex": "F",
+      "ageBand": [
+        4,
+        5
+      ],
+      "mean": 54.9,
+      "sd": 2.3,
+      "n": 27,
+      "unit": "%",
+      "source": "Table 6, p. 376, row sp′–gn/n–gn (%), 5 years",
+      "definitionMatch": "close",
+      "definitionNote": "sp′–gn/n–gn: sp′ (nasal line ∩ n–pg line) and gn in place of ANS and Me.",
+      "note": "Age group 5 y: observed ages 4.2–5.8 (Table 4, p. 373), as completed years 4–5; women's mean age 4.9 ± 0.3 y, n 27 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m29_LAFHpct",
+      "sex": "F",
+      "ageBand": [
+        6,
+        8
+      ],
+      "mean": 54.3,
+      "sd": 1.8,
+      "n": 46,
+      "unit": "%",
+      "source": "Table 6, p. 376, row sp′–gn/n–gn (%), 7 years",
+      "definitionMatch": "close",
+      "definitionNote": "sp′–gn/n–gn: sp′ (nasal line ∩ n–pg line) and gn in place of ANS and Me.",
+      "note": "Age group 7 y: observed ages 6.6–8.2 (Table 4, p. 373), as completed years 6–8; women's mean age 7.4 ± 0.4 y, n 46 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m29_LAFHpct",
+      "sex": "F",
+      "ageBand": [
+        9,
+        11
+      ],
+      "mean": 53.6,
+      "sd": 2.1,
+      "n": 56,
+      "unit": "%",
+      "source": "Table 6, p. 376, row sp′–gn/n–gn (%), 10 years",
+      "definitionMatch": "close",
+      "definitionNote": "sp′–gn/n–gn: sp′ (nasal line ∩ n–pg line) and gn in place of ANS and Me.",
+      "note": "Age group 10 y: observed ages 9.5–11.2 (Table 4, p. 373), as completed years 9–11; women's mean age 10.4 ± 0.4 y, n 56 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m29_LAFHpct",
+      "sex": "F",
+      "ageBand": [
+        12,
+        13
+      ],
+      "mean": 54,
+      "sd": 1.9,
+      "n": 69,
+      "unit": "%",
+      "source": "Table 6, p. 376, row sp′–gn/n–gn (%), 13 years",
+      "definitionMatch": "close",
+      "definitionNote": "sp′–gn/n–gn: sp′ (nasal line ∩ n–pg line) and gn in place of ANS and Me.",
+      "note": "Age group 13 y: observed ages 12.3–13.8 (Table 4, p. 373), as completed years 12–13; women's mean age 13.0 ± 0.4 y, n 69 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m29_LAFHpct",
+      "sex": "F",
+      "ageBand": [
+        14,
+        17
+      ],
+      "mean": 54.9,
+      "sd": 2.3,
+      "n": 30,
+      "unit": "%",
+      "source": "Table 6, p. 376, row sp′–gn/n–gn (%), 16 years",
+      "definitionMatch": "close",
+      "definitionNote": "sp′–gn/n–gn: sp′ (nasal line ∩ n–pg line) and gn in place of ANS and Me.",
+      "note": "Age group 16 y: observed ages 14.9–17.1 (Table 4, p. 373), as completed years 14–17; women's mean age 15.8 ± 0.5 y, n 30 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m29_LAFHpct",
+      "sex": "F",
+      "ageBand": [
+        18,
+        20
+      ],
+      "mean": 55.2,
+      "sd": 1.9,
+      "n": 17,
+      "unit": "%",
+      "source": "Table 6, p. 376, row sp′–gn/n–gn (%), 19 years",
+      "definitionMatch": "close",
+      "definitionNote": "sp′–gn/n–gn: sp′ (nasal line ∩ n–pg line) and gn in place of ANS and Me.",
+      "note": "Age group 19 y: observed ages 18.4–20.5 (Table 4, p. 373), as completed years 18–20; women's mean age 19.1 ± 0.6 y, n 17 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m29_LAFHpct",
+      "sex": "F",
+      "ageBand": [
+        29,
+        32
+      ],
+      "mean": 55.7,
+      "sd": 2.1,
+      "n": 19,
+      "unit": "%",
+      "source": "Table 6, p. 376, row sp′–gn/n–gn (%), 31 years",
+      "definitionMatch": "close",
+      "definitionNote": "sp′–gn/n–gn: sp′ (nasal line ∩ n–pg line) and gn in place of ANS and Me.",
+      "note": "Age group 31 y: observed ages 29.7–32.2 (Table 4, p. 373), as completed years 29–32; women's mean age 31.1 ± 0.5 y, n 19 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m55_U1MxP",
+      "sex": "M",
+      "ageBand": [
+        4,
+        5
+      ],
+      "mean": 99.6,
+      "sd": 5.4,
+      "n": 20,
+      "unit": "deg",
+      "source": "Table 7, p. 377, row UIL/NL, 5 years",
+      "definitionMatch": "close",
+      "definitionNote": "UIL/NL: the nasal line NL runs through sp and pm (pterygomaxillare), not ANS-PNS; the catalogue's MxP is ANS-PNS.",
+      "note": "Age group 5 y: observed ages 4.2–5.8 (Table 4, p. 373), as completed years 4–5; men's mean age 5.1 ± 0.4 y, n 20 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m55_U1MxP",
+      "sex": "M",
+      "ageBand": [
+        6,
+        8
+      ],
+      "mean": 106.2,
+      "sd": 6,
+      "n": 37,
+      "unit": "deg",
+      "source": "Table 7, p. 377, row UIL/NL, 7 years",
+      "definitionMatch": "close",
+      "definitionNote": "UIL/NL: the nasal line NL runs through sp and pm (pterygomaxillare), not ANS-PNS; the catalogue's MxP is ANS-PNS.",
+      "note": "Age group 7 y: observed ages 6.6–8.2 (Table 4, p. 373), as completed years 6–8; men's mean age 7.4 ± 0.4 y, n 37 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m55_U1MxP",
+      "sex": "M",
+      "ageBand": [
+        9,
+        11
+      ],
+      "mean": 110.4,
+      "sd": 5.3,
+      "n": 43,
+      "unit": "deg",
+      "source": "Table 7, p. 377, row UIL/NL, 10 years",
+      "definitionMatch": "close",
+      "definitionNote": "UIL/NL: the nasal line NL runs through sp and pm (pterygomaxillare), not ANS-PNS; the catalogue's MxP is ANS-PNS.",
+      "note": "Age group 10 y: observed ages 9.5–11.2 (Table 4, p. 373), as completed years 9–11; men's mean age 10.4 ± 0.5 y, n 43 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m55_U1MxP",
+      "sex": "M",
+      "ageBand": [
+        12,
+        13
+      ],
+      "mean": 110.7,
+      "sd": 5.4,
+      "n": 53,
+      "unit": "deg",
+      "source": "Table 7, p. 377, row UIL/NL, 13 years",
+      "definitionMatch": "close",
+      "definitionNote": "UIL/NL: the nasal line NL runs through sp and pm (pterygomaxillare), not ANS-PNS; the catalogue's MxP is ANS-PNS.",
+      "note": "Age group 13 y: observed ages 12.3–13.8 (Table 4, p. 373), as completed years 12–13; men's mean age 13.1 ± 0.4 y, n 53 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m55_U1MxP",
+      "sex": "M",
+      "ageBand": [
+        14,
+        17
+      ],
+      "mean": 111.5,
+      "sd": 4.7,
+      "n": 25,
+      "unit": "deg",
+      "source": "Table 7, p. 377, row UIL/NL, 16 years",
+      "definitionMatch": "close",
+      "definitionNote": "UIL/NL: the nasal line NL runs through sp and pm (pterygomaxillare), not ANS-PNS; the catalogue's MxP is ANS-PNS.",
+      "note": "Age group 16 y: observed ages 14.9–17.1 (Table 4, p. 373), as completed years 14–17; men's mean age 15.8 ± 0.5 y, n 25 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m55_U1MxP",
+      "sex": "M",
+      "ageBand": [
+        18,
+        20
+      ],
+      "mean": 107.2,
+      "sd": 7.9,
+      "n": 16,
+      "unit": "deg",
+      "source": "Table 7, p. 377, row UIL/NL, 19 years",
+      "definitionMatch": "close",
+      "definitionNote": "UIL/NL: the nasal line NL runs through sp and pm (pterygomaxillare), not ANS-PNS; the catalogue's MxP is ANS-PNS.",
+      "note": "Age group 19 y: observed ages 18.4–20.5 (Table 4, p. 373), as completed years 18–20; men's mean age 19.5 ± 0.5 y, n 16 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m55_U1MxP",
+      "sex": "M",
+      "ageBand": [
+        29,
+        32
+      ],
+      "mean": 109.1,
+      "sd": 8.4,
+      "n": 11,
+      "unit": "deg",
+      "source": "Table 7, p. 377, row UIL/NL, 31 years",
+      "definitionMatch": "close",
+      "definitionNote": "UIL/NL: the nasal line NL runs through sp and pm (pterygomaxillare), not ANS-PNS; the catalogue's MxP is ANS-PNS.",
+      "note": "Age group 31 y: observed ages 29.7–32.2 (Table 4, p. 373), as completed years 29–32; men's mean age 30.9 ± 0.6 y, n 11 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m55_U1MxP",
+      "sex": "F",
+      "ageBand": [
+        4,
+        5
+      ],
+      "mean": 102,
+      "sd": 4.7,
+      "n": 27,
+      "unit": "deg",
+      "source": "Table 8, p. 378, row UIL/NL, 5 years",
+      "definitionMatch": "close",
+      "definitionNote": "UIL/NL: the nasal line NL runs through sp and pm (pterygomaxillare), not ANS-PNS; the catalogue's MxP is ANS-PNS.",
+      "note": "Age group 5 y: observed ages 4.2–5.8 (Table 4, p. 373), as completed years 4–5; women's mean age 4.9 ± 0.3 y, n 27 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m55_U1MxP",
+      "sex": "F",
+      "ageBand": [
+        6,
+        8
+      ],
+      "mean": 108.2,
+      "sd": 5.1,
+      "n": 46,
+      "unit": "deg",
+      "source": "Table 8, p. 378, row UIL/NL, 7 years",
+      "definitionMatch": "close",
+      "definitionNote": "UIL/NL: the nasal line NL runs through sp and pm (pterygomaxillare), not ANS-PNS; the catalogue's MxP is ANS-PNS.",
+      "note": "Age group 7 y: observed ages 6.6–8.2 (Table 4, p. 373), as completed years 6–8; women's mean age 7.4 ± 0.4 y, n 46 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m55_U1MxP",
+      "sex": "F",
+      "ageBand": [
+        9,
+        11
+      ],
+      "mean": 110.9,
+      "sd": 4.8,
+      "n": 56,
+      "unit": "deg",
+      "source": "Table 8, p. 378, row UIL/NL, 10 years",
+      "definitionMatch": "close",
+      "definitionNote": "UIL/NL: the nasal line NL runs through sp and pm (pterygomaxillare), not ANS-PNS; the catalogue's MxP is ANS-PNS.",
+      "note": "Age group 10 y: observed ages 9.5–11.2 (Table 4, p. 373), as completed years 9–11; women's mean age 10.4 ± 0.4 y, n 56 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m55_U1MxP",
+      "sex": "F",
+      "ageBand": [
+        12,
+        13
+      ],
+      "mean": 110.6,
+      "sd": 5,
+      "n": 69,
+      "unit": "deg",
+      "source": "Table 8, p. 378, row UIL/NL, 13 years",
+      "definitionMatch": "close",
+      "definitionNote": "UIL/NL: the nasal line NL runs through sp and pm (pterygomaxillare), not ANS-PNS; the catalogue's MxP is ANS-PNS.",
+      "note": "Age group 13 y: observed ages 12.3–13.8 (Table 4, p. 373), as completed years 12–13; women's mean age 13.0 ± 0.4 y, n 69 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m55_U1MxP",
+      "sex": "F",
+      "ageBand": [
+        14,
+        17
+      ],
+      "mean": 109.4,
+      "sd": 4.4,
+      "n": 30,
+      "unit": "deg",
+      "source": "Table 8, p. 378, row UIL/NL, 16 years",
+      "definitionMatch": "close",
+      "definitionNote": "UIL/NL: the nasal line NL runs through sp and pm (pterygomaxillare), not ANS-PNS; the catalogue's MxP is ANS-PNS.",
+      "note": "Age group 16 y: observed ages 14.9–17.1 (Table 4, p. 373), as completed years 14–17; women's mean age 15.8 ± 0.5 y, n 30 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m55_U1MxP",
+      "sex": "F",
+      "ageBand": [
+        18,
+        20
+      ],
+      "mean": 110,
+      "sd": 4.7,
+      "n": 17,
+      "unit": "deg",
+      "source": "Table 8, p. 378, row UIL/NL, 19 years",
+      "definitionMatch": "close",
+      "definitionNote": "UIL/NL: the nasal line NL runs through sp and pm (pterygomaxillare), not ANS-PNS; the catalogue's MxP is ANS-PNS.",
+      "note": "Age group 19 y: observed ages 18.4–20.5 (Table 4, p. 373), as completed years 18–20; women's mean age 19.1 ± 0.6 y, n 17 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m55_U1MxP",
+      "sex": "F",
+      "ageBand": [
+        29,
+        32
+      ],
+      "mean": 107.9,
+      "sd": 5.3,
+      "n": 19,
+      "unit": "deg",
+      "source": "Table 8, p. 378, row UIL/NL, 31 years",
+      "definitionMatch": "close",
+      "definitionNote": "UIL/NL: the nasal line NL runs through sp and pm (pterygomaxillare), not ANS-PNS; the catalogue's MxP is ANS-PNS.",
+      "note": "Age group 31 y: observed ages 29.7–32.2 (Table 4, p. 373), as completed years 29–32; women's mean age 31.1 ± 0.5 y, n 19 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m56_IMPAt",
+      "sex": "M",
+      "ageBand": [
+        4,
+        5
+      ],
+      "mean": 86,
+      "sd": 5.8,
+      "n": 20,
+      "unit": "deg",
+      "source": "Table 7, p. 377, row LIL/ML, 5 years",
+      "definitionMatch": "same",
+      "note": "LIL/ML: Björk's mandibular line ML is the lower-border tangent through gn (Fig 3), the catalogue's tangent mandibular plane. Age group 5 y: observed ages 4.2–5.8 (Table 4, p. 373), as completed years 4–5; men's mean age 5.1 ± 0.4 y, n 20 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m56_IMPAt",
+      "sex": "M",
+      "ageBand": [
+        6,
+        8
+      ],
+      "mean": 90.1,
+      "sd": 6.7,
+      "n": 37,
+      "unit": "deg",
+      "source": "Table 7, p. 377, row LIL/ML, 7 years",
+      "definitionMatch": "same",
+      "note": "LIL/ML: Björk's mandibular line ML is the lower-border tangent through gn (Fig 3), the catalogue's tangent mandibular plane. Age group 7 y: observed ages 6.6–8.2 (Table 4, p. 373), as completed years 6–8; men's mean age 7.4 ± 0.4 y, n 37 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m56_IMPAt",
+      "sex": "M",
+      "ageBand": [
+        9,
+        11
+      ],
+      "mean": 91.3,
+      "sd": 6.8,
+      "n": 43,
+      "unit": "deg",
+      "source": "Table 7, p. 377, row LIL/ML, 10 years",
+      "definitionMatch": "same",
+      "note": "LIL/ML: Björk's mandibular line ML is the lower-border tangent through gn (Fig 3), the catalogue's tangent mandibular plane. Age group 10 y: observed ages 9.5–11.2 (Table 4, p. 373), as completed years 9–11; men's mean age 10.4 ± 0.5 y, n 43 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m56_IMPAt",
+      "sex": "M",
+      "ageBand": [
+        12,
+        13
+      ],
+      "mean": 94.5,
+      "sd": 6.2,
+      "n": 53,
+      "unit": "deg",
+      "source": "Table 7, p. 377, row LIL/ML, 13 years",
+      "definitionMatch": "same",
+      "note": "LIL/ML: Björk's mandibular line ML is the lower-border tangent through gn (Fig 3), the catalogue's tangent mandibular plane. Age group 13 y: observed ages 12.3–13.8 (Table 4, p. 373), as completed years 12–13; men's mean age 13.1 ± 0.4 y, n 53 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m56_IMPAt",
+      "sex": "M",
+      "ageBand": [
+        14,
+        17
+      ],
+      "mean": 95.6,
+      "sd": 7.1,
+      "n": 25,
+      "unit": "deg",
+      "source": "Table 7, p. 377, row LIL/ML, 16 years",
+      "definitionMatch": "same",
+      "note": "LIL/ML: Björk's mandibular line ML is the lower-border tangent through gn (Fig 3), the catalogue's tangent mandibular plane. Age group 16 y: observed ages 14.9–17.1 (Table 4, p. 373), as completed years 14–17; men's mean age 15.8 ± 0.5 y, n 25 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m56_IMPAt",
+      "sex": "M",
+      "ageBand": [
+        18,
+        20
+      ],
+      "mean": 92.2,
+      "sd": 6.1,
+      "n": 16,
+      "unit": "deg",
+      "source": "Table 7, p. 377, row LIL/ML, 19 years",
+      "definitionMatch": "same",
+      "note": "LIL/ML: Björk's mandibular line ML is the lower-border tangent through gn (Fig 3), the catalogue's tangent mandibular plane. Age group 19 y: observed ages 18.4–20.5 (Table 4, p. 373), as completed years 18–20; men's mean age 19.5 ± 0.5 y, n 16 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m56_IMPAt",
+      "sex": "M",
+      "ageBand": [
+        29,
+        32
+      ],
+      "mean": 91.6,
+      "sd": 7,
+      "n": 11,
+      "unit": "deg",
+      "source": "Table 7, p. 377, row LIL/ML, 31 years",
+      "definitionMatch": "same",
+      "note": "LIL/ML: Björk's mandibular line ML is the lower-border tangent through gn (Fig 3), the catalogue's tangent mandibular plane. Age group 31 y: observed ages 29.7–32.2 (Table 4, p. 373), as completed years 29–32; men's mean age 30.9 ± 0.6 y, n 11 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m56_IMPAt",
+      "sex": "F",
+      "ageBand": [
+        4,
+        5
+      ],
+      "mean": 88.9,
+      "sd": 4.6,
+      "n": 27,
+      "unit": "deg",
+      "source": "Table 8, p. 378, row LIL/ML, 5 years",
+      "definitionMatch": "same",
+      "note": "LIL/ML: Björk's mandibular line ML is the lower-border tangent through gn (Fig 3), the catalogue's tangent mandibular plane. Age group 5 y: observed ages 4.2–5.8 (Table 4, p. 373), as completed years 4–5; women's mean age 4.9 ± 0.3 y, n 27 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m56_IMPAt",
+      "sex": "F",
+      "ageBand": [
+        6,
+        8
+      ],
+      "mean": 93.5,
+      "sd": 4.1,
+      "n": 46,
+      "unit": "deg",
+      "source": "Table 8, p. 378, row LIL/ML, 7 years",
+      "definitionMatch": "same",
+      "note": "LIL/ML: Björk's mandibular line ML is the lower-border tangent through gn (Fig 3), the catalogue's tangent mandibular plane. Age group 7 y: observed ages 6.6–8.2 (Table 4, p. 373), as completed years 6–8; women's mean age 7.4 ± 0.4 y, n 46 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m56_IMPAt",
+      "sex": "F",
+      "ageBand": [
+        9,
+        11
+      ],
+      "mean": 96,
+      "sd": 4.4,
+      "n": 56,
+      "unit": "deg",
+      "source": "Table 8, p. 378, row LIL/ML, 10 years",
+      "definitionMatch": "same",
+      "note": "LIL/ML: Björk's mandibular line ML is the lower-border tangent through gn (Fig 3), the catalogue's tangent mandibular plane. Age group 10 y: observed ages 9.5–11.2 (Table 4, p. 373), as completed years 9–11; women's mean age 10.4 ± 0.4 y, n 56 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m56_IMPAt",
+      "sex": "F",
+      "ageBand": [
+        12,
+        13
+      ],
+      "mean": 95.1,
+      "sd": 5.1,
+      "n": 69,
+      "unit": "deg",
+      "source": "Table 8, p. 378, row LIL/ML, 13 years",
+      "definitionMatch": "same",
+      "note": "LIL/ML: Björk's mandibular line ML is the lower-border tangent through gn (Fig 3), the catalogue's tangent mandibular plane. Age group 13 y: observed ages 12.3–13.8 (Table 4, p. 373), as completed years 12–13; women's mean age 13.0 ± 0.4 y, n 69 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m56_IMPAt",
+      "sex": "F",
+      "ageBand": [
+        14,
+        17
+      ],
+      "mean": 93.4,
+      "sd": 5.3,
+      "n": 30,
+      "unit": "deg",
+      "source": "Table 8, p. 378, row LIL/ML, 16 years",
+      "definitionMatch": "same",
+      "note": "LIL/ML: Björk's mandibular line ML is the lower-border tangent through gn (Fig 3), the catalogue's tangent mandibular plane. Age group 16 y: observed ages 14.9–17.1 (Table 4, p. 373), as completed years 14–17; women's mean age 15.8 ± 0.5 y, n 30 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m56_IMPAt",
+      "sex": "F",
+      "ageBand": [
+        18,
+        20
+      ],
+      "mean": 90.9,
+      "sd": 6.7,
+      "n": 17,
+      "unit": "deg",
+      "source": "Table 8, p. 378, row LIL/ML, 19 years",
+      "definitionMatch": "same",
+      "note": "LIL/ML: Björk's mandibular line ML is the lower-border tangent through gn (Fig 3), the catalogue's tangent mandibular plane. Age group 19 y: observed ages 18.4–20.5 (Table 4, p. 373), as completed years 18–20; women's mean age 19.1 ± 0.6 y, n 17 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m56_IMPAt",
+      "sex": "F",
+      "ageBand": [
+        29,
+        32
+      ],
+      "mean": 96.3,
+      "sd": 5.1,
+      "n": 19,
+      "unit": "deg",
+      "source": "Table 8, p. 378, row LIL/ML, 31 years",
+      "definitionMatch": "same",
+      "note": "LIL/ML: Björk's mandibular line ML is the lower-border tangent through gn (Fig 3), the catalogue's tangent mandibular plane. Age group 31 y: observed ages 29.7–32.2 (Table 4, p. 373), as completed years 29–32; women's mean age 31.1 ± 0.5 y, n 19 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m53_Interincisal",
+      "sex": "M",
+      "ageBand": [
+        4,
+        5
+      ],
+      "mean": 146.1,
+      "sd": 8.4,
+      "n": 20,
+      "unit": "deg",
+      "source": "Table 7, p. 377, row UIL/LIL, 5 years",
+      "definitionMatch": "same",
+      "note": "Age group 5 y: observed ages 4.2–5.8 (Table 4, p. 373), as completed years 4–5; men's mean age 5.1 ± 0.4 y, n 20 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m53_Interincisal",
+      "sex": "M",
+      "ageBand": [
+        6,
+        8
+      ],
+      "mean": 137.1,
+      "sd": 9.1,
+      "n": 37,
+      "unit": "deg",
+      "source": "Table 7, p. 377, row UIL/LIL, 7 years",
+      "definitionMatch": "same",
+      "note": "Age group 7 y: observed ages 6.6–8.2 (Table 4, p. 373), as completed years 6–8; men's mean age 7.4 ± 0.4 y, n 37 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m53_Interincisal",
+      "sex": "M",
+      "ageBand": [
+        9,
+        11
+      ],
+      "mean": 130.7,
+      "sd": 8.3,
+      "n": 43,
+      "unit": "deg",
+      "source": "Table 7, p. 377, row UIL/LIL, 10 years",
+      "definitionMatch": "same",
+      "note": "Age group 10 y: observed ages 9.5–11.2 (Table 4, p. 373), as completed years 9–11; men's mean age 10.4 ± 0.5 y, n 43 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m53_Interincisal",
+      "sex": "M",
+      "ageBand": [
+        12,
+        13
+      ],
+      "mean": 130.4,
+      "sd": 8.4,
+      "n": 53,
+      "unit": "deg",
+      "source": "Table 7, p. 377, row UIL/LIL, 13 years",
+      "definitionMatch": "same",
+      "note": "Age group 13 y: observed ages 12.3–13.8 (Table 4, p. 373), as completed years 12–13; men's mean age 13.1 ± 0.4 y, n 53 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m53_Interincisal",
+      "sex": "M",
+      "ageBand": [
+        14,
+        17
+      ],
+      "mean": 131,
+      "sd": 8.3,
+      "n": 25,
+      "unit": "deg",
+      "source": "Table 7, p. 377, row UIL/LIL, 16 years",
+      "definitionMatch": "same",
+      "note": "Age group 16 y: observed ages 14.9–17.1 (Table 4, p. 373), as completed years 14–17; men's mean age 15.8 ± 0.5 y, n 25 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m53_Interincisal",
+      "sex": "M",
+      "ageBand": [
+        18,
+        20
+      ],
+      "mean": 134.5,
+      "sd": 8.7,
+      "n": 16,
+      "unit": "deg",
+      "source": "Table 7, p. 377, row UIL/LIL, 19 years",
+      "definitionMatch": "same",
+      "note": "Age group 19 y: observed ages 18.4–20.5 (Table 4, p. 373), as completed years 18–20; men's mean age 19.5 ± 0.5 y, n 16 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m53_Interincisal",
+      "sex": "M",
+      "ageBand": [
+        29,
+        32
+      ],
+      "mean": 137.9,
+      "sd": 8.9,
+      "n": 11,
+      "unit": "deg",
+      "source": "Table 7, p. 377, row UIL/LIL, 31 years",
+      "definitionMatch": "same",
+      "note": "Age group 31 y: observed ages 29.7–32.2 (Table 4, p. 373), as completed years 29–32; men's mean age 30.9 ± 0.6 y, n 11 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m53_Interincisal",
+      "sex": "F",
+      "ageBand": [
+        4,
+        5
+      ],
+      "mean": 142.3,
+      "sd": 6.6,
+      "n": 27,
+      "unit": "deg",
+      "source": "Table 8, p. 378, row UIL/LIL, 5 years",
+      "definitionMatch": "same",
+      "note": "Age group 5 y: observed ages 4.2–5.8 (Table 4, p. 373), as completed years 4–5; women's mean age 4.9 ± 0.3 y, n 27 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m53_Interincisal",
+      "sex": "F",
+      "ageBand": [
+        6,
+        8
+      ],
+      "mean": 133.3,
+      "sd": 7.5,
+      "n": 46,
+      "unit": "deg",
+      "source": "Table 8, p. 378, row UIL/LIL, 7 years",
+      "definitionMatch": "same",
+      "note": "Age group 7 y: observed ages 6.6–8.2 (Table 4, p. 373), as completed years 6–8; women's mean age 7.4 ± 0.4 y, n 46 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m53_Interincisal",
+      "sex": "F",
+      "ageBand": [
+        9,
+        11
+      ],
+      "mean": 129.2,
+      "sd": 6.8,
+      "n": 56,
+      "unit": "deg",
+      "source": "Table 8, p. 378, row UIL/LIL, 10 years",
+      "definitionMatch": "same",
+      "note": "Age group 10 y: observed ages 9.5–11.2 (Table 4, p. 373), as completed years 9–11; women's mean age 10.4 ± 0.4 y, n 56 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m53_Interincisal",
+      "sex": "F",
+      "ageBand": [
+        12,
+        13
+      ],
+      "mean": 131.2,
+      "sd": 7.6,
+      "n": 69,
+      "unit": "deg",
+      "source": "Table 8, p. 378, row UIL/LIL, 13 years",
+      "definitionMatch": "same",
+      "note": "Age group 13 y: observed ages 12.3–13.8 (Table 4, p. 373), as completed years 12–13; women's mean age 13.0 ± 0.4 y, n 69 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m53_Interincisal",
+      "sex": "F",
+      "ageBand": [
+        14,
+        17
+      ],
+      "mean": 134.8,
+      "sd": 7.5,
+      "n": 30,
+      "unit": "deg",
+      "source": "Table 8, p. 378, row UIL/LIL, 16 years",
+      "definitionMatch": "same",
+      "note": "Age group 16 y: observed ages 14.9–17.1 (Table 4, p. 373), as completed years 14–17; women's mean age 15.8 ± 0.5 y, n 30 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m53_Interincisal",
+      "sex": "F",
+      "ageBand": [
+        18,
+        20
+      ],
+      "mean": 132.9,
+      "sd": 7.7,
+      "n": 17,
+      "unit": "deg",
+      "source": "Table 8, p. 378, row UIL/LIL, 19 years",
+      "definitionMatch": "same",
+      "note": "Age group 19 y: observed ages 18.4–20.5 (Table 4, p. 373), as completed years 18–20; women's mean age 19.1 ± 0.6 y, n 17 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m53_Interincisal",
+      "sex": "F",
+      "ageBand": [
+        29,
+        32
+      ],
+      "mean": 134.6,
+      "sd": 6.1,
+      "n": 19,
+      "unit": "deg",
+      "source": "Table 8, p. 378, row UIL/LIL, 31 years",
+      "definitionMatch": "same",
+      "note": "Age group 31 y: observed ages 29.7–32.2 (Table 4, p. 373), as completed years 29–32; women's mean age 31.1 ± 0.5 y, n 19 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m47_U1NAdeg",
+      "sex": "M",
+      "ageBand": [
+        4,
+        5
+      ],
+      "mean": 10.9,
+      "sd": 6.2,
+      "n": 20,
+      "unit": "deg",
+      "source": "Table 7, p. 377, row UIL/n–ss, 5 years",
+      "definitionMatch": "same",
+      "note": "Age group 5 y: observed ages 4.2–5.8 (Table 4, p. 373), as completed years 4–5; men's mean age 5.1 ± 0.4 y, n 20 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m47_U1NAdeg",
+      "sex": "M",
+      "ageBand": [
+        6,
+        8
+      ],
+      "mean": 18.6,
+      "sd": 6.1,
+      "n": 37,
+      "unit": "deg",
+      "source": "Table 7, p. 377, row UIL/n–ss, 7 years",
+      "definitionMatch": "same",
+      "note": "Age group 7 y: observed ages 6.6–8.2 (Table 4, p. 373), as completed years 6–8; men's mean age 7.4 ± 0.4 y, n 37 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m47_U1NAdeg",
+      "sex": "M",
+      "ageBand": [
+        9,
+        11
+      ],
+      "mean": 22.5,
+      "sd": 5.1,
+      "n": 43,
+      "unit": "deg",
+      "source": "Table 7, p. 377, row UIL/n–ss, 10 years",
+      "definitionMatch": "same",
+      "note": "Age group 10 y: observed ages 9.5–11.2 (Table 4, p. 373), as completed years 9–11; men's mean age 10.4 ± 0.5 y, n 43 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m47_U1NAdeg",
+      "sex": "M",
+      "ageBand": [
+        12,
+        13
+      ],
+      "mean": 22.1,
+      "sd": 5.9,
+      "n": 53,
+      "unit": "deg",
+      "source": "Table 7, p. 377, row UIL/n–ss, 13 years",
+      "definitionMatch": "same",
+      "note": "Age group 13 y: observed ages 12.3–13.8 (Table 4, p. 373), as completed years 12–13; men's mean age 13.1 ± 0.4 y, n 53 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m47_U1NAdeg",
+      "sex": "M",
+      "ageBand": [
+        14,
+        17
+      ],
+      "mean": 22,
+      "sd": 5.2,
+      "n": 25,
+      "unit": "deg",
+      "source": "Table 7, p. 377, row UIL/n–ss, 16 years",
+      "definitionMatch": "same",
+      "note": "Age group 16 y: observed ages 14.9–17.1 (Table 4, p. 373), as completed years 14–17; men's mean age 15.8 ± 0.5 y, n 25 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m47_U1NAdeg",
+      "sex": "M",
+      "ageBand": [
+        18,
+        20
+      ],
+      "mean": 19.7,
+      "sd": 6.8,
+      "n": 16,
+      "unit": "deg",
+      "source": "Table 7, p. 377, row UIL/n–ss, 19 years",
+      "definitionMatch": "same",
+      "note": "Age group 19 y: observed ages 18.4–20.5 (Table 4, p. 373), as completed years 18–20; men's mean age 19.5 ± 0.5 y, n 16 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m47_U1NAdeg",
+      "sex": "M",
+      "ageBand": [
+        29,
+        32
+      ],
+      "mean": 20.5,
+      "sd": 8.2,
+      "n": 11,
+      "unit": "deg",
+      "source": "Table 7, p. 377, row UIL/n–ss, 31 years",
+      "definitionMatch": "same",
+      "note": "Age group 31 y: observed ages 29.7–32.2 (Table 4, p. 373), as completed years 29–32; men's mean age 30.9 ± 0.6 y, n 11 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m47_U1NAdeg",
+      "sex": "F",
+      "ageBand": [
+        4,
+        5
+      ],
+      "mean": 12,
+      "sd": 5.1,
+      "n": 27,
+      "unit": "deg",
+      "source": "Table 8, p. 378, row UIL/n–ss, 5 years",
+      "definitionMatch": "same",
+      "note": "Age group 5 y: observed ages 4.2–5.8 (Table 4, p. 373), as completed years 4–5; women's mean age 4.9 ± 0.3 y, n 27 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m47_U1NAdeg",
+      "sex": "F",
+      "ageBand": [
+        6,
+        8
+      ],
+      "mean": 18.8,
+      "sd": 5.7,
+      "n": 46,
+      "unit": "deg",
+      "source": "Table 8, p. 378, row UIL/n–ss, 7 years",
+      "definitionMatch": "same",
+      "note": "Age group 7 y: observed ages 6.6–8.2 (Table 4, p. 373), as completed years 6–8; women's mean age 7.4 ± 0.4 y, n 46 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m47_U1NAdeg",
+      "sex": "F",
+      "ageBand": [
+        9,
+        11
+      ],
+      "mean": 20.6,
+      "sd": 5.4,
+      "n": 56,
+      "unit": "deg",
+      "source": "Table 8, p. 378, row UIL/n–ss, 10 years",
+      "definitionMatch": "same",
+      "note": "Age group 10 y: observed ages 9.5–11.2 (Table 4, p. 373), as completed years 9–11; women's mean age 10.4 ± 0.4 y, n 56 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m47_U1NAdeg",
+      "sex": "F",
+      "ageBand": [
+        12,
+        13
+      ],
+      "mean": 20.4,
+      "sd": 4.9,
+      "n": 69,
+      "unit": "deg",
+      "source": "Table 8, p. 378, row UIL/n–ss, 13 years",
+      "definitionMatch": "same",
+      "note": "Age group 13 y: observed ages 12.3–13.8 (Table 4, p. 373), as completed years 12–13; women's mean age 13.0 ± 0.4 y, n 69 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m47_U1NAdeg",
+      "sex": "F",
+      "ageBand": [
+        14,
+        17
+      ],
+      "mean": 20.1,
+      "sd": 4.8,
+      "n": 30,
+      "unit": "deg",
+      "source": "Table 8, p. 378, row UIL/n–ss, 16 years",
+      "definitionMatch": "same",
+      "note": "Age group 16 y: observed ages 14.9–17.1 (Table 4, p. 373), as completed years 14–17; women's mean age 15.8 ± 0.5 y, n 30 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m47_U1NAdeg",
+      "sex": "F",
+      "ageBand": [
+        18,
+        20
+      ],
+      "mean": 19.9,
+      "sd": 6,
+      "n": 17,
+      "unit": "deg",
+      "source": "Table 8, p. 378, row UIL/n–ss, 19 years",
+      "definitionMatch": "same",
+      "note": "Age group 19 y: observed ages 18.4–20.5 (Table 4, p. 373), as completed years 18–20; women's mean age 19.1 ± 0.6 y, n 17 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m47_U1NAdeg",
+      "sex": "F",
+      "ageBand": [
+        29,
+        32
+      ],
+      "mean": 18.5,
+      "sd": 4.3,
+      "n": 19,
+      "unit": "deg",
+      "source": "Table 8, p. 378, row UIL/n–ss, 31 years",
+      "definitionMatch": "same",
+      "note": "Age group 31 y: observed ages 29.7–32.2 (Table 4, p. 373), as completed years 29–32; women's mean age 31.1 ± 0.5 y, n 19 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m50_L1NBdeg",
+      "sex": "M",
+      "ageBand": [
+        4,
+        5
+      ],
+      "mean": 18.4,
+      "sd": 5.8,
+      "n": 20,
+      "unit": "deg",
+      "source": "Table 7, p. 377, row LIL/n–sm, 5 years",
+      "definitionMatch": "same",
+      "note": "Age group 5 y: observed ages 4.2–5.8 (Table 4, p. 373), as completed years 4–5; men's mean age 5.1 ± 0.4 y, n 20 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m50_L1NBdeg",
+      "sex": "M",
+      "ageBand": [
+        6,
+        8
+      ],
+      "mean": 21.2,
+      "sd": 5.8,
+      "n": 37,
+      "unit": "deg",
+      "source": "Table 7, p. 377, row LIL/n–sm, 7 years",
+      "definitionMatch": "same",
+      "note": "Age group 7 y: observed ages 6.6–8.2 (Table 4, p. 373), as completed years 6–8; men's mean age 7.4 ± 0.4 y, n 37 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m50_L1NBdeg",
+      "sex": "M",
+      "ageBand": [
+        9,
+        11
+      ],
+      "mean": 24,
+      "sd": 5.8,
+      "n": 43,
+      "unit": "deg",
+      "source": "Table 7, p. 377, row LIL/n–sm, 10 years",
+      "definitionMatch": "same",
+      "note": "Age group 10 y: observed ages 9.5–11.2 (Table 4, p. 373), as completed years 9–11; men's mean age 10.4 ± 0.5 y, n 43 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m50_L1NBdeg",
+      "sex": "M",
+      "ageBand": [
+        12,
+        13
+      ],
+      "mean": 24.9,
+      "sd": 6.1,
+      "n": 53,
+      "unit": "deg",
+      "source": "Table 7, p. 377, row LIL/n–sm, 13 years",
+      "definitionMatch": "same",
+      "note": "Age group 13 y: observed ages 12.3–13.8 (Table 4, p. 373), as completed years 12–13; men's mean age 13.1 ± 0.4 y, n 53 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m50_L1NBdeg",
+      "sex": "M",
+      "ageBand": [
+        14,
+        17
+      ],
+      "mean": 24.9,
+      "sd": 7,
+      "n": 25,
+      "unit": "deg",
+      "source": "Table 7, p. 377, row LIL/n–sm, 16 years",
+      "definitionMatch": "same",
+      "note": "Age group 16 y: observed ages 14.9–17.1 (Table 4, p. 373), as completed years 14–17; men's mean age 15.8 ± 0.5 y, n 25 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m50_L1NBdeg",
+      "sex": "M",
+      "ageBand": [
+        18,
+        20
+      ],
+      "mean": 23.1,
+      "sd": 5.1,
+      "n": 16,
+      "unit": "deg",
+      "source": "Table 7, p. 377, row LIL/n–sm, 19 years",
+      "definitionMatch": "same",
+      "note": "Age group 19 y: observed ages 18.4–20.5 (Table 4, p. 373), as completed years 18–20; men's mean age 19.5 ± 0.5 y, n 16 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m50_L1NBdeg",
+      "sex": "M",
+      "ageBand": [
+        29,
+        32
+      ],
+      "mean": 20.3,
+      "sd": 8,
+      "n": 11,
+      "unit": "deg",
+      "source": "Table 7, p. 377, row LIL/n–sm, 31 years",
+      "definitionMatch": "same",
+      "note": "Age group 31 y: observed ages 29.7–32.2 (Table 4, p. 373), as completed years 29–32; men's mean age 30.9 ± 0.6 y, n 11 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m50_L1NBdeg",
+      "sex": "F",
+      "ageBand": [
+        4,
+        5
+      ],
+      "mean": 20.5,
+      "sd": 3.9,
+      "n": 27,
+      "unit": "deg",
+      "source": "Table 8, p. 378, row LIL/n–sm, 5 years",
+      "definitionMatch": "same",
+      "note": "Age group 5 y: observed ages 4.2–5.8 (Table 4, p. 373), as completed years 4–5; women's mean age 4.9 ± 0.3 y, n 27 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m50_L1NBdeg",
+      "sex": "F",
+      "ageBand": [
+        6,
+        8
+      ],
+      "mean": 24.1,
+      "sd": 4.3,
+      "n": 46,
+      "unit": "deg",
+      "source": "Table 8, p. 378, row LIL/n–sm, 7 years",
+      "definitionMatch": "same",
+      "note": "Age group 7 y: observed ages 6.6–8.2 (Table 4, p. 373), as completed years 6–8; women's mean age 7.4 ± 0.4 y, n 46 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m50_L1NBdeg",
+      "sex": "F",
+      "ageBand": [
+        9,
+        11
+      ],
+      "mean": 26.6,
+      "sd": 4.1,
+      "n": 56,
+      "unit": "deg",
+      "source": "Table 8, p. 378, row LIL/n–sm, 10 years",
+      "definitionMatch": "same",
+      "note": "Age group 10 y: observed ages 9.5–11.2 (Table 4, p. 373), as completed years 9–11; women's mean age 10.4 ± 0.4 y, n 56 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m50_L1NBdeg",
+      "sex": "F",
+      "ageBand": [
+        12,
+        13
+      ],
+      "mean": 25.5,
+      "sd": 4.8,
+      "n": 69,
+      "unit": "deg",
+      "source": "Table 8, p. 378, row LIL/n–sm, 13 years",
+      "definitionMatch": "same",
+      "note": "Age group 13 y: observed ages 12.3–13.8 (Table 4, p. 373), as completed years 12–13; women's mean age 13.0 ± 0.4 y, n 69 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m50_L1NBdeg",
+      "sex": "F",
+      "ageBand": [
+        14,
+        17
+      ],
+      "mean": 23.1,
+      "sd": 5.4,
+      "n": 30,
+      "unit": "deg",
+      "source": "Table 8, p. 378, row LIL/n–sm, 16 years",
+      "definitionMatch": "same",
+      "note": "Age group 16 y: observed ages 14.9–17.1 (Table 4, p. 373), as completed years 14–17; women's mean age 15.8 ± 0.5 y, n 30 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m50_L1NBdeg",
+      "sex": "F",
+      "ageBand": [
+        18,
+        20
+      ],
+      "mean": 22.9,
+      "sd": 5,
+      "n": 17,
+      "unit": "deg",
+      "source": "Table 8, p. 378, row LIL/n–sm, 19 years",
+      "definitionMatch": "same",
+      "note": "Age group 19 y: observed ages 18.4–20.5 (Table 4, p. 373), as completed years 18–20; women's mean age 19.1 ± 0.6 y, n 17 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m50_L1NBdeg",
+      "sex": "F",
+      "ageBand": [
+        29,
+        32
+      ],
+      "mean": 24.2,
+      "sd": 4.9,
+      "n": 19,
+      "unit": "deg",
+      "source": "Table 8, p. 378, row LIL/n–sm, 31 years",
+      "definitionMatch": "same",
+      "note": "Age group 31 y: observed ages 29.7–32.2 (Table 4, p. 373), as completed years 29–32; women's mean age 31.1 ± 0.5 y, n 19 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m46_U1NAmm",
+      "sex": "M",
+      "ageBand": [
+        4,
+        5
+      ],
+      "mean": -0.2,
+      "sd": 1.6,
+      "n": 20,
+      "unit": "mm",
+      "source": "Table 7, p. 377, row UIL/n–ss (mm), 5 years",
+      "definitionMatch": "close",
+      "definitionNote": "UIL/n–ss (mm): the paper does not say which incisor point the distance is taken from, nor its sign (merge notes).",
+      "note": "Age group 5 y: observed ages 4.2–5.8 (Table 4, p. 373), as completed years 4–5; men's mean age 5.1 ± 0.4 y, n 20 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m46_U1NAmm",
+      "sex": "M",
+      "ageBand": [
+        6,
+        8
+      ],
+      "mean": 1.3,
+      "sd": 2.3,
+      "n": 37,
+      "unit": "mm",
+      "source": "Table 7, p. 377, row UIL/n–ss (mm), 7 years",
+      "definitionMatch": "close",
+      "definitionNote": "UIL/n–ss (mm): the paper does not say which incisor point the distance is taken from, nor its sign (merge notes).",
+      "note": "Age group 7 y: observed ages 6.6–8.2 (Table 4, p. 373), as completed years 6–8; men's mean age 7.4 ± 0.4 y, n 37 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m46_U1NAmm",
+      "sex": "M",
+      "ageBand": [
+        9,
+        11
+      ],
+      "mean": 3.9,
+      "sd": 2,
+      "n": 43,
+      "unit": "mm",
+      "source": "Table 7, p. 377, row UIL/n–ss (mm), 10 years",
+      "definitionMatch": "close",
+      "definitionNote": "UIL/n–ss (mm): the paper does not say which incisor point the distance is taken from, nor its sign (merge notes).",
+      "note": "Age group 10 y: observed ages 9.5–11.2 (Table 4, p. 373), as completed years 9–11; men's mean age 10.4 ± 0.5 y, n 43 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m46_U1NAmm",
+      "sex": "M",
+      "ageBand": [
+        12,
+        13
+      ],
+      "mean": 4.1,
+      "sd": 2,
+      "n": 53,
+      "unit": "mm",
+      "source": "Table 7, p. 377, row UIL/n–ss (mm), 13 years",
+      "definitionMatch": "close",
+      "definitionNote": "UIL/n–ss (mm): the paper does not say which incisor point the distance is taken from, nor its sign (merge notes).",
+      "note": "Age group 13 y: observed ages 12.3–13.8 (Table 4, p. 373), as completed years 12–13; men's mean age 13.1 ± 0.4 y, n 53 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m46_U1NAmm",
+      "sex": "M",
+      "ageBand": [
+        14,
+        17
+      ],
+      "mean": 4,
+      "sd": 2.2,
+      "n": 25,
+      "unit": "mm",
+      "source": "Table 7, p. 377, row UIL/n–ss (mm), 16 years",
+      "definitionMatch": "close",
+      "definitionNote": "UIL/n–ss (mm): the paper does not say which incisor point the distance is taken from, nor its sign (merge notes).",
+      "note": "Age group 16 y: observed ages 14.9–17.1 (Table 4, p. 373), as completed years 14–17; men's mean age 15.8 ± 0.5 y, n 25 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m46_U1NAmm",
+      "sex": "M",
+      "ageBand": [
+        18,
+        20
+      ],
+      "mean": 4.1,
+      "sd": 2.8,
+      "n": 16,
+      "unit": "mm",
+      "source": "Table 7, p. 377, row UIL/n–ss (mm), 19 years",
+      "definitionMatch": "close",
+      "definitionNote": "UIL/n–ss (mm): the paper does not say which incisor point the distance is taken from, nor its sign (merge notes).",
+      "note": "Age group 19 y: observed ages 18.4–20.5 (Table 4, p. 373), as completed years 18–20; men's mean age 19.5 ± 0.5 y, n 16 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m46_U1NAmm",
+      "sex": "M",
+      "ageBand": [
+        29,
+        32
+      ],
+      "mean": 3.7,
+      "sd": 2.7,
+      "n": 11,
+      "unit": "mm",
+      "source": "Table 7, p. 377, row UIL/n–ss (mm), 31 years",
+      "definitionMatch": "close",
+      "definitionNote": "UIL/n–ss (mm): the paper does not say which incisor point the distance is taken from, nor its sign (merge notes).",
+      "note": "Age group 31 y: observed ages 29.7–32.2 (Table 4, p. 373), as completed years 29–32; men's mean age 30.9 ± 0.6 y, n 11 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m46_U1NAmm",
+      "sex": "F",
+      "ageBand": [
+        4,
+        5
+      ],
+      "mean": 0.2,
+      "sd": 1.5,
+      "n": 27,
+      "unit": "mm",
+      "source": "Table 8, p. 378, row UIL/n–ss (mm), 5 years",
+      "definitionMatch": "close",
+      "definitionNote": "UIL/n–ss (mm): the paper does not say which incisor point the distance is taken from, nor its sign (merge notes).",
+      "note": "Age group 5 y: observed ages 4.2–5.8 (Table 4, p. 373), as completed years 4–5; women's mean age 4.9 ± 0.3 y, n 27 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m46_U1NAmm",
+      "sex": "F",
+      "ageBand": [
+        6,
+        8
+      ],
+      "mean": 1.6,
+      "sd": 2.1,
+      "n": 46,
+      "unit": "mm",
+      "source": "Table 8, p. 378, row UIL/n–ss (mm), 7 years",
+      "definitionMatch": "close",
+      "definitionNote": "UIL/n–ss (mm): the paper does not say which incisor point the distance is taken from, nor its sign (merge notes).",
+      "note": "Age group 7 y: observed ages 6.6–8.2 (Table 4, p. 373), as completed years 6–8; women's mean age 7.4 ± 0.4 y, n 46 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m46_U1NAmm",
+      "sex": "F",
+      "ageBand": [
+        9,
+        11
+      ],
+      "mean": 3.1,
+      "sd": 2,
+      "n": 56,
+      "unit": "mm",
+      "source": "Table 8, p. 378, row UIL/n–ss (mm), 10 years",
+      "definitionMatch": "close",
+      "definitionNote": "UIL/n–ss (mm): the paper does not say which incisor point the distance is taken from, nor its sign (merge notes).",
+      "note": "Age group 10 y: observed ages 9.5–11.2 (Table 4, p. 373), as completed years 9–11; women's mean age 10.4 ± 0.4 y, n 56 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m46_U1NAmm",
+      "sex": "F",
+      "ageBand": [
+        12,
+        13
+      ],
+      "mean": 4.6,
+      "sd": 1.7,
+      "n": 69,
+      "unit": "mm",
+      "source": "Table 8, p. 378, row UIL/n–ss (mm), 13 years",
+      "definitionMatch": "close",
+      "definitionNote": "UIL/n–ss (mm): the paper does not say which incisor point the distance is taken from, nor its sign (merge notes).",
+      "note": "Age group 13 y: observed ages 12.3–13.8 (Table 4, p. 373), as completed years 12–13; women's mean age 13.0 ± 0.4 y, n 69 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m46_U1NAmm",
+      "sex": "F",
+      "ageBand": [
+        14,
+        17
+      ],
+      "mean": 4,
+      "sd": 1.8,
+      "n": 30,
+      "unit": "mm",
+      "source": "Table 8, p. 378, row UIL/n–ss (mm), 16 years",
+      "definitionMatch": "close",
+      "definitionNote": "UIL/n–ss (mm): the paper does not say which incisor point the distance is taken from, nor its sign (merge notes).",
+      "note": "Age group 16 y: observed ages 14.9–17.1 (Table 4, p. 373), as completed years 14–17; women's mean age 15.8 ± 0.5 y, n 30 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m46_U1NAmm",
+      "sex": "F",
+      "ageBand": [
+        18,
+        20
+      ],
+      "mean": 3.2,
+      "sd": 2,
+      "n": 17,
+      "unit": "mm",
+      "source": "Table 8, p. 378, row UIL/n–ss (mm), 19 years",
+      "definitionMatch": "close",
+      "definitionNote": "UIL/n–ss (mm): the paper does not say which incisor point the distance is taken from, nor its sign (merge notes).",
+      "note": "Age group 19 y: observed ages 18.4–20.5 (Table 4, p. 373), as completed years 18–20; women's mean age 19.1 ± 0.6 y, n 17 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m46_U1NAmm",
+      "sex": "F",
+      "ageBand": [
+        29,
+        32
+      ],
+      "mean": 3.4,
+      "sd": 1.7,
+      "n": 19,
+      "unit": "mm",
+      "source": "Table 8, p. 378, row UIL/n–ss (mm), 31 years",
+      "definitionMatch": "close",
+      "definitionNote": "UIL/n–ss (mm): the paper does not say which incisor point the distance is taken from, nor its sign (merge notes).",
+      "note": "Age group 31 y: observed ages 29.7–32.2 (Table 4, p. 373), as completed years 29–32; women's mean age 31.1 ± 0.5 y, n 19 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m49_L1NBmm",
+      "sex": "M",
+      "ageBand": [
+        4,
+        5
+      ],
+      "mean": 2.3,
+      "sd": 1.3,
+      "n": 20,
+      "unit": "mm",
+      "source": "Table 7, p. 377, row LIL/n–sm (mm), 5 years",
+      "definitionMatch": "close",
+      "definitionNote": "LIL/n–sm (mm): the paper does not say which incisor point the distance is taken from, nor its sign (merge notes).",
+      "note": "Age group 5 y: observed ages 4.2–5.8 (Table 4, p. 373), as completed years 4–5; men's mean age 5.1 ± 0.4 y, n 20 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m49_L1NBmm",
+      "sex": "M",
+      "ageBand": [
+        6,
+        8
+      ],
+      "mean": 2.8,
+      "sd": 1.6,
+      "n": 37,
+      "unit": "mm",
+      "source": "Table 7, p. 377, row LIL/n–sm (mm), 7 years",
+      "definitionMatch": "close",
+      "definitionNote": "LIL/n–sm (mm): the paper does not say which incisor point the distance is taken from, nor its sign (merge notes).",
+      "note": "Age group 7 y: observed ages 6.6–8.2 (Table 4, p. 373), as completed years 6–8; men's mean age 7.4 ± 0.4 y, n 37 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m49_L1NBmm",
+      "sex": "M",
+      "ageBand": [
+        9,
+        11
+      ],
+      "mean": 4.2,
+      "sd": 1.6,
+      "n": 43,
+      "unit": "mm",
+      "source": "Table 7, p. 377, row LIL/n–sm (mm), 10 years",
+      "definitionMatch": "close",
+      "definitionNote": "LIL/n–sm (mm): the paper does not say which incisor point the distance is taken from, nor its sign (merge notes).",
+      "note": "Age group 10 y: observed ages 9.5–11.2 (Table 4, p. 373), as completed years 9–11; men's mean age 10.4 ± 0.5 y, n 43 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m49_L1NBmm",
+      "sex": "M",
+      "ageBand": [
+        12,
+        13
+      ],
+      "mean": 4.4,
+      "sd": 2.4,
+      "n": 53,
+      "unit": "mm",
+      "source": "Table 7, p. 377, row LIL/n–sm (mm), 13 years",
+      "definitionMatch": "close",
+      "definitionNote": "LIL/n–sm (mm): the paper does not say which incisor point the distance is taken from, nor its sign (merge notes).",
+      "note": "Age group 13 y: observed ages 12.3–13.8 (Table 4, p. 373), as completed years 12–13; men's mean age 13.1 ± 0.4 y, n 53 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m49_L1NBmm",
+      "sex": "M",
+      "ageBand": [
+        14,
+        17
+      ],
+      "mean": 4.4,
+      "sd": 2.8,
+      "n": 25,
+      "unit": "mm",
+      "source": "Table 7, p. 377, row LIL/n–sm (mm), 16 years",
+      "definitionMatch": "close",
+      "definitionNote": "LIL/n–sm (mm): the paper does not say which incisor point the distance is taken from, nor its sign (merge notes).",
+      "note": "Age group 16 y: observed ages 14.9–17.1 (Table 4, p. 373), as completed years 14–17; men's mean age 15.8 ± 0.5 y, n 25 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m49_L1NBmm",
+      "sex": "M",
+      "ageBand": [
+        18,
+        20
+      ],
+      "mean": 5.1,
+      "sd": 2.1,
+      "n": 16,
+      "unit": "mm",
+      "source": "Table 7, p. 377, row LIL/n–sm (mm), 19 years",
+      "definitionMatch": "close",
+      "definitionNote": "LIL/n–sm (mm): the paper does not say which incisor point the distance is taken from, nor its sign (merge notes).",
+      "note": "Age group 19 y: observed ages 18.4–20.5 (Table 4, p. 373), as completed years 18–20; men's mean age 19.5 ± 0.5 y, n 16 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m49_L1NBmm",
+      "sex": "M",
+      "ageBand": [
+        29,
+        32
+      ],
+      "mean": 3.1,
+      "sd": 2.7,
+      "n": 11,
+      "unit": "mm",
+      "source": "Table 7, p. 377, row LIL/n–sm (mm), 31 years",
+      "definitionMatch": "close",
+      "definitionNote": "LIL/n–sm (mm): the paper does not say which incisor point the distance is taken from, nor its sign (merge notes).",
+      "note": "Age group 31 y: observed ages 29.7–32.2 (Table 4, p. 373), as completed years 29–32; men's mean age 30.9 ± 0.6 y, n 11 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m49_L1NBmm",
+      "sex": "F",
+      "ageBand": [
+        4,
+        5
+      ],
+      "mean": 2.8,
+      "sd": 1.8,
+      "n": 27,
+      "unit": "mm",
+      "source": "Table 8, p. 378, row LIL/n–sm (mm), 5 years",
+      "definitionMatch": "close",
+      "definitionNote": "LIL/n–sm (mm): the paper does not say which incisor point the distance is taken from, nor its sign (merge notes).",
+      "note": "Age group 5 y: observed ages 4.2–5.8 (Table 4, p. 373), as completed years 4–5; women's mean age 4.9 ± 0.3 y, n 27 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m49_L1NBmm",
+      "sex": "F",
+      "ageBand": [
+        6,
+        8
+      ],
+      "mean": 3.5,
+      "sd": 1.6,
+      "n": 46,
+      "unit": "mm",
+      "source": "Table 8, p. 378, row LIL/n–sm (mm), 7 years",
+      "definitionMatch": "close",
+      "definitionNote": "LIL/n–sm (mm): the paper does not say which incisor point the distance is taken from, nor its sign (merge notes).",
+      "note": "Age group 7 y: observed ages 6.6–8.2 (Table 4, p. 373), as completed years 6–8; women's mean age 7.4 ± 0.4 y, n 46 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m49_L1NBmm",
+      "sex": "F",
+      "ageBand": [
+        9,
+        11
+      ],
+      "mean": 4.7,
+      "sd": 1.5,
+      "n": 56,
+      "unit": "mm",
+      "source": "Table 8, p. 378, row LIL/n–sm (mm), 10 years",
+      "definitionMatch": "close",
+      "definitionNote": "LIL/n–sm (mm): the paper does not say which incisor point the distance is taken from, nor its sign (merge notes).",
+      "note": "Age group 10 y: observed ages 9.5–11.2 (Table 4, p. 373), as completed years 9–11; women's mean age 10.4 ± 0.4 y, n 56 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m49_L1NBmm",
+      "sex": "F",
+      "ageBand": [
+        12,
+        13
+      ],
+      "mean": 4.5,
+      "sd": 1.8,
+      "n": 69,
+      "unit": "mm",
+      "source": "Table 8, p. 378, row LIL/n–sm (mm), 13 years",
+      "definitionMatch": "close",
+      "definitionNote": "LIL/n–sm (mm): the paper does not say which incisor point the distance is taken from, nor its sign (merge notes).",
+      "note": "Age group 13 y: observed ages 12.3–13.8 (Table 4, p. 373), as completed years 12–13; women's mean age 13.0 ± 0.4 y, n 69 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m49_L1NBmm",
+      "sex": "F",
+      "ageBand": [
+        14,
+        17
+      ],
+      "mean": 4.1,
+      "sd": 1.9,
+      "n": 30,
+      "unit": "mm",
+      "source": "Table 8, p. 378, row LIL/n–sm (mm), 16 years",
+      "definitionMatch": "close",
+      "definitionNote": "LIL/n–sm (mm): the paper does not say which incisor point the distance is taken from, nor its sign (merge notes).",
+      "note": "Age group 16 y: observed ages 14.9–17.1 (Table 4, p. 373), as completed years 14–17; women's mean age 15.8 ± 0.5 y, n 30 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m49_L1NBmm",
+      "sex": "F",
+      "ageBand": [
+        18,
+        20
+      ],
+      "mean": 3.7,
+      "sd": 1.8,
+      "n": 17,
+      "unit": "mm",
+      "source": "Table 8, p. 378, row LIL/n–sm (mm), 19 years",
+      "definitionMatch": "close",
+      "definitionNote": "LIL/n–sm (mm): the paper does not say which incisor point the distance is taken from, nor its sign (merge notes).",
+      "note": "Age group 19 y: observed ages 18.4–20.5 (Table 4, p. 373), as completed years 18–20; women's mean age 19.1 ± 0.6 y, n 17 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m49_L1NBmm",
+      "sex": "F",
+      "ageBand": [
+        29,
+        32
+      ],
+      "mean": 4.5,
+      "sd": 2,
+      "n": 19,
+      "unit": "mm",
+      "source": "Table 8, p. 378, row LIL/n–sm (mm), 31 years",
+      "definitionMatch": "close",
+      "definitionNote": "LIL/n–sm (mm): the paper does not say which incisor point the distance is taken from, nor its sign (merge notes).",
+      "note": "Age group 31 y: observed ages 29.7–32.2 (Table 4, p. 373), as completed years 29–32; women's mean age 31.1 ± 0.5 y, n 19 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m83_ChinThick",
+      "sex": "M",
+      "ageBand": [
+        4,
+        5
+      ],
+      "mean": 10.1,
+      "sd": 1.4,
+      "n": 20,
+      "unit": "mm",
+      "source": "Table 7, p. 377, row SPg–npgL, 5 years",
+      "definitionMatch": "close",
+      "definitionNote": "Close (ruling P50, 8 Oct): the same quantity — the soft-tissue thickness of the chin — at another level and direction. SPg–npgL is the perpendicular distance from soft-tissue pogonion (the chin point of the nose-chin tangent) to the bony N–Pog line, i.e. at pogonion level; the catalogue's #83 (Holdaway) is measured at suprapogonion level, horizontally between the bony and the soft-tissue facial lines.",
+      "note": "Age group 5 y: observed ages 4.2–5.8 (Table 4, p. 373), as completed years 4–5; men's mean age 5.1 ± 0.4 y, n 20 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m83_ChinThick",
+      "sex": "M",
+      "ageBand": [
+        6,
+        8
+      ],
+      "mean": 10.4,
+      "sd": 1.7,
+      "n": 37,
+      "unit": "mm",
+      "source": "Table 7, p. 377, row SPg–npgL, 7 years",
+      "definitionMatch": "close",
+      "definitionNote": "Close (ruling P50, 8 Oct): the same quantity — the soft-tissue thickness of the chin — at another level and direction. SPg–npgL is the perpendicular distance from soft-tissue pogonion (the chin point of the nose-chin tangent) to the bony N–Pog line, i.e. at pogonion level; the catalogue's #83 (Holdaway) is measured at suprapogonion level, horizontally between the bony and the soft-tissue facial lines.",
+      "note": "Age group 7 y: observed ages 6.6–8.2 (Table 4, p. 373), as completed years 6–8; men's mean age 7.4 ± 0.4 y, n 37 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m83_ChinThick",
+      "sex": "M",
+      "ageBand": [
+        9,
+        11
+      ],
+      "mean": 10.8,
+      "sd": 1.8,
+      "n": 43,
+      "unit": "mm",
+      "source": "Table 7, p. 377, row SPg–npgL, 10 years",
+      "definitionMatch": "close",
+      "definitionNote": "Close (ruling P50, 8 Oct): the same quantity — the soft-tissue thickness of the chin — at another level and direction. SPg–npgL is the perpendicular distance from soft-tissue pogonion (the chin point of the nose-chin tangent) to the bony N–Pog line, i.e. at pogonion level; the catalogue's #83 (Holdaway) is measured at suprapogonion level, horizontally between the bony and the soft-tissue facial lines.",
+      "note": "Age group 10 y: observed ages 9.5–11.2 (Table 4, p. 373), as completed years 9–11; men's mean age 10.4 ± 0.5 y, n 43 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m83_ChinThick",
+      "sex": "M",
+      "ageBand": [
+        12,
+        13
+      ],
+      "mean": 11.2,
+      "sd": 1.2,
+      "n": 53,
+      "unit": "mm",
+      "source": "Table 7, p. 377, row SPg–npgL, 13 years",
+      "definitionMatch": "close",
+      "definitionNote": "Close (ruling P50, 8 Oct): the same quantity — the soft-tissue thickness of the chin — at another level and direction. SPg–npgL is the perpendicular distance from soft-tissue pogonion (the chin point of the nose-chin tangent) to the bony N–Pog line, i.e. at pogonion level; the catalogue's #83 (Holdaway) is measured at suprapogonion level, horizontally between the bony and the soft-tissue facial lines.",
+      "note": "Age group 13 y: observed ages 12.3–13.8 (Table 4, p. 373), as completed years 12–13; men's mean age 13.1 ± 0.4 y, n 53 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m83_ChinThick",
+      "sex": "M",
+      "ageBand": [
+        14,
+        17
+      ],
+      "mean": 11.5,
+      "sd": 2.2,
+      "n": 25,
+      "unit": "mm",
+      "source": "Table 7, p. 377, row SPg–npgL, 16 years",
+      "definitionMatch": "close",
+      "definitionNote": "Close (ruling P50, 8 Oct): the same quantity — the soft-tissue thickness of the chin — at another level and direction. SPg–npgL is the perpendicular distance from soft-tissue pogonion (the chin point of the nose-chin tangent) to the bony N–Pog line, i.e. at pogonion level; the catalogue's #83 (Holdaway) is measured at suprapogonion level, horizontally between the bony and the soft-tissue facial lines.",
+      "note": "Age group 16 y: observed ages 14.9–17.1 (Table 4, p. 373), as completed years 14–17; men's mean age 15.8 ± 0.5 y, n 25 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m83_ChinThick",
+      "sex": "M",
+      "ageBand": [
+        18,
+        20
+      ],
+      "mean": 11.6,
+      "sd": 1.6,
+      "n": 16,
+      "unit": "mm",
+      "source": "Table 7, p. 377, row SPg–npgL, 19 years",
+      "definitionMatch": "close",
+      "definitionNote": "Close (ruling P50, 8 Oct): the same quantity — the soft-tissue thickness of the chin — at another level and direction. SPg–npgL is the perpendicular distance from soft-tissue pogonion (the chin point of the nose-chin tangent) to the bony N–Pog line, i.e. at pogonion level; the catalogue's #83 (Holdaway) is measured at suprapogonion level, horizontally between the bony and the soft-tissue facial lines.",
+      "note": "Age group 19 y: observed ages 18.4–20.5 (Table 4, p. 373), as completed years 18–20; men's mean age 19.5 ± 0.5 y, n 16 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m83_ChinThick",
+      "sex": "M",
+      "ageBand": [
+        29,
+        32
+      ],
+      "mean": 12.3,
+      "sd": 1.7,
+      "n": 11,
+      "unit": "mm",
+      "source": "Table 7, p. 377, row SPg–npgL, 31 years",
+      "definitionMatch": "close",
+      "definitionNote": "Close (ruling P50, 8 Oct): the same quantity — the soft-tissue thickness of the chin — at another level and direction. SPg–npgL is the perpendicular distance from soft-tissue pogonion (the chin point of the nose-chin tangent) to the bony N–Pog line, i.e. at pogonion level; the catalogue's #83 (Holdaway) is measured at suprapogonion level, horizontally between the bony and the soft-tissue facial lines.",
+      "note": "Age group 31 y: observed ages 29.7–32.2 (Table 4, p. 373), as completed years 29–32; men's mean age 30.9 ± 0.6 y, n 11 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m83_ChinThick",
+      "sex": "F",
+      "ageBand": [
+        4,
+        5
+      ],
+      "mean": 9.8,
+      "sd": 1.6,
+      "n": 27,
+      "unit": "mm",
+      "source": "Table 8, p. 378, row SPg–npgL, 5 years",
+      "definitionMatch": "close",
+      "definitionNote": "Close (ruling P50, 8 Oct): the same quantity — the soft-tissue thickness of the chin — at another level and direction. SPg–npgL is the perpendicular distance from soft-tissue pogonion (the chin point of the nose-chin tangent) to the bony N–Pog line, i.e. at pogonion level; the catalogue's #83 (Holdaway) is measured at suprapogonion level, horizontally between the bony and the soft-tissue facial lines.",
+      "note": "Age group 5 y: observed ages 4.2–5.8 (Table 4, p. 373), as completed years 4–5; women's mean age 4.9 ± 0.3 y, n 27 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m83_ChinThick",
+      "sex": "F",
+      "ageBand": [
+        6,
+        8
+      ],
+      "mean": 9.7,
+      "sd": 1.6,
+      "n": 46,
+      "unit": "mm",
+      "source": "Table 8, p. 378, row SPg–npgL, 7 years",
+      "definitionMatch": "close",
+      "definitionNote": "Close (ruling P50, 8 Oct): the same quantity — the soft-tissue thickness of the chin — at another level and direction. SPg–npgL is the perpendicular distance from soft-tissue pogonion (the chin point of the nose-chin tangent) to the bony N–Pog line, i.e. at pogonion level; the catalogue's #83 (Holdaway) is measured at suprapogonion level, horizontally between the bony and the soft-tissue facial lines.",
+      "note": "Age group 7 y: observed ages 6.6–8.2 (Table 4, p. 373), as completed years 6–8; women's mean age 7.4 ± 0.4 y, n 46 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m83_ChinThick",
+      "sex": "F",
+      "ageBand": [
+        9,
+        11
+      ],
+      "mean": 10.5,
+      "sd": 1.7,
+      "n": 56,
+      "unit": "mm",
+      "source": "Table 8, p. 378, row SPg–npgL, 10 years",
+      "definitionMatch": "close",
+      "definitionNote": "Close (ruling P50, 8 Oct): the same quantity — the soft-tissue thickness of the chin — at another level and direction. SPg–npgL is the perpendicular distance from soft-tissue pogonion (the chin point of the nose-chin tangent) to the bony N–Pog line, i.e. at pogonion level; the catalogue's #83 (Holdaway) is measured at suprapogonion level, horizontally between the bony and the soft-tissue facial lines.",
+      "note": "Age group 10 y: observed ages 9.5–11.2 (Table 4, p. 373), as completed years 9–11; women's mean age 10.4 ± 0.4 y, n 56 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m83_ChinThick",
+      "sex": "F",
+      "ageBand": [
+        12,
+        13
+      ],
+      "mean": 11.3,
+      "sd": 1.5,
+      "n": 69,
+      "unit": "mm",
+      "source": "Table 8, p. 378, row SPg–npgL, 13 years",
+      "definitionMatch": "close",
+      "definitionNote": "Close (ruling P50, 8 Oct): the same quantity — the soft-tissue thickness of the chin — at another level and direction. SPg–npgL is the perpendicular distance from soft-tissue pogonion (the chin point of the nose-chin tangent) to the bony N–Pog line, i.e. at pogonion level; the catalogue's #83 (Holdaway) is measured at suprapogonion level, horizontally between the bony and the soft-tissue facial lines.",
+      "note": "Age group 13 y: observed ages 12.3–13.8 (Table 4, p. 373), as completed years 12–13; women's mean age 13.0 ± 0.4 y, n 69 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m83_ChinThick",
+      "sex": "F",
+      "ageBand": [
+        14,
+        17
+      ],
+      "mean": 11.7,
+      "sd": 1.3,
+      "n": 30,
+      "unit": "mm",
+      "source": "Table 8, p. 378, row SPg–npgL, 16 years",
+      "definitionMatch": "close",
+      "definitionNote": "Close (ruling P50, 8 Oct): the same quantity — the soft-tissue thickness of the chin — at another level and direction. SPg–npgL is the perpendicular distance from soft-tissue pogonion (the chin point of the nose-chin tangent) to the bony N–Pog line, i.e. at pogonion level; the catalogue's #83 (Holdaway) is measured at suprapogonion level, horizontally between the bony and the soft-tissue facial lines.",
+      "note": "Age group 16 y: observed ages 14.9–17.1 (Table 4, p. 373), as completed years 14–17; women's mean age 15.8 ± 0.5 y, n 30 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m83_ChinThick",
+      "sex": "F",
+      "ageBand": [
+        18,
+        20
+      ],
+      "mean": 12.2,
+      "sd": 2,
+      "n": 17,
+      "unit": "mm",
+      "source": "Table 8, p. 378, row SPg–npgL, 19 years",
+      "definitionMatch": "close",
+      "definitionNote": "Close (ruling P50, 8 Oct): the same quantity — the soft-tissue thickness of the chin — at another level and direction. SPg–npgL is the perpendicular distance from soft-tissue pogonion (the chin point of the nose-chin tangent) to the bony N–Pog line, i.e. at pogonion level; the catalogue's #83 (Holdaway) is measured at suprapogonion level, horizontally between the bony and the soft-tissue facial lines.",
+      "note": "Age group 19 y: observed ages 18.4–20.5 (Table 4, p. 373), as completed years 18–20; women's mean age 19.1 ± 0.6 y, n 17 radiographs (Table 3, p. 372)."
+    },
+    {
+      "measurement": "m83_ChinThick",
+      "sex": "F",
+      "ageBand": [
+        29,
+        32
+      ],
+      "mean": 12.3,
+      "sd": 1.7,
+      "n": 19,
+      "unit": "mm",
+      "source": "Table 8, p. 378, row SPg–npgL, 31 years",
+      "definitionMatch": "close",
+      "definitionNote": "Close (ruling P50, 8 Oct): the same quantity — the soft-tissue thickness of the chin — at another level and direction. SPg–npgL is the perpendicular distance from soft-tissue pogonion (the chin point of the nose-chin tangent) to the bony N–Pog line, i.e. at pogonion level; the catalogue's #83 (Holdaway) is measured at suprapogonion level, horizontally between the bony and the soft-tissue facial lines.",
+      "note": "Age group 31 y: observed ages 29.7–32.2 (Table 4, p. 373), as completed years 29–32; women's mean age 31.1 ± 0.5 y, n 19 radiographs (Table 3, p. 372)."
+    }
+  ]
+}

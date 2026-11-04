@@ -1,0 +1,638 @@
+{
+  "id": "gu2011-caucasian",
+  "kind": "population",
+  "status": "verified",
+  "citation": {
+    "authors": "Gu Y, McNamara JA Jr, Sigler LM, Baccetti T",
+    "title": "Comparison of craniofacial characteristics of typical Chinese and Caucasian young adults",
+    "journal": "European Journal of Orthodontics",
+    "year": 2011,
+    "volume": "33",
+    "pages": "205-211",
+    "doi": "10.1093/ejo/cjq054",
+    "openAccess": false
+  },
+  "population": {
+    "id": "caucasian",
+    "label": "Caucasian (European background; used for Australian patients of European background)",
+    "ethnicity": [
+      "Caucasian (North European ancestry)"
+    ],
+    "country": "USA",
+    "region": "Michigan"
+  },
+  "sample": {
+    "n": 90,
+    "nMale": 30,
+    "nFemale": 60
+  },
+  "selection": "class-I-balanced",
+  "modality": "film",
+  "scale": {
+    "kind": "enlarged",
+    "percent": 8,
+    "source": "p. 206"
+  },
+  "headPosition": "unknown",
+  "curation": {
+    "extractedBy": [
+      "AI reader A",
+      "AI reader B"
+    ],
+    "date": "2026-10-08",
+    "notes": "Compared 2026-10-08 (norms:compare a vs b exit 1, 6 differences, all definitionMatch; every mean, SD and n agreed). All 38 values re-read from the page image of Table 2 (p. 207, PDF p. 3): agree. Decisions as gu2011 (merge notes): #31 close and + 90; #23 close; #57 close; Wits close with 'occlusal plane not stated in the paper' (owner 7 Oct). Selection class-I-balanced (a 'ideal-aesthetic'). Scale enlarged 8%, p. 206. Men's maxillomandibular difference 37.2 (Table 2) kept, Table 4's 37.3 in the note (merge notes). No age band at first; a's computed ageMean (23.3) dropped. Fix round 1 (2026-10-08, owner AGE-1 / MAL-1, rulings P42, P45, P47, review): ageBand [18, 40] on every row (owner AGE-1). Wording (Task 9b-1, re-review minors): the age caveat says the ruling once.",
+    "comparedOn": "2026-10-08"
+  },
+  "caveats": [
+    "The Michigan Caucasian comparison group of Gu 2011 (owner 7 Oct: the Caucasian Wits norm): untreated adults of North European ancestry from McNamara & Ellis 1988 and McNamara et al. 1993, inclusion criteria 'virtually identical' to the Chinese sample (p. 206). Men 24.1 ± 5.7 y (n 30), women 22.9 ± 5.2 y (n 60).",
+    "8% film enlargement: p. 206 says every cephalogram was standardised to 8 per cent magnification. Read as the mm values including an 8% enlargement (as McNamara 1984's 'enlargement factor included', whose samples and software the paper shares); stored as printed and converted to true size by the resolver (owner M-1, ruling P27).",
+    "No age range is printed (only mean ± SD by sex). Age band 18–40 on every row by owner ruling 8 Oct (AGE-1, age first): the paper gives mean ages 24.1 ± 5.7 (M) / 22.9 ± 5.2 (F), adults, no range printed; band 18–40 (P18: upper bound not stated; 40 by convention).",
+    "The paper does not define its mandibular plane ('MP', IMPA), occlusal plane (Wits), facial-axis points or incisor points; it cites Ricketts 1968 and McNamara 1984 and used Dentofacial Planner (p. 206). Those rows are close.",
+    "Head position during filming not stated. Lateral headfilms hand traced, landmarks verified by a second investigator, then digitised (p. 206).",
+    "Men's maxillomandibular difference: 37.2 mm in Table 2 and the text (p. 207), 37.3 mm in Table 4 (p. 209); Table 2 used. Other values are restated in Tables 3-6 and agree."
+  ],
+  "entries": [
+    {
+      "measurement": "m01_SNA",
+      "sex": "F",
+      "mean": 83.3,
+      "sd": 3.7,
+      "n": 60,
+      "unit": "deg",
+      "source": "Table 2, p. 207",
+      "definitionMatch": "same",
+      "ageBand": [
+        18,
+        40
+      ],
+      "note": "Age band: the paper gives mean ages 24.1 ± 5.7 (M) / 22.9 ± 5.2 (F), adults, no range printed; band 18–40 (P18: upper bound not stated; 40 by convention), owner ruling 8 Oct (age first)."
+    },
+    {
+      "measurement": "m01_SNA",
+      "sex": "M",
+      "mean": 84.5,
+      "sd": 3.2,
+      "n": 30,
+      "unit": "deg",
+      "source": "Table 2, p. 207",
+      "definitionMatch": "same",
+      "ageBand": [
+        18,
+        40
+      ],
+      "note": "Age band: the paper gives mean ages 24.1 ± 5.7 (M) / 22.9 ± 5.2 (F), adults, no range printed; band 18–40 (P18: upper bound not stated; 40 by convention), owner ruling 8 Oct (age first)."
+    },
+    {
+      "measurement": "m08_ANperp",
+      "sex": "F",
+      "mean": 0.5,
+      "sd": 3.3,
+      "n": 60,
+      "unit": "mm",
+      "source": "Table 2, p. 207",
+      "definitionMatch": "same",
+      "note": "The paper writes 'Pt A' for point A (subspinale). Age band: the paper gives mean ages 24.1 ± 5.7 (M) / 22.9 ± 5.2 (F), adults, no range printed; band 18–40 (P18: upper bound not stated; 40 by convention), owner ruling 8 Oct (age first).",
+      "ageBand": [
+        18,
+        40
+      ]
+    },
+    {
+      "measurement": "m08_ANperp",
+      "sex": "M",
+      "mean": -0.3,
+      "sd": 4.3,
+      "n": 30,
+      "unit": "mm",
+      "source": "Table 2, p. 207",
+      "definitionMatch": "same",
+      "note": "The paper writes 'Pt A' for point A (subspinale). Age band: the paper gives mean ages 24.1 ± 5.7 (M) / 22.9 ± 5.2 (F), adults, no range printed; band 18–40 (P18: upper bound not stated; 40 by convention), owner ruling 8 Oct (age first).",
+      "ageBand": [
+        18,
+        40
+      ]
+    },
+    {
+      "measurement": "m10_CoA",
+      "sex": "F",
+      "mean": 91,
+      "sd": 7.4,
+      "n": 60,
+      "unit": "mm",
+      "source": "Table 2, p. 207",
+      "definitionMatch": "same",
+      "note": "The paper writes 'Pt A' for point A (subspinale). Age band: the paper gives mean ages 24.1 ± 5.7 (M) / 22.9 ± 5.2 (F), adults, no range printed; band 18–40 (P18: upper bound not stated; 40 by convention), owner ruling 8 Oct (age first).",
+      "ageBand": [
+        18,
+        40
+      ]
+    },
+    {
+      "measurement": "m10_CoA",
+      "sex": "M",
+      "mean": 99.4,
+      "sd": 7.8,
+      "n": 30,
+      "unit": "mm",
+      "source": "Table 2, p. 207",
+      "definitionMatch": "same",
+      "note": "The paper writes 'Pt A' for point A (subspinale). Age band: the paper gives mean ages 24.1 ± 5.7 (M) / 22.9 ± 5.2 (F), adults, no range printed; band 18–40 (P18: upper bound not stated; 40 by convention), owner ruling 8 Oct (age first).",
+      "ageBand": [
+        18,
+        40
+      ]
+    },
+    {
+      "measurement": "m02_SNB",
+      "sex": "F",
+      "mean": 79.9,
+      "sd": 3.3,
+      "n": 60,
+      "unit": "deg",
+      "source": "Table 2, p. 207",
+      "definitionMatch": "same",
+      "ageBand": [
+        18,
+        40
+      ],
+      "note": "Age band: the paper gives mean ages 24.1 ± 5.7 (M) / 22.9 ± 5.2 (F), adults, no range printed; band 18–40 (P18: upper bound not stated; 40 by convention), owner ruling 8 Oct (age first)."
+    },
+    {
+      "measurement": "m02_SNB",
+      "sex": "M",
+      "mean": 82,
+      "sd": 2.9,
+      "n": 30,
+      "unit": "deg",
+      "source": "Table 2, p. 207",
+      "definitionMatch": "same",
+      "ageBand": [
+        18,
+        40
+      ],
+      "note": "Age band: the paper gives mean ages 24.1 ± 5.7 (M) / 22.9 ± 5.2 (F), adults, no range printed; band 18–40 (P18: upper bound not stated; 40 by convention), owner ruling 8 Oct (age first)."
+    },
+    {
+      "measurement": "m09_PogNperp",
+      "sex": "F",
+      "mean": -3.1,
+      "sd": 5.9,
+      "n": 60,
+      "unit": "mm",
+      "source": "Table 2, p. 207",
+      "definitionMatch": "same",
+      "ageBand": [
+        18,
+        40
+      ],
+      "note": "Age band: the paper gives mean ages 24.1 ± 5.7 (M) / 22.9 ± 5.2 (F), adults, no range printed; band 18–40 (P18: upper bound not stated; 40 by convention), owner ruling 8 Oct (age first)."
+    },
+    {
+      "measurement": "m09_PogNperp",
+      "sex": "M",
+      "mean": -2.8,
+      "sd": 8,
+      "n": 30,
+      "unit": "mm",
+      "source": "Table 2, p. 207",
+      "definitionMatch": "same",
+      "ageBand": [
+        18,
+        40
+      ],
+      "note": "Age band: the paper gives mean ages 24.1 ± 5.7 (M) / 22.9 ± 5.2 (F), adults, no range printed; band 18–40 (P18: upper bound not stated; 40 by convention), owner ruling 8 Oct (age first)."
+    },
+    {
+      "measurement": "m11_CoGn",
+      "sex": "F",
+      "mean": 123,
+      "sd": 10,
+      "n": 60,
+      "unit": "mm",
+      "source": "Table 2, p. 207",
+      "definitionMatch": "same",
+      "ageBand": [
+        18,
+        40
+      ],
+      "note": "Age band: the paper gives mean ages 24.1 ± 5.7 (M) / 22.9 ± 5.2 (F), adults, no range printed; band 18–40 (P18: upper bound not stated; 40 by convention), owner ruling 8 Oct (age first)."
+    },
+    {
+      "measurement": "m11_CoGn",
+      "sex": "M",
+      "mean": 136.7,
+      "sd": 9.9,
+      "n": 30,
+      "unit": "mm",
+      "source": "Table 2, p. 207",
+      "definitionMatch": "same",
+      "ageBand": [
+        18,
+        40
+      ],
+      "note": "Age band: the paper gives mean ages 24.1 ± 5.7 (M) / 22.9 ± 5.2 (F), adults, no range printed; band 18–40 (P18: upper bound not stated; 40 by convention), owner ruling 8 Oct (age first)."
+    },
+    {
+      "measurement": "m03_ANB",
+      "sex": "F",
+      "mean": 3.4,
+      "sd": 1.9,
+      "n": 60,
+      "unit": "deg",
+      "source": "Table 2, p. 207",
+      "definitionMatch": "same",
+      "ageBand": [
+        18,
+        40
+      ],
+      "note": "Age band: the paper gives mean ages 24.1 ± 5.7 (M) / 22.9 ± 5.2 (F), adults, no range printed; band 18–40 (P18: upper bound not stated; 40 by convention), owner ruling 8 Oct (age first)."
+    },
+    {
+      "measurement": "m03_ANB",
+      "sex": "M",
+      "mean": 2.5,
+      "sd": 1.9,
+      "n": 30,
+      "unit": "deg",
+      "source": "Table 2, p. 207",
+      "definitionMatch": "same",
+      "ageBand": [
+        18,
+        40
+      ],
+      "note": "Age band: the paper gives mean ages 24.1 ± 5.7 (M) / 22.9 ± 5.2 (F), adults, no range printed; band 18–40 (P18: upper bound not stated; 40 by convention), owner ruling 8 Oct (age first)."
+    },
+    {
+      "measurement": "m13_Wits",
+      "sex": "F",
+      "mean": -0.8,
+      "sd": 2.4,
+      "n": 60,
+      "unit": "mm",
+      "source": "Table 2, p. 207",
+      "definitionMatch": "close",
+      "definitionNote": "occlusal plane not stated in the paper (owner 7 Oct)",
+      "ageBand": [
+        18,
+        40
+      ],
+      "note": "Age band: the paper gives mean ages 24.1 ± 5.7 (M) / 22.9 ± 5.2 (F), adults, no range printed; band 18–40 (P18: upper bound not stated; 40 by convention), owner ruling 8 Oct (age first)."
+    },
+    {
+      "measurement": "m13_Wits",
+      "sex": "M",
+      "mean": -0.9,
+      "sd": 2.6,
+      "n": 30,
+      "unit": "mm",
+      "source": "Table 2, p. 207",
+      "definitionMatch": "close",
+      "definitionNote": "occlusal plane not stated in the paper (owner 7 Oct)",
+      "ageBand": [
+        18,
+        40
+      ],
+      "note": "Age band: the paper gives mean ages 24.1 ± 5.7 (M) / 22.9 ± 5.2 (F), adults, no range printed; band 18–40 (P18: upper bound not stated; 40 by convention), owner ruling 8 Oct (age first)."
+    },
+    {
+      "measurement": "m12_MaxMandDiff",
+      "sex": "F",
+      "mean": 31.9,
+      "sd": 5.6,
+      "n": 60,
+      "unit": "mm",
+      "source": "Table 2, p. 207",
+      "definitionMatch": "same",
+      "ageBand": [
+        18,
+        40
+      ],
+      "note": "Age band: the paper gives mean ages 24.1 ± 5.7 (M) / 22.9 ± 5.2 (F), adults, no range printed; band 18–40 (P18: upper bound not stated; 40 by convention), owner ruling 8 Oct (age first)."
+    },
+    {
+      "measurement": "m12_MaxMandDiff",
+      "sex": "M",
+      "mean": 37.2,
+      "sd": 5.7,
+      "n": 30,
+      "unit": "mm",
+      "source": "Table 2, p. 207",
+      "definitionMatch": "same",
+      "note": "Table 2 (and the text, p. 207) give 37.2; Table 4 (p. 209) gives 37.3. Table 2, the group's own table, is used. Age band: the paper gives mean ages 24.1 ± 5.7 (M) / 22.9 ± 5.2 (F), adults, no range printed; band 18–40 (P18: upper bound not stated; 40 by convention), owner ruling 8 Oct (age first).",
+      "ageBand": [
+        18,
+        40
+      ]
+    },
+    {
+      "measurement": "m31_FacAxisM",
+      "sex": "F",
+      "mean": 88.4,
+      "sd": 3.4,
+      "n": 60,
+      "unit": "deg",
+      "source": "Table 2, p. 207",
+      "definitionMatch": "close",
+      "definitionNote": "facial axis points not stated: the paper cites Ricketts 1968 and McNamara 1984 for its landmarks; whether the axis runs from PTM (McNamara) or Pt (Ricketts) is not said",
+      "note": "Gu tabulates the difference from 90° (printed -1.6°); stored as value + 90° (owner ruling 7 Oct). SD unchanged. Age band: the paper gives mean ages 24.1 ± 5.7 (M) / 22.9 ± 5.2 (F), adults, no range printed; band 18–40 (P18: upper bound not stated; 40 by convention), owner ruling 8 Oct (age first).",
+      "ageBand": [
+        18,
+        40
+      ]
+    },
+    {
+      "measurement": "m31_FacAxisM",
+      "sex": "M",
+      "mean": 87.5,
+      "sd": 3.6,
+      "n": 30,
+      "unit": "deg",
+      "source": "Table 2, p. 207",
+      "definitionMatch": "close",
+      "definitionNote": "facial axis points not stated: the paper cites Ricketts 1968 and McNamara 1984 for its landmarks; whether the axis runs from PTM (McNamara) or Pt (Ricketts) is not said",
+      "note": "Gu tabulates the difference from 90° (printed -2.5°); stored as value + 90° (owner ruling 7 Oct). SD unchanged. Age band: the paper gives mean ages 24.1 ± 5.7 (M) / 22.9 ± 5.2 (F), adults, no range printed; band 18–40 (P18: upper bound not stated; 40 by convention), owner ruling 8 Oct (age first).",
+      "ageBand": [
+        18,
+        40
+      ]
+    },
+    {
+      "measurement": "m23_FHGoMe",
+      "sex": "F",
+      "mean": 23.5,
+      "sd": 4.8,
+      "n": 60,
+      "unit": "deg",
+      "source": "Table 2, p. 207",
+      "definitionMatch": "close",
+      "definitionNote": "mandibular plane not stated: the paper prints only 'MP (°)'. Mapped to FH–Go–Me, the McNamara analysis's mandibular plane angle, which the paper follows (McNamara 1984 cited, p. 206)",
+      "ageBand": [
+        18,
+        40
+      ],
+      "note": "Age band: the paper gives mean ages 24.1 ± 5.7 (M) / 22.9 ± 5.2 (F), adults, no range printed; band 18–40 (P18: upper bound not stated; 40 by convention), owner ruling 8 Oct (age first)."
+    },
+    {
+      "measurement": "m23_FHGoMe",
+      "sex": "M",
+      "mean": 23.4,
+      "sd": 5,
+      "n": 30,
+      "unit": "deg",
+      "source": "Table 2, p. 207",
+      "definitionMatch": "close",
+      "definitionNote": "mandibular plane not stated: the paper prints only 'MP (°)'. Mapped to FH–Go–Me, the McNamara analysis's mandibular plane angle, which the paper follows (McNamara 1984 cited, p. 206)",
+      "ageBand": [
+        18,
+        40
+      ],
+      "note": "Age band: the paper gives mean ages 24.1 ± 5.7 (M) / 22.9 ± 5.2 (F), adults, no range printed; band 18–40 (P18: upper bound not stated; 40 by convention), owner ruling 8 Oct (age first)."
+    },
+    {
+      "measurement": "m28_LAFH",
+      "sex": "F",
+      "mean": 65,
+      "sd": 6.9,
+      "n": 60,
+      "unit": "mm",
+      "source": "Table 2, p. 207",
+      "definitionMatch": "same",
+      "ageBand": [
+        18,
+        40
+      ],
+      "note": "Age band: the paper gives mean ages 24.1 ± 5.7 (M) / 22.9 ± 5.2 (F), adults, no range printed; band 18–40 (P18: upper bound not stated; 40 by convention), owner ruling 8 Oct (age first)."
+    },
+    {
+      "measurement": "m28_LAFH",
+      "sex": "M",
+      "mean": 71.7,
+      "sd": 6.9,
+      "n": 30,
+      "unit": "mm",
+      "source": "Table 2, p. 207",
+      "definitionMatch": "same",
+      "ageBand": [
+        18,
+        40
+      ],
+      "note": "Age band: the paper gives mean ages 24.1 ± 5.7 (M) / 22.9 ± 5.2 (F), adults, no range printed; band 18–40 (P18: upper bound not stated; 40 by convention), owner ruling 8 Oct (age first)."
+    },
+    {
+      "measurement": "m54_U1SN",
+      "sex": "F",
+      "mean": 114.6,
+      "sd": 6.3,
+      "n": 60,
+      "unit": "deg",
+      "source": "Table 2, p. 207",
+      "definitionMatch": "same",
+      "ageBand": [
+        18,
+        40
+      ],
+      "note": "Age band: the paper gives mean ages 24.1 ± 5.7 (M) / 22.9 ± 5.2 (F), adults, no range printed; band 18–40 (P18: upper bound not stated; 40 by convention), owner ruling 8 Oct (age first)."
+    },
+    {
+      "measurement": "m54_U1SN",
+      "sex": "M",
+      "mean": 113.8,
+      "sd": 6.7,
+      "n": 30,
+      "unit": "deg",
+      "source": "Table 2, p. 207",
+      "definitionMatch": "same",
+      "ageBand": [
+        18,
+        40
+      ],
+      "note": "Age band: the paper gives mean ages 24.1 ± 5.7 (M) / 22.9 ± 5.2 (F), adults, no range printed; band 18–40 (P18: upper bound not stated; 40 by convention), owner ruling 8 Oct (age first)."
+    },
+    {
+      "measurement": "m67_U1Avert",
+      "sex": "F",
+      "mean": 4.3,
+      "sd": 2,
+      "n": 60,
+      "unit": "mm",
+      "source": "Table 2, p. 207",
+      "definitionMatch": "close",
+      "definitionNote": "incisor point not stated; the paper follows McNamara 1984 (p. 206), who measured from the facial (labial) surface, not the tip the catalogue uses (C1)",
+      "ageBand": [
+        18,
+        40
+      ],
+      "note": "Age band: the paper gives mean ages 24.1 ± 5.7 (M) / 22.9 ± 5.2 (F), adults, no range printed; band 18–40 (P18: upper bound not stated; 40 by convention), owner ruling 8 Oct (age first)."
+    },
+    {
+      "measurement": "m67_U1Avert",
+      "sex": "M",
+      "mean": 4.4,
+      "sd": 1.9,
+      "n": 30,
+      "unit": "mm",
+      "source": "Table 2, p. 207",
+      "definitionMatch": "close",
+      "definitionNote": "incisor point not stated; the paper follows McNamara 1984 (p. 206), who measured from the facial (labial) surface, not the tip the catalogue uses (C1)",
+      "ageBand": [
+        18,
+        40
+      ],
+      "note": "Age band: the paper gives mean ages 24.1 ± 5.7 (M) / 22.9 ± 5.2 (F), adults, no range printed; band 18–40 (P18: upper bound not stated; 40 by convention), owner ruling 8 Oct (age first)."
+    },
+    {
+      "measurement": "m57_IMPAgome",
+      "sex": "F",
+      "mean": 96.6,
+      "sd": 7.5,
+      "n": 60,
+      "unit": "deg",
+      "source": "Table 2, p. 207",
+      "definitionMatch": "close",
+      "definitionNote": "mandibular plane not stated: the paper prints only 'IMPA (°)'. Mapped to Go–Me; a lower-border tangent is the other possibility",
+      "ageBand": [
+        18,
+        40
+      ],
+      "note": "Age band: the paper gives mean ages 24.1 ± 5.7 (M) / 22.9 ± 5.2 (F), adults, no range printed; band 18–40 (P18: upper bound not stated; 40 by convention), owner ruling 8 Oct (age first)."
+    },
+    {
+      "measurement": "m57_IMPAgome",
+      "sex": "M",
+      "mean": 92.5,
+      "sd": 7.4,
+      "n": 30,
+      "unit": "deg",
+      "source": "Table 2, p. 207",
+      "definitionMatch": "close",
+      "definitionNote": "mandibular plane not stated: the paper prints only 'IMPA (°)'. Mapped to Go–Me; a lower-border tangent is the other possibility",
+      "ageBand": [
+        18,
+        40
+      ],
+      "note": "Age band: the paper gives mean ages 24.1 ± 5.7 (M) / 22.9 ± 5.2 (F), adults, no range printed; band 18–40 (P18: upper bound not stated; 40 by convention), owner ruling 8 Oct (age first)."
+    },
+    {
+      "measurement": "m64_L1APog",
+      "sex": "F",
+      "mean": 2.2,
+      "sd": 1.3,
+      "n": 60,
+      "unit": "mm",
+      "source": "Table 2, p. 207",
+      "definitionMatch": "close",
+      "definitionNote": "incisor point not stated; the paper follows McNamara 1984 (p. 206), who measured from the facial (labial) surface, not the tip the catalogue uses (C1)",
+      "ageBand": [
+        18,
+        40
+      ],
+      "note": "Age band: the paper gives mean ages 24.1 ± 5.7 (M) / 22.9 ± 5.2 (F), adults, no range printed; band 18–40 (P18: upper bound not stated; 40 by convention), owner ruling 8 Oct (age first)."
+    },
+    {
+      "measurement": "m64_L1APog",
+      "sex": "M",
+      "mean": 2.3,
+      "sd": 1.7,
+      "n": 30,
+      "unit": "mm",
+      "source": "Table 2, p. 207",
+      "definitionMatch": "close",
+      "definitionNote": "incisor point not stated; the paper follows McNamara 1984 (p. 206), who measured from the facial (labial) surface, not the tip the catalogue uses (C1)",
+      "ageBand": [
+        18,
+        40
+      ],
+      "note": "Age band: the paper gives mean ages 24.1 ± 5.7 (M) / 22.9 ± 5.2 (F), adults, no range printed; band 18–40 (P18: upper bound not stated; 40 by convention), owner ruling 8 Oct (age first)."
+    },
+    {
+      "measurement": "m71_ULE",
+      "sex": "F",
+      "mean": -5.8,
+      "sd": 2.9,
+      "n": 60,
+      "unit": "mm",
+      "source": "Table 2, p. 207",
+      "definitionMatch": "same",
+      "note": "Ricketts' E line (Ricketts 1968 cited, p. 207). No sign rule printed; negative read as behind the line, as the catalogue. Age band: the paper gives mean ages 24.1 ± 5.7 (M) / 22.9 ± 5.2 (F), adults, no range printed; band 18–40 (P18: upper bound not stated; 40 by convention), owner ruling 8 Oct (age first).",
+      "ageBand": [
+        18,
+        40
+      ]
+    },
+    {
+      "measurement": "m71_ULE",
+      "sex": "M",
+      "mean": -6.2,
+      "sd": 3,
+      "n": 30,
+      "unit": "mm",
+      "source": "Table 2, p. 207",
+      "definitionMatch": "same",
+      "note": "Ricketts' E line (Ricketts 1968 cited, p. 207). No sign rule printed; negative read as behind the line, as the catalogue. Age band: the paper gives mean ages 24.1 ± 5.7 (M) / 22.9 ± 5.2 (F), adults, no range printed; band 18–40 (P18: upper bound not stated; 40 by convention), owner ruling 8 Oct (age first).",
+      "ageBand": [
+        18,
+        40
+      ]
+    },
+    {
+      "measurement": "m72_LLE",
+      "sex": "F",
+      "mean": -3.8,
+      "sd": 2.4,
+      "n": 60,
+      "unit": "mm",
+      "source": "Table 2, p. 207",
+      "definitionMatch": "same",
+      "note": "Ricketts' E line (Ricketts 1968 cited, p. 207). No sign rule printed; negative read as behind the line, as the catalogue. Age band: the paper gives mean ages 24.1 ± 5.7 (M) / 22.9 ± 5.2 (F), adults, no range printed; band 18–40 (P18: upper bound not stated; 40 by convention), owner ruling 8 Oct (age first).",
+      "ageBand": [
+        18,
+        40
+      ]
+    },
+    {
+      "measurement": "m72_LLE",
+      "sex": "M",
+      "mean": -5,
+      "sd": 3,
+      "n": 30,
+      "unit": "mm",
+      "source": "Table 2, p. 207",
+      "definitionMatch": "same",
+      "note": "Ricketts' E line (Ricketts 1968 cited, p. 207). No sign rule printed; negative read as behind the line, as the catalogue. Age band: the paper gives mean ages 24.1 ± 5.7 (M) / 22.9 ± 5.2 (F), adults, no range printed; band 18–40 (P18: upper bound not stated; 40 by convention), owner ruling 8 Oct (age first).",
+      "ageBand": [
+        18,
+        40
+      ]
+    },
+    {
+      "measurement": "m86_Nasolabial",
+      "sex": "F",
+      "mean": 111.6,
+      "sd": 9.5,
+      "n": 60,
+      "unit": "deg",
+      "source": "Table 2, p. 207",
+      "definitionMatch": "same",
+      "ageBand": [
+        18,
+        40
+      ],
+      "note": "Age band: the paper gives mean ages 24.1 ± 5.7 (M) / 22.9 ± 5.2 (F), adults, no range printed; band 18–40 (P18: upper bound not stated; 40 by convention), owner ruling 8 Oct (age first)."
+    },
+    {
+      "measurement": "m86_Nasolabial",
+      "sex": "M",
+      "mean": 111.4,
+      "sd": 10.8,
+      "n": 30,
+      "unit": "deg",
+      "source": "Table 2, p. 207",
+      "definitionMatch": "same",
+      "ageBand": [
+        18,
+        40
+      ],
+      "note": "Age band: the paper gives mean ages 24.1 ± 5.7 (M) / 22.9 ± 5.2 (F), adults, no range printed; band 18–40 (P18: upper bound not stated; 40 by convention), owner ruling 8 Oct (age first)."
+    }
+  ]
+}

@@ -1,0 +1,7 @@
+[workspace]
+resolver = "2"
+members = ["crates/ceph-infer", "crates/ceph-bench", "crates/ceph-store", "crates/ceph-label", "crates/ceph-model", "apps/desktop/src-tauri"]
+
+[workspace.package]
+edition = "2021"
+license = "LicenseRef-PolyForm-Noncommercial-1.0.0-OpenCephAI"

@@ -1,0 +1,396 @@
+{
+  "id": "wu2007",
+  "kind": "population",
+  "status": "verified",
+  "citation": {
+    "authors": "Wu J, Hägg U, Rabie ABM",
+    "title": "Chinese norms of McNamara's cephalometric analysis",
+    "journal": "Angle Orthodontist",
+    "year": 2007,
+    "volume": "77(1)",
+    "pages": "12-20",
+    "doi": "10.2319/021606-62",
+    "openAccess": true
+  },
+  "population": {
+    "id": "chinese",
+    "label": "Chinese",
+    "ethnicity": [
+      "Southern Chinese"
+    ],
+    "country": "China",
+    "region": "Hong Kong"
+  },
+  "sample": {
+    "n": 405,
+    "nMale": 200,
+    "nFemale": 205,
+    "ageMin": 11,
+    "ageMax": 13
+  },
+  "selection": "random-unselected",
+  "modality": "film",
+  "scale": {
+    "kind": "not-stated"
+  },
+  "headPosition": "NHP",
+  "curation": {
+    "extractedBy": [
+      "AI reader A",
+      "AI reader B"
+    ],
+    "date": "2026-10-08",
+    "notes": "Compared 2026-10-08 (norms:compare a vs b exit 1, 22 differences, all in the source text; every mean, SD and n agreed). All 22 values re-read from the page images of Table 3 (p. 16, PDF p. 5) and Table 3 Extended (p. 17, PDF p. 6): agree. Decisions: (1) age band: both extractors gave the Table 1 ranges [11,13] (boys) and [11.9,13] (girls) → [12,12] for both sexes by merge-notes ruling ('12 y' → [12,12]); Table 1 ranges kept in each note. (2) source text normalised to 'Table 3, p. 16 (boys)' / 'Table 3 Extended, p. 17 (girls)'. (3) Co-A, Co-Gn, maxillomandibular difference: both 'same' → close. The merge notes asked to check b's flag: Wu's Fig. 1 legend (p. 14) defines condylion as the rearmost point on the condyle's outline; the catalogue's Co is the most posterior-superior point (catalogue appendix landmark table), so the definitions differ. (4) #31: printed −5.51/−3.83 stored + 90 (84.49/86.17), owner ruling 7 Oct; same (Wu's facial axis is PTM to constructed Gn against Ba-N, Table 2, as the catalogue). (5) incisor mm rows close (facial surface, Table 2), as both extractors. Scale not-stated with the 8.8% caveat (merge notes). Fix round 1 (2026-10-08, owner AGE-1 / MAL-1, rulings P42, P45, P47, review): ageBand [12,12] → [11,13] for both sexes from Table 1 (11.0-13.0 boys, 11.9-13.0 girls; completed years), owner AGE-1.",
+    "comparedOn": "2026-10-08"
+  },
+  "caveats": [
+    "Film magnification 8.8% is stated (p. 14) but not whether values were corrected; assumed true size (owner ruling 8 Oct)",
+    "12-year-old southern Chinese schoolchildren, a partially stratified random sample from 10 Hong Kong schools (p. 13): occlusion was not selected, so this is an unselected population, not a Class I sample. Films from Cooke's 1984-85 oral health survey. Age (Table 1): boys 11.0-13.0 y (mean 12.4), girls 11.9-13.0 y (mean 12.5); entered as age band 11-13 for both sexes (owner AGE-1, 8 Oct; completed years, so 11.9 counts as 11).",
+    "Natural head posture (mirror 200 cm ahead) with ear-rods (p. 14). Hand traced, then digitised twice in CASSOS and averaged.",
+    "Condylion is the rearmost point on the condyle's outline (Fig. 1 legend, p. 14), not the catalogue's posterior-superior point: Co-A, Co-Gn and their difference are close.",
+    "Upper and lower incisor distances are measured from the facial surface (Table 2), not the tip: close (owner C1/M1).",
+    "Not entered: the 43 + 43 British Caucasian 12-year-olds in Hong Kong (Table 4) - a different population; Tables 5-6 (ethnic differences, comparison with McNamara 1984); medians, ranges and confidence intervals of Table 3."
+  ],
+  "entries": [
+    {
+      "measurement": "m08_ANperp",
+      "sex": "M",
+      "ageBand": [
+        11,
+        13
+      ],
+      "mean": -0.75,
+      "sd": 3.6,
+      "n": 200,
+      "unit": "mm",
+      "source": "Table 3, p. 16 (boys)",
+      "definitionMatch": "same",
+      "note": "12-year-olds (Table 1: boys 11.0–13.0 y, mean 12.4); age band 11–13 (owner AGE-1, 8 Oct)."
+    },
+    {
+      "measurement": "m08_ANperp",
+      "sex": "F",
+      "ageBand": [
+        11,
+        13
+      ],
+      "mean": -0.53,
+      "sd": 3.48,
+      "n": 205,
+      "unit": "mm",
+      "source": "Table 3 Extended, p. 17 (girls)",
+      "definitionMatch": "same",
+      "note": "12-year-olds (Table 1: girls 11.9–13.0 y, mean 12.5 (11.9 counts as 11 in completed years)); age band 11–13 (owner AGE-1, 8 Oct)."
+    },
+    {
+      "measurement": "m01_SNA",
+      "sex": "M",
+      "ageBand": [
+        11,
+        13
+      ],
+      "mean": 81.78,
+      "sd": 3.65,
+      "n": 200,
+      "unit": "deg",
+      "source": "Table 3, p. 16 (boys)",
+      "definitionMatch": "same",
+      "note": "12-year-olds (Table 1: boys 11.0–13.0 y, mean 12.4); age band 11–13 (owner AGE-1, 8 Oct)."
+    },
+    {
+      "measurement": "m01_SNA",
+      "sex": "F",
+      "ageBand": [
+        11,
+        13
+      ],
+      "mean": 81.97,
+      "sd": 3.5,
+      "n": 205,
+      "unit": "deg",
+      "source": "Table 3 Extended, p. 17 (girls)",
+      "definitionMatch": "same",
+      "note": "12-year-olds (Table 1: girls 11.9–13.0 y, mean 12.5 (11.9 counts as 11 in completed years)); age band 11–13 (owner AGE-1, 8 Oct)."
+    },
+    {
+      "measurement": "m11_CoGn",
+      "sex": "M",
+      "ageBand": [
+        11,
+        13
+      ],
+      "mean": 113.95,
+      "sd": 5.73,
+      "n": 200,
+      "unit": "mm",
+      "source": "Table 3, p. 16 (boys)",
+      "definitionMatch": "close",
+      "note": "12-year-olds (Table 1: boys 11.0–13.0 y, mean 12.4); age band 11–13 (owner AGE-1, 8 Oct).",
+      "definitionNote": "Wu's condylion is the rearmost point on the condyle's outline (Fig. 1 legend, p. 14); the catalogue's Co is the most posterior-superior point"
+    },
+    {
+      "measurement": "m11_CoGn",
+      "sex": "F",
+      "ageBand": [
+        11,
+        13
+      ],
+      "mean": 113.32,
+      "sd": 5.43,
+      "n": 205,
+      "unit": "mm",
+      "source": "Table 3 Extended, p. 17 (girls)",
+      "definitionMatch": "close",
+      "note": "12-year-olds (Table 1: girls 11.9–13.0 y, mean 12.5 (11.9 counts as 11 in completed years)); age band 11–13 (owner AGE-1, 8 Oct).",
+      "definitionNote": "Wu's condylion is the rearmost point on the condyle's outline (Fig. 1 legend, p. 14); the catalogue's Co is the most posterior-superior point"
+    },
+    {
+      "measurement": "m10_CoA",
+      "sex": "M",
+      "ageBand": [
+        11,
+        13
+      ],
+      "mean": 87.9,
+      "sd": 4.71,
+      "n": 200,
+      "unit": "mm",
+      "source": "Table 3, p. 16 (boys)",
+      "definitionMatch": "close",
+      "note": "12-year-olds (Table 1: boys 11.0–13.0 y, mean 12.4); age band 11–13 (owner AGE-1, 8 Oct).",
+      "definitionNote": "Wu's condylion is the rearmost point on the condyle's outline (Fig. 1 legend, p. 14); the catalogue's Co is the most posterior-superior point"
+    },
+    {
+      "measurement": "m10_CoA",
+      "sex": "F",
+      "ageBand": [
+        11,
+        13
+      ],
+      "mean": 85.93,
+      "sd": 4.41,
+      "n": 205,
+      "unit": "mm",
+      "source": "Table 3 Extended, p. 17 (girls)",
+      "definitionMatch": "close",
+      "note": "12-year-olds (Table 1: girls 11.9–13.0 y, mean 12.5 (11.9 counts as 11 in completed years)); age band 11–13 (owner AGE-1, 8 Oct).",
+      "definitionNote": "Wu's condylion is the rearmost point on the condyle's outline (Fig. 1 legend, p. 14); the catalogue's Co is the most posterior-superior point"
+    },
+    {
+      "measurement": "m12_MaxMandDiff",
+      "sex": "M",
+      "ageBand": [
+        11,
+        13
+      ],
+      "mean": 26.06,
+      "sd": 4.26,
+      "n": 200,
+      "unit": "mm",
+      "source": "Table 3, p. 16 (boys)",
+      "definitionMatch": "close",
+      "note": "12-year-olds (Table 1: boys 11.0–13.0 y, mean 12.4); age band 11–13 (owner AGE-1, 8 Oct).",
+      "definitionNote": "Wu's condylion is the rearmost point on the condyle's outline (Fig. 1 legend, p. 14); the catalogue's Co is the most posterior-superior point"
+    },
+    {
+      "measurement": "m12_MaxMandDiff",
+      "sex": "F",
+      "ageBand": [
+        11,
+        13
+      ],
+      "mean": 27.39,
+      "sd": 3.68,
+      "n": 205,
+      "unit": "mm",
+      "source": "Table 3 Extended, p. 17 (girls)",
+      "definitionMatch": "close",
+      "note": "12-year-olds (Table 1: girls 11.9–13.0 y, mean 12.5 (11.9 counts as 11 in completed years)); age band 11–13 (owner AGE-1, 8 Oct).",
+      "definitionNote": "Wu's condylion is the rearmost point on the condyle's outline (Fig. 1 legend, p. 14); the catalogue's Co is the most posterior-superior point"
+    },
+    {
+      "measurement": "m28_LAFH",
+      "sex": "M",
+      "ageBand": [
+        11,
+        13
+      ],
+      "mean": 66.14,
+      "sd": 4.68,
+      "n": 200,
+      "unit": "mm",
+      "source": "Table 3, p. 16 (boys)",
+      "definitionMatch": "same",
+      "note": "12-year-olds (Table 1: boys 11.0–13.0 y, mean 12.4); age band 11–13 (owner AGE-1, 8 Oct)."
+    },
+    {
+      "measurement": "m28_LAFH",
+      "sex": "F",
+      "ageBand": [
+        11,
+        13
+      ],
+      "mean": 64.39,
+      "sd": 4.34,
+      "n": 205,
+      "unit": "mm",
+      "source": "Table 3 Extended, p. 17 (girls)",
+      "definitionMatch": "same",
+      "note": "12-year-olds (Table 1: girls 11.9–13.0 y, mean 12.5 (11.9 counts as 11 in completed years)); age band 11–13 (owner AGE-1, 8 Oct)."
+    },
+    {
+      "measurement": "m23_FHGoMe",
+      "sex": "M",
+      "ageBand": [
+        11,
+        13
+      ],
+      "mean": 27.81,
+      "sd": 5.19,
+      "n": 200,
+      "unit": "deg",
+      "source": "Table 3, p. 16 (boys)",
+      "definitionMatch": "same",
+      "note": "12-year-olds (Table 1: boys 11.0–13.0 y, mean 12.4); age band 11–13 (owner AGE-1, 8 Oct). MD-P: anatomic FH to Go–Me (Table 2); the female column of Table 3 Extended prints 'MID-P', a typo."
+    },
+    {
+      "measurement": "m23_FHGoMe",
+      "sex": "F",
+      "ageBand": [
+        11,
+        13
+      ],
+      "mean": 26.1,
+      "sd": 5.07,
+      "n": 205,
+      "unit": "deg",
+      "source": "Table 3 Extended, p. 17 (girls)",
+      "definitionMatch": "same",
+      "note": "12-year-olds (Table 1: girls 11.9–13.0 y, mean 12.5 (11.9 counts as 11 in completed years)); age band 11–13 (owner AGE-1, 8 Oct). MD-P: anatomic FH to Go–Me (Table 2); the female column of Table 3 Extended prints 'MID-P', a typo."
+    },
+    {
+      "measurement": "m31_FacAxisM",
+      "sex": "M",
+      "ageBand": [
+        11,
+        13
+      ],
+      "mean": 84.49,
+      "sd": 3.94,
+      "n": 200,
+      "unit": "deg",
+      "source": "Table 3, p. 16 (boys)",
+      "definitionMatch": "same",
+      "note": "Wu tabulates the difference from 90°; stored as value + 90° (owner ruling 7 Oct). Printed -5.51; SD unchanged. 12-year-olds (Table 1: boys 11.0–13.0 y, mean 12.4); age band 11–13 (owner AGE-1, 8 Oct)."
+    },
+    {
+      "measurement": "m31_FacAxisM",
+      "sex": "F",
+      "ageBand": [
+        11,
+        13
+      ],
+      "mean": 86.17,
+      "sd": 3.71,
+      "n": 205,
+      "unit": "deg",
+      "source": "Table 3 Extended, p. 17 (girls)",
+      "definitionMatch": "same",
+      "note": "Wu tabulates the difference from 90°; stored as value + 90° (owner ruling 7 Oct). Printed -3.83; SD unchanged. 12-year-olds (Table 1: girls 11.9–13.0 y, mean 12.5 (11.9 counts as 11 in completed years)); age band 11–13 (owner AGE-1, 8 Oct)."
+    },
+    {
+      "measurement": "m09_PogNperp",
+      "sex": "M",
+      "ageBand": [
+        11,
+        13
+      ],
+      "mean": -7.45,
+      "sd": 6.93,
+      "n": 200,
+      "unit": "mm",
+      "source": "Table 3, p. 16 (boys)",
+      "definitionMatch": "same",
+      "note": "12-year-olds (Table 1: boys 11.0–13.0 y, mean 12.4); age band 11–13 (owner AGE-1, 8 Oct)."
+    },
+    {
+      "measurement": "m09_PogNperp",
+      "sex": "F",
+      "ageBand": [
+        11,
+        13
+      ],
+      "mean": -4.88,
+      "sd": 6.51,
+      "n": 205,
+      "unit": "mm",
+      "source": "Table 3 Extended, p. 17 (girls)",
+      "definitionMatch": "same",
+      "note": "12-year-olds (Table 1: girls 11.9–13.0 y, mean 12.5 (11.9 counts as 11 in completed years)); age band 11–13 (owner AGE-1, 8 Oct)."
+    },
+    {
+      "measurement": "m67_U1Avert",
+      "sex": "M",
+      "ageBand": [
+        11,
+        13
+      ],
+      "mean": 7.34,
+      "sd": 2.82,
+      "n": 200,
+      "unit": "mm",
+      "source": "Table 3, p. 16 (boys)",
+      "definitionMatch": "close",
+      "note": "12-year-olds (Table 1: boys 11.0–13.0 y, mean 12.4); age band 11–13 (owner AGE-1, 8 Oct).",
+      "definitionNote": "measured from the most anterior surface of the upper incisor, its facial surface, to the A-vertical (Table 2, p. 13); the catalogue uses the incisal tip (C1)"
+    },
+    {
+      "measurement": "m67_U1Avert",
+      "sex": "F",
+      "ageBand": [
+        11,
+        13
+      ],
+      "mean": 7.86,
+      "sd": 2.6,
+      "n": 205,
+      "unit": "mm",
+      "source": "Table 3 Extended, p. 17 (girls)",
+      "definitionMatch": "close",
+      "note": "12-year-olds (Table 1: girls 11.9–13.0 y, mean 12.5 (11.9 counts as 11 in completed years)); age band 11–13 (owner AGE-1, 8 Oct).",
+      "definitionNote": "measured from the most anterior surface of the upper incisor, its facial surface, to the A-vertical (Table 2, p. 13); the catalogue uses the incisal tip (C1)"
+    },
+    {
+      "measurement": "m64_L1APog",
+      "sex": "M",
+      "ageBand": [
+        11,
+        13
+      ],
+      "mean": 6.35,
+      "sd": 2.43,
+      "n": 200,
+      "unit": "mm",
+      "source": "Table 3, p. 16 (boys)",
+      "definitionMatch": "close",
+      "note": "12-year-olds (Table 1: boys 11.0–13.0 y, mean 12.4); age band 11–13 (owner AGE-1, 8 Oct).",
+      "definitionNote": "measured from the facial surface of the lower incisor to A–Pog (Table 2, p. 13); the catalogue uses the incisal tip (C1)"
+    },
+    {
+      "measurement": "m64_L1APog",
+      "sex": "F",
+      "ageBand": [
+        11,
+        13
+      ],
+      "mean": 6.26,
+      "sd": 2.25,
+      "n": 205,
+      "unit": "mm",
+      "source": "Table 3 Extended, p. 17 (girls)",
+      "definitionMatch": "close",
+      "note": "12-year-olds (Table 1: girls 11.9–13.0 y, mean 12.5 (11.9 counts as 11 in completed years)); age band 11–13 (owner AGE-1, 8 Oct).",
+      "definitionNote": "measured from the facial surface of the lower incisor to A–Pog (Table 2, p. 13); the catalogue uses the incisal tip (C1)"
+    }
+  ]
+}

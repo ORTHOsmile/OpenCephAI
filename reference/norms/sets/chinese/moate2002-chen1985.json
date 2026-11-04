@@ -1,0 +1,162 @@
+{
+  "id": "moate2002-chen1985",
+  "kind": "population",
+  "status": "verified",
+  "citation": {
+    "authors": "Chen YX",
+    "title": "Lateral cephalometry in 100 Harbin children with normal occlusion",
+    "journal": "Chung-Hua Kou Chiang Ko Tsa Chih (Chinese Journal of Stomatology)",
+    "year": 1985,
+    "volume": "20(1)",
+    "pages": "45–8",
+    "openAccess": false
+  },
+  "population": {
+    "id": "chinese",
+    "label": "Chinese",
+    "ethnicity": [
+      "Northern Chinese"
+    ],
+    "country": "China",
+    "region": "Harbin"
+  },
+  "sample": {
+    "n": 100,
+    "ageMean": 12
+  },
+  "selection": "class-I",
+  "modality": "unknown",
+  "scale": {
+    "kind": "not-stated"
+  },
+  "headPosition": "unknown",
+  "secondHand": {
+    "via": "Moate & Darendeliler 2002, Table II"
+  },
+  "curation": {
+    "extractedBy": [
+      "AI reader A",
+      "AI reader B"
+    ],
+    "date": "2026-10-08",
+    "notes": "Compared 2026-10-08: norms:compare a vs b exit 1, 9 differences (logs/task9a2-compare-<id>.log). Every mean and SD of both extractors re-read from the page images (PDF pp. 2-6 = journal pp. 20-24), and the settled file checked by script against a third, independent reading of the pages (the table in sets.test.ts). Decisions: (0) Source text normalised to one pattern giving table, page, row and column with sex and age (a and b worded it differently; prose only). b's UFH:LFH% rows (#29) not entered: the merge notes rule the printed UFH:LFH ratio is not a catalogue measurement (do not compute ratios). (1) Selection a class-I / b class-I-balanced -> class-I (no profile criterion in the text, p. 21). Page images: PDF pp. 2-6 = journal pp. 20-24 (Tables I-VI), rendered at 2000 px.",
+    "comparedOn": "2026-10-08"
+  },
+  "caveats": [
+    "Quoted second-hand from Moate & Darendeliler 2002 (Aust Orthod J 18:19-26, a compilation of published Chinese cephalometric norms), Table II; the original paper was not read. The compilation rounds every mean and SD to whole numbers (Lew's soft tissue to 0.5) and gives no landmark, plane or method definitions.",
+    "The compilation states no film scale or magnification for any study; assumed true size (owner ruling M-2).",
+    "100 Harbin children (northern China), average age 12, selected from 11,988 children (text p. 21); the title says normal occlusion. No profile criterion is stated, so class-I, not class-I-balanced. The text names 'Chen and Zhang'; the reference list gives Chen YX only.",
+    "Table II heads Chen's column '12 years, Male'; the text does not give the sex split of the 100.",
+    "Not entered (not catalogue measurements; no ratio computed): S-N (63 ± 3), N-ANS and UFH:LFH%.",
+    "Table V (p. 24) averages several studies; it is not entered for this study (merge notes)."
+  ],
+  "entries": [
+    {
+      "measurement": "m01_SNA",
+      "sex": "M",
+      "ageBand": [
+        12,
+        12
+      ],
+      "mean": 81,
+      "sd": 3,
+      "unit": "deg",
+      "source": "Table II, p. 21, row 'SNA', column Chen (males, 12 y)",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m02_SNB",
+      "sex": "M",
+      "ageBand": [
+        12,
+        12
+      ],
+      "mean": 78,
+      "sd": 3,
+      "unit": "deg",
+      "source": "Table II, p. 21, row 'SNB', column Chen (males, 12 y)",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m03_ANB",
+      "sex": "M",
+      "ageBand": [
+        12,
+        12
+      ],
+      "mean": 3,
+      "sd": 2,
+      "unit": "deg",
+      "source": "Table II, p. 21, row 'ANB', column Chen (males, 12 y)",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m21_SNGoMe",
+      "sex": "M",
+      "ageBand": [
+        12,
+        12
+      ],
+      "mean": 35,
+      "sd": 5,
+      "unit": "deg",
+      "source": "Table II, p. 21, row 'SN–MP', column Chen (males, 12 y)",
+      "definitionMatch": "close",
+      "definitionNote": "SN–MP: mandibular plane not stated in the compilation; mapped to Go–Me (#21). The original paper's plane may be Go–Gn or a tangent."
+    },
+    {
+      "measurement": "m57_IMPAgome",
+      "sex": "M",
+      "ageBand": [
+        12,
+        12
+      ],
+      "mean": 94,
+      "sd": 6,
+      "unit": "deg",
+      "source": "Table II, p. 21, row '/1–MP', column Chen (males, 12 y)",
+      "definitionMatch": "close",
+      "definitionNote": "Lower incisor to MP (/1–MP): mandibular plane not stated in the compilation; mapped to Go–Me (#57)."
+    },
+    {
+      "measurement": "m53_Interincisal",
+      "sex": "M",
+      "ageBand": [
+        12,
+        12
+      ],
+      "mean": 124,
+      "sd": 7,
+      "unit": "deg",
+      "source": "Table II, p. 21, row 'Interincisal', column Chen (males, 12 y)",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m60_OPSN",
+      "sex": "M",
+      "ageBand": [
+        12,
+        12
+      ],
+      "mean": 20,
+      "sd": 4,
+      "unit": "deg",
+      "source": "Table II, p. 21, row 'SN–OP', column Chen (males, 12 y)",
+      "definitionMatch": "close",
+      "definitionNote": "SN–OP: occlusal plane not stated in the compilation (functional or bisecting); mapped to #60."
+    },
+    {
+      "measurement": "m28_LAFH",
+      "sex": "M",
+      "ageBand": [
+        12,
+        12
+      ],
+      "mean": 65,
+      "sd": 5,
+      "unit": "mm",
+      "source": "Table II, p. 21, row 'ANS–Me', column Chen (males, 12 y)",
+      "definitionMatch": "same"
+    }
+  ]
+}

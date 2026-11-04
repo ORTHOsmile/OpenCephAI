@@ -1,0 +1,913 @@
+{
+  "id": "moate2002-miao1995",
+  "kind": "population",
+  "status": "verified",
+  "citation": {
+    "authors": "Miao Y, Xuerong T, Yiyue X",
+    "title": "A Study of Craniofacial Structure of normal occlusion in the South of China",
+    "journal": "Chinese Journal of Orthodontics",
+    "year": 1995,
+    "volume": "3(4)",
+    "pages": "109–111",
+    "openAccess": false
+  },
+  "population": {
+    "id": "chinese",
+    "label": "Chinese",
+    "ethnicity": [
+      "Southern Chinese"
+    ],
+    "country": "China",
+    "region": "Guangzhou"
+  },
+  "sample": {
+    "n": 209,
+    "nMale": 104,
+    "nFemale": 105,
+    "ageMin": 4,
+    "ageMax": 40
+  },
+  "selection": "class-I-balanced",
+  "modality": "unknown",
+  "scale": {
+    "kind": "not-stated"
+  },
+  "headPosition": "unknown",
+  "secondHand": {
+    "via": "Moate & Darendeliler 2002, Tables I, III and IV"
+  },
+  "curation": {
+    "extractedBy": [
+      "AI reader A",
+      "AI reader B"
+    ],
+    "date": "2026-10-08",
+    "notes": "Compared 2026-10-08: norms:compare a vs b exit 1, 91 differences (logs/task9a2-compare-<id>.log). Every mean and SD of both extractors re-read from the page images (PDF pp. 2-6 = journal pp. 20-24), and the settled file checked by script against a third, independent reading of the pages (the table in sets.test.ts). Decisions: (0) Source text normalised to one pattern giving table, page, row and column with sex and age (a and b worded it differently; prose only). Adult rows: a gave [18, 40], b no band -> [18, 40] with the P18 note (merge notes). b's UFH:LFH% rows (#29) not entered: the merge notes rule the printed UFH:LFH ratio is not a catalogue measurement (do not compute ratios). (1) Interincisal angle, females 13 y, 125 ± 10: b only; Table III p. 22 prints it in the Miao females column -> kept (a missed it). (2) Gonial angle a same / b close -> close, points not stated (merge notes). (3) Selection a class-I / b class-I-balanced -> class-I-balanced: Class I occlusion with an attractive facial profile (text p. 21). (4) Table I's 7-year columns print no /1-MP or interincisal values (blank on p. 20). Page images: PDF pp. 2-6 = journal pp. 20-24 (Tables I-VI), rendered at 2000 px.",
+    "comparedOn": "2026-10-08"
+  },
+  "caveats": [
+    "Quoted second-hand from Moate & Darendeliler 2002 (Aust Orthod J 18:19-26, a compilation of published Chinese cephalometric norms), Tables I, III and IV; the original paper was not read. The compilation rounds every mean and SD to whole numbers (Lew's soft tissue to 0.5) and gives no landmark, plane or method definitions.",
+    "The compilation states no film scale or magnification for any study; assumed true size (owner ruling M-2).",
+    "209 subjects with a Class I occlusion and an aesthetic facial profile, selected from 13,000 people in Guangzhou City, southern China; 104 males and 105 females aged 4 to 40 (text pp. 21-22). Group sizes per age and sex are not given; the sample n is the whole study.",
+    "Four age groups by physiological age and eruption status: 7, 9, 12.5 and 26.8 years (text p. 22). Entered by the table headers: 7 and 9 (Table I), 13 (Table III; the text says 12.5) and '18 Years +' (Table IV; 18-40 by convention).",
+    "Not entered (not catalogue measurements; no ratio computed): S-N (9 y, 63 ± 3), N-ANS and UFH:LFH% (every group).",
+    "Table V (p. 24) averages several studies; it is not entered for this study (merge notes)."
+  ],
+  "entries": [
+    {
+      "measurement": "m01_SNA",
+      "sex": "M",
+      "ageBand": [
+        7,
+        7
+      ],
+      "mean": 82,
+      "sd": 1,
+      "unit": "deg",
+      "source": "Table I, p. 20, row 'SNA', column Miao (males, 7 y)",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m01_SNA",
+      "sex": "M",
+      "ageBand": [
+        9,
+        9
+      ],
+      "mean": 81,
+      "sd": 3,
+      "unit": "deg",
+      "source": "Table I, p. 20, row 'SNA', column Miao (males, 9 y)",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m01_SNA",
+      "sex": "M",
+      "ageBand": [
+        13,
+        13
+      ],
+      "mean": 84,
+      "sd": 2,
+      "unit": "deg",
+      "source": "Table III, p. 22, row 'SNA', column Miao (males, 13 y)",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m01_SNA",
+      "sex": "M",
+      "ageBand": [
+        18,
+        40
+      ],
+      "mean": 85,
+      "sd": 4,
+      "unit": "deg",
+      "source": "Table IV, p. 23, row 'SNA', column Miao (males, 18 Years +)",
+      "definitionMatch": "same",
+      "note": "'18 Years +' (Table IV): upper bound not stated; 40 by convention (Miao's stated range 4–40), P18."
+    },
+    {
+      "measurement": "m01_SNA",
+      "sex": "F",
+      "ageBand": [
+        7,
+        7
+      ],
+      "mean": 80,
+      "sd": 4,
+      "unit": "deg",
+      "source": "Table I, p. 20, row 'SNA', column Miao (females, 7 y)",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m01_SNA",
+      "sex": "F",
+      "ageBand": [
+        9,
+        9
+      ],
+      "mean": 81,
+      "sd": 3,
+      "unit": "deg",
+      "source": "Table I, p. 20, row 'SNA', column Miao (females, 9 y)",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m01_SNA",
+      "sex": "F",
+      "ageBand": [
+        13,
+        13
+      ],
+      "mean": 83,
+      "sd": 2,
+      "unit": "deg",
+      "source": "Table III, p. 22, row 'SNA', column Miao (females, 13 y)",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m01_SNA",
+      "sex": "F",
+      "ageBand": [
+        18,
+        40
+      ],
+      "mean": 85,
+      "sd": 2,
+      "unit": "deg",
+      "source": "Table IV, p. 23, row 'SNA', column Miao (females, 18 Years +)",
+      "definitionMatch": "same",
+      "note": "'18 Years +' (Table IV): upper bound not stated; 40 by convention (Miao's stated range 4–40), P18."
+    },
+    {
+      "measurement": "m02_SNB",
+      "sex": "M",
+      "ageBand": [
+        7,
+        7
+      ],
+      "mean": 77,
+      "sd": 2,
+      "unit": "deg",
+      "source": "Table I, p. 20, row 'SNB', column Miao (males, 7 y)",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m02_SNB",
+      "sex": "M",
+      "ageBand": [
+        9,
+        9
+      ],
+      "mean": 77,
+      "sd": 3,
+      "unit": "deg",
+      "source": "Table I, p. 20, row 'SNB', column Miao (males, 9 y)",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m02_SNB",
+      "sex": "M",
+      "ageBand": [
+        13,
+        13
+      ],
+      "mean": 80,
+      "sd": 1,
+      "unit": "deg",
+      "source": "Table III, p. 22, row 'SNB', column Miao (males, 13 y)",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m02_SNB",
+      "sex": "M",
+      "ageBand": [
+        18,
+        40
+      ],
+      "mean": 81,
+      "sd": 4,
+      "unit": "deg",
+      "source": "Table IV, p. 23, row 'SNB', column Miao (males, 18 Years +)",
+      "definitionMatch": "same",
+      "note": "'18 Years +' (Table IV): upper bound not stated; 40 by convention (Miao's stated range 4–40), P18."
+    },
+    {
+      "measurement": "m02_SNB",
+      "sex": "F",
+      "ageBand": [
+        7,
+        7
+      ],
+      "mean": 75,
+      "sd": 3,
+      "unit": "deg",
+      "source": "Table I, p. 20, row 'SNB', column Miao (females, 7 y)",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m02_SNB",
+      "sex": "F",
+      "ageBand": [
+        9,
+        9
+      ],
+      "mean": 77,
+      "sd": 3,
+      "unit": "deg",
+      "source": "Table I, p. 20, row 'SNB', column Miao (females, 9 y)",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m02_SNB",
+      "sex": "F",
+      "ageBand": [
+        13,
+        13
+      ],
+      "mean": 79,
+      "sd": 1,
+      "unit": "deg",
+      "source": "Table III, p. 22, row 'SNB', column Miao (females, 13 y)",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m02_SNB",
+      "sex": "F",
+      "ageBand": [
+        18,
+        40
+      ],
+      "mean": 81,
+      "sd": 4,
+      "unit": "deg",
+      "source": "Table IV, p. 23, row 'SNB', column Miao (females, 18 Years +)",
+      "definitionMatch": "same",
+      "note": "'18 Years +' (Table IV): upper bound not stated; 40 by convention (Miao's stated range 4–40), P18."
+    },
+    {
+      "measurement": "m03_ANB",
+      "sex": "M",
+      "ageBand": [
+        7,
+        7
+      ],
+      "mean": 5,
+      "sd": 1,
+      "unit": "deg",
+      "source": "Table I, p. 20, row 'ANB', column Miao (males, 7 y)",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m03_ANB",
+      "sex": "M",
+      "ageBand": [
+        9,
+        9
+      ],
+      "mean": 4,
+      "sd": 2,
+      "unit": "deg",
+      "source": "Table I, p. 20, row 'ANB', column Miao (males, 9 y)",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m03_ANB",
+      "sex": "M",
+      "ageBand": [
+        13,
+        13
+      ],
+      "mean": 4,
+      "sd": 2,
+      "unit": "deg",
+      "source": "Table III, p. 22, row 'ANB', column Miao (males, 13 y)",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m03_ANB",
+      "sex": "M",
+      "ageBand": [
+        18,
+        40
+      ],
+      "mean": 4,
+      "sd": 2,
+      "unit": "deg",
+      "source": "Table IV, p. 23, row 'ANB', column Miao (males, 18 Years +)",
+      "definitionMatch": "same",
+      "note": "'18 Years +' (Table IV): upper bound not stated; 40 by convention (Miao's stated range 4–40), P18."
+    },
+    {
+      "measurement": "m03_ANB",
+      "sex": "F",
+      "ageBand": [
+        7,
+        7
+      ],
+      "mean": 5,
+      "sd": 3,
+      "unit": "deg",
+      "source": "Table I, p. 20, row 'ANB', column Miao (females, 7 y)",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m03_ANB",
+      "sex": "F",
+      "ageBand": [
+        9,
+        9
+      ],
+      "mean": 4,
+      "sd": 2,
+      "unit": "deg",
+      "source": "Table I, p. 20, row 'ANB', column Miao (females, 9 y)",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m03_ANB",
+      "sex": "F",
+      "ageBand": [
+        13,
+        13
+      ],
+      "mean": 3,
+      "sd": 2,
+      "unit": "deg",
+      "source": "Table III, p. 22, row 'ANB', column Miao (females, 13 y)",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m03_ANB",
+      "sex": "F",
+      "ageBand": [
+        18,
+        40
+      ],
+      "mean": 4,
+      "sd": 3,
+      "unit": "deg",
+      "source": "Table IV, p. 23, row 'ANB', column Miao (females, 18 Years +)",
+      "definitionMatch": "same",
+      "note": "'18 Years +' (Table IV): upper bound not stated; 40 by convention (Miao's stated range 4–40), P18."
+    },
+    {
+      "measurement": "m21_SNGoMe",
+      "sex": "M",
+      "ageBand": [
+        7,
+        7
+      ],
+      "mean": 35,
+      "sd": 3,
+      "unit": "deg",
+      "source": "Table I, p. 20, row 'SN–MP', column Miao (males, 7 y)",
+      "definitionMatch": "close",
+      "definitionNote": "SN–MP: mandibular plane not stated in the compilation; mapped to Go–Me (#21). The original paper's plane may be Go–Gn or a tangent."
+    },
+    {
+      "measurement": "m21_SNGoMe",
+      "sex": "M",
+      "ageBand": [
+        9,
+        9
+      ],
+      "mean": 30,
+      "sd": 5,
+      "unit": "deg",
+      "source": "Table I, p. 20, row 'SN–MP', column Miao (males, 9 y)",
+      "definitionMatch": "close",
+      "definitionNote": "SN–MP: mandibular plane not stated in the compilation; mapped to Go–Me (#21). The original paper's plane may be Go–Gn or a tangent."
+    },
+    {
+      "measurement": "m21_SNGoMe",
+      "sex": "M",
+      "ageBand": [
+        13,
+        13
+      ],
+      "mean": 32,
+      "sd": 7,
+      "unit": "deg",
+      "source": "Table III, p. 22, row 'SN–MP', column Miao (males, 13 y)",
+      "definitionMatch": "close",
+      "definitionNote": "SN–MP: mandibular plane not stated in the compilation; mapped to Go–Me (#21). The original paper's plane may be Go–Gn or a tangent."
+    },
+    {
+      "measurement": "m21_SNGoMe",
+      "sex": "M",
+      "ageBand": [
+        18,
+        40
+      ],
+      "mean": 29,
+      "sd": 4,
+      "unit": "deg",
+      "source": "Table IV, p. 23, row 'SN–MP', column Miao (males, 18 Years +)",
+      "definitionMatch": "close",
+      "definitionNote": "SN–MP: mandibular plane not stated in the compilation; mapped to Go–Me (#21). The original paper's plane may be Go–Gn or a tangent.",
+      "note": "'18 Years +' (Table IV): upper bound not stated; 40 by convention (Miao's stated range 4–40), P18."
+    },
+    {
+      "measurement": "m21_SNGoMe",
+      "sex": "F",
+      "ageBand": [
+        7,
+        7
+      ],
+      "mean": 29,
+      "sd": 5,
+      "unit": "deg",
+      "source": "Table I, p. 20, row 'SN–MP', column Miao (females, 7 y)",
+      "definitionMatch": "close",
+      "definitionNote": "SN–MP: mandibular plane not stated in the compilation; mapped to Go–Me (#21). The original paper's plane may be Go–Gn or a tangent."
+    },
+    {
+      "measurement": "m21_SNGoMe",
+      "sex": "F",
+      "ageBand": [
+        9,
+        9
+      ],
+      "mean": 32,
+      "sd": 3,
+      "unit": "deg",
+      "source": "Table I, p. 20, row 'SN–MP', column Miao (females, 9 y)",
+      "definitionMatch": "close",
+      "definitionNote": "SN–MP: mandibular plane not stated in the compilation; mapped to Go–Me (#21). The original paper's plane may be Go–Gn or a tangent."
+    },
+    {
+      "measurement": "m21_SNGoMe",
+      "sex": "F",
+      "ageBand": [
+        13,
+        13
+      ],
+      "mean": 30,
+      "sd": 7,
+      "unit": "deg",
+      "source": "Table III, p. 22, row 'SN–MP', column Miao (females, 13 y)",
+      "definitionMatch": "close",
+      "definitionNote": "SN–MP: mandibular plane not stated in the compilation; mapped to Go–Me (#21). The original paper's plane may be Go–Gn or a tangent."
+    },
+    {
+      "measurement": "m21_SNGoMe",
+      "sex": "F",
+      "ageBand": [
+        18,
+        40
+      ],
+      "mean": 30,
+      "sd": 8,
+      "unit": "deg",
+      "source": "Table IV, p. 23, row 'SN–MP', column Miao (females, 18 Years +)",
+      "definitionMatch": "close",
+      "definitionNote": "SN–MP: mandibular plane not stated in the compilation; mapped to Go–Me (#21). The original paper's plane may be Go–Gn or a tangent.",
+      "note": "'18 Years +' (Table IV): upper bound not stated; 40 by convention (Miao's stated range 4–40), P18."
+    },
+    {
+      "measurement": "m57_IMPAgome",
+      "sex": "M",
+      "ageBand": [
+        9,
+        9
+      ],
+      "mean": 97,
+      "sd": 6,
+      "unit": "deg",
+      "source": "Table I, p. 20, row '/1–MP', column Miao (males, 9 y)",
+      "definitionMatch": "close",
+      "definitionNote": "Lower incisor to MP (/1–MP): mandibular plane not stated in the compilation; mapped to Go–Me (#57)."
+    },
+    {
+      "measurement": "m57_IMPAgome",
+      "sex": "F",
+      "ageBand": [
+        9,
+        9
+      ],
+      "mean": 97,
+      "sd": 6,
+      "unit": "deg",
+      "source": "Table I, p. 20, row '/1–MP', column Miao (females, 9 y)",
+      "definitionMatch": "close",
+      "definitionNote": "Lower incisor to MP (/1–MP): mandibular plane not stated in the compilation; mapped to Go–Me (#57)."
+    },
+    {
+      "measurement": "m53_Interincisal",
+      "sex": "M",
+      "ageBand": [
+        9,
+        9
+      ],
+      "mean": 122,
+      "sd": 6,
+      "unit": "deg",
+      "source": "Table I, p. 20, row 'Interincisal', column Miao (males, 9 y)",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m53_Interincisal",
+      "sex": "F",
+      "ageBand": [
+        9,
+        9
+      ],
+      "mean": 122,
+      "sd": 7,
+      "unit": "deg",
+      "source": "Table I, p. 20, row 'Interincisal', column Miao (females, 9 y)",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m53_Interincisal",
+      "sex": "F",
+      "ageBand": [
+        13,
+        13
+      ],
+      "mean": 125,
+      "sd": 10,
+      "unit": "deg",
+      "source": "Table III, p. 22, row 'Interincisal', column Miao (females, 13 y)",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m36_Gonial",
+      "sex": "M",
+      "ageBand": [
+        7,
+        7
+      ],
+      "mean": 133,
+      "sd": 2,
+      "unit": "deg",
+      "source": "Table I, p. 20, row 'Gonial angle', column Miao (males, 7 y)",
+      "definitionMatch": "close",
+      "definitionNote": "Gonial angle: points not stated in the compilation (catalogue: Ar–Go–Me)."
+    },
+    {
+      "measurement": "m36_Gonial",
+      "sex": "M",
+      "ageBand": [
+        9,
+        9
+      ],
+      "mean": 125,
+      "sd": 5,
+      "unit": "deg",
+      "source": "Table I, p. 20, row 'Gonial angle', column Miao (males, 9 y)",
+      "definitionMatch": "close",
+      "definitionNote": "Gonial angle: points not stated in the compilation (catalogue: Ar–Go–Me)."
+    },
+    {
+      "measurement": "m36_Gonial",
+      "sex": "M",
+      "ageBand": [
+        13,
+        13
+      ],
+      "mean": 126,
+      "sd": 5,
+      "unit": "deg",
+      "source": "Table III, p. 22, row 'Gonial angle', column Miao (males, 13 y)",
+      "definitionMatch": "close",
+      "definitionNote": "Gonial angle: points not stated in the compilation (catalogue: Ar–Go–Me)."
+    },
+    {
+      "measurement": "m36_Gonial",
+      "sex": "M",
+      "ageBand": [
+        18,
+        40
+      ],
+      "mean": 123,
+      "sd": 5,
+      "unit": "deg",
+      "source": "Table IV, p. 23, row 'Gonial angle', column Miao (males, 18 Years +)",
+      "definitionMatch": "close",
+      "definitionNote": "Gonial angle: points not stated in the compilation (catalogue: Ar–Go–Me).",
+      "note": "'18 Years +' (Table IV): upper bound not stated; 40 by convention (Miao's stated range 4–40), P18."
+    },
+    {
+      "measurement": "m36_Gonial",
+      "sex": "F",
+      "ageBand": [
+        7,
+        7
+      ],
+      "mean": 123,
+      "sd": 6,
+      "unit": "deg",
+      "source": "Table I, p. 20, row 'Gonial angle', column Miao (females, 7 y)",
+      "definitionMatch": "close",
+      "definitionNote": "Gonial angle: points not stated in the compilation (catalogue: Ar–Go–Me)."
+    },
+    {
+      "measurement": "m36_Gonial",
+      "sex": "F",
+      "ageBand": [
+        9,
+        9
+      ],
+      "mean": 128,
+      "sd": 4,
+      "unit": "deg",
+      "source": "Table I, p. 20, row 'Gonial angle', column Miao (females, 9 y)",
+      "definitionMatch": "close",
+      "definitionNote": "Gonial angle: points not stated in the compilation (catalogue: Ar–Go–Me)."
+    },
+    {
+      "measurement": "m36_Gonial",
+      "sex": "F",
+      "ageBand": [
+        13,
+        13
+      ],
+      "mean": 124,
+      "sd": 5,
+      "unit": "deg",
+      "source": "Table III, p. 22, row 'Gonial angle', column Miao (females, 13 y)",
+      "definitionMatch": "close",
+      "definitionNote": "Gonial angle: points not stated in the compilation (catalogue: Ar–Go–Me)."
+    },
+    {
+      "measurement": "m36_Gonial",
+      "sex": "F",
+      "ageBand": [
+        18,
+        40
+      ],
+      "mean": 122,
+      "sd": 6,
+      "unit": "deg",
+      "source": "Table IV, p. 23, row 'Gonial angle', column Miao (females, 18 Years +)",
+      "definitionMatch": "close",
+      "definitionNote": "Gonial angle: points not stated in the compilation (catalogue: Ar–Go–Me).",
+      "note": "'18 Years +' (Table IV): upper bound not stated; 40 by convention (Miao's stated range 4–40), P18."
+    },
+    {
+      "measurement": "m35_Articular",
+      "sex": "M",
+      "ageBand": [
+        9,
+        9
+      ],
+      "mean": 146,
+      "sd": 3,
+      "unit": "deg",
+      "source": "Table I, p. 20, row 'S–Ar–Go', column Miao (males, 9 y)",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m35_Articular",
+      "sex": "M",
+      "ageBand": [
+        13,
+        13
+      ],
+      "mean": 146,
+      "sd": 10,
+      "unit": "deg",
+      "source": "Table III, p. 22, row 'S–Ar–Go', column Miao (males, 13 y)",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m35_Articular",
+      "sex": "M",
+      "ageBand": [
+        18,
+        40
+      ],
+      "mean": 146,
+      "sd": 6,
+      "unit": "deg",
+      "source": "Table IV, p. 23, row 'S–Ar–Go', column Miao (males, 18 Years +)",
+      "definitionMatch": "same",
+      "note": "'18 Years +' (Table IV): upper bound not stated; 40 by convention (Miao's stated range 4–40), P18."
+    },
+    {
+      "measurement": "m35_Articular",
+      "sex": "F",
+      "ageBand": [
+        9,
+        9
+      ],
+      "mean": 141,
+      "sd": 6,
+      "unit": "deg",
+      "source": "Table I, p. 20, row 'S–Ar–Go', column Miao (females, 9 y)",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m35_Articular",
+      "sex": "F",
+      "ageBand": [
+        13,
+        13
+      ],
+      "mean": 149,
+      "sd": 6,
+      "unit": "deg",
+      "source": "Table III, p. 22, row 'S–Ar–Go', column Miao (females, 13 y)",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m35_Articular",
+      "sex": "F",
+      "ageBand": [
+        18,
+        40
+      ],
+      "mean": 144,
+      "sd": 9,
+      "unit": "deg",
+      "source": "Table IV, p. 23, row 'S–Ar–Go', column Miao (females, 18 Years +)",
+      "definitionMatch": "same",
+      "note": "'18 Years +' (Table IV): upper bound not stated; 40 by convention (Miao's stated range 4–40), P18."
+    },
+    {
+      "measurement": "m60_OPSN",
+      "sex": "M",
+      "ageBand": [
+        9,
+        9
+      ],
+      "mean": 21,
+      "sd": 4,
+      "unit": "deg",
+      "source": "Table I, p. 20, row 'SN–OP', column Miao (males, 9 y)",
+      "definitionMatch": "close",
+      "definitionNote": "SN–OP: occlusal plane not stated in the compilation (functional or bisecting); mapped to #60."
+    },
+    {
+      "measurement": "m60_OPSN",
+      "sex": "M",
+      "ageBand": [
+        13,
+        13
+      ],
+      "mean": 17,
+      "sd": 3,
+      "unit": "deg",
+      "source": "Table III, p. 22, row 'SN–OP', column Miao (males, 13 y)",
+      "definitionMatch": "close",
+      "definitionNote": "SN–OP: occlusal plane not stated in the compilation (functional or bisecting); mapped to #60."
+    },
+    {
+      "measurement": "m60_OPSN",
+      "sex": "F",
+      "ageBand": [
+        9,
+        9
+      ],
+      "mean": 23,
+      "sd": 10,
+      "unit": "deg",
+      "source": "Table I, p. 20, row 'SN–OP', column Miao (females, 9 y)",
+      "definitionMatch": "close",
+      "definitionNote": "SN–OP: occlusal plane not stated in the compilation (functional or bisecting); mapped to #60."
+    },
+    {
+      "measurement": "m60_OPSN",
+      "sex": "F",
+      "ageBand": [
+        13,
+        13
+      ],
+      "mean": 18,
+      "sd": 4,
+      "unit": "deg",
+      "source": "Table III, p. 22, row 'SN–OP', column Miao (females, 13 y)",
+      "definitionMatch": "close",
+      "definitionNote": "SN–OP: occlusal plane not stated in the compilation (functional or bisecting); mapped to #60."
+    },
+    {
+      "measurement": "m28_LAFH",
+      "sex": "M",
+      "ageBand": [
+        7,
+        7
+      ],
+      "mean": 55,
+      "sd": 4,
+      "unit": "mm",
+      "source": "Table I, p. 20, row 'ANS–Me', column Miao (males, 7 y)",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m28_LAFH",
+      "sex": "M",
+      "ageBand": [
+        9,
+        9
+      ],
+      "mean": 59,
+      "sd": 3,
+      "unit": "mm",
+      "source": "Table I, p. 20, row 'ANS–Me', column Miao (males, 9 y)",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m28_LAFH",
+      "sex": "M",
+      "ageBand": [
+        13,
+        13
+      ],
+      "mean": 63,
+      "sd": 5,
+      "unit": "mm",
+      "source": "Table III, p. 22, row 'ANS–Me', column Miao (males, 13 y)",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m28_LAFH",
+      "sex": "M",
+      "ageBand": [
+        18,
+        40
+      ],
+      "mean": 73,
+      "sd": 5,
+      "unit": "mm",
+      "source": "Table IV, p. 23, row 'ANS–Me', column Miao (males, 18 Years +)",
+      "definitionMatch": "same",
+      "note": "'18 Years +' (Table IV): upper bound not stated; 40 by convention (Miao's stated range 4–40), P18."
+    },
+    {
+      "measurement": "m28_LAFH",
+      "sex": "F",
+      "ageBand": [
+        7,
+        7
+      ],
+      "mean": 51,
+      "sd": 4,
+      "unit": "mm",
+      "source": "Table I, p. 20, row 'ANS–Me', column Miao (females, 7 y)",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m28_LAFH",
+      "sex": "F",
+      "ageBand": [
+        9,
+        9
+      ],
+      "mean": 57,
+      "sd": 3,
+      "unit": "mm",
+      "source": "Table I, p. 20, row 'ANS–Me', column Miao (females, 9 y)",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m28_LAFH",
+      "sex": "F",
+      "ageBand": [
+        13,
+        13
+      ],
+      "mean": 64,
+      "sd": 5,
+      "unit": "mm",
+      "source": "Table III, p. 22, row 'ANS–Me', column Miao (females, 13 y)",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m28_LAFH",
+      "sex": "F",
+      "ageBand": [
+        18,
+        40
+      ],
+      "mean": 68,
+      "sd": 6,
+      "unit": "mm",
+      "source": "Table IV, p. 23, row 'ANS–Me', column Miao (females, 18 Years +)",
+      "definitionMatch": "same",
+      "note": "'18 Years +' (Table IV): upper bound not stated; 40 by convention (Miao's stated range 4–40), P18."
+    }
+  ]
+}

@@ -1,0 +1,323 @@
+{
+  "aarizScale": {
+    "aarizScaleRule": "aariz-scale/1",
+    "excluded": 52,
+    "excludedByReason": {
+      "default resolution": {
+        "Hyperion X5": 12
+      },
+      "no resolution in header": {
+        "Hyperion X5": 4
+      },
+      "no source of true scale": {
+        "Smart3D": 9,
+        "Veraviewepocs 2D": 27
+      }
+    },
+    "films": 150,
+    "flagged": 0,
+    "flaggedByMachine": {},
+    "snRangeMm": [
+      45.0,
+      95.0
+    ],
+    "used": 98,
+    "usedByMachine": {
+      "ART Plus": 55,
+      "Hyperion X5": 5,
+      "ProMax 2D": 6,
+      "ProMax with ProTouch": 20,
+      "Rotograph EVO": 12
+    }
+  },
+  "confirmation": "pending",
+  "decidedOn": {
+    "dataset": "aariz",
+    "films": 98,
+    "filmsSha256": "111071bd0c4cb5d9e45c55f728c601347ba4e84bf7a82814d1ecd89b6da97039",
+    "split": "valid"
+  },
+  "filmsLeftOut": {
+    "A": 0,
+    "ANS": 0,
+    "Ar": 0,
+    "B": 0,
+    "Gn": 0,
+    "Go": 0,
+    "L1T": 0,
+    "LL": 0,
+    "Me": 0,
+    "N": 0,
+    "Or": 0,
+    "PNS": 0,
+    "Po": 0,
+    "Pog": 0,
+    "PogS": 0,
+    "S": 0,
+    "Sn": 0,
+    "U1T": 0,
+    "UL": 0
+  },
+  "gitSha": "dc7910d292c9",
+  "points": {
+    "A": {
+      "chosen": "aariz-cepha29",
+      "diff": {
+        "estimate": -5.417608027554973,
+        "hi": -4.410025859426501,
+        "lo": -6.586833382312505,
+        "resamples": 2000,
+        "resamplesUsed": 2000
+      },
+      "films": 98,
+      "meanAariz": 1.1459710247952524,
+      "meanCwlachap": 6.563579052350219
+    },
+    "ANS": {
+      "chosen": "aariz-cepha29",
+      "diff": {
+        "estimate": -6.009968071400977,
+        "hi": -3.9165960688197647,
+        "lo": -8.584899870598745,
+        "resamples": 2000,
+        "resamplesUsed": 2000
+      },
+      "films": 98,
+      "meanAariz": 1.4148439289110222,
+      "meanCwlachap": 7.424812000312003
+    },
+    "Ar": {
+      "chosen": "aariz-cepha29",
+      "diff": {
+        "estimate": -5.341078339916571,
+        "hi": -3.16896748218454,
+        "lo": -8.238042777412845,
+        "resamples": 2000,
+        "resamplesUsed": 2000
+      },
+      "films": 98,
+      "meanAariz": 1.6898588353634412,
+      "meanCwlachap": 7.030937175280009
+    },
+    "B": {
+      "chosen": "aariz-cepha29",
+      "diff": {
+        "estimate": -4.51085246526731,
+        "hi": -3.6940281927511416,
+        "lo": -5.427604311262783,
+        "resamples": 2000,
+        "resamplesUsed": 2000
+      },
+      "films": 98,
+      "meanAariz": 1.07167711485278,
+      "meanCwlachap": 5.582529580120089
+    },
+    "Gn": {
+      "chosen": "aariz-cepha29",
+      "diff": {
+        "estimate": -5.2833931385106485,
+        "hi": -4.589756952593949,
+        "lo": -6.053743859099624,
+        "resamples": 2000,
+        "resamplesUsed": 2000
+      },
+      "films": 98,
+      "meanAariz": 0.630522593721074,
+      "meanCwlachap": 5.913915732231719
+    },
+    "Go": {
+      "chosen": "aariz-cepha29",
+      "diff": {
+        "estimate": -7.1245824520756935,
+        "hi": -5.5566064725021675,
+        "lo": -8.897295821462032,
+        "resamples": 2000,
+        "resamplesUsed": 2000
+      },
+      "films": 98,
+      "meanAariz": 2.0357563984886315,
+      "meanCwlachap": 9.160338850564326
+    },
+    "L1T": {
+      "chosen": "aariz-cepha29",
+      "diff": {
+        "estimate": -7.138940034252883,
+        "hi": -6.072436790281191,
+        "lo": -8.356418916132146,
+        "resamples": 2000,
+        "resamplesUsed": 2000
+      },
+      "films": 98,
+      "meanAariz": 0.9533608356127248,
+      "meanCwlachap": 8.092300869865605
+    },
+    "LL": {
+      "chosen": "aariz-cepha29",
+      "diff": {
+        "estimate": -9.52973060261964,
+        "hi": -8.2803170996913,
+        "lo": -10.880012258985024,
+        "resamples": 2000,
+        "resamplesUsed": 2000
+      },
+      "films": 98,
+      "meanAariz": 1.015337732477679,
+      "meanCwlachap": 10.545068335097312
+    },
+    "Me": {
+      "chosen": "aariz-cepha29",
+      "diff": {
+        "estimate": -3.9736611554354866,
+        "hi": -3.307723162483389,
+        "lo": -4.698467316655769,
+        "resamples": 2000,
+        "resamplesUsed": 2000
+      },
+      "films": 98,
+      "meanAariz": 0.5889231986817278,
+      "meanCwlachap": 4.562584354117213
+    },
+    "N": {
+      "chosen": "aariz-cepha29",
+      "diff": {
+        "estimate": -14.91157752810823,
+        "hi": -9.418052240388633,
+        "lo": -20.823243293901626,
+        "resamples": 2000,
+        "resamplesUsed": 2000
+      },
+      "films": 98,
+      "meanAariz": 1.1013326328960837,
+      "meanCwlachap": 16.012910161004314
+    },
+    "Or": {
+      "chosen": "aariz-cepha29",
+      "diff": {
+        "estimate": -8.843736235184164,
+        "hi": -6.746033355966891,
+        "lo": -11.091520042187133,
+        "resamples": 2000,
+        "resamplesUsed": 2000
+      },
+      "films": 98,
+      "meanAariz": 1.499584107005212,
+      "meanCwlachap": 10.34332034218937
+    },
+    "PNS": {
+      "chosen": "aariz-cepha29",
+      "diff": {
+        "estimate": -1.5003769866531076,
+        "hi": -1.1021666167453943,
+        "lo": -1.8829610972149133,
+        "resamples": 2000,
+        "resamplesUsed": 2000
+      },
+      "films": 98,
+      "meanAariz": 1.872705522627571,
+      "meanCwlachap": 3.373082509280677
+    },
+    "Po": {
+      "chosen": "aariz-cepha29",
+      "diff": {
+        "estimate": -6.392745841122497,
+        "hi": -4.4156949699523445,
+        "lo": -8.743474442783807,
+        "resamples": 2000,
+        "resamplesUsed": 2000
+      },
+      "films": 98,
+      "meanAariz": 1.9995491593433024,
+      "meanCwlachap": 8.3922950004658
+    },
+    "Pog": {
+      "chosen": "aariz-cepha29",
+      "diff": {
+        "estimate": -4.58396746976732,
+        "hi": -3.8870235248981246,
+        "lo": -5.304705909465432,
+        "resamples": 2000,
+        "resamplesUsed": 2000
+      },
+      "films": 98,
+      "meanAariz": 0.8504009892855641,
+      "meanCwlachap": 5.434368459052886
+    },
+    "PogS": {
+      "chosen": "aariz-cepha29",
+      "diff": {
+        "estimate": -6.695481577604085,
+        "hi": -5.6838294941794905,
+        "lo": -7.808490451585271,
+        "resamples": 2000,
+        "resamplesUsed": 2000
+      },
+      "films": 98,
+      "meanAariz": 1.2593423240142712,
+      "meanCwlachap": 7.954823901618355
+    },
+    "S": {
+      "chosen": "aariz-cepha29",
+      "diff": {
+        "estimate": -8.41726820920941,
+        "hi": -5.73013692109843,
+        "lo": -12.03275257218619,
+        "resamples": 2000,
+        "resamplesUsed": 2000
+      },
+      "films": 98,
+      "meanAariz": 0.9011248070099419,
+      "meanCwlachap": 9.318393016219353
+    },
+    "Sn": {
+      "chosen": "aariz-cepha29",
+      "diff": {
+        "estimate": -5.256084271074053,
+        "hi": -3.963412752874623,
+        "lo": -6.899188017308005,
+        "resamples": 2000,
+        "resamplesUsed": 2000
+      },
+      "films": 98,
+      "meanAariz": 0.8714112446941641,
+      "meanCwlachap": 6.127495515768219
+    },
+    "U1T": {
+      "chosen": "aariz-cepha29",
+      "diff": {
+        "estimate": -4.47332276554124,
+        "hi": -3.3296876137578635,
+        "lo": -5.902607180537003,
+        "resamples": 2000,
+        "resamplesUsed": 2000
+      },
+      "films": 98,
+      "meanAariz": 0.7393987336176464,
+      "meanCwlachap": 5.212721499158887
+    },
+    "UL": {
+      "chosen": "aariz-cepha29",
+      "diff": {
+        "estimate": -7.23204700304074,
+        "hi": -5.945831666549859,
+        "lo": -8.834031809206557,
+        "resamples": 2000,
+        "resamplesUsed": 2000
+      },
+      "films": 98,
+      "meanAariz": 0.7914068714795841,
+      "meanCwlachap": 8.023453874520323
+    }
+  },
+  "positiveControl": {
+    "cwlachapLoweredMm": 2.0,
+    "named": true,
+    "point": "PNS"
+  },
+  "providers": {
+    "aariz-cepha29": "cpu",
+    "cwlachap-hrnet-w32": "cpu"
+  },
+  "resamples": 2000,
+  "ruleVersion": "main-point-source/1",
+  "seed": 20261013
+}

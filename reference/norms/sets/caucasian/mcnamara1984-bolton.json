@@ -1,0 +1,1089 @@
+{
+  "id": "mcnamara1984-bolton",
+  "kind": "population",
+  "status": "verified",
+  "citation": {
+    "authors": "McNamara JA Jr",
+    "title": "A method of cephalometric evaluation",
+    "journal": "American Journal of Orthodontics",
+    "year": 1984,
+    "volume": "86",
+    "pages": "449-469",
+    "openAccess": false
+  },
+  "population": {
+    "id": "caucasian",
+    "label": "Caucasian (European background; used for Australian patients of European background)",
+    "ethnicity": [
+      "not stated in the paper"
+    ],
+    "country": "USA",
+    "region": "Cleveland, Ohio"
+  },
+  "sample": {
+    "nMale": 16,
+    "nFemale": 16,
+    "ageMin": 6,
+    "ageMax": 18
+  },
+  "selection": "class-I-balanced",
+  "modality": "film",
+  "scale": {
+    "kind": "enlarged",
+    "percent": 8,
+    "source": "p. 451"
+  },
+  "headPosition": "unknown",
+  "curation": {
+    "extractedBy": [
+      "AI reader B (mcnamara1984-caucasian.b)",
+      "Task 6 AI reader A and AI reader B (mcnamara1984.a/.b, Tables III and VI rows)"
+    ],
+    "comparedOn": "2026-10-08",
+    "date": "2026-10-08",
+    "notes": "Ruling P23: one set per McNamara sample. Ruling P24: mcnamara1984-caucasian.a.json not used (not independent); the Table III and VI rows of mcnamara1984-caucasian.b.json were compared row by row against the independent Task 6 extractions mcnamara1984.a.json and .b.json, which hold the same rows (script comparison 2026-10-08, positive control: two planted changes found): 72 rows compared with each, 0 differences. Table III also re-read on the page image (PDF p. 5 = p. 453) because its text layer is garbled (it reads 91.1 for the girls' 6-year Co-Gn, the page 97.7): every value agrees with the three readings. Girls' 6-year differential SD 8.1 kept as printed, noted (merge notes). Selection class-I-balanced (owner ruling MCN-1, 8 Oct, fix round 1; was unknown): p. 462 gives the Bolton standards (Table VI) as an example of well-balanced faces; p. 450 describes them as the Bolton standards children, retraced longitudinally by Behrents and McNamara. With it, Bolton ranks before Burlington (selection unknown) where both cover a child's age (rule 5), no longer by file order. Single printed ages entered as [a, a]; n 16 per sex per age (table headings). Scale enlarged 8% (p. 451; headings 'standardized 8% enlargement'). Incisor distances close (facial surface, M1)."
+  },
+  "caveats": [
+    "'Caucasian' is our label: the paper never states the samples' ethnicity (it says nothing about ancestry).",
+    "The children of the Bolton standards (Bolton-Brush study, Cleveland), whose longitudinal records were retraced (p. 450): 16 per sex at each age (Tables III and VI). The paper gives no whole-sample count. It calls them well-balanced faces (p. 462 gives the Bolton standards as an example of well-balanced faces), so the set is class-I balanced (owner ruling MCN-1, 8 Oct); no other selection criteria are given.",
+    "8% film enlargement: p. 451 says the measures from all these samples include an 8% enlargement wherever possible; the table heading says 'standardized 8% enlargement'. The app shows mm values at true size (÷ 1.08) with the printed value.",
+    "Values are printed at single ages (6, 9, 12, 14, 16, 18 y). A child between two printed ages gets the nearest printed age, marked as not his age (no interpolation is used for this set).",
+    "Girls' 6-year maxillomandibular differential: SD 8.1 as printed — possibly a misprint (every other differential SD is 2.2-4.1).",
+    "Not in the catalogue: Table VII annual increments (p. 465)."
+  ],
+  "entries": [
+    {
+      "measurement": "m11_CoGn",
+      "sex": "F",
+      "ageBand": [
+        6,
+        6
+      ],
+      "mean": 97.7,
+      "sd": 3.4,
+      "n": 16,
+      "unit": "mm",
+      "source": "Table III, p. 453, row 'Mandibular length (Co-Gn)', females, 6 years",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m11_CoGn",
+      "sex": "F",
+      "ageBand": [
+        9,
+        9
+      ],
+      "mean": 106.1,
+      "sd": 3.4,
+      "n": 16,
+      "unit": "mm",
+      "source": "Table III, p. 453, row 'Mandibular length (Co-Gn)', females, 9 years",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m11_CoGn",
+      "sex": "F",
+      "ageBand": [
+        12,
+        12
+      ],
+      "mean": 113.1,
+      "sd": 3.6,
+      "n": 16,
+      "unit": "mm",
+      "source": "Table III, p. 453, row 'Mandibular length (Co-Gn)', females, 12 years",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m11_CoGn",
+      "sex": "F",
+      "ageBand": [
+        14,
+        14
+      ],
+      "mean": 118.9,
+      "sd": 5.0,
+      "n": 16,
+      "unit": "mm",
+      "source": "Table III, p. 453, row 'Mandibular length (Co-Gn)', females, 14 years",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m11_CoGn",
+      "sex": "F",
+      "ageBand": [
+        16,
+        16
+      ],
+      "mean": 120.0,
+      "sd": 3.4,
+      "n": 16,
+      "unit": "mm",
+      "source": "Table III, p. 453, row 'Mandibular length (Co-Gn)', females, 16 years",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m11_CoGn",
+      "sex": "F",
+      "ageBand": [
+        18,
+        18
+      ],
+      "mean": 121.6,
+      "sd": 4.5,
+      "n": 16,
+      "unit": "mm",
+      "source": "Table III, p. 453, row 'Mandibular length (Co-Gn)', females, 18 years",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m11_CoGn",
+      "sex": "M",
+      "ageBand": [
+        6,
+        6
+      ],
+      "mean": 99.3,
+      "sd": 3.6,
+      "n": 16,
+      "unit": "mm",
+      "source": "Table III, p. 453, row 'Mandibular length (Co-Gn)', males, 6 years",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m11_CoGn",
+      "sex": "M",
+      "ageBand": [
+        9,
+        9
+      ],
+      "mean": 107.7,
+      "sd": 3.8,
+      "n": 16,
+      "unit": "mm",
+      "source": "Table III, p. 453, row 'Mandibular length (Co-Gn)', males, 9 years",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m11_CoGn",
+      "sex": "M",
+      "ageBand": [
+        12,
+        12
+      ],
+      "mean": 114.4,
+      "sd": 4.3,
+      "n": 16,
+      "unit": "mm",
+      "source": "Table III, p. 453, row 'Mandibular length (Co-Gn)', males, 12 years",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m11_CoGn",
+      "sex": "M",
+      "ageBand": [
+        14,
+        14
+      ],
+      "mean": 120.6,
+      "sd": 4.3,
+      "n": 16,
+      "unit": "mm",
+      "source": "Table III, p. 453, row 'Mandibular length (Co-Gn)', males, 14 years",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m11_CoGn",
+      "sex": "M",
+      "ageBand": [
+        16,
+        16
+      ],
+      "mean": 126.8,
+      "sd": 4.7,
+      "n": 16,
+      "unit": "mm",
+      "source": "Table III, p. 453, row 'Mandibular length (Co-Gn)', males, 16 years",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m11_CoGn",
+      "sex": "M",
+      "ageBand": [
+        18,
+        18
+      ],
+      "mean": 131.0,
+      "sd": 4.6,
+      "n": 16,
+      "unit": "mm",
+      "source": "Table III, p. 453, row 'Mandibular length (Co-Gn)', males, 18 years",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m10_CoA",
+      "sex": "F",
+      "ageBand": [
+        6,
+        6
+      ],
+      "mean": 79.8,
+      "sd": 2.2,
+      "n": 16,
+      "unit": "mm",
+      "source": "Table III, p. 453, row 'Midfacial length (Co-point A)', females, 6 years",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m10_CoA",
+      "sex": "F",
+      "ageBand": [
+        9,
+        9
+      ],
+      "mean": 85.0,
+      "sd": 2.3,
+      "n": 16,
+      "unit": "mm",
+      "source": "Table III, p. 453, row 'Midfacial length (Co-point A)', females, 9 years",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m10_CoA",
+      "sex": "F",
+      "ageBand": [
+        12,
+        12
+      ],
+      "mean": 89.6,
+      "sd": 2.4,
+      "n": 16,
+      "unit": "mm",
+      "source": "Table III, p. 453, row 'Midfacial length (Co-point A)', females, 12 years",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m10_CoA",
+      "sex": "F",
+      "ageBand": [
+        14,
+        14
+      ],
+      "mean": 92.1,
+      "sd": 2.7,
+      "n": 16,
+      "unit": "mm",
+      "source": "Table III, p. 453, row 'Midfacial length (Co-point A)', females, 14 years",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m10_CoA",
+      "sex": "F",
+      "ageBand": [
+        16,
+        16
+      ],
+      "mean": 92.7,
+      "sd": 2.3,
+      "n": 16,
+      "unit": "mm",
+      "source": "Table III, p. 453, row 'Midfacial length (Co-point A)', females, 16 years",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m10_CoA",
+      "sex": "F",
+      "ageBand": [
+        18,
+        18
+      ],
+      "mean": 93.6,
+      "sd": 3.2,
+      "n": 16,
+      "unit": "mm",
+      "source": "Table III, p. 453, row 'Midfacial length (Co-point A)', females, 18 years",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m10_CoA",
+      "sex": "M",
+      "ageBand": [
+        6,
+        6
+      ],
+      "mean": 81.7,
+      "sd": 3.4,
+      "n": 16,
+      "unit": "mm",
+      "source": "Table III, p. 453, row 'Midfacial length (Co-point A)', males, 6 years",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m10_CoA",
+      "sex": "M",
+      "ageBand": [
+        9,
+        9
+      ],
+      "mean": 87.7,
+      "sd": 4.1,
+      "n": 16,
+      "unit": "mm",
+      "source": "Table III, p. 453, row 'Midfacial length (Co-point A)', males, 9 years",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m10_CoA",
+      "sex": "M",
+      "ageBand": [
+        12,
+        12
+      ],
+      "mean": 92.1,
+      "sd": 4.1,
+      "n": 16,
+      "unit": "mm",
+      "source": "Table III, p. 453, row 'Midfacial length (Co-point A)', males, 12 years",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m10_CoA",
+      "sex": "M",
+      "ageBand": [
+        14,
+        14
+      ],
+      "mean": 95.2,
+      "sd": 3.2,
+      "n": 16,
+      "unit": "mm",
+      "source": "Table III, p. 453, row 'Midfacial length (Co-point A)', males, 14 years",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m10_CoA",
+      "sex": "M",
+      "ageBand": [
+        16,
+        16
+      ],
+      "mean": 98.9,
+      "sd": 4.4,
+      "n": 16,
+      "unit": "mm",
+      "source": "Table III, p. 453, row 'Midfacial length (Co-point A)', males, 16 years",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m10_CoA",
+      "sex": "M",
+      "ageBand": [
+        18,
+        18
+      ],
+      "mean": 100.9,
+      "sd": 3.9,
+      "n": 16,
+      "unit": "mm",
+      "source": "Table III, p. 453, row 'Midfacial length (Co-point A)', males, 18 years",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m12_MaxMandDiff",
+      "sex": "F",
+      "ageBand": [
+        6,
+        6
+      ],
+      "mean": 17.9,
+      "sd": 8.1,
+      "n": 16,
+      "unit": "mm",
+      "source": "Table III, p. 453, row 'Maxillomandibular differential', females, 6 years",
+      "definitionMatch": "same",
+      "note": "SD 8.1 as printed (Table III, p. 453) — possibly a misprint: every other differential SD in the table is 2.2-4.1."
+    },
+    {
+      "measurement": "m12_MaxMandDiff",
+      "sex": "F",
+      "ageBand": [
+        9,
+        9
+      ],
+      "mean": 21.0,
+      "sd": 2.7,
+      "n": 16,
+      "unit": "mm",
+      "source": "Table III, p. 453, row 'Maxillomandibular differential', females, 9 years",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m12_MaxMandDiff",
+      "sex": "F",
+      "ageBand": [
+        12,
+        12
+      ],
+      "mean": 23.4,
+      "sd": 3.0,
+      "n": 16,
+      "unit": "mm",
+      "source": "Table III, p. 453, row 'Maxillomandibular differential', females, 12 years",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m12_MaxMandDiff",
+      "sex": "F",
+      "ageBand": [
+        14,
+        14
+      ],
+      "mean": 26.7,
+      "sd": 4.1,
+      "n": 16,
+      "unit": "mm",
+      "source": "Table III, p. 453, row 'Maxillomandibular differential', females, 14 years",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m12_MaxMandDiff",
+      "sex": "F",
+      "ageBand": [
+        16,
+        16
+      ],
+      "mean": 27.3,
+      "sd": 3.0,
+      "n": 16,
+      "unit": "mm",
+      "source": "Table III, p. 453, row 'Maxillomandibular differential', females, 16 years",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m12_MaxMandDiff",
+      "sex": "F",
+      "ageBand": [
+        18,
+        18
+      ],
+      "mean": 28.0,
+      "sd": 3.2,
+      "n": 16,
+      "unit": "mm",
+      "source": "Table III, p. 453, row 'Maxillomandibular differential', females, 18 years",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m12_MaxMandDiff",
+      "sex": "M",
+      "ageBand": [
+        6,
+        6
+      ],
+      "mean": 17.5,
+      "sd": 2.2,
+      "n": 16,
+      "unit": "mm",
+      "source": "Table III, p. 453, row 'Maxillomandibular differential', males, 6 years",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m12_MaxMandDiff",
+      "sex": "M",
+      "ageBand": [
+        9,
+        9
+      ],
+      "mean": 20.0,
+      "sd": 2.6,
+      "n": 16,
+      "unit": "mm",
+      "source": "Table III, p. 453, row 'Maxillomandibular differential', males, 9 years",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m12_MaxMandDiff",
+      "sex": "M",
+      "ageBand": [
+        12,
+        12
+      ],
+      "mean": 22.2,
+      "sd": 3.1,
+      "n": 16,
+      "unit": "mm",
+      "source": "Table III, p. 453, row 'Maxillomandibular differential', males, 12 years",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m12_MaxMandDiff",
+      "sex": "M",
+      "ageBand": [
+        14,
+        14
+      ],
+      "mean": 25.3,
+      "sd": 3.5,
+      "n": 16,
+      "unit": "mm",
+      "source": "Table III, p. 453, row 'Maxillomandibular differential', males, 14 years",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m12_MaxMandDiff",
+      "sex": "M",
+      "ageBand": [
+        16,
+        16
+      ],
+      "mean": 27.9,
+      "sd": 3.3,
+      "n": 16,
+      "unit": "mm",
+      "source": "Table III, p. 453, row 'Maxillomandibular differential', males, 16 years",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m12_MaxMandDiff",
+      "sex": "M",
+      "ageBand": [
+        18,
+        18
+      ],
+      "mean": 30.0,
+      "sd": 3.9,
+      "n": 16,
+      "unit": "mm",
+      "source": "Table III, p. 453, row 'Maxillomandibular differential', males, 18 years",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m28_LAFH",
+      "sex": "F",
+      "ageBand": [
+        6,
+        6
+      ],
+      "mean": 57.9,
+      "sd": 3.7,
+      "n": 16,
+      "unit": "mm",
+      "source": "Table III, p. 453, row 'Lower anterior facial height', females, 6 years",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m28_LAFH",
+      "sex": "F",
+      "ageBand": [
+        9,
+        9
+      ],
+      "mean": 60.0,
+      "sd": 2.9,
+      "n": 16,
+      "unit": "mm",
+      "source": "Table III, p. 453, row 'Lower anterior facial height', females, 9 years",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m28_LAFH",
+      "sex": "F",
+      "ageBand": [
+        12,
+        12
+      ],
+      "mean": 62.6,
+      "sd": 4.5,
+      "n": 16,
+      "unit": "mm",
+      "source": "Table III, p. 453, row 'Lower anterior facial height', females, 12 years",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m28_LAFH",
+      "sex": "F",
+      "ageBand": [
+        14,
+        14
+      ],
+      "mean": 65.6,
+      "sd": 4.9,
+      "n": 16,
+      "unit": "mm",
+      "source": "Table III, p. 453, row 'Lower anterior facial height', females, 14 years",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m28_LAFH",
+      "sex": "F",
+      "ageBand": [
+        16,
+        16
+      ],
+      "mean": 66.1,
+      "sd": 4.3,
+      "n": 16,
+      "unit": "mm",
+      "source": "Table III, p. 453, row 'Lower anterior facial height', females, 16 years",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m28_LAFH",
+      "sex": "F",
+      "ageBand": [
+        18,
+        18
+      ],
+      "mean": 67.2,
+      "sd": 4.7,
+      "n": 16,
+      "unit": "mm",
+      "source": "Table III, p. 453, row 'Lower anterior facial height', females, 18 years",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m28_LAFH",
+      "sex": "M",
+      "ageBand": [
+        6,
+        6
+      ],
+      "mean": 58.4,
+      "sd": 3.1,
+      "n": 16,
+      "unit": "mm",
+      "source": "Table III, p. 453, row 'Lower anterior facial height', males, 6 years",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m28_LAFH",
+      "sex": "M",
+      "ageBand": [
+        9,
+        9
+      ],
+      "mean": 61.1,
+      "sd": 3.6,
+      "n": 16,
+      "unit": "mm",
+      "source": "Table III, p. 453, row 'Lower anterior facial height', males, 9 years",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m28_LAFH",
+      "sex": "M",
+      "ageBand": [
+        12,
+        12
+      ],
+      "mean": 64.3,
+      "sd": 3.6,
+      "n": 16,
+      "unit": "mm",
+      "source": "Table III, p. 453, row 'Lower anterior facial height', males, 12 years",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m28_LAFH",
+      "sex": "M",
+      "ageBand": [
+        14,
+        14
+      ],
+      "mean": 66.8,
+      "sd": 3.9,
+      "n": 16,
+      "unit": "mm",
+      "source": "Table III, p. 453, row 'Lower anterior facial height', males, 14 years",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m28_LAFH",
+      "sex": "M",
+      "ageBand": [
+        16,
+        16
+      ],
+      "mean": 69.7,
+      "sd": 4.3,
+      "n": 16,
+      "unit": "mm",
+      "source": "Table III, p. 453, row 'Lower anterior facial height', males, 16 years",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m28_LAFH",
+      "sex": "M",
+      "ageBand": [
+        18,
+        18
+      ],
+      "mean": 71.6,
+      "sd": 4.9,
+      "n": 16,
+      "unit": "mm",
+      "source": "Table III, p. 453, row 'Lower anterior facial height', males, 18 years",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m67_U1Avert",
+      "sex": "F",
+      "ageBand": [
+        6,
+        6
+      ],
+      "mean": -2.1,
+      "sd": 1.4,
+      "n": 16,
+      "unit": "mm",
+      "source": "Table VI, p. 462, row 'Upper incisor to point A vertical', females, 6 years",
+      "definitionMatch": "close",
+      "definitionNote": "McNamara measured from the facial surface of the incisor (M1); the catalogue uses the incisal tip (C1)."
+    },
+    {
+      "measurement": "m67_U1Avert",
+      "sex": "F",
+      "ageBand": [
+        9,
+        9
+      ],
+      "mean": 2.9,
+      "sd": 0.9,
+      "n": 16,
+      "unit": "mm",
+      "source": "Table VI, p. 462, row 'Upper incisor to point A vertical', females, 9 years",
+      "definitionMatch": "close",
+      "definitionNote": "McNamara measured from the facial surface of the incisor (M1); the catalogue uses the incisal tip (C1)."
+    },
+    {
+      "measurement": "m67_U1Avert",
+      "sex": "F",
+      "ageBand": [
+        12,
+        12
+      ],
+      "mean": 3.3,
+      "sd": 1.0,
+      "n": 16,
+      "unit": "mm",
+      "source": "Table VI, p. 462, row 'Upper incisor to point A vertical', females, 12 years",
+      "definitionMatch": "close",
+      "definitionNote": "McNamara measured from the facial surface of the incisor (M1); the catalogue uses the incisal tip (C1)."
+    },
+    {
+      "measurement": "m67_U1Avert",
+      "sex": "F",
+      "ageBand": [
+        14,
+        14
+      ],
+      "mean": 4.2,
+      "sd": 1.5,
+      "n": 16,
+      "unit": "mm",
+      "source": "Table VI, p. 462, row 'Upper incisor to point A vertical', females, 14 years",
+      "definitionMatch": "close",
+      "definitionNote": "McNamara measured from the facial surface of the incisor (M1); the catalogue uses the incisal tip (C1)."
+    },
+    {
+      "measurement": "m67_U1Avert",
+      "sex": "F",
+      "ageBand": [
+        16,
+        16
+      ],
+      "mean": 4.0,
+      "sd": 1.3,
+      "n": 16,
+      "unit": "mm",
+      "source": "Table VI, p. 462, row 'Upper incisor to point A vertical', females, 16 years",
+      "definitionMatch": "close",
+      "definitionNote": "McNamara measured from the facial surface of the incisor (M1); the catalogue uses the incisal tip (C1)."
+    },
+    {
+      "measurement": "m67_U1Avert",
+      "sex": "F",
+      "ageBand": [
+        18,
+        18
+      ],
+      "mean": 4.2,
+      "sd": 1.3,
+      "n": 16,
+      "unit": "mm",
+      "source": "Table VI, p. 462, row 'Upper incisor to point A vertical', females, 18 years",
+      "definitionMatch": "close",
+      "definitionNote": "McNamara measured from the facial surface of the incisor (M1); the catalogue uses the incisal tip (C1)."
+    },
+    {
+      "measurement": "m67_U1Avert",
+      "sex": "M",
+      "ageBand": [
+        6,
+        6
+      ],
+      "mean": 0.8,
+      "sd": 1.4,
+      "n": 16,
+      "unit": "mm",
+      "source": "Table VI, p. 462, row 'Upper incisor to point A vertical', males, 6 years",
+      "definitionMatch": "close",
+      "definitionNote": "McNamara measured from the facial surface of the incisor (M1); the catalogue uses the incisal tip (C1)."
+    },
+    {
+      "measurement": "m67_U1Avert",
+      "sex": "M",
+      "ageBand": [
+        9,
+        9
+      ],
+      "mean": 3.1,
+      "sd": 1.3,
+      "n": 16,
+      "unit": "mm",
+      "source": "Table VI, p. 462, row 'Upper incisor to point A vertical', males, 9 years",
+      "definitionMatch": "close",
+      "definitionNote": "McNamara measured from the facial surface of the incisor (M1); the catalogue uses the incisal tip (C1)."
+    },
+    {
+      "measurement": "m67_U1Avert",
+      "sex": "M",
+      "ageBand": [
+        12,
+        12
+      ],
+      "mean": 3.8,
+      "sd": 1.3,
+      "n": 16,
+      "unit": "mm",
+      "source": "Table VI, p. 462, row 'Upper incisor to point A vertical', males, 12 years",
+      "definitionMatch": "close",
+      "definitionNote": "McNamara measured from the facial surface of the incisor (M1); the catalogue uses the incisal tip (C1)."
+    },
+    {
+      "measurement": "m67_U1Avert",
+      "sex": "M",
+      "ageBand": [
+        14,
+        14
+      ],
+      "mean": 3.8,
+      "sd": 1.4,
+      "n": 16,
+      "unit": "mm",
+      "source": "Table VI, p. 462, row 'Upper incisor to point A vertical', males, 14 years",
+      "definitionMatch": "close",
+      "definitionNote": "McNamara measured from the facial surface of the incisor (M1); the catalogue uses the incisal tip (C1)."
+    },
+    {
+      "measurement": "m67_U1Avert",
+      "sex": "M",
+      "ageBand": [
+        16,
+        16
+      ],
+      "mean": 4.1,
+      "sd": 2.1,
+      "n": 16,
+      "unit": "mm",
+      "source": "Table VI, p. 462, row 'Upper incisor to point A vertical', males, 16 years",
+      "definitionMatch": "close",
+      "definitionNote": "McNamara measured from the facial surface of the incisor (M1); the catalogue uses the incisal tip (C1)."
+    },
+    {
+      "measurement": "m67_U1Avert",
+      "sex": "M",
+      "ageBand": [
+        18,
+        18
+      ],
+      "mean": 3.7,
+      "sd": 1.3,
+      "n": 16,
+      "unit": "mm",
+      "source": "Table VI, p. 462, row 'Upper incisor to point A vertical', males, 18 years",
+      "definitionMatch": "close",
+      "definitionNote": "McNamara measured from the facial surface of the incisor (M1); the catalogue uses the incisal tip (C1)."
+    },
+    {
+      "measurement": "m64_L1APog",
+      "sex": "F",
+      "ageBand": [
+        6,
+        6
+      ],
+      "mean": 0.02,
+      "sd": 1.4,
+      "n": 16,
+      "unit": "mm",
+      "source": "Table VI, p. 462, row 'Lower incisor to A-Po line', females, 6 years",
+      "definitionMatch": "close",
+      "definitionNote": "McNamara measured from the facial surface of the incisor (M1); the catalogue uses the incisal tip (C1)."
+    },
+    {
+      "measurement": "m64_L1APog",
+      "sex": "F",
+      "ageBand": [
+        9,
+        9
+      ],
+      "mean": 0.9,
+      "sd": 1.1,
+      "n": 16,
+      "unit": "mm",
+      "source": "Table VI, p. 462, row 'Lower incisor to A-Po line', females, 9 years",
+      "definitionMatch": "close",
+      "definitionNote": "McNamara measured from the facial surface of the incisor (M1); the catalogue uses the incisal tip (C1)."
+    },
+    {
+      "measurement": "m64_L1APog",
+      "sex": "F",
+      "ageBand": [
+        12,
+        12
+      ],
+      "mean": 1.3,
+      "sd": 0.7,
+      "n": 16,
+      "unit": "mm",
+      "source": "Table VI, p. 462, row 'Lower incisor to A-Po line', females, 12 years",
+      "definitionMatch": "close",
+      "definitionNote": "McNamara measured from the facial surface of the incisor (M1); the catalogue uses the incisal tip (C1)."
+    },
+    {
+      "measurement": "m64_L1APog",
+      "sex": "F",
+      "ageBand": [
+        14,
+        14
+      ],
+      "mean": 1.4,
+      "sd": 1.6,
+      "n": 16,
+      "unit": "mm",
+      "source": "Table VI, p. 462, row 'Lower incisor to A-Po line', females, 14 years",
+      "definitionMatch": "close",
+      "definitionNote": "McNamara measured from the facial surface of the incisor (M1); the catalogue uses the incisal tip (C1)."
+    },
+    {
+      "measurement": "m64_L1APog",
+      "sex": "F",
+      "ageBand": [
+        16,
+        16
+      ],
+      "mean": 1.1,
+      "sd": 1.6,
+      "n": 16,
+      "unit": "mm",
+      "source": "Table VI, p. 462, row 'Lower incisor to A-Po line', females, 16 years",
+      "definitionMatch": "close",
+      "definitionNote": "McNamara measured from the facial surface of the incisor (M1); the catalogue uses the incisal tip (C1)."
+    },
+    {
+      "measurement": "m64_L1APog",
+      "sex": "F",
+      "ageBand": [
+        18,
+        18
+      ],
+      "mean": 1.2,
+      "sd": 1.4,
+      "n": 16,
+      "unit": "mm",
+      "source": "Table VI, p. 462, row 'Lower incisor to A-Po line', females, 18 years",
+      "definitionMatch": "close",
+      "definitionNote": "McNamara measured from the facial surface of the incisor (M1); the catalogue uses the incisal tip (C1)."
+    },
+    {
+      "measurement": "m64_L1APog",
+      "sex": "M",
+      "ageBand": [
+        6,
+        6
+      ],
+      "mean": 0.5,
+      "sd": 1.3,
+      "n": 16,
+      "unit": "mm",
+      "source": "Table VI, p. 462, row 'Lower incisor to A-Po line', males, 6 years",
+      "definitionMatch": "close",
+      "definitionNote": "McNamara measured from the facial surface of the incisor (M1); the catalogue uses the incisal tip (C1)."
+    },
+    {
+      "measurement": "m64_L1APog",
+      "sex": "M",
+      "ageBand": [
+        9,
+        9
+      ],
+      "mean": 1.1,
+      "sd": 1.5,
+      "n": 16,
+      "unit": "mm",
+      "source": "Table VI, p. 462, row 'Lower incisor to A-Po line', males, 9 years",
+      "definitionMatch": "close",
+      "definitionNote": "McNamara measured from the facial surface of the incisor (M1); the catalogue uses the incisal tip (C1)."
+    },
+    {
+      "measurement": "m64_L1APog",
+      "sex": "M",
+      "ageBand": [
+        12,
+        12
+      ],
+      "mean": 1.4,
+      "sd": 1.6,
+      "n": 16,
+      "unit": "mm",
+      "source": "Table VI, p. 462, row 'Lower incisor to A-Po line', males, 12 years",
+      "definitionMatch": "close",
+      "definitionNote": "McNamara measured from the facial surface of the incisor (M1); the catalogue uses the incisal tip (C1)."
+    },
+    {
+      "measurement": "m64_L1APog",
+      "sex": "M",
+      "ageBand": [
+        14,
+        14
+      ],
+      "mean": 1.4,
+      "sd": 1.8,
+      "n": 16,
+      "unit": "mm",
+      "source": "Table VI, p. 462, row 'Lower incisor to A-Po line', males, 14 years",
+      "definitionMatch": "close",
+      "definitionNote": "McNamara measured from the facial surface of the incisor (M1); the catalogue uses the incisal tip (C1)."
+    },
+    {
+      "measurement": "m64_L1APog",
+      "sex": "M",
+      "ageBand": [
+        16,
+        16
+      ],
+      "mean": 1.3,
+      "sd": 2.3,
+      "n": 16,
+      "unit": "mm",
+      "source": "Table VI, p. 462, row 'Lower incisor to A-Po line', males, 16 years",
+      "definitionMatch": "close",
+      "definitionNote": "McNamara measured from the facial surface of the incisor (M1); the catalogue uses the incisal tip (C1)."
+    },
+    {
+      "measurement": "m64_L1APog",
+      "sex": "M",
+      "ageBand": [
+        18,
+        18
+      ],
+      "mean": 0.4,
+      "sd": 1.8,
+      "n": 16,
+      "unit": "mm",
+      "source": "Table VI, p. 462, row 'Lower incisor to A-Po line', males, 18 years",
+      "definitionMatch": "close",
+      "definitionNote": "McNamara measured from the facial surface of the incisor (M1); the catalogue uses the incisal tip (C1)."
+    }
+  ]
+}

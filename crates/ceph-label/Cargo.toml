@@ -1,0 +1,31 @@
+[package]
+name = "ceph-label"
+version = "0.1.0"
+edition.workspace = true
+license.workspace = true
+description = "Reads the patient label printed on a cephalogram, on this Mac (Apple Vision); nothing leaves the machine"
+
+# "harness": exposes a handful of pub(crate) internals (labels, line_dates, read_dates, date_in and their types) so
+# an EXTERNAL acceptance harness — a standalone binary, path-dependent on this crate — can drive the production
+# date-reading paths directly, the way the in-crate test modules do (re-review minor, 13 Oct). No in-repo code may
+# depend on it: `crates/ceph-label/tests/harness_api.rs` is the only caller inside this repo, and only to prove the
+# feature surface still works.
+[features]
+harness = []
+
+[dependencies]
+image = "0.25"
+anyhow = "1"
+regex = "1"
+
+[dev-dependencies]
+tempfile = "3"
+serde_json = "1"
+
+[target.'cfg(target_os = "macos")'.dependencies]
+objc2 = "0.6"
+objc2-foundation = "0.3.2"
+objc2-vision = "0.3.2"
+
+[target.'cfg(target_os = "macos")'.dev-dependencies]
+ab_glyph = "0.2"

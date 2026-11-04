@@ -1,0 +1,424 @@
+{
+  "id": "norman2020",
+  "kind": "population",
+  "status": "verified",
+  "citation": {
+    "authors": "Norman NH, Mohd Khairul Azmi NA, Tajor Amar SN, Abdul Ghani SH",
+    "title": "Cephalometric Norms of the Malay Population",
+    "journal": "International Medical Journal",
+    "year": 2020,
+    "volume": "27(2)",
+    "pages": "216-219",
+    "openAccess": false
+  },
+  "population": {
+    "id": "malay",
+    "label": "Malay",
+    "ethnicity": [
+      "Malaysian Malay"
+    ],
+    "country": "Malaysia",
+    "region": "Selangor"
+  },
+  "sample": {
+    "n": 100,
+    "nMale": 50,
+    "nFemale": 50,
+    "ageMin": 15,
+    "ageMax": 30
+  },
+  "selection": "class-I-balanced",
+  "modality": "unknown",
+  "scale": {
+    "kind": "not-stated"
+  },
+  "headPosition": "unknown",
+  "curation": {
+    "extractedBy": [
+      "AI reader A",
+      "AI reader B"
+    ],
+    "comparedOn": "2026-10-08",
+    "date": "2026-10-08",
+    "notes": "Compared 2026-10-08 (norms:compare a vs b exit 1, 30 differences: 24 in the source text, 6 definitionMatch; every mean, SD, n and age band agreed). All 24 values re-read from the page image of Tables 1-2 (p. 218, PDF p. 3): agree. Decisions: (1) source text normalised to 'Table 1, p. 218' (pooled) / 'Table 2, p. 218' (by sex). (2) MMPA and LInc to MnPl: a 'same', b 'close' → close (ruling P42: 'Eastman' named, mandibular plane never defined). Facial proportion close as both (heights perpendicular to the maxillary plane, p. 219). (3) Selection: a 'class-I', b 'class-I-balanced' → class-I-balanced: the inclusion criteria (p. 217) require a Class I skeletal pattern and Class I incisors (BSI) AND symmetric faces with balanced profiles, with bimaxillary protrusion excluded (p. 218, Fig. 2c) - the same kind of sample as Mohammad 2011. (4) P45: the paper gives no numeric ANB inclusion range ('Class I skeletal pattern' only, pp. 216-217), so ANB stays an entry. (5) Modality: a 'digital', b 'unknown' → unknown (Dolphin; 'digitized directly from radiographs', p. 217, does not say whether the films were digital). The 'Eastman mean' column of Table 1 is not entered. Pooled + men + women rows (P20), ageBand [15,30] (p. 217). Owner MAL-1 (8 Oct): added as the second Malay set, the cross-check for Mohammad 2011."
+  },
+  "caveats": [
+    "Sample: 100 Malaysian Malay subjects aged 15-30 (50 men, 50 women; 126 collected, 100 after exclusions), UiTM students and dental patients, Faculty of Dentistry, Universiti Teknologi MARA, Sungai Buloh, Selangor (pp. 216-217). Class I skeletal pattern and Class I incisors (BSI), bimaxillary protrusion excluded, full permanent dentition, well aligned or minimal crowding, good symmetry and balanced facial profiles, no IOTN treatment need, no orthodontic, surgical or prosthetic treatment (p. 217).",
+    "Traced in Dolphin Imaging, landmarks 'digitized directly from radiographs' (p. 217); whether the radiographs were digital or scanned film, the film scale and the head position are not stated.",
+    "The 'Eastman mean' column of Table 1 (the Caucasian Eastman standard the paper compares against, not Malay data) is not entered.",
+    "MMPA and the lower incisor angle are close: the paper names the Eastman analysis but never defines its mandibular plane (ruling P42). Facial proportion is close: both heights are measured perpendicular to the maxillary plane (p. 219).",
+    "The paper prints no n in its tables; n 100 / 50 / 50 is from the methods. Mean age not stated. Ages 15-30 include late adolescents.",
+    "Owner MAL-1 (8 Oct): the cross-check for Mohammad 2011 - it agrees on SNA, SNB, ANB and the interincisal angle and does not measure U1-NA or L1-NB in mm."
+  ],
+  "entries": [
+    {
+      "measurement": "m01_SNA",
+      "sex": "pooled",
+      "ageBand": [
+        15,
+        30
+      ],
+      "mean": 84.5,
+      "sd": 4,
+      "n": 100,
+      "unit": "deg",
+      "source": "Table 1, p. 218",
+      "definitionMatch": "same",
+      "note": "Paper label 'SNA'. n from the methods (100 = 50 men + 50 women, p. 217); the tables print no n."
+    },
+    {
+      "measurement": "m02_SNB",
+      "sex": "pooled",
+      "ageBand": [
+        15,
+        30
+      ],
+      "mean": 81.2,
+      "sd": 4.1,
+      "n": 100,
+      "unit": "deg",
+      "source": "Table 1, p. 218",
+      "definitionMatch": "same",
+      "note": "Paper label 'SNB'. n from the methods (100 = 50 men + 50 women, p. 217); the tables print no n."
+    },
+    {
+      "measurement": "m03_ANB",
+      "sex": "pooled",
+      "ageBand": [
+        15,
+        30
+      ],
+      "mean": 3.2,
+      "sd": 1.2,
+      "n": 100,
+      "unit": "deg",
+      "source": "Table 1, p. 218",
+      "definitionMatch": "same",
+      "note": "Paper label 'ANB'. n from the methods (100 = 50 men + 50 women, p. 217); the tables print no n."
+    },
+    {
+      "measurement": "m55_U1MxP",
+      "sex": "pooled",
+      "ageBand": [
+        15,
+        30
+      ],
+      "mean": 117.3,
+      "sd": 6.5,
+      "n": 100,
+      "unit": "deg",
+      "source": "Table 1, p. 218",
+      "definitionMatch": "same",
+      "note": "Paper label 'UInc to MxPl'. n from the methods (100 = 50 men + 50 women, p. 217); the tables print no n."
+    },
+    {
+      "measurement": "m57_IMPAgome",
+      "sex": "pooled",
+      "ageBand": [
+        15,
+        30
+      ],
+      "mean": 96,
+      "sd": 7.1,
+      "n": 100,
+      "unit": "deg",
+      "source": "Table 1, p. 218",
+      "definitionMatch": "close",
+      "definitionNote": "mandibular plane not defined: the paper names the Eastman analysis (p. 218) but never says which mandibular plane it used (Gonion and Menton are among its digitised landmarks, p. 217); the catalogue uses Go–Me (ruling P42)",
+      "note": "Paper label 'LInc to MnPl'. n from the methods (100 = 50 men + 50 women, p. 217); the tables print no n."
+    },
+    {
+      "measurement": "m53_Interincisal",
+      "sex": "pooled",
+      "ageBand": [
+        15,
+        30
+      ],
+      "mean": 121.8,
+      "sd": 8.8,
+      "n": 100,
+      "unit": "deg",
+      "source": "Table 1, p. 218",
+      "definitionMatch": "same",
+      "note": "Paper label 'Inter-incisal angle'. n from the methods (100 = 50 men + 50 women, p. 217); the tables print no n."
+    },
+    {
+      "measurement": "m25_MMPA",
+      "sex": "pooled",
+      "ageBand": [
+        15,
+        30
+      ],
+      "mean": 24.8,
+      "sd": 6.7,
+      "n": 100,
+      "unit": "deg",
+      "source": "Table 1, p. 218",
+      "definitionMatch": "close",
+      "definitionNote": "mandibular plane not defined: the paper names the Eastman analysis (p. 218) but never says which mandibular plane it used (Gonion and Menton are among its digitised landmarks, p. 217); the catalogue uses Go–Me (ruling P42)",
+      "note": "Paper label 'MMPA'. n from the methods (100 = 50 men + 50 women, p. 217); the tables print no n."
+    },
+    {
+      "measurement": "m29_LAFHpct",
+      "sex": "pooled",
+      "ageBand": [
+        15,
+        30
+      ],
+      "mean": 55.7,
+      "sd": 2.3,
+      "n": 100,
+      "unit": "%",
+      "source": "Table 1, p. 218",
+      "definitionMatch": "close",
+      "definitionNote": "both heights measured perpendicular to the maxillary plane (p. 219: lower facial height over total anterior facial height, both taken perpendicular to the maxillary plane); the catalogue uses the straight ANS–Me and N–Me distances",
+      "note": "Paper label 'Facial proportion (%)'. n from the methods (100 = 50 men + 50 women, p. 217); the tables print no n."
+    },
+    {
+      "measurement": "m01_SNA",
+      "sex": "M",
+      "ageBand": [
+        15,
+        30
+      ],
+      "mean": 84.6,
+      "sd": 4.8,
+      "n": 50,
+      "unit": "deg",
+      "source": "Table 2, p. 218",
+      "definitionMatch": "same",
+      "note": "Paper label 'SNA'. n from the methods (100 = 50 men + 50 women, p. 217); the tables print no n."
+    },
+    {
+      "measurement": "m02_SNB",
+      "sex": "M",
+      "ageBand": [
+        15,
+        30
+      ],
+      "mean": 81.3,
+      "sd": 4.7,
+      "n": 50,
+      "unit": "deg",
+      "source": "Table 2, p. 218",
+      "definitionMatch": "same",
+      "note": "Paper label 'SNB'. n from the methods (100 = 50 men + 50 women, p. 217); the tables print no n."
+    },
+    {
+      "measurement": "m03_ANB",
+      "sex": "M",
+      "ageBand": [
+        15,
+        30
+      ],
+      "mean": 3.1,
+      "sd": 1.2,
+      "n": 50,
+      "unit": "deg",
+      "source": "Table 2, p. 218",
+      "definitionMatch": "same",
+      "note": "Paper label 'ANB'. n from the methods (100 = 50 men + 50 women, p. 217); the tables print no n."
+    },
+    {
+      "measurement": "m55_U1MxP",
+      "sex": "M",
+      "ageBand": [
+        15,
+        30
+      ],
+      "mean": 117.7,
+      "sd": 6.7,
+      "n": 50,
+      "unit": "deg",
+      "source": "Table 2, p. 218",
+      "definitionMatch": "same",
+      "note": "Paper label 'UInc to MxPl'. n from the methods (100 = 50 men + 50 women, p. 217); the tables print no n."
+    },
+    {
+      "measurement": "m57_IMPAgome",
+      "sex": "M",
+      "ageBand": [
+        15,
+        30
+      ],
+      "mean": 94.6,
+      "sd": 7.7,
+      "n": 50,
+      "unit": "deg",
+      "source": "Table 2, p. 218",
+      "definitionMatch": "close",
+      "definitionNote": "mandibular plane not defined: the paper names the Eastman analysis (p. 218) but never says which mandibular plane it used (Gonion and Menton are among its digitised landmarks, p. 217); the catalogue uses Go–Me (ruling P42)",
+      "note": "Paper label 'LInc to MnPl'. n from the methods (100 = 50 men + 50 women, p. 217); the tables print no n."
+    },
+    {
+      "measurement": "m53_Interincisal",
+      "sex": "M",
+      "ageBand": [
+        15,
+        30
+      ],
+      "mean": 122.6,
+      "sd": 10.2,
+      "n": 50,
+      "unit": "deg",
+      "source": "Table 2, p. 218",
+      "definitionMatch": "same",
+      "note": "Paper label 'Inter-incisal angle'. n from the methods (100 = 50 men + 50 women, p. 217); the tables print no n."
+    },
+    {
+      "measurement": "m25_MMPA",
+      "sex": "M",
+      "ageBand": [
+        15,
+        30
+      ],
+      "mean": 24.7,
+      "sd": 7.2,
+      "n": 50,
+      "unit": "deg",
+      "source": "Table 2, p. 218",
+      "definitionMatch": "close",
+      "definitionNote": "mandibular plane not defined: the paper names the Eastman analysis (p. 218) but never says which mandibular plane it used (Gonion and Menton are among its digitised landmarks, p. 217); the catalogue uses Go–Me (ruling P42)",
+      "note": "Paper label 'MMPA'. n from the methods (100 = 50 men + 50 women, p. 217); the tables print no n."
+    },
+    {
+      "measurement": "m29_LAFHpct",
+      "sex": "M",
+      "ageBand": [
+        15,
+        30
+      ],
+      "mean": 55.9,
+      "sd": 2.4,
+      "n": 50,
+      "unit": "%",
+      "source": "Table 2, p. 218",
+      "definitionMatch": "close",
+      "definitionNote": "both heights measured perpendicular to the maxillary plane (p. 219: lower facial height over total anterior facial height, both taken perpendicular to the maxillary plane); the catalogue uses the straight ANS–Me and N–Me distances",
+      "note": "Paper label 'Facial proportion (%)'. n from the methods (100 = 50 men + 50 women, p. 217); the tables print no n."
+    },
+    {
+      "measurement": "m01_SNA",
+      "sex": "F",
+      "ageBand": [
+        15,
+        30
+      ],
+      "mean": 84.5,
+      "sd": 3,
+      "n": 50,
+      "unit": "deg",
+      "source": "Table 2, p. 218",
+      "definitionMatch": "same",
+      "note": "Paper label 'SNA'. n from the methods (100 = 50 men + 50 women, p. 217); the tables print no n."
+    },
+    {
+      "measurement": "m02_SNB",
+      "sex": "F",
+      "ageBand": [
+        15,
+        30
+      ],
+      "mean": 81.2,
+      "sd": 3.4,
+      "n": 50,
+      "unit": "deg",
+      "source": "Table 2, p. 218",
+      "definitionMatch": "same",
+      "note": "Paper label 'SNB'. n from the methods (100 = 50 men + 50 women, p. 217); the tables print no n."
+    },
+    {
+      "measurement": "m03_ANB",
+      "sex": "F",
+      "ageBand": [
+        15,
+        30
+      ],
+      "mean": 3.3,
+      "sd": 1.1,
+      "n": 50,
+      "unit": "deg",
+      "source": "Table 2, p. 218",
+      "definitionMatch": "same",
+      "note": "Paper label 'ANB'. n from the methods (100 = 50 men + 50 women, p. 217); the tables print no n."
+    },
+    {
+      "measurement": "m55_U1MxP",
+      "sex": "F",
+      "ageBand": [
+        15,
+        30
+      ],
+      "mean": 116.8,
+      "sd": 6.4,
+      "n": 50,
+      "unit": "deg",
+      "source": "Table 2, p. 218",
+      "definitionMatch": "same",
+      "note": "Paper label 'UInc to MxPl'. n from the methods (100 = 50 men + 50 women, p. 217); the tables print no n."
+    },
+    {
+      "measurement": "m57_IMPAgome",
+      "sex": "F",
+      "ageBand": [
+        15,
+        30
+      ],
+      "mean": 97.3,
+      "sd": 6.3,
+      "n": 50,
+      "unit": "deg",
+      "source": "Table 2, p. 218",
+      "definitionMatch": "close",
+      "definitionNote": "mandibular plane not defined: the paper names the Eastman analysis (p. 218) but never says which mandibular plane it used (Gonion and Menton are among its digitised landmarks, p. 217); the catalogue uses Go–Me (ruling P42)",
+      "note": "Paper label 'LInc to MnPl'. n from the methods (100 = 50 men + 50 women, p. 217); the tables print no n."
+    },
+    {
+      "measurement": "m53_Interincisal",
+      "sex": "F",
+      "ageBand": [
+        15,
+        30
+      ],
+      "mean": 121.1,
+      "sd": 7.1,
+      "n": 50,
+      "unit": "deg",
+      "source": "Table 2, p. 218",
+      "definitionMatch": "same",
+      "note": "Paper label 'Inter-incisal angle'. n from the methods (100 = 50 men + 50 women, p. 217); the tables print no n."
+    },
+    {
+      "measurement": "m25_MMPA",
+      "sex": "F",
+      "ageBand": [
+        15,
+        30
+      ],
+      "mean": 24.9,
+      "sd": 6.2,
+      "n": 50,
+      "unit": "deg",
+      "source": "Table 2, p. 218",
+      "definitionMatch": "close",
+      "definitionNote": "mandibular plane not defined: the paper names the Eastman analysis (p. 218) but never says which mandibular plane it used (Gonion and Menton are among its digitised landmarks, p. 217); the catalogue uses Go–Me (ruling P42)",
+      "note": "Paper label 'MMPA'. n from the methods (100 = 50 men + 50 women, p. 217); the tables print no n."
+    },
+    {
+      "measurement": "m29_LAFHpct",
+      "sex": "F",
+      "ageBand": [
+        15,
+        30
+      ],
+      "mean": 55.5,
+      "sd": 2.1,
+      "n": 50,
+      "unit": "%",
+      "source": "Table 2, p. 218",
+      "definitionMatch": "close",
+      "definitionNote": "both heights measured perpendicular to the maxillary plane (p. 219: lower facial height over total anterior facial height, both taken perpendicular to the maxillary plane); the catalogue uses the straight ANS–Me and N–Me distances",
+      "note": "Paper label 'Facial proportion (%)'. n from the methods (100 = 50 men + 50 women, p. 217); the tables print no n."
+    }
+  ]
+}

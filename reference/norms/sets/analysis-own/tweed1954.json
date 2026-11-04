@@ -1,0 +1,98 @@
+{
+  "id": "tweed1954",
+  "kind": "analysis-own",
+  "analyses": [
+    "tweed"
+  ],
+  "status": "verified",
+  "citation": {
+    "authors": "Tweed CH",
+    "title": "The Frankfort-mandibular incisor angle (FMIA) in orthodontic diagnosis, treatment planning and prognosis",
+    "journal": "The Angle Orthodontist",
+    "year": 1954,
+    "volume": "24",
+    "pages": "121-169",
+    "openAccess": true
+  },
+  "population": {
+    "id": "analysis-own",
+    "label": "The analysis's own norms",
+    "ethnicity": []
+  },
+  "sample": {
+    "n": 95
+  },
+  "selection": "ideal-aesthetic",
+  "modality": "film",
+  "scale": {
+    "kind": "not-stated"
+  },
+  "headPosition": "unknown",
+  "curation": {
+    "extractedBy": [
+      "AI reader A",
+      "AI reader B"
+    ],
+    "comparedOn": "2026-10-08",
+    "date": "2026-10-08",
+    "notes": "Compared 2026-10-08 (norms:compare a vs b exit 1). Means agree in both (24.57, 86.93, 68.2, n 95). Differences settled from the page images (scan, no text layer): (1) range only in b (FMA 15-36, IMPA 76-99, FMIA 56-80) -> kept: Chart I, p. 138 (PDF page 18) prints these as its column headings '(15° to 36°)', '(76° to 99°)', '(56° to 80°)', and the lowest/highest rows with a non-zero count match (FMA 15 n 5 / 36 n 1; IMPA 76 n 1 / 99 n 2; FMIA 56 n 1 / 80 n 2); each count column sums to the printed TOTAL 95. (2) source wording -> one wording naming Chart I (AVERAGE row and Range heading, p. 138) and text p. 125. The averages read on the page image of p. 138 (AVERAGE row 24.57°, 86.93°, 68.20°) and of p. 125 ('FMA 24.57, IMPA 86.93 and FMIA 68.2'). (3) definitionMatch FMA and FMIA a=same b=close -> close (merge-notes ruling): p. 124 draws the Frankfort plane from a point 4½ mm above the geometric centre of the ear rod to the lower border of the orbit, also p. 138; IMPA same (axis through apex and incisal edge to the lower-border mandibular plane, p. 124). Prose: headPosition a=FH b=unknown -> unknown (the paper describes ear rods, never a head orientation); population reduced to the analysis-own defaults (Tucson moved into a caveat). Rulings applied: N1/P6 means = Tweed's printed 95-case averages, his rounded norms 24/87/69 (p. 138) in note, his targets in clinicalTarget; no SD (none printed; none invented); sample means, so no centre; scale not-stated (angles only; magnification-research.md)."
+  },
+  "caveats": [
+    "Sample: 95 people chosen by Tweed in Tucson, Arizona, for pleasing balance of facial outline (p. 124: any malocclusion was not examined): club acquaintances, friends, parents of patients and a few of his older treated cases. Sex, age and ethnicity are not given; the illustrated samples include children and adults.",
+    "No SD is printed. Chart I (p. 138) gives the whole-degree frequency of each angle; the ranges entered are its column headings.",
+    "Tweed's Frankfort plane runs from a point 4.5 mm above the geometric centre of the ear rod to the lower border of the orbit (pp. 124, 138), not from anatomical porion; he says this tends to make the FMA smaller. FMA and FMIA are therefore 'close', not 'same'.",
+    "First 45 samples (p. 124): FMA 24.9°, IMPA 86.6°, FMIA 68.6° — superseded by the 95-sample averages, not entered.",
+    "Tweed's own recommendation from this sample (p. 138): adopt 24° for FMA, 87° for IMPA and 69° for FMIA as norms; given in each entry's note. His earlier norms (p. 124): FMA 25° (normal variation 20° to 30°), IMPA 90° (85° to 95°), FMIA 65°.",
+    "Not Tweed's sample, not entered: Downs's FMA 21.9° and IMPA 91.4° (p. 124); Brodie 1940's 11 cases, IMPA average 88.3° and Broadbent's Bolton composites 88.5° (3½ y), 83° (7 y), 89.5° (14 y), 92.5° (adults), average 88.4° (p. 125); the 37 illustrated samples IMPA 86.55° and FMA 24.913° (pp. 125, 138); IMPA 87.88° pooling Brodie, Broadbent and Tweed (p. 138).",
+    "Treatment results, not norms, not entered: averages after treatment of 37 consecutive cases FMA 27.54°, IMPA 86.5°, FMIA 67.01° (p. 139, Chart 2)."
+  ],
+  "entries": [
+    {
+      "measurement": "m22_FHMPt",
+      "sex": "pooled",
+      "mean": 24.57,
+      "range": {
+        "low": 15,
+        "high": 36
+      },
+      "n": 95,
+      "unit": "deg",
+      "source": "Chart I, AVERAGE row and FMA Range heading, p. 138; text p. 125",
+      "definitionMatch": "close",
+      "definitionNote": "Tweed's Frankfort plane runs from a point 4.5 mm above the geometric centre of the ear rod (not anatomical porion) to the lower border of the orbit (p. 124); the mandibular plane is the lower border, drawn the usual way.",
+      "clinicalTarget": "FMA 25° (Tweed's earlier norm, normal variation 20° to 30°, p. 124)",
+      "note": "Average of Tweed's 95 samples with good facial balance. Tweed rounds it to 24° as the norm he recommends (p. 138)."
+    },
+    {
+      "measurement": "m56_IMPAt",
+      "sex": "pooled",
+      "mean": 86.93,
+      "range": {
+        "low": 76,
+        "high": 99
+      },
+      "n": 95,
+      "unit": "deg",
+      "source": "Chart I, AVERAGE row and IMPA Range heading, p. 138; text p. 125",
+      "definitionMatch": "same",
+      "clinicalTarget": "IMPA 90° (Tweed's earlier norm, range 85° to 95°, p. 124); a degree less for each degree the FMA exceeds 25° (p. 139)",
+      "note": "Average of Tweed's 95 samples; lower incisor axis through apex and incisal edge to the lower-border mandibular plane (p. 124). Tweed rounds it to 87° as the norm he recommends (p. 138)."
+    },
+    {
+      "measurement": "m58_FMIA",
+      "sex": "pooled",
+      "mean": 68.2,
+      "range": {
+        "low": 56,
+        "high": 80
+      },
+      "n": 95,
+      "unit": "deg",
+      "source": "Chart I, AVERAGE row (68.20°) and FMIA Range heading, p. 138; text p. 125",
+      "definitionMatch": "close",
+      "definitionNote": "Tweed's Frankfort plane runs from a point 4.5 mm above the geometric centre of the ear rod (not anatomical porion) to the lower border of the orbit (p. 124); incisor axis apex to incisal edge, as in the catalogue.",
+      "clinicalTarget": "FMIA 65° minimum to aim for (pp. 124, 139); p. 139: extraction was judged necessary whenever an FMIA of 62° had to be exceeded",
+      "note": "Average of Tweed's 95 samples. Tweed rounds it to 69° as the norm he recommends (p. 138)."
+    }
+  ]
+}

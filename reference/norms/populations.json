@@ -1,0 +1,13 @@
+[
+  { "id": "singapore-nus", "label": "Singapore (NUS teaching)" },
+  { "id": "chinese", "label": "Chinese" },
+  { "id": "malay", "label": "Malay" },
+  { "id": "saudi", "label": "Saudi" },
+  { "id": "jordanian", "label": "Middle-Eastern / Jordanian" },
+  { "id": "swedish", "label": "Swedish" },
+  { "id": "japanese", "label": "Japanese" },
+  { "id": "african-american", "label": "African-American" },
+  { "id": "caucasian", "label": "Caucasian (European background; used for Australian patients of European background)" },
+  { "id": "latin-american", "label": "Latin American" },
+  { "id": "analysis-own", "label": "The analysis's own norms" }
+]

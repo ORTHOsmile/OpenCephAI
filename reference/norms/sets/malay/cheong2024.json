@@ -1,0 +1,73 @@
+{
+  "id": "cheong2024",
+  "kind": "population",
+  "status": "verified",
+  "citation": {
+    "authors": "Cheong JM, A Halim NA, Mohammad N, Sivagnanam M, Mohd Ibrahim MS",
+    "title": "Establishing H Angle Hard Tissue and H Angle Soft Tissue Norms in Skeletal Class I Malay Adult Females and the Correlation between the H Angles and Visual Perception of Laypersons",
+    "journal": "European Journal of Dentistry",
+    "year": 2024,
+    "volume": "19(1)",
+    "pages": "214-219",
+    "doi": "10.1055/s-0044-1787005",
+    "pmid": "39013444",
+    "pmcid": "PMC11750322",
+    "openAccess": true
+  },
+  "population": {
+    "id": "malay",
+    "label": "Malay",
+    "ethnicity": [
+      "Malay"
+    ],
+    "country": "Malaysia",
+    "region": "Kuantan, Pahang"
+  },
+  "sample": {
+    "n": 85,
+    "nMale": 0,
+    "nFemale": 85,
+    "ageMin": 20,
+    "ageMax": 40,
+    "ageMean": 28.6
+  },
+  "selection": "class-I",
+  "modality": "film",
+  "scale": {
+    "kind": "not-stated"
+  },
+  "headPosition": "NHP",
+  "curation": {
+    "extractedBy": [
+      "AI reader A",
+      "AI reader B"
+    ],
+    "comparedOn": "2026-10-08",
+    "date": "2026-10-08",
+    "notes": "Compared 2026-10-08 (norms:compare a vs b exit 1, 2 differences, source wording; logs/task9b2-compare-cheong2024.log). H-angle 15.75 ± 4.16 and ANB 3.15 ± 0.77 agree and were re-read from Table 1 with the PubMed full-text tool (PMC11750322, DOI 10.1055/s-0044-1787005; rule P44, text not saved). Decisions: ANB not entered although both extracted it (P45: ANB 1-5° was an inclusion criterion, so its spread is cut by the selection) -> caveat with its value (merge notes). H angle hard tissue (NB to H-line) is not catalogue #80 -> caveat. Source 'Table 1, PMC11750322' (the PMC text has no page numbers). Selection class-I (ANB 1-5°; no profile or occlusion criterion). Scale not-stated (angles only)."
+  },
+  "caveats": [
+    "Women only (n 85, Malaysian Malay, 20-40 y, mean 28.6 ± 5.86); no values for men.",
+    "Not entered: ANB 3.15 ± 0.77° (Table 1). ANB 1-5° was an inclusion criterion, so its spread is cut by the selection and it would make normal patients look abnormal (P45).",
+    "Not in the catalogue: H angle hard tissue (NB line to H line), Table 1: 11.64 ± 4.71°.",
+    "Pretreatment films of patients who sought orthodontic treatment, mainly for facial appearance and smile, from two private clinics (convenience sample, October 2017-December 2021); selected for a Class I skeletal pattern (ANB 1-5°) only, not for normal occlusion or a balanced profile.",
+    "Hand traced on acetate by one examiner; natural head posture with FH parallel to the floor; no magnification statement (only an angle is entered)."
+  ],
+  "entries": [
+    {
+      "measurement": "m80_HAngle",
+      "sex": "F",
+      "ageBand": [
+        20,
+        40
+      ],
+      "mean": 15.75,
+      "sd": 4.16,
+      "n": 85,
+      "unit": "deg",
+      "source": "Table 1, PMC11750322",
+      "definitionMatch": "same",
+      "note": "The paper's 'H angle soft tissue': the soft-tissue facial line (N′–Pg′) to the H line (tangent to the upper lip and soft-tissue pogonion), Holdaway 1983. Printed unsigned; a positive angle of this size is the upper lip ahead of the soft-tissue facial line, the catalogue's positive direction."
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "name": "cephtrace",
+  "private": true,
+  "license": "SEE LICENSE IN LICENSE",
+  "packageManager": "pnpm@10.33.0",
+  "scripts": {
+    "test": "pnpm -r test",
+    "norms:check": "pnpm --filter @ceph/analyses norms:check",
+    "norms:compare": "node tools/norms/compare.ts"
+  }
+}

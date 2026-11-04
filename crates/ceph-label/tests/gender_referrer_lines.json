@@ -1,0 +1,7 @@
+{
+  "_note": "Owner Q6 (17 Oct): the one table of how a printed line reads as Gender and as Referring practitioner. Rust ceph_label::parse::{gender_in, referrer_in} and the screen's filmText.ts {genderIn, referrerIn} are each pinned to it. Made-up lines only.",
+  "gender": [["F", "F"], ["m", "M"], ["Female", "F"], ["MALE", "M"], ["Sex: F", "F"], ["Gender - M", "M"], ["M, Y26", "M"],
+             ["Mr Demo", null], ["Ms", null], ["Fem", null], ["M.D.", null], ["", null], ["Sex:", null]],
+  "referrer": [["Ref: Dr Jane Demo", "Dr Jane Demo"], ["Referred by Dr A Demo,", "Dr A Demo"], ["Referring Dr: Demo Smile", "Demo Smile"],
+               ["Ref. by Demo Ortho", "Demo Ortho"], ["Dr Demo", "Dr Demo"], ["Ref:", null], ["12345", null], ["", null]]
+}

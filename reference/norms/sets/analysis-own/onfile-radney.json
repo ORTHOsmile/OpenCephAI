@@ -1,0 +1,84 @@
+{
+  "id": "onfile-radney",
+  "kind": "analysis-own",
+  "analyses": [
+    "radney"
+  ],
+  "status": "website",
+  "citation": {
+    "authors": "[source removed]",
+    "title": "Radney Analysis: A Complete Cephalometric Guide",
+    "year": 2026,
+    "url": "[source removed]",
+    "openAccess": true
+  },
+  "population": {
+    "id": "analysis-own",
+    "label": "The analysis's own norms",
+    "ethnicity": []
+  },
+  "sample": {},
+  "selection": "unknown",
+  "modality": "unknown",
+  "scale": {
+    "kind": "not-stated"
+  },
+  "headPosition": "unknown",
+  "curation": {
+    "extractedBy": [
+      "AI reader A",
+      "AI reader B"
+    ],
+    "comparedOn": "2026-10-08",
+    "date": "2026-10-07",
+    "notes": "accessed 2026-10-07 (both extractors read the live page that day). Page dated June 12, 2026. The page names Creekmore (1997) and Casko & Shepherd (1984) as sources on dental compensation; no sample described. Merge 2026-10-08: a and b agree on every value, unit and definitionMatch; only the source wording differed (b's row-specific wording kept). Re-read with WebFetch on 2026-10-08 (15:22): every value matched, including both incisor angles at 22° ± 2°."
+  },
+  "caveats": [
+    "Website values, not from a paper (status website; never coloured).",
+    "The page prints every norm as 'x ± y' without saying whether y is an SD or a range; stored as sd with a note.",
+    "No sample, population, sex or age stated on the page.",
+    "U1–NA (°) and L1–NA (°) are both printed 22 ± 2 (confirmed on the 8 Oct re-read). This may be a duplication on onfile; kept as printed."
+  ],
+  "entries": [
+    {
+      "measurement": "m47_U1NAdeg",
+      "sex": "pooled",
+      "mean": 22,
+      "sd": 2,
+      "unit": "deg",
+      "source": "[source removed] Radney page, norms table, row 'U1–NA (°)'",
+      "definitionMatch": "same",
+      "note": "printed as ± on the website; not stated to be an SD"
+    },
+    {
+      "measurement": "m46_U1NAmm",
+      "sex": "pooled",
+      "mean": 5,
+      "sd": 2,
+      "unit": "mm",
+      "source": "[source removed] Radney page, norms table, row 'U1–NA (mm)'",
+      "definitionMatch": "same",
+      "note": "printed as ± on the website; not stated to be an SD. Page: perpendicular distance from the upper incisor tip to N–A, given as roughly 5 ± 2 mm in front of the line"
+    },
+    {
+      "measurement": "m52_L1NAdeg",
+      "sex": "pooled",
+      "mean": 22,
+      "sd": 2,
+      "unit": "deg",
+      "source": "[source removed] Radney page, norms table, row 'L1–NA (°)'",
+      "definitionMatch": "same",
+      "note": "printed as ± on the website; not stated to be an SD"
+    },
+    {
+      "measurement": "m51_L1NAmm",
+      "sex": "pooled",
+      "mean": 0.5,
+      "sd": 2,
+      "unit": "mm",
+      "source": "[source removed] Radney page, norms table, row 'L1–NA (mm)'",
+      "definitionMatch": "same",
+      "note": "printed as ± on the website; not stated to be an SD. Page: perpendicular distance from the lower incisor tip to N–A, given as close to the N–A line itself"
+    }
+  ]
+}

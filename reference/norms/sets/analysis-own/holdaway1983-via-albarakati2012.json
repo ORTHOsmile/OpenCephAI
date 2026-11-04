@@ -1,0 +1,182 @@
+{
+  "id": "holdaway1983-via-albarakati2012",
+  "kind": "analysis-own",
+  "analyses": [
+    "holdaway"
+  ],
+  "status": "verified",
+  "citation": {
+    "authors": "Holdaway RA",
+    "title": "A soft-tissue cephalometric analysis and its use in orthodontic treatment planning. Part I",
+    "journal": "American Journal of Orthodontics",
+    "year": 1983,
+    "volume": "84",
+    "pages": "1-28",
+    "openAccess": false
+  },
+  "population": {
+    "id": "analysis-own",
+    "label": "The analysis's own norms",
+    "ethnicity": []
+  },
+  "sample": {},
+  "selection": "ideal-aesthetic",
+  "modality": "unknown",
+  "scale": {
+    "kind": "not-stated"
+  },
+  "headPosition": "unknown",
+  "secondHand": {
+    "via": "AlBarakati & Bindayel 2012, Table 3"
+  },
+  "curation": {
+    "extractedBy": [
+      "AI reader A",
+      "AI reader B"
+    ],
+    "comparedOn": "2026-10-08",
+    "date": "2026-10-08",
+    "notes": "Compared 2026-10-08 (norms:compare a vs b exit 1). Values agree for 9 of 10 rows; source wording differs on every row (prose) -> one wording naming the Table 3 row. Every value re-read on the page image of p. 30 (PDF page 4), Table 3, 'Holdaway established values' Mean and SD/range columns: Convexity 0** / –; LL-H 0–0.5 / −1 to 2; Face angle 91* / 7; SS depth 3 / 1–4; Sub-H 5 / 2; UL-A 15* / –; UL-vermilion 13–14 / –; H angle 10** / 7–14; IS-H – / –; Chin thick 10–12 / –; Nose prom 14–24 / –. One value difference: m81 LL-H range a=0–0.5 b=−1 to 2 -> −1 to 2 with clinicalTarget 'ideal 0 to 0.5 mm' (ruling P9; the page shows both cells, the text p. 30 calls 0–0.5 the ideal). Rulings applied beyond the extractions: P5 — face angle and Sub-H carry a single number in the SD/range column, which is Holdaway's ± tolerance, so both extractors' sd 7 and sd 2 became range 84–98 and 3–7 with no sd (no SD invented); B-2 — every entry centre 'ideal'; #79 not listed and #82 printed '–' -> no entries, caveats; significance asterisks stripped; selection ideal-aesthetic (b; AlBarakati p. 29 calls them ideals for white Caucasians); scale not-stated (AlBarakati's Dolphin calibration, p. 28, applies to its Saudi sample, not to Holdaway's values; magnification-research.md); population reduced to the analysis-own defaults. Citation from AlBarakati & Bindayel's reference list (p. 32): Am J Orthod 84(1), 1-28."
+  },
+  "caveats": [
+    "Second-hand: Holdaway 1983 is not on file. Every value is his 'established value' as restated by AlBarakati SF, Bindayel NA, Soft-tissue cephalometric standards for Saudi adults, King Saud University Journal of Dental Sciences 2012;3:27-32, Table 3, p. 30. Not checked against Holdaway's own paper.",
+    "These are Holdaway's ideals and tolerances, not the mean and SD of a measured sample. AlBarakati & Bindayel describe Holdaway's values as ideals for white Caucasians (p. 29), taken from a white sample (p. 30). No sample size, sex, age, modality or film scale is given.",
+    "Face angle '7' and Sub-H line '2' are the only single numbers in the SD/range column; entered as Holdaway's ± tolerance (ranges 84–98° and 3–7 mm, ruling P5), not as SDs.",
+    "Lower lip to H-line: the Mean column prints '0–0.5' and the SD/range column '−1 to 2'; the range is −1 to 2 mm and the ideal 0 to 0.5 mm is the clinical target (ruling P9; text p. 30).",
+    "#79 Upper lip strain: not a row in Table 3; no entry.",
+    "#82 Inferior sulcus to H-line: Table 3 prints '–' in both Holdaway cells (no value); no entry.",
+    "Asterisks on Holdaway values in Table 3 mark the Saudi-vs-Holdaway significance test (* p ≤ 0.05, ** p ≤ 0.01); stripped.",
+    "The Saudi sample in the same table is a separate set (albarakati2012, Part C Task 9b)."
+  ],
+  "entries": [
+    {
+      "measurement": "m07_ANPog",
+      "sex": "pooled",
+      "mean": 0,
+      "unit": "mm",
+      "source": "Table 3, p. 30, row 'Convexity (mm)', Holdaway established values column; text p. 30",
+      "definitionMatch": "same",
+      "centre": "ideal",
+      "note": "Holdaway's skeletal profile convexity, point A to N–Pog. Table 3 prints '0**' (the asterisks mark the Saudi-vs-Holdaway significance test); no tolerance printed ('–'). Text p. 30: according to Holdaway, normal skeletal profile convexity is 0 mm."
+    },
+    {
+      "measurement": "m73_STFacial",
+      "sex": "pooled",
+      "mean": 91,
+      "range": {
+        "low": 84,
+        "high": 98
+      },
+      "unit": "deg",
+      "source": "Table 3, p. 30, row 'Face angle (°)', Holdaway established values column",
+      "definitionMatch": "same",
+      "centre": "ideal",
+      "note": "Printed '91*' with '7' in the SD/range column. Ruling P5: a single number in Holdaway's SD/range column is his ± tolerance, so range = 91 ± 7 (84 to 98); not stored as an SD."
+    },
+    {
+      "measurement": "m74_NoseProm",
+      "sex": "pooled",
+      "range": {
+        "low": 14,
+        "high": 24
+      },
+      "unit": "mm",
+      "source": "Table 3, p. 30, row 'Nose prom (mm)', Holdaway established values column",
+      "definitionMatch": "same",
+      "centre": "ideal",
+      "note": "'14–24' printed in the Mean column; SD/range '–'. Text p. 31: Holdaway judged nose prominence individually, a value under 14 mm considered small."
+    },
+    {
+      "measurement": "m75_SupSulcus",
+      "sex": "pooled",
+      "mean": 3,
+      "range": {
+        "low": 1,
+        "high": 4
+      },
+      "unit": "mm",
+      "source": "Table 3, p. 30, row 'SS depth (mm)', Holdaway established values column",
+      "definitionMatch": "same",
+      "centre": "ideal",
+      "note": "Mean '3', SD/range '1–4'."
+    },
+    {
+      "measurement": "m76_SnH",
+      "sex": "pooled",
+      "mean": 5,
+      "range": {
+        "low": 3,
+        "high": 7
+      },
+      "unit": "mm",
+      "source": "Table 3, p. 30, row 'Sub-H line (mm)', Holdaway established values column",
+      "definitionMatch": "same",
+      "centre": "ideal",
+      "note": "Printed '5' with '2' in the SD/range column. Ruling P5: Holdaway's ± tolerance, so range = 5 ± 2 (3 to 7); not stored as an SD."
+    },
+    {
+      "measurement": "m77_BasicUL",
+      "sex": "pooled",
+      "mean": 15,
+      "unit": "mm",
+      "source": "Table 3, p. 30, row 'UL-A point (mm)', Holdaway established values column",
+      "definitionMatch": "same",
+      "centre": "ideal",
+      "note": "Printed '15*' (significance marker stripped); no tolerance printed ('–')."
+    },
+    {
+      "measurement": "m78_ULThick",
+      "sex": "pooled",
+      "range": {
+        "low": 13,
+        "high": 14
+      },
+      "unit": "mm",
+      "source": "Table 3, p. 30, row 'UL-vermilion (mm)', Holdaway established values column",
+      "definitionMatch": "same",
+      "centre": "ideal",
+      "note": "'13–14' printed in the Mean column; SD/range '–'."
+    },
+    {
+      "measurement": "m80_HAngle",
+      "sex": "pooled",
+      "mean": 10,
+      "range": {
+        "low": 7,
+        "high": 14
+      },
+      "unit": "deg",
+      "source": "Table 3, p. 30, row 'H angle (°)', Holdaway established values column",
+      "definitionMatch": "same",
+      "centre": "ideal",
+      "note": "Printed '10**' (significance marker stripped), SD/range '7–14'. No sign rule is stated; positive as printed, the catalogue's sign for the upper lip ahead of the soft-tissue facial line."
+    },
+    {
+      "measurement": "m81_LLH",
+      "sex": "pooled",
+      "range": {
+        "low": -1,
+        "high": 2
+      },
+      "unit": "mm",
+      "source": "Table 3, p. 30, row 'LL-H line (mm)', Holdaway established values column; text p. 30",
+      "definitionMatch": "same",
+      "centre": "ideal",
+      "clinicalTarget": "ideal 0 to 0.5 mm (Mean column '0–0.5'; text p. 30 puts the ideal lower lip 0 to 0.5 mm from the H line)",
+      "note": "Ruling P9: the range is the SD/range column, '−1 to 2' (minus sign confirmed on the page image); the Mean column's '0–0.5' is Holdaway's ideal, kept as clinicalTarget."
+    },
+    {
+      "measurement": "m83_ChinThick",
+      "sex": "pooled",
+      "range": {
+        "low": 10,
+        "high": 12
+      },
+      "unit": "mm",
+      "source": "Table 3, p. 30, row 'Chin thick (mm)', Holdaway established values column",
+      "definitionMatch": "same",
+      "centre": "ideal",
+      "note": "'10–12' printed in the Mean column; SD/range '–'."
+    }
+  ]
+}

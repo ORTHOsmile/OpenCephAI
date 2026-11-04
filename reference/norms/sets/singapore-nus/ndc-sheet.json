@@ -1,0 +1,212 @@
+{
+  "id": "ndc-sheet",
+  "kind": "analysis-own",
+  "analyses": [
+    "nus"
+  ],
+  "status": "verified",
+  "citation": {
+    "authors": "NDC",
+    "title": "Resident Analysis (NDC)",
+    "undated": true,
+    "openAccess": false
+  },
+  "population": {
+    "id": "singapore-nus",
+    "label": "Singapore (NUS teaching)",
+    "ethnicity": [],
+    "country": "Singapore"
+  },
+  "sample": {},
+  "selection": "unknown",
+  "modality": "unknown",
+  "scale": {
+    "kind": "true-size",
+    "source": "owner ruling 8 Oct: the NUS sheet is scaled correctly"
+  },
+  "headPosition": "unknown",
+  "curation": {
+    "extractedBy": [
+      "AI reader A",
+      "AI reader B"
+    ],
+    "comparedOn": "2026-10-08",
+    "date": "2026-10-08",
+    "notes": "Compared 2026-10-08: a and b agree on every mean, SD and unit for all 17 rows (checked again against the image, NDC Analysis.png). Differences settled: (1) source wording on all 17 rows (prose only) -> one wording, 'NDC sheet, <section> section, row <n> <label>', from the image's own section headings and row numbers; (2) #23 FMA definitionMatch a='close' b='same' -> 'same': owner ruling C9 (NUS uses Go–Me) settles #23 over #22. Doubts settled: Wits −4.7 printed with its minus (Skeletal row 7), catalogue Jacobson sign, 'same'; E-line rows 16-17 printed positive, read with the catalogue sign rule (+ = lip ahead), 'same' (nothing on the sheet indicates the reverse); #29 LAFH% points not printed, read as ANS–Me/N–Me, 'same'; #64 L1 to APo tip vs labial not printed, tip per C1, 'same' (nothing indicates otherwise); #68/#69 reference plane not printed, functional occlusal plane per C7, 'same'; C9 Go–Me for #23, #25 and #57, 'same'. scale written as true-size per owner ruling 8 Oct (extractions carried the old magnificationCorrected key). Caveat on origin per ruling: the sheet names no author, year, sample or Lew. Fix round 1 (2026-10-08, review): placeholder year 2026 removed, citation marked undated; ethnicity emptied (not stated on the sheet); Wits note cites So 1990 via Moate & Darendeliler 2002 Table V; E-line notes argue from the catalogue sign rule only."
+  },
+  "caveats": [
+    "The NDC sheet states no author, year or sample size; its origin is NUS teaching (owner).",
+    "No date is printed on the sheet: the citation is marked undated (no year), so its source line reads \"NDC (undated)\".",
+    "Authors as printed: only 'NDC' appears, in the title '+Resident Analysis (NDC)'; the leading '+' is read as a software expand/collapse glyph, not part of the title. No reference list.",
+    "Sex and age not stated: all 17 values entered as pooled, with no age band.",
+    "Ethnicity of the sheet's sample is not stated.",
+    "No definitions printed: only labels, units, means and SDs. The mandibular plane (Go–Me, owner ruling C9), the overjet/overbite direction (functional occlusal plane, C7) and the incisor point for L1 to APo (tip, C1) come from owner rulings and the catalogue, not from the sheet.",
+    "The sheet's 'Actual' column is blank (a fill-in column for the patient's value)."
+  ],
+  "entries": [
+    {
+      "measurement": "m01_SNA",
+      "sex": "pooled",
+      "mean": 83.4,
+      "sd": 3.5,
+      "unit": "deg",
+      "source": "NDC sheet, Skeletal section, row 1 'SNA'",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m02_SNB",
+      "sex": "pooled",
+      "mean": 80.1,
+      "sd": 3.7,
+      "unit": "deg",
+      "source": "NDC sheet, Skeletal section, row 2 'SNB'",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m03_ANB",
+      "sex": "pooled",
+      "mean": 3.4,
+      "sd": 2.5,
+      "unit": "deg",
+      "source": "NDC sheet, Skeletal section, row 3 'ANB'",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m23_FHGoMe",
+      "sex": "pooled",
+      "mean": 25,
+      "sd": 5,
+      "unit": "deg",
+      "source": "NDC sheet, Skeletal section, row 4 'FMA'",
+      "definitionMatch": "same",
+      "note": "Sheet label 'FMA'. Mandibular plane Go–Me (#23, not the tangent #22) per owner ruling C9 (NUS uses Go–Me; Eastman tradition). The sheet itself does not name the plane."
+    },
+    {
+      "measurement": "m25_MMPA",
+      "sex": "pooled",
+      "mean": 26.2,
+      "sd": 5.1,
+      "unit": "deg",
+      "source": "NDC sheet, Skeletal section, row 5 'MMPA'",
+      "definitionMatch": "same",
+      "note": "Sheet label 'MMPA' (maxillary–mandibular planes angle): palatal plane ANS–PNS to Go–Me, mandibular plane per owner ruling C9. The sheet does not name the planes."
+    },
+    {
+      "measurement": "m26_SNMxP",
+      "sex": "pooled",
+      "mean": 7.5,
+      "sd": 3.5,
+      "unit": "deg",
+      "source": "NDC sheet, Skeletal section, row 6 'SN-MxP'",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m13_Wits",
+      "sex": "pooled",
+      "mean": -4.7,
+      "sd": 3.9,
+      "unit": "mm",
+      "source": "NDC sheet, Skeletal section, row 7 'WITS'",
+      "definitionMatch": "same",
+      "note": "Minus sign printed on the sheet. The sheet states no sign rule or occlusal plane; read with the catalogue's Jacobson sign (BO behind AO positive), along the standard occlusal plane (molars to incisors) per owner ruling NUS-OP-1 (16 Oct 2026: NUS uses the standard plane; until then the functional plane). So 1990's Chinese values −4.9 (M) / −4.5 (F), Jacobson sign, functional occlusal plane, appear second-hand in Moate & Darendeliler 2002 Table V (extracted; merge pending, Task 9a)."
+    },
+    {
+      "measurement": "m29_LAFHpct",
+      "sex": "pooled",
+      "mean": 53.9,
+      "sd": 2.1,
+      "unit": "%",
+      "source": "NDC sheet, Skeletal section, row 8 'LAFH'",
+      "definitionMatch": "same",
+      "note": "Unit printed as %; the sheet does not state the ratio's points. Read as the catalogue's ANS–Me / N–Me × 100 (Eastman/Naini usage, 'about 55%'); 53.9% fits that ratio and nothing on the sheet indicates another."
+    },
+    {
+      "measurement": "m54_U1SN",
+      "sex": "pooled",
+      "mean": 110.8,
+      "sd": 7.4,
+      "unit": "deg",
+      "source": "NDC sheet, Dental section, row 9 'U1 to SN'",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m55_U1MxP",
+      "sex": "pooled",
+      "mean": 118,
+      "sd": 6.4,
+      "unit": "deg",
+      "source": "NDC sheet, Dental section, row 10 'U1to MxPA'",
+      "definitionMatch": "same",
+      "note": "Sheet label 'U1to MxPA' (upper incisor to maxillary plane angle) = U1–MxP (#55)."
+    },
+    {
+      "measurement": "m57_IMPAgome",
+      "sex": "pooled",
+      "mean": 99.7,
+      "sd": 7,
+      "unit": "deg",
+      "source": "NDC sheet, Dental section, row 11 'L1 to MMPA'",
+      "definitionMatch": "same",
+      "note": "Sheet label 'L1 to MMPA' read as lower incisor long axis to the mandibular plane (Go–Me per owner ruling C9) = IMPA, Go–Me (#57). The sheet does not name the plane."
+    },
+    {
+      "measurement": "m53_Interincisal",
+      "sex": "pooled",
+      "mean": 116.2,
+      "sd": 9.2,
+      "unit": "deg",
+      "source": "NDC sheet, Dental section, row 12 'Interincisal Angle'",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m64_L1APog",
+      "sex": "pooled",
+      "mean": 5.1,
+      "sd": 2.2,
+      "unit": "mm",
+      "source": "NDC sheet, Dental section, row 13 'L1 to APo'",
+      "definitionMatch": "same",
+      "note": "The sheet does not say whether the incisal tip or the labial surface is used. Catalogue #64 measures from the tip (owner ruling C1); nothing on the sheet indicates otherwise, so 'same'. Sign not printed; + taken as ahead of A–Pog."
+    },
+    {
+      "measurement": "m68_Overjet",
+      "sex": "pooled",
+      "mean": 3.5,
+      "sd": 1.7,
+      "unit": "mm",
+      "source": "NDC sheet, Dental section, row 14 'OJ'",
+      "definitionMatch": "same",
+      "note": "The sheet states no measuring direction. The catalogue measures along the standard occlusal plane, molars to incisors (owner ruling NUS-OP-1, 16 Oct 2026, replacing C7's functional plane)."
+    },
+    {
+      "measurement": "m69_Overbite",
+      "sex": "pooled",
+      "mean": 3,
+      "sd": 1.8,
+      "unit": "mm",
+      "source": "NDC sheet, Dental section, row 15 'OB'",
+      "definitionMatch": "same",
+      "note": "The sheet states no measuring direction. The catalogue measures at right angles to the standard occlusal plane, molars to incisors (owner ruling NUS-OP-1, 16 Oct 2026, replacing C7's functional plane)."
+    },
+    {
+      "measurement": "m71_ULE",
+      "sex": "pooled",
+      "mean": 3.2,
+      "sd": 2.3,
+      "unit": "mm",
+      "source": "NDC sheet, Soft Tissue section, row 16 'ULip to E line'",
+      "definitionMatch": "same",
+      "note": "Printed positive (no minus sign). The sheet states no sign rule; read with the catalogue's sign rule for #71 (+ = lip ahead of the E-line, Ricketts 1960), as nothing on the sheet indicates the reverse."
+    },
+    {
+      "measurement": "m72_LLE",
+      "sex": "pooled",
+      "mean": 3.7,
+      "sd": 2.5,
+      "unit": "mm",
+      "source": "NDC sheet, Soft Tissue section, row 17 'LLip to E line'",
+      "definitionMatch": "same",
+      "note": "Printed positive (no minus sign). The sheet states no sign rule; read with the catalogue's sign rule for #72 (+ = lip ahead of the E-line, Ricketts 1960), as nothing on the sheet indicates the reverse."
+    }
+  ]
+}

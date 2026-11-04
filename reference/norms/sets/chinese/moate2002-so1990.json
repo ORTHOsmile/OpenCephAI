@@ -1,0 +1,89 @@
+{
+  "id": "moate2002-so1990",
+  "kind": "population",
+  "status": "verified",
+  "citation": {
+    "authors": "So LL, Davis PJ, King NM",
+    "title": "Wits appraisal in southern Chinese children",
+    "journal": "Angle Orthod",
+    "year": 1990,
+    "volume": "60(1)",
+    "pages": "43–8",
+    "openAccess": false
+  },
+  "population": {
+    "id": "chinese",
+    "label": "Chinese",
+    "ethnicity": [
+      "Southern Chinese"
+    ],
+    "country": "China",
+    "region": "Hong Kong"
+  },
+  "sample": {
+    "n": 101,
+    "nMale": 55,
+    "nFemale": 46,
+    "ageMin": 10,
+    "ageMax": 15
+  },
+  "selection": "random-unselected",
+  "modality": "unknown",
+  "scale": {
+    "kind": "not-stated"
+  },
+  "headPosition": "unknown",
+  "secondHand": {
+    "via": "Moate & Darendeliler 2002, Table V"
+  },
+  "curation": {
+    "extractedBy": [
+      "AI reader A",
+      "AI reader B"
+    ],
+    "date": "2026-10-08",
+    "notes": "Compared 2026-10-08: norms:compare a vs b exit 1, 4 differences (logs/task9a2-compare-<id>.log). Every mean and SD of both extractors re-read from the page images (PDF pp. 2-6 = journal pp. 20-24), and the settled file checked by script against a third, independent reading of the pages (the table in sets.test.ts). Decisions: (0) Source text normalised to one pattern giving table, page, row and column with sex and age (a and b worded it differently; prose only). (1) n 55 and 46: b only, from the text p. 22 ('55 males and 46 females') -> kept. Page images: PDF pp. 2-6 = journal pp. 20-24 (Tables I-VI), rendered at 2000 px.",
+    "comparedOn": "2026-10-08"
+  },
+  "caveats": [
+    "Quoted second-hand from Moate & Darendeliler 2002 (Aust Orthod J 18:19-26, a compilation of published Chinese cephalometric norms), Table V; the original paper was not read. The compilation rounds every mean and SD to whole numbers (Lew's soft tissue to 0.5) and gives no landmark, plane or method definitions.",
+    "The compilation states no film scale or magnification for any study; assumed true size (owner ruling M-2).",
+    "101 southern Chinese children aged 10 to 15 (55 males, 46 females), randomly selected from 1,605 cephalometric films on file in Hong Kong (text p. 22).",
+    "Table V prints the Wits values in its '18 Years +' columns, but So's sample was 10 to 15 years old: entered at 10-15 (merge notes).",
+    "Wits to the functional occlusal plane (text pp. 22 and 25), with Jacobson's sign (Jacobson: -1 mm Caucasian males, 0 females, p. 22): same as catalogue #13. No SD printed; the app borrows one where a matching paper has it (Task 4c).",
+    "The other rows of Table V average several studies and are not entered.",
+    "The text (p. 22) passes on So's warning that nasion is hard to locate in southern Chinese films (the shallow nasal bridge overlaps the eyelids' tarsal plates)."
+  ],
+  "entries": [
+    {
+      "measurement": "m13_Wits",
+      "sex": "M",
+      "ageBand": [
+        10,
+        15
+      ],
+      "mean": -4.9,
+      "n": 55,
+      "unit": "mm",
+      "source": "Table V, p. 24, row 7 'Wits', '18 Years +' column (males); So et al. named as its source in the text, p. 22",
+      "definitionMatch": "close",
+      "note": "Printed in Table V's '18 Years +' column, but So's sample was 10 to 15 years old (text p. 22): age band 10–15. No SD printed.",
+      "definitionNote": "Measured on the functional occlusal plane (through the premolars); this app measures Wits on the occlusal plane through the molars and incisors (since 16 Oct 2026)"
+    },
+    {
+      "measurement": "m13_Wits",
+      "sex": "F",
+      "ageBand": [
+        10,
+        15
+      ],
+      "mean": -4.5,
+      "n": 46,
+      "unit": "mm",
+      "source": "Table V, p. 24, row 7 'Wits', '18 Years +' column (females); So et al. named as its source in the text, p. 22",
+      "definitionMatch": "close",
+      "note": "Printed in Table V's '18 Years +' column, but So's sample was 10 to 15 years old (text p. 22): age band 10–15. No SD printed.",
+      "definitionNote": "Measured on the functional occlusal plane (through the premolars); this app measures Wits on the occlusal plane through the molars and incisors (since 16 Oct 2026)"
+    }
+  ]
+}

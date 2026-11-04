@@ -1,0 +1,121 @@
+{
+  "id": "jarabak-via-alshahrani2018",
+  "kind": "analysis-own",
+  "analyses": [
+    "bjork-jarabak"
+  ],
+  "status": "verified",
+  "citation": {
+    "authors": "Jarabak JR, Fizzell JA",
+    "title": "Technique and Treatment with Light-Wire Edgewise Appliances, 2nd edition (St Louis: Mosby)",
+    "year": 1972,
+    "openAccess": false
+  },
+  "population": {
+    "id": "analysis-own",
+    "label": "The analysis's own norms",
+    "ethnicity": []
+  },
+  "sample": {},
+  "selection": "unknown",
+  "modality": "unknown",
+  "scale": {
+    "kind": "not-stated"
+  },
+  "headPosition": "unknown",
+  "secondHand": {
+    "via": "Alshahrani et al. 2018, Tables III–IV"
+  },
+  "curation": {
+    "extractedBy": [
+      "AI reader A",
+      "AI reader B"
+    ],
+    "comparedOn": "2026-10-08",
+    "date": "2026-10-08",
+    "notes": "Compared 2026-10-08 (norms:compare a vs b exit 1, 7 differences, all source wording; logs/task9b2-compare-jarabak-via-alshahrani2018.log). All 7 means and SDs agree; re-read from the 'Jarabak norms Mean ± SD' column of Tables III and IV with the PubMed full-text tool (PMC6191777; rule P44): agree. Decisions: ratio 63.5 (Table IV) over 63.51 (Table III), note (merge notes); sum SD ± 5 as printed; rows using gonion close (constructed gonion); no centre (the paper does not say whether these are sample means or ideals); scale not-stated (the paper gives nothing about Jarabak's films). Outranks the onfile website values for Björk-Jarabak (a paper beats a website). Fix round 1 (owner JAR-1, 8 Oct): the face-height and ratio ± values equal the half-widths of Jarabak's usually quoted ranges; kept as SDs (the column is headed 'Mean ± SD'), with a note on each and a caveat; a caveat on the angle SDs."
+  },
+  "caveats": [
+    "Second-hand: Jarabak's norms as Alshahrani et al. 2018 quote them beside their Saudi values. The paper names Björk 1947 and Jarabak 1972 as the method sources but not which publication the norm column comes from, nor Jarabak's sample size, age, sex, film scale or head position. No centre is given: whether these are sample means or ideals is not stated.",
+    "Not in the catalogue: anterior cranial base S–N 71 ± 3, posterior cranial base S-Ar 32 ± 3, ramus height Ar-Go 44 ± 5 and mandibular body length Go–Me 71 ± 5 mm (both tables). The catalogue's ratios #43 (S-N/Go-Me) and #44 (Ar-S/Ar-Go) are not printed and are not computed.",
+    "Upper and lower gonial angles (#37, #38) are defined in Table I but no Jarabak values are printed.",
+    "Every row using gonion is close: Jarabak's gonion is constructed; the app's Go is the AI's anatomical gonion (C3).",
+    "These ± values equal the half-widths of Jarabak's usually quoted ranges (70–85 mm, 105–120 mm, 62–65 %); Alshahrani heads the column 'Mean ± SD', so they are kept as SDs (owner ruling 8 Oct) — they may be half-ranges.",
+    "Alshahrani's SDs for the angles (saddle 6, articular 5, gonial 6, sum 5) differ from the values most often quoted for Jarabak (5 / 6 / 7 / 6); entered as Alshahrani prints them.",
+    "Citation (owner ruling 12 Oct, final review I-2): the norms are Jarabak's, so the set cites Jarabak & Fizzell 1972 (a book; no DOI) and names the carrier in secondHand. The carrier is Alshahrani I, Kamran MA, Alhaizaey A, Abumelha N, Pakistan Journal of Medical Sciences 2018;34(5):1104-1109, doi 10.12669/pjms.345.15556, PMID 30344558, PMC6191777. Alshahrani names Jarabak 1972 as a method source but does not say which Jarabak publication the norm column comes from."
+  ],
+  "entries": [
+    {
+      "measurement": "m34_Saddle",
+      "sex": "pooled",
+      "mean": 123,
+      "sd": 6,
+      "unit": "deg",
+      "source": "Tables III and IV, 'Jarabak norms' column, row 'Saddle Angle', PMC6191777",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m35_Articular",
+      "sex": "pooled",
+      "mean": 143,
+      "sd": 5,
+      "unit": "deg",
+      "source": "Tables III and IV, 'Jarabak norms' column, row 'Articular angle', PMC6191777",
+      "definitionMatch": "close",
+      "definitionNote": "Jarabak's gonion is constructed (Alshahrani Table I: 'Gonion constructed'); the catalogue uses the AI's anatomical Go (C3)."
+    },
+    {
+      "measurement": "m36_Gonial",
+      "sex": "pooled",
+      "mean": 130,
+      "sd": 6,
+      "unit": "deg",
+      "source": "Tables III and IV, 'Jarabak norms' column, row 'Gonial Angle', PMC6191777",
+      "definitionMatch": "close",
+      "definitionNote": "Jarabak's gonion is constructed (Alshahrani Table I: 'Gonion constructed'); the catalogue uses the AI's anatomical Go (C3)."
+    },
+    {
+      "measurement": "m39_SumAngles",
+      "sex": "pooled",
+      "mean": 396,
+      "sd": 5,
+      "unit": "deg",
+      "source": "Tables III and IV, 'Jarabak norms' column, row 'Total Sum', PMC6191777",
+      "definitionMatch": "close",
+      "definitionNote": "Jarabak's gonion is constructed (Alshahrani Table I: 'Gonion constructed'); the catalogue uses the AI's anatomical Go (C3).",
+      "note": "SD printed '± 5' in both tables; as printed."
+    },
+    {
+      "measurement": "m40_SGo",
+      "sex": "pooled",
+      "mean": 77.5,
+      "sd": 7.5,
+      "unit": "mm",
+      "source": "Tables III and IV, 'Jarabak norms' column, row 'Posterior facial height', PMC6191777",
+      "definitionMatch": "close",
+      "definitionNote": "Jarabak's gonion is constructed (Alshahrani Table I: 'Gonion constructed'); the catalogue uses the AI's anatomical Go (C3).",
+      "note": "These ± values equal the half-widths of Jarabak's usually quoted ranges (70–85 mm, 105–120 mm, 62–65 %); Alshahrani heads the column 'Mean ± SD', so they are kept as SDs (owner ruling 8 Oct) — they may be half-ranges."
+    },
+    {
+      "measurement": "m41_NMe",
+      "sex": "pooled",
+      "mean": 112.5,
+      "sd": 7.5,
+      "unit": "mm",
+      "source": "Tables III and IV, 'Jarabak norms' column, row 'Anterior facial height', PMC6191777",
+      "definitionMatch": "same",
+      "note": "These ± values equal the half-widths of Jarabak's usually quoted ranges (70–85 mm, 105–120 mm, 62–65 %); Alshahrani heads the column 'Mean ± SD', so they are kept as SDs (owner ruling 8 Oct) — they may be half-ranges."
+    },
+    {
+      "measurement": "m42_Jarabak",
+      "sex": "pooled",
+      "mean": 63.5,
+      "sd": 1.5,
+      "unit": "%",
+      "source": "Table IV, 'Jarabak norms' column, row 'Jarabak ratio', PMC6191777 (Table III 63.51)",
+      "definitionMatch": "close",
+      "definitionNote": "Jarabak's gonion is constructed (Alshahrani Table I: 'Gonion constructed'); the catalogue uses the AI's anatomical Go (C3).",
+      "note": "Table IV prints 63.5 ± 1.5, Table III 63.51 ± 1.5: one norm, not a sex difference; 63.5 used. These ± values equal the half-widths of Jarabak's usually quoted ranges (70–85 mm, 105–120 mm, 62–65 %); Alshahrani heads the column 'Mean ± SD', so they are kept as SDs (owner ruling 8 Oct) — they may be half-ranges."
+    }
+  ]
+}
