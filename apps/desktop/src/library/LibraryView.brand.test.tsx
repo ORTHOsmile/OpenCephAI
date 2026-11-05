@@ -8,7 +8,7 @@ const noop = () => {};
 const html = () => renderToStaticMarkup(
   <LibraryView cases={[]} deleted={[]} batch={[]} busy={null} error={null} notice={null} modelNote={null}
     onOpen={noop} onImport={noop} onDelete={noop} onRestore={noop} onBackup={noop} onRestoreBackup={noop}
-    operator="" onOperator={noop} dateFormat="AU" onDateFormat={noop} />,
+    operator="" onOperator={noop} dateFormat="AU" onDateFormat={noop} view="pictures" onView={noop} layout="grouped" onLayout={noop} onReport={noop} />,
 );
 
 describe('library toolbar title (owner, 15 Oct 2026)', () => {

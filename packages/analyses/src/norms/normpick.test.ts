@@ -43,28 +43,30 @@ const norm = (r: Resolved) => {
   return r;
 };
 
-describe('NORM-PICK-1: no norm in the chosen population → "choose one", never a silent fallback', () => {
-  it("the population has nothing and the analysis has no own norm: no value, the population named, not the user's own norm", () => {
-    const r = resolveNorm(q({}));
-    expect(r).toEqual({ kind: 'choose', population: 'chinese', reason: 'no Chinese norm — choose one' });
+describe('NORM-PICK-1 with Auto (owner N-A3, AUTO-Q6, 19 Oct 2026): no norm in the chosen population → Auto; only your own norm has it → "choose one"', () => {
+  // Without the Caucasian set, only the clinician's own norm (user:Mine) has Wits — never an Auto candidate (AUTO-Q11):
+  // "choose one", as before.
+  const noAuto = { sets: [CN, OWN] };
+  it('the population has nothing and the analysis no own norm: Auto takes the Caucasian set, flagged and named; Q11: only your own norm → "choose one"', () => {
+    const r = norm(resolveNorm(q({})));
+    expect([r.setId, r.mean, r.flags, r.auto?.step]).toEqual(['ca-synthetic', -1, ['auto-fallback'], 'caucasian']);
+    expect(r.sourceLine.endsWith(' · Auto (no Chinese norm)')).toBe(true);
+    expect(resolveNorm(q(noAuto))).toEqual({ kind: 'choose', population: 'chinese', reason: 'no Chinese norm — choose one' });
   });
-
   it('the same for the clinic default, and for a user-norm set chosen as the population', () => {
-    expect(resolveNorm(q({ population: null, clinicDefault: 'chinese' }))).toMatchObject({ kind: 'choose', population: 'chinese' });
+    expect(norm(resolveNorm(q({ population: null, clinicDefault: 'chinese' }))).auto?.population).toBe('chinese');
     const other = [...MINE, { setName: 'Other', measurement: 'm01_SNA', mean: 80, sd: 3, sourceNote: 'SYNTHETIC' }];
-    expect(resolveNorm(q({ population: 'user:Other', userNorms: other }))).toEqual({ kind: 'choose', population: 'user:Other', reason: 'no Other (your norms) norm — choose one' });
+    expect(norm(resolveNorm(q({ population: 'user:Other', userNorms: other }))).sourceLine.endsWith(' · Auto (no Other (your norms) norm)')).toBe(true);
+    expect(resolveNorm(q({ ...noAuto, population: 'user:Other', userNorms: other }))).toEqual({ kind: 'choose', population: 'user:Other', reason: 'no Other (your norms) norm — choose one' });
   });
-
-  it("the analysis's own norms chosen directly: named by the analysis", () => {
-    expect(resolveNorm(q({ population: 'analysis-own' }))).toEqual({ kind: 'choose', population: 'analysis-own', reason: "no Wits's own norm — choose one" });
+  it("the analysis's own norms chosen directly: Auto goes to Caucasian (step 2 is the same source); without it, named by the analysis", () => {
+    expect(norm(resolveNorm(q({ population: 'analysis-own' }))).sourceLine.endsWith(" · Auto (no Wits's own norm)")).toBe(true);
+    expect(resolveNorm(q({ ...noAuto, population: 'analysis-own' }))).toEqual({ kind: 'choose', population: 'analysis-own', reason: "no Wits's own norm — choose one" });
   });
-
-  // Owner OWNFALL-1 (12 Oct): the analysis's own norm no longer stands in under a population that has nothing — that
-  // cell asks too, and the own norm is one of the choices; picked, it reads "chosen by you" like any other source.
-  it("OWNFALL-1: a population with nothing where the analysis has its own norm asks too; the own norm is a choice", () => {
-    const r = resolveNorm(q({ measurement: 'm01_SNA', analysisId: 'steiner', population: 'japanese' }));
-    expect(r).toEqual({ kind: 'choose', population: 'japanese', reason: 'no Japanese norm — choose one' });
-    expect(normChoices(q({ measurement: 'm01_SNA', analysisId: 'steiner', population: 'japanese' })).map((c) => c.id)).toContain('analysis-own');
+  it("step 2 first: a population with nothing where the analysis has its own norm uses it (Auto); the own norm can still be picked", () => {
+    const r = norm(resolveNorm(q({ measurement: 'm01_SNA', analysisId: 'steiner', population: 'japanese' })));
+    expect([r.setId, r.flags, r.auto?.step]).toEqual(['steiner-own-synthetic', ['auto-fallback'], 'analysis-own']);
+    expect(normChoices(q({ measurement: 'm01_SNA', analysisId: 'steiner', population: 'japanese' })).map((c) => c.id)).toEqual(['auto', 'chinese', 'caucasian', 'analysis-own']);
     const picked = norm(resolveNorm(q({ measurement: 'm01_SNA', analysisId: 'steiner', population: 'japanese', picks: { japanese: { m01_SNA: 'analysis-own' } } })));
     expect([picked.setId, picked.flags]).toEqual(['steiner-own-synthetic', ['chosen-by-you']]);
   });
@@ -82,15 +84,15 @@ describe('NORM-PICK-1: no norm in the chosen population → "choose one", never 
   it('the choices: every source holding the measurement, each with the n and ages of the row that would be used', () => {
     const c = normChoices(q({}));
     expect(c.map((x) => [x.id, x.label, x.rows, x.ages])).toEqual([
+      ['auto', 'Auto · Caucasian — Synthetic 2020, n = 40 (no Chinese norm)', [{ who: 'sexes pooled', n: 40 }], null],
       ['caucasian', POPULATIONS.find((p) => p.id === 'caucasian')!.label, [{ who: 'sexes pooled', n: 40 }], null],
       ['user:Mine', 'Mine (your norms)', [{ who: 'sexes pooled', n: null }], null],
     ]);
-    // Each choice carries the resolver's own result for that source (value, flags, source line), never retyped.
-    expect(norm(c[0].resolved).mean).toBe(-1);
-    expect(norm(c[1].resolved).flags).toEqual(['user-norm']);
+    expect(norm(c[1].resolved).mean).toBe(-1);
+    expect(norm(c[2].resolved).flags).toEqual(['user-norm']);
     // The analysis's own norm is a choice when it has the measurement; the chosen (empty) population never is.
     const sna = normChoices(q({ measurement: 'm01_SNA', analysisId: 'steiner', population: 'japanese' }));
-    expect(sna.map((x) => x.id)).toEqual(['chinese', 'caucasian', 'analysis-own']);
+    expect(sna.map((x) => x.id)).toEqual(['auto', 'chinese', 'caucasian', 'analysis-own']);
     expect(sna.find((x) => x.id === 'analysis-own')!.label).toBe("Steiner's own norm");
   });
 
@@ -104,22 +106,20 @@ describe('NORM-PICK-1: no norm in the chosen population → "choose one", never 
   });
 
   it('a pick is per population and per measurement, and never overrides a norm the population has', () => {
-    expect(resolveNorm(q({ picks: { japanese: { m13_Wits: 'caucasian' } } })).kind).toBe('choose');
-    expect(resolveNorm(q({ picks: { chinese: { m01_SNA: 'caucasian' } } })).kind).toBe('choose');
+    expect(norm(resolveNorm(q({ picks: { japanese: { m13_Wits: 'caucasian' } } }))).flags).toEqual(['auto-fallback']);
+    expect(norm(resolveNorm(q({ picks: { chinese: { m01_SNA: 'caucasian' } } }))).flags).toEqual(['auto-fallback']);
     const cn = norm(resolveNorm(q({ measurement: 'm01_SNA', analysisId: 'steiner', picks: { chinese: { m01_SNA: 'caucasian' } } })));
     expect([cn.setId, cn.flags.includes('chosen-by-you')]).toEqual(['cn-synthetic', false]);
   });
 
-  it('a pick whose source no longer has the measurement (a deleted user set) is ignored: choose again', () => {
-    expect(resolveNorm(q({ userNorms: [], picks: { chinese: { m13_Wits: 'user:Mine' } } })))
-      .toEqual({ kind: 'choose', population: 'chinese', reason: 'no Chinese norm — choose one' });
+  it('a pick whose source no longer has the measurement (a deleted user set) is ignored: Auto (spec edge case)', () => {
+    expect(norm(resolveNorm(q({ userNorms: [], picks: { chinese: { m13_Wits: 'user:Mine' } } }))).flags).toEqual(['auto-fallback']);
   });
 
-  it('compare: each ticked population uses its own pick', () => {
+  it('compare (ruling AUTO-Q7): a column is the population\'s own norm or none — a pick saved for it is not used there', () => {
     const [cn, jp, ca] = resolveAcross(q({ picks: { chinese: { m13_Wits: 'user:Mine' } } }), ['chinese', 'japanese', 'caucasian']);
-    expect(norm(cn).flags).toEqual(['user-norm', 'chosen-by-you']);
-    expect(jp).toMatchObject({ kind: 'choose', population: 'japanese', reason: 'no Japanese norm — choose one' });
-    expect([norm(ca).setId, norm(ca).flags]).toEqual(['ca-synthetic', []]);
+    expect([cn.kind, jp.kind, norm(ca).setId, norm(ca).flags]).toEqual(['none', 'none', 'ca-synthetic', []]);
+    expect(norm(resolveNorm(q({ picks: { chinese: { m13_Wits: 'user:Mine' } } }))).flags).toContain('chosen-by-you');   // the Measurements tab still uses it
   });
 });
 

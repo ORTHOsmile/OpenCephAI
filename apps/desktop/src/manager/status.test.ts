@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { statusText, blocked } from './status';
+import { statusText, blocked, actionLabel } from './status';
 import type { ModelRow } from '../ipc';
 const row = (o: Partial<ModelRow>): ModelRow => ({ id: 'gu2net-isbi19', title: 'GU2Net', tier: 'standard', citation: 'c', sizeMb: 60,
   licence: { version: '1', code: 'MIT', weights: 'w', summary: 's', url: 'u', nonCommercial: false }, licenceAccepted: false,
@@ -17,5 +17,13 @@ describe('statusText', () => {
   it('tells a blocked download apart', () => {
     expect(blocked(row({ status: 'failed', error: 'DOWNLOAD_BLOCKED' }))).toBe(true);
     expect(blocked(row({ status: 'failed', error: 'Not enough disk space: 0 MB needed.' }))).toBe(false);
+  });
+});
+
+describe('actionLabel (leftovers Task 7)', () => {
+  it('a Failed row says Retry; others say Install', () => {
+    expect(actionLabel(row({ status: 'failed' }))).toBe('Retry');
+    expect(actionLabel(row({ status: 'failed', error: 'DOWNLOAD_BLOCKED' }))).toBe('Retry');
+    expect(actionLabel(row({ status: 'not-installed' }))).toBe('Install');
   });
 });

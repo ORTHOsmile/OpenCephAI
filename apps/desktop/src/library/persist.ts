@@ -2,21 +2,29 @@ import type { AiPoint, AiRun, CaseDoc, CaseEdit, Detection, DetectResult, Facing
 import { NO_ORIENTATION } from '../canvas/orientation';
 import { DISPLAY_DEFAULT, initialTracing, tracingReducer, type Action, type Overlays, type PlaneKey, type TracingPoint, type TracingState } from '../tracing/state';
 
-/** `placedBy`: the model that placed this AI point (schema 10); a hand-placed point never has one. */
-export const toRow = (id: string, p: TracingPoint, placedBy?: string): LandmarkRow => ({
+/** `placedBy`: the model that placed this AI point (schema 10); `placedVia`: 'auto-best' when Automatic best chose it
+ *  (format 15). A hand-placed point has neither; `placedVia` only travels with a `placedBy`. */
+export const toRow = (id: string, p: TracingPoint, placedBy?: string, placedVia?: string): LandmarkRow => ({
   id, x: p.x, y: p.y, source: p.source, verified: p.verified, aiX: p.ai?.x ?? null, aiY: p.ai?.y ?? null, confidence: p.confidence ?? null,
   placedBy: p.source === 'manual' ? null : placedBy ?? null,
+  placedVia: p.source === 'manual' || !placedBy ? null : placedVia ?? null,
+  acceptKind: p.verified ? p.acceptKind ?? null : null,
 });
 export const fromRow = (r: LandmarkRow): TracingPoint => ({
   x: r.x, y: r.y, source: r.source, verified: r.verified,
   ...(r.aiX !== null && r.aiY !== null ? { ai: { x: r.aiX, y: r.aiY } } : {}),
   ...(r.confidence !== null ? { confidence: r.confidence } : {}),
+  ...(r.acceptKind ? { acceptKind: r.acceptKind } : {}),
 });
 
 /** What autosave writes: the points, the view orientation and the display adjustments (never overlays: those are per user). */
-export const toEdit = (caseId: string, facing: Facing, s: TracingState, placedBy: Record<string, string> = {}): CaseEdit => ({
-  id: caseId, facing, orientation: s.orientation, display: s.display, landmarks: Object.entries(s.points).map(([id, p]) => toRow(id, p, placedBy[id])),
+export const toEdit = (caseId: string, facing: Facing, s: TracingState, placedBy: Record<string, string> = {}, placedVia: Record<string, string> = {}): CaseEdit => ({
+  id: caseId, facing, orientation: s.orientation, display: s.display,
+  landmarks: Object.entries(s.points).map(([id, p]) => toRow(id, p, placedBy[id], placedVia[id])),
 });
+/** Every point of a placement Automatic best made carries 'auto-best' (spec §9); any other placement marks none. */
+export const viaOf = (p: { source: Record<string, string>; via: string | null }): Record<string, string> =>
+  (p.via ? Object.fromEntries(Object.keys(p.source).map((id) => [id, p.via as string])) : {});
 
 /** Opens a stored case; fields an older build did not write fall back to their defaults. */
 export const hydrateAction = (doc: CaseDoc): Extract<Action, { type: 'hydrate' }> => ({
@@ -27,9 +35,9 @@ export const hydrateAction = (doc: CaseDoc): Extract<Action, { type: 'hydrate' }
 });
 
 /** The first save of a newly detected case: every point AI and unverified, mirrored to face right and levelled. */
-export function aiEdit(caseId: string, r: DetectResult, placedBy: Record<string, string> = {}): CaseEdit {
+export function aiEdit(caseId: string, r: DetectResult, placedBy: Record<string, string> = {}, placedVia: Record<string, string> = {}): CaseEdit {
   const s = tracingReducer(tracingReducer(initialTracing, { type: 'load', landmarks: r.landmarks }), { type: 'autoOrient', mirror: r.facingLeft });
-  return toEdit(caseId, r.facingLeft ? 'left' : 'right', s, placedBy);
+  return toEdit(caseId, r.facingLeft ? 'left' : 'right', s, placedBy, placedVia);
 }
 /** Every channel's point from a detection, as stored (schema 7's model_points). */
 export const pointsOf = (d: Detection): AiPoint[] =>
@@ -62,4 +70,6 @@ export const identityFields = (d: CaseDoc) => ({
   learnedFields: d.learnedFields, gender: d.gender, referringPractitioner: d.referringPractitioner,
   printedPatientId: d.printedPatientId, xrayType: d.xrayType, xraySize: d.xraySize, radiographyPractice: d.radiographyPractice,
   libraryId: d.libraryId, patientIdsSeen: d.patientIdsSeen, idMatches: d.idMatches, libraryTrail: d.libraryTrail,
+  title: d.title, ageOnFilm: d.ageOnFilm, ageOnFilmYears: d.ageOnFilmYears,
+  background: d.background ?? null,   // spec 2026-10-29 §4.1: on the patient, so a join or a save elsewhere changes it
 });

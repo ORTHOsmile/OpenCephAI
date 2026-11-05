@@ -75,7 +75,7 @@ const SEED = { version: 1, analyses: [{ id: 'my:seed1', name: NOS, items: [
             return { ...c, printedPatientId: c.patientId ?? null, libraryId: null, patientIdsSeen, idMatches: [], libraryTrail: [], image: { sha256: 'x', ext: 'png', width: 1200, height: 1400, originalName: 'SYNTHETIC.png', path: c.path } }; }
           case 'library_save': { const c = db.cases[a.edit.id]; Object.assign(c, { landmarks: a.edit.landmarks, updatedAt: now() }); store(db); return { updatedAt: c.updatedAt, verifiedAt: null }; }
           case 'library_set_meta': Object.assign(db.cases[a.caseId], a.meta, { patientKey: a.meta.patientName.trim().toLowerCase() }); store(db); return null;
-          case 'settings_get': return db.settings[a.key] ?? null;
+          case 'settings_get': return a.key === 'betaNoticeSeen' ? '1' : (db.settings[a.key] ?? null);
           case 'settings_set': db.settings[a.key] = a.value; store(db); return null;
           case 'text_file_write': { const f = JSON.parse(localStorage.getItem('fakeFiles') || '{}'); f[a.path] = a.text; localStorage.setItem('fakeFiles', JSON.stringify(f)); return null; }
           case 'text_file_read': { const f = JSON.parse(localStorage.getItem('fakeFiles') || '{}'); if (!(a.path in f)) throw new Error('No such file (SYNTHETIC)'); return f[a.path]; }

@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import type { Expr, NodeId, Vec2 } from '@ceph/geometry';
+import type { PointCheckFlag, RulerMarks } from '../ipc';
 import type { TracingState } from '../tracing/state';
 import { aiPointColour } from '../confidence';
 import { mmGrid, planeSegments, profilogramPaths } from './overlayGeometry';
@@ -8,6 +9,7 @@ import type { Dims } from './orientation';
 import { ghostLabel, type Ghost } from '../ghosts/ghosts';
 import { LANDMARKS, type LandmarkId } from '@ceph/analyses';
 import { DEFAULT_DECIMALS, type Decimals } from '../format';
+import { CHECK_WORDS, cardPlace, hoverText } from '../points/pointCheck';
 
 interface Props {
   state: TracingState; dims: Dims; registry: Record<NodeId, Expr>; S: (p: Vec2) => Vec2; mmPerPx: number; calib: Vec2[] | null;
@@ -25,6 +27,15 @@ interface Props {
    *  Overlay instance itself is not remounted on a case switch, so without this a stale label (and its line to a
    *  point that no longer means the same thing) could keep showing into the new case. */
   caseId?: string | null;
+  /** Request G (Task 8): the points picked for a two-point fit, in this film's px. */
+  fitMarks?: Vec2[];
+  /** Spec 2026-10-19 (F): the ruler marks left on the film, drawn above the tracing as red crosses. */
+  ruler?: RulerMarks | null;
+  /** Stage A (task 6): the point check's flag at each pin, by landmark id (App: `flagAt`, the placing model's run). A flag
+   *  draws a mark beside its pin and, on hover, a ring and words. It never moves, hides or recolours the pin. */
+  checks?: Record<string, PointCheckFlag> | null;
+  /** The pin whose flag starts hovered. For the static render in tests only; the app leaves it unset. */
+  checkHoverStart?: string | null;
 }
 export interface Look { colour: string; dash?: string }
 export interface CompareTracing extends Look { id: string; points: Record<string, Vec2> }
@@ -35,7 +46,7 @@ interface HoverKey { modelId: string; id: string }
 const sameKey = (a: HoverKey | null, b: HoverKey) => !!a && a.modelId === b.modelId && a.id === b.id;
 
 /** Everything drawn over the film, in screen space so strokes stay crisp at any zoom (§2). */
-export function Overlay({ state, dims, registry, S, mmPerPx, assumedScale, calib, compare, own, ghosts, caseId, decimals = DEFAULT_DECIMALS }: Props) {
+export function Overlay({ state, dims, registry, S, mmPerPx, assumedScale, calib, compare, own, ghosts, caseId, decimals = DEFAULT_DECIMALS, fitMarks, ruler, checks, checkHoverStart = null }: Props) {
   const pos = Object.fromEntries(Object.entries(state.points).map(([id, p]) => [id, { x: p.x, y: p.y }]));
   // Owner, 5 Oct, Task C: the on-canvas hover label replaces the SVG `<title>` tooltip. `hover` shows it at full
   // opacity immediately (no system tooltip delay); leaving sets `fading` so the label stays mounted for the ~0.5 s
@@ -57,12 +68,12 @@ export function Overlay({ state, dims, registry, S, mmPerPx, assumedScale, calib
   }, [ghosts]);   // eslint-disable-line react-hooks/exhaustive-deps
   // M5: the label stays inside the stage near the right edge, flipping to the diamond's left instead of running off.
   const svgRef = useRef<SVGSVGElement | null>(null);
-  const [stageW, setStageW] = useState(Infinity);
+  const [stageW, setStageW] = useState(Infinity), [stageH, setStageH] = useState(Infinity);
   useEffect(() => {
     const el = svgRef.current;
     if (!el) return;
-    const ro = new ResizeObserver(() => setStageW(el.clientWidth));
-    setStageW(el.clientWidth);
+    const ro = new ResizeObserver(() => { setStageW(el.clientWidth); setStageH(el.clientHeight); });
+    setStageW(el.clientWidth); setStageH(el.clientHeight);
     ro.observe(el);
     return () => ro.disconnect();
   }, []);
@@ -79,9 +90,24 @@ export function Overlay({ state, dims, registry, S, mmPerPx, assumedScale, calib
     setFading(key);
     fadeTimer.current = setTimeout(() => setFading((f) => (sameKey(f, key) ? null : f)), 500);
   };
+  // Stage A: the pin whose point-check mark is hovered (its ring and words show), cleared when the case changes under it.
+  const [checkHover, setCheckHover] = useState<string | null>(checkHoverStart);
+  useEffect(() => { setCheckHover(null); }, [caseId]);
   const activeHover = hover ?? fading;
   const hoverGhost = activeHover && ghosts?.find((g) => g.modelId === activeHover.modelId);
   const hoverPoint = hoverGhost && activeHover ? hoverGhost.points[activeHover.id] : null;
+  /** (A function, not a component: a component defined here would remount on every hover and lose the pointer.)
+   *  The mark beside a flagged pin, 12 px right of the pin's label (hit area for the hover). Words are the owner's. */
+  const checkMark = (id: string, s: Vec2) => {
+    const x = s.x + 10 + id.length * 8 + 12, y = s.y - 10;
+    return (
+      <g key={`check-${id}`} className="check-mark" data-check="flagged" data-id={id}
+         onMouseEnter={() => setCheckHover(id)} onMouseLeave={() => setCheckHover((h) => (h === id ? null : h))}>
+        <rect className="check-hit" x={x - 4} y={y - 14} width={CHECK_WORDS.mark.length * 6.4 + 8} height={20} />
+        <text className="check-mark-text" x={x} y={y} fill="var(--warn)">{CHECK_WORDS.mark}</text>
+      </g>
+    );
+  };
   const paper = state.overlays.background === 'grid', Po = pos.Po, Or = pos.Or;
   const grid = useMemo(() => (paper && Po && Or ? mmGrid(Po, Or, mmPerPx, dims) : null), [paper, Po?.x, Po?.y, Or?.x, Or?.y, mmPerPx, dims]);   // eslint-disable-line react-hooks/exhaustive-deps
   const segs = (list: { a: Vec2; b: Vec2 }[]) => list.map((s) => `M${S(s.a).x.toFixed(1)} ${S(s.a).y.toFixed(1)}L${S(s.b).x.toFixed(1)} ${S(s.b).y.toFixed(1)}`).join('');
@@ -94,19 +120,22 @@ export function Overlay({ state, dims, registry, S, mmPerPx, assumedScale, calib
         <path d={segs(grid.major)} stroke="var(--grid-major)" strokeWidth={1.1} />
         <path d={segs(grid.axes)} stroke="var(--grid-axis)" strokeWidth={1.6} />
       </g>}
-      {planeSegments(registry, pos, state.overlays.planes).map((p) => (
-        <line key={p.key} x1={S(p.a).x} y1={S(p.a).y} x2={S(p.b).x} y2={S(p.b).y} stroke={p.colour}
-          strokeWidth={p.weight === 'major' ? 1.6 : 1.1} strokeDasharray={p.dash} />
-      ))}
       {calib && calib.length > 0 && <g stroke="var(--calibrate)" fill="none" strokeWidth={1.6}>
         {calib.length === 2 && <line x1={S(calib[0]).x} y1={S(calib[0]).y} x2={S(calib[1]).x} y2={S(calib[1]).y} strokeDasharray="4 3" />}
         {calib.map((p, i) => <circle key={i} cx={S(p).x} cy={S(p).y} r={6} />)}
       </g>}
+      {fitMarks && fitMarks.length > 0 && <g stroke="var(--calibrate)" fill="none" strokeWidth={1.6}>
+        {fitMarks.map((p, i) => <circle key={i} className="fit-mark-pt" cx={S(p).x} cy={S(p).y} r={6} />)}</g>}
       {prof && <g fill="none" strokeLinejoin="round">
         <path d={d(prof.hard.map(S), true)} stroke={own?.colour ?? 'var(--profile)'} strokeWidth={1.6} strokeDasharray={own?.dash} fill={own?.colour ?? 'var(--profile)'} fillOpacity={0.05} />
         <path d={d(prof.palatal.map(S))} stroke={own?.colour ?? 'var(--profile)'} strokeWidth={1.2} strokeDasharray={own?.dash} />
         <path d={d(prof.soft.map(S))} stroke={own?.colour ?? 'var(--profile-soft)'} strokeWidth={1.3} strokeDasharray={softDash(own?.dash)} />
       </g>}
+      {/* Owner, Nov 2026: selected lines (FH, SN...) are painted AFTER the profilogram so they sit on top of it. */}
+      {planeSegments(registry, pos, state.overlays.planes).map((p) => (
+        <line key={p.key} x1={S(p.a).x} y1={S(p.a).y} x2={S(p.b).x} y2={S(p.b).y} stroke={p.colour}
+          strokeWidth={p.weight === 'major' ? 1.6 : 1.1} strokeDasharray={p.dash} />
+      ))}
       {compare?.map((t) => {
         const cp = profilogramPaths(t.points);
         return (
@@ -140,14 +169,46 @@ export function Overlay({ state, dims, registry, S, mmPerPx, assumedScale, calib
               ? <rect x={s.x - r + 1} y={s.y - r + 1} width={2 * r - 2} height={2 * r - 2} fill={col} stroke="var(--on-fill)" strokeWidth={1.5} />
               : <circle cx={s.x} cy={s.y} r={r} fill="none" stroke={col} strokeWidth={2} />}
             {active && <circle cx={s.x} cy={s.y} r={r + 4} fill="none" stroke="var(--on-fill)" strokeWidth={1.5} />}
+            {state.picked.includes(id) && <circle className="picked" cx={s.x} cy={s.y} r={r + 7} fill="none" stroke="var(--link)" strokeWidth={1.5} strokeDasharray="3 2" />}
             <text x={s.x + 10} y={s.y - 10} fill={col} className={paper ? 'label paper' : 'label'}>{id}</text>
+            {checks?.[id] && checkMark(id, s)}
           </g>
         );
       })}
+      {ruler && <g className="ruler-marks" stroke="var(--calibrate)" strokeWidth={2} fill="none">
+        {[ruler.p1, ruler.p2].map((m, i) => { const s = S(m);
+          return <path key={i} className="ruler-mark" data-i={i} d={`M${s.x - 7} ${s.y}H${s.x + 7}M${s.x} ${s.y - 7}V${s.y + 7}`} />; })}
+      </g>}
+      {checkHover && checks?.[checkHover] && state.points[checkHover] && (() => {
+        const f = checks[checkHover], p = state.points[checkHover], s = S(p);
+        // The ring is the stored ellipse (film px) taken through S: its centre, radii and turn follow the film's zoom,
+        // mirror and rotation. Screen turn = the major axis's direction after S, kept in (-90, 90].
+        const c = f.ring ?? (f.expectedX != null && f.expectedY != null ? { cx: f.expectedX, cy: f.expectedY, rx: 0, ry: 0, angleDeg: 0 } : null);
+        if (!c) return null;
+        const o = S({ x: c.cx, y: c.cy }), a = (c.angleDeg * Math.PI) / 180;
+        const u = S({ x: c.cx + Math.cos(a), y: c.cy + Math.sin(a) });
+        const k = Math.hypot(S({ x: c.cx + 1, y: c.cy }).x - o.x, S({ x: c.cx + 1, y: c.cy }).y - o.y);
+        let turn = (Math.atan2(u.y - o.y, u.x - o.x) * 180) / Math.PI;
+        if (turn > 90) turn -= 180; else if (turn <= -90) turn += 180;
+        turn = Math.round(turn * 1e4) / 1e4;
+        // The words use the mark as stored: the model's own point when the pin has been moved since (the flag is about its mark).
+        const at = p.ai ?? p;
+        const text = hoverText(f, mmPerPx, assumedScale, at, state.orientation.mirror);
+        const w = 360, h = 90, { x, y: cardY } = cardPlace(s.x, s.y, w, h, stageW, stageH);   // inside the stage on every edge
+        return (
+          <g className="check-hover" data-id={checkHover}>
+            {f.ring && <ellipse className="check-ring" cx={o.x} cy={o.y} rx={c.rx * k} ry={c.ry * k} transform={`rotate(${turn} ${o.x} ${o.y})`}
+              fill="none" stroke="var(--warn)" strokeWidth={1.6} strokeDasharray="5 3" />}
+            <foreignObject x={x} y={cardY} width={w} height={h} style={{ overflow: 'visible' }}>
+              <div className="ghost-hover-label check-hover-label" style={{ whiteSpace: 'normal', maxWidth: w }}>{text}</div>
+            </foreignObject>
+          </g>
+        );
+      })()}
       {activeHover && hoverGhost && hoverPoint && (() => {
         const s = S(hoverPoint), placed = state.points[activeHover.id];
         const name = LANDMARKS[activeHover.id as LandmarkId]?.name;
-        const text = ghostLabel(hoverGhost.title, hoverPoint, placed, mmPerPx, activeHover.id, name, assumedScale, decimals);
+        const text = ghostLabel(hoverGhost.titles?.[activeHover.id] ?? hoverGhost.title, hoverPoint, placed, mmPerPx, activeHover.id, name, assumedScale, decimals);
         const lineColour = `var(--ghost-${hoverGhost.shade})`;
         // L: flip to the left when the MEASURED width would run off the stage's right edge, then clamp to BOTH
         // edges — a flip alone is not enough near the left edge, where flipping left would run off there instead.

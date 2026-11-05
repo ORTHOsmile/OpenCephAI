@@ -1,13 +1,16 @@
 import { describe, expect, it } from 'vitest';
 import { CHOOSE_LABELS, type ChooseField } from './choose';
-import { CHOOSE_TO_DETAIL, FILM_CHOICES, fresh, importDay, reread, savedChoices, valueFor, visibleChoices,
+import { CHOOSE_TO_DETAIL, chooserChoices, FILM_CHOICES, fresh, importDay, notesAfterReread, notesAfterRemove, waitingAfterReread, reread, savedChoices, valueFor, visibleChoices,
   type FilmChoice, type FilmDetail, type FilmRow } from './filmTable';
+import { docOf } from './fixtures';
+import { toEdit } from './persist';
+import { initialTracing } from '../tracing/state';
 
 // Synthetic label lines only (no patient data).
 const LINES = ['Demo Radiology Northside', 'DEMO, Synthetic', 'M, Y34', 'DOB 07/03/1990 SYNTHETIC', 'PID 5566', 'Se: Feb 07, 2024 01:36 PM', 'Ref: Dr Demo'];
 // S7 (preflight rulings): the CaseDoc field is `printedPatientId`, not `patientId` — the drop-down/table value stays `patientId`.
 const NOTHING = { patientName: '', dateOfBirth: null, takenOn: null, scanId: null, gender: null, referringPractitioner: null,
-  printedPatientId: null, xrayType: null, xraySize: null, radiographyPractice: null };
+  printedPatientId: null, xrayType: null, xraySize: null, radiographyPractice: null, title: null, ageOnFilm: null };
 
 describe('valueFor: what choosing a detail for a line fills', () => {
   it('fills each detail by the same rules as Choose on the film', () => {
@@ -153,14 +156,114 @@ describe('the new details (spec 2026-10-17)', () => {
 });
 
 describe('the box words (owner Q12): FILM_CHOICES, the drop-down and Choose on the film agree', () => {
-  it('uses the box words everywhere (owner Q12)', () => {
-    expect(FILM_CHOICES.map((c) => c.label)).toEqual(['—', 'Full name', 'Last name', 'First name(s)', 'DOB', 'Film date', 'Scan ID',
-      'Patient ID', 'X-ray type', 'X-ray dimensions', 'Radiography practice', 'Referring practitioner', 'Gender']);
+  it('one list, in the owner\'s order (E, 19 Oct; Title and Age join with format 13)', () => {
+    expect(FILM_CHOICES.map((c) => c.label)).toEqual(['—', 'Title', 'Full name', 'Last name', 'First name(s)', 'DOB', 'Age', 'Gender', 'Film date',
+      'Scan ID', 'Patient ID', 'X-ray type', 'X-ray dimensions', 'Radiography practice', 'Referring practitioner']);
     for (const [f, d] of Object.entries(CHOOSE_TO_DETAIL)) expect(FILM_CHOICES.find((c) => c.value === d)!.label, f).toBe(CHOOSE_LABELS[f as ChooseField]);
+  });
+  it('the chooser on the X-ray offers the same list, without "—"', () => {
+    expect(chooserChoices(new Set(), null)).toEqual(FILM_CHOICES.filter((c) => c.value !== 'none'));
+    expect(chooserChoices(new Set(['gender', 'name']), null).map((c) => c.value)).not.toContain('gender');
+    expect(chooserChoices(new Set(['gender', 'name']), null).map((c) => c.value)).not.toContain('name');
+    expect(chooserChoices(new Set(FILM_CHOICES.map((c) => c.value).filter((v) => v !== 'none') as FilmDetail[]), null)).toEqual([]);
+  });
+  it('from a Pick button, only that detail — even when switched off', () => {
+    expect(chooserChoices(new Set(), 'dob').map((c) => c.label)).toEqual(['DOB']);
+    expect(chooserChoices(new Set(['dob']), 'dob').map((c) => c.label)).toEqual(['DOB']);
   });
   it('switching Full name off hides exactly the Full name choice', () => {
     const shown = visibleChoices(new Set(['name']), 'none').map((c) => c.label);
     expect(shown).not.toContain('Full name');
     expect(shown).toEqual(expect.arrayContaining(['Last name', 'First name(s)']));
+  });
+});
+
+describe('Title in the one list (owner T1)', () => {
+  it('Title comes first after "—"; the list is the owner\'s order so far', () => {
+    expect(FILM_CHOICES.slice(0, 3).map((c) => c.label)).toEqual(['—', 'Title', 'Full name']);
+  });
+  it('reads a title line as printed, refuses anything else with the owner\'s words', () => {
+    expect(valueFor('title', 'Mrs.', 'AU')).toEqual({ value: 'Mrs.' });
+    expect(valueFor('title', 'Sir', 'AU')).toEqual({ note: "That isn't a title (Mr, Mrs, Ms, Miss, Master, Dr…)" });
+  });
+  it('a saved title shows on its line; a saved name shows on its line even when the line starts with the title', () => {
+    const lines = ['MR JOHN DEMO', 'Mr', 'other'];
+    const doc = { ...docOf(toEdit('c1', 'right', initialTracing)), patientName: 'John Demo', title: 'Mr' };
+    expect(savedChoices(lines, doc, 'AU')).toEqual(['name', 'title', 'none']);
+  });
+});
+
+describe('Age in the one list (owner AG1)', () => {
+  it('Age comes after DOB', () => {
+    const labels = FILM_CHOICES.map((c) => c.label);
+    expect(labels.slice(labels.indexOf('DOB'), labels.indexOf('DOB') + 3)).toEqual(['DOB', 'Age', 'Gender']);
+    expect(labels).toEqual(['—', 'Title', 'Full name', 'Last name', 'First name(s)', 'DOB', 'Age', 'Gender', 'Film date', 'Scan ID',
+      'Patient ID', 'X-ray type', 'X-ray dimensions', 'Radiography practice', 'Referring practitioner']);   // the spec's whole list
+  });
+  it('reads an age line as printed; refuses "000Y" with the owner\'s words', () => {
+    expect(valueFor('age', 'Age: 011Y', 'AU')).toEqual({ value: '011Y' });
+    expect(valueFor('age', '000Y', 'AU')).toEqual({ note: "That isn't an age" });
+  });
+  it('a saved age shows on its line', () => {
+    const doc = { ...docOf(toEdit('c1', 'right', initialTracing)), ageOnFilm: '011Y', ageOnFilmYears: 11 };
+    expect(savedChoices(['x', 'Age: 011Y'], doc, 'AU')).toEqual(['none', 'age']);
+  });
+});
+
+describe('notes follow their rows', () => {
+  it('a note under an edited row that stays in place survives a re-read', () => {
+    const prev = [{ original: 'NAME SYNTHETIC', text: 'NAME SYNTHETIC X' }, { original: 'DOB 01/01/2000 SYNTHETIC', text: 'DOB 01/01/2000 SYNTHETIC' }];
+    const next = reread(prev, ['NAME SYNTHETIC', 'DOB 01/01/2000 SYNTHETIC']);
+    expect(notesAfterReread(prev, next, { 0: 'warn' })).toEqual({ 0: 'warn' });
+  });
+  it('no notes gives no notes', () => {
+    const prev = [{ original: 'A', text: 'A2' }];
+    expect(notesAfterReread(prev, reread(prev, ['A']), {})).toEqual({});
+  });
+  it('a note under an unedited row goes', () => {
+    const prev = [{ original: 'A', text: 'A' }];
+    expect(notesAfterReread(prev, reread(prev, ['A']), { 0: 'warn' })).toEqual({});
+  });
+  it('a note under an edited row whose line vanished follows it to the end', () => {
+    const prev = [{ original: 'A', text: 'A2' }, { original: 'B', text: 'B' }];
+    const next = reread(prev, ['B', 'C']);
+    expect(notesAfterReread(prev, next, { 0: 'warn' })).toEqual({ 2: 'warn' });
+  });
+  it('two edited rows with the same original: each note follows its own row', () => {
+    const prev = [{ original: 'X', text: 'X1' }, { original: 'X', text: 'X2' }];
+    const next = reread(prev, ['Z', 'X', 'X']);
+    expect(next.map((r) => r.text)).toEqual(['Z', 'X1', 'X2']);
+    expect(notesAfterReread(prev, next, { 0: 'one', 1: 'two' })).toEqual({ 1: 'one', 2: 'two' });
+  });
+  it('two edited rows with the same original, only one line left: the second goes to the end with its note', () => {
+    const prev = [{ original: 'X', text: 'X1' }, { original: 'X', text: 'X2' }];
+    const next = reread(prev, ['X']);
+    expect(notesAfterReread(prev, next, { 0: 'one', 1: 'two' })).toEqual({ 0: 'one', 1: 'two' });
+  });
+  it('removing a row moves the notes below it up by one', () => {
+    expect(notesAfterRemove({ 1: 'one', 2: 'two', 4: 'four' }, 2)).toEqual({ 1: 'one', 3: 'four' });
+  });
+  it('removing the last row just drops its note', () => {
+    expect(notesAfterRemove({ 0: 'a', 2: 'c' }, 2)).toEqual({ 0: 'a' });
+  });
+  it('removing a row with no notes changes nothing', () => {
+    expect(notesAfterRemove({}, 0)).toEqual({});
+  });
+});
+
+describe('the row waiting for "Now choose the ..." follows its row', () => {
+  const prev = [{ original: 'A', text: 'A2' }, { original: 'B', text: 'B2' }];
+  it('a re-read that swaps the two edited rows moves waiting with its row', () => {
+    const next = reread(prev, ['B', 'A']);
+    expect(waitingAfterReread(prev, next, 1)).toBe(0);
+    expect(waitingAfterReread(prev, next, 0)).toBe(1);
+  });
+  it('nothing waiting stays nothing', () => { expect(waitingAfterReread(prev, reread(prev, ['A', 'B']), null)).toBeNull(); });
+  it('a waiting row that was unedited is cleared', () => {
+    const p2 = [{ original: 'A', text: 'A' }];
+    expect(waitingAfterReread(p2, reread(p2, ['A']), 0)).toBeNull();
+  });
+  it('a waiting edited row whose line vanished follows it to the end', () => {
+    expect(waitingAfterReread(prev, reread(prev, ['B']), 0)).toBe(1);
   });
 });

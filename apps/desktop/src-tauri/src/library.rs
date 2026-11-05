@@ -1,5 +1,5 @@
 //! Library commands: thin wrappers over ceph_store::Library, run off the UI thread. Patient data stays in the app data folder.
-use ceph_store::{AiRun, CaseDoc, CaseEdit, CaseMeta, CaseSummary, IdentityOutcome, IdentityRead, Imported, Library, PatientRef, Saved, UserNorm};
+use ceph_store::{AiRun, CaseDoc, CaseEdit, CaseMeta, CaseSummary, FitSave, IdentityOutcome, IdentityRead, Imported, Library, PatientRef, Saved, UserNorm};
 use std::{path::{Path, PathBuf}, sync::{Arc, Mutex}};
 use tauri::Manager;
 
@@ -24,18 +24,20 @@ fn identity_read(f: ceph_label::LabelFields) -> IdentityRead {
 }
 
 /// A setting read synchronously (for start-up lookups); None if unset or the library can't be opened.
-pub fn setting(app: &tauri::AppHandle, key: &str) -> Option<String> {
-    let (st, root) = (app.state::<LibState>().0.clone(), root(app).ok()?);
+pub fn setting(app: &tauri::AppHandle, key: &str) -> Option<String> { setting_at(&app.state::<LibState>().0, &root(app).ok()?, key) }
+fn setting_at(st: &Mutex<Option<Library>>, root: &Path, key: &str) -> Option<String> {
     let mut g = st.lock().ok()?;
-    if g.is_none() { *g = open_library(&root).ok(); }
+    if g.is_none() { *g = open_library(root).ok(); }
     g.as_ref()?.setting(key).ok().flatten().filter(|v| !v.trim().is_empty())
 }
 /// Best-effort synchronous setting write (a failure only means it isn't remembered).
 pub fn set_setting(app: &tauri::AppHandle, key: &str, value: &str) {
     let Ok(root) = root(app) else { return };
-    let st = app.state::<LibState>().0.clone();
+    set_setting_at(&app.state::<LibState>().0, &root, key, value)
+}
+fn set_setting_at(st: &Mutex<Option<Library>>, root: &Path, key: &str, value: &str) {
     let Ok(mut g) = st.lock() else { return };
-    if g.is_none() { *g = open_library(&root).ok(); }
+    if g.is_none() { *g = open_library(root).ok(); }
     if let Some(lib) = g.as_mut() { lib.set_setting(key, value).ok(); }
 }
 
@@ -66,25 +68,47 @@ pub async fn accept_licence(app: &tauri::AppHandle, id: &str, version: &str) -> 
 }
 
 /// Runs `f` on the library (opened on first use) on a blocking thread; errors become user-facing strings.
-async fn with<T: Send + 'static>(app: &tauri::AppHandle, f: impl FnOnce(&mut Library, &str) -> anyhow::Result<T> + Send + 'static) -> Result<T, String> {
+pub(crate) async fn with<T: Send + 'static>(app: &tauri::AppHandle, f: impl FnOnce(&mut Library, &str) -> anyhow::Result<T> + Send + 'static) -> Result<T, String> {
     let (st, root) = (app.state::<LibState>().0.clone(), root(app)?);
-    tauri::async_runtime::spawn_blocking(move || {
-        let mut g = st.lock().map_err(|_| "the library is unavailable after an earlier failure; restart OpenCephAI".to_string())?;
-        if g.is_none() { *g = Some(open_library(&root).map_err(|e| format!("{e:#}"))?); }
-        let lib = g.as_mut().expect("opened above");
-        let op = operator(lib);
-        f(lib, &op).map_err(|e| format!("{e:#}"))
-    }).await.map_err(|e| e.to_string())?
+    tauri::async_runtime::spawn_blocking(move || with_at(&st, &root, f)).await.map_err(|e| e.to_string())?
+}
+/// `with`'s body, on the calling thread.
+pub(crate) fn with_at<T>(st: &Mutex<Option<Library>>, root: &Path, f: impl FnOnce(&mut Library, &str) -> anyhow::Result<T>) -> Result<T, String> {
+    let mut g = st.lock().map_err(|_| "the library is unavailable after an earlier failure; restart OpenCephAI".to_string())?;
+    if g.is_none() { *g = Some(open_library(root).map_err(|e| format!("{e:#}"))?); }
+    let lib = g.as_mut().expect("opened above");
+    let op = operator(lib);
+    f(lib, &op).map_err(|e| format!("{e:#}"))
+}
+
+/// The library, opened if it is not yet. Part F's background weights check holds it only while it reads a film or
+/// records one, never while a model runs.
+pub(crate) fn shared(app: &tauri::AppHandle) -> Result<Arc<Mutex<Option<Library>>>, String> {
+    let (st, root) = (app.state::<LibState>().0.clone(), root(app)?);
+    shared_at(&st, &root)?;
+    Ok(st)
+}
+/// `shared`'s opening step.
+fn shared_at(st: &Mutex<Option<Library>>, root: &Path) -> Result<(), String> {
+    let mut g = st.lock().map_err(|_| "the library is unavailable after an earlier failure; restart OpenCephAI".to_string())?;
+    if g.is_none() { *g = Some(open_library(root).map_err(|e| format!("{e:#}"))?); }
+    Ok(())
 }
 
 #[tauri::command] pub async fn library_list(app: tauri::AppHandle, deleted: bool) -> Result<Vec<CaseSummary>, String> { with(&app, move |l, _| l.list(deleted)).await }
 #[tauri::command] pub async fn library_import(app: tauri::AppHandle, path: String) -> Result<Imported, String> { with(&app, move |l, _| l.import(Path::new(&path))).await }
 #[tauri::command] pub async fn library_open(app: tauri::AppHandle, case_id: String) -> Result<CaseDoc, String> { with(&app, move |l, _| l.load(&case_id)).await }
+/// Part F Task 13: each AI point's model file (fingerprint), for the points CSV's `model_file`.
+#[tauri::command] pub async fn library_point_files(app: tauri::AppHandle, case_id: String) -> Result<std::collections::BTreeMap<String, String>, String> {
+    with(&app, move |l, _| { let (doc, history) = (l.load(&case_id)?, l.ai_run_history(&case_id)?); Ok(crate::learning::point_files(&doc, &history)) }).await
+}
 // Every write that can change what the learning record holds (a point, its verification, a model run, the ruler) is
 // followed by `learn_or_log`, which never fails the write (spec 2026-10-13 "Parked" P5, preflight c8).
 /// A save, then the learning record (which never fails the save).
 pub(crate) fn save_and_learn(l: &mut Library, edit: &CaseEdit, op: &str) -> anyhow::Result<Saved> {
+    let before = crate::point_check::verified_before(l, &edit.id);   // Stage A: which points were already verified
     let s = l.save(edit, op)?;
+    crate::point_check::resolve_on_save_or_log(l, &edit.id, op, before.as_ref());   // Stage A: looking at a flagged point on its own resolves its flag (never fails the save)
     crate::learning::learn_or_log(l, &edit.id, op);
     Ok(s)
 }
@@ -94,9 +118,14 @@ pub(crate) fn save_ai_if_untraced_and_learn(l: &mut Library, edit: &CaseEdit, op
     if done { crate::learning::learn_or_log(l, &edit.id, op); }
     Ok(done)
 }
-/// A model run; a run recorded after you verified a point adds that model's row.
-pub(crate) fn record_ai_and_learn(l: &mut Library, case_id: &str, run: &AiRun, points: &[ceph_store::AiPoint], op: &str) -> anyhow::Result<()> {
-    l.record_ai_run(case_id, run, points)?;
+/// A model run; a run recorded after you verified a point adds that model's row. The new run is checked once (Stage A′,
+/// flag-only; a failed check is logged and never fails the run).
+pub(crate) fn record_ai_and_learn(l: &mut Library, case_id: &str, run: &AiRun, points: &[ceph_store::AiPoint], st: &crate::point_check::PointCheckState, op: &str) -> anyhow::Result<()> {
+    record_ai_and_learn_fresh(l, case_id, run, points, st, op, &[])
+}
+pub(crate) fn record_ai_and_learn_fresh(l: &mut Library, case_id: &str, run: &AiRun, points: &[ceph_store::AiPoint], st: &crate::point_check::PointCheckState, op: &str, fresh: &[String]) -> anyhow::Result<()> {
+    let id = l.record_ai_run(case_id, run, points)?;
+    crate::point_check::check_run_or_log_fresh(l, case_id, id, &run.model_id, st, fresh);
     crate::learning::learn_or_log(l, case_id, op);
     Ok(())
 }
@@ -112,11 +141,22 @@ pub(crate) fn calibrate_and_learn(l: &mut Library, case_id: &str, p1: (f64, f64)
     crate::learning::learn_or_log(l, case_id, op);
     Ok(s)
 }
+/// Spec 2026-10-19 Addendum 3: a fine-tune press (or its ⌘Z), stored like a calibration; the learning record's mm follow.
+pub(crate) fn recalibrate_and_learn(l: &mut Library, case_id: &str, p1: (f64, f64), p2: (f64, f64), mm: f64, steps: i64, op: &str) -> anyhow::Result<f64> {
+    let s = l.recalibrate(case_id, p1, p2, mm, steps, op)?;
+    crate::learning::learn_or_log(l, case_id, op);
+    Ok(s)
+}
 
 #[tauri::command] pub async fn library_save(app: tauri::AppHandle, edit: CaseEdit) -> Result<Saved, String> { with(&app, move |l, op| save_and_learn(l, &edit, op)).await }
 #[tauri::command] pub async fn library_save_ai_if_untraced(app: tauri::AppHandle, edit: CaseEdit) -> Result<bool, String> { with(&app, move |l, op| save_ai_if_untraced_and_learn(l, &edit, op)).await }
-#[tauri::command] pub async fn library_record_ai(app: tauri::AppHandle, case_id: String, run: AiRun, points: Vec<ceph_store::AiPoint>) -> Result<(), String> {
-    with(&app, move |l, op| record_ai_and_learn(l, &case_id, &run, &points, op)).await
+/// `fresh`: the pins this run's detection has just replaced on the screen (Replace all), so no earlier look is carried to
+/// them (re-review N1). Absent or empty for a run that replaced no verified pin.
+#[tauri::command] pub async fn library_record_ai(app: tauri::AppHandle, case_id: String, run: AiRun, points: Vec<ceph_store::AiPoint>, fresh: Option<Vec<String>>) -> Result<(), String> {
+    // The loaded Arc, moved into the closure. A load that fails is "not set up" for this run, never a failed run (review M2).
+    let st = crate::point_check::PointCheckState::with(crate::point_check::loaded(&app).await.unwrap_or_else(|e| { eprintln!("Point check not set up: {e}"); None }));
+    let fresh = fresh.unwrap_or_default();
+    with(&app, move |l, op| record_ai_and_learn_fresh(l, &case_id, &run, &points, &st, op, &fresh)).await
 }
 #[tauri::command] pub async fn library_ghosts(app: tauri::AppHandle, case_id: String) -> Result<Vec<ceph_store::ModelPoints>, String> {
     with(&app, move |l, _| l.latest_ai_points(&case_id)).await
@@ -153,6 +193,11 @@ pub struct Operators { current: String, names: Vec<String> }
 #[tauri::command] pub async fn library_set_patient_gender(app: tauri::AppHandle, case_id: String, gender: Option<String>) -> Result<(), String> {
     with(&app, move |l, _| l.set_patient_gender(&case_id, gender.as_deref())).await
 }
+/// Background (spec 2026-10-29 §4.1): saved on the patient; never teaches the machine and is never exported. A
+/// single-field save (see `library_set_patient_gender`).
+#[tauri::command] pub async fn library_set_patient_background(app: tauri::AppHandle, case_id: String, background: Option<String>) -> Result<(), String> {
+    with(&app, move |l, _| l.set_patient_background(&case_id, background.as_deref())).await
+}
 /// Referring practitioner (spec 2026-10-04): saved on the patient; never teaches the machine. A single-field save
 /// (see `library_set_patient_gender`).
 #[tauri::command] pub async fn library_set_patient_referrer(app: tauri::AppHandle, case_id: String, referring_practitioner: Option<String>) -> Result<(), String> {
@@ -166,6 +211,14 @@ pub struct Operators { current: String, names: Vec<String> }
 /// X-ray type, X-ray dimensions or Radiography practice ("xray_type", "xray_size", "practice"), on this film; single-field.
 #[tauri::command] pub async fn library_set_film_detail(app: tauri::AppHandle, case_id: String, field: String, value: Option<String>) -> Result<(), String> {
     with(&app, move |l, _| l.set_film_detail(&case_id, &field, value.as_deref())).await
+}
+/// Title (spec 2026-10-19, owner T1): saved on the patient; a single-field save.
+#[tauri::command] pub async fn library_set_patient_title(app: tauri::AppHandle, case_id: String, title: Option<String>) -> Result<(), String> {
+    with(&app, move |l, _| l.set_patient_title(&case_id, title.as_deref())).await
+}
+/// The age on this film (spec 2026-10-19, owner AG1): as printed and in years, both or neither; a single-field save.
+#[tauri::command] pub async fn library_set_film_age(app: tauri::AppHandle, case_id: String, printed: Option<String>, years: Option<f64>) -> Result<(), String> {
+    with(&app, move |l, _| l.set_film_age(&case_id, printed.as_deref(), years)).await
 }
 /// "Not the same" on a Patient ID link suggestion (addendum D2, LIBID-1): remembered for this X-ray and that
 /// patient's Library ID only.
@@ -224,8 +277,7 @@ fn learned_read(lines: &[ceph_label::TextLine], places: &[ceph_store::Place], or
 /// Where a confirmed value is printed: the shortest run of words on one line (up to 6) that reads as that value (names by
 /// name key, dates and IDs by the field's own reading, either day/month order) — its own words, not the label before it,
 /// so choosing and confirming teach the same place (final review I3).
-fn find_value(lines: &[ceph_label::TextLine], field: &str, value: &str) -> Option<(usize, usize, usize)> {
-    let today = ceph_label::Ymd { y: 9999, m: 12, d: 31 };
+fn find_value(lines: &[ceph_label::TextLine], field: &str, value: &str, today: ceph_label::Ymd) -> Option<(usize, usize, usize)> {
     let key = ceph_store::identity::name_key(value);
     let reads = |text: &str| match field {
         "last" | "first" | "full" => !key.is_empty() && ceph_store::identity::name_key(text.trim_end_matches(',')) == key,
@@ -393,7 +445,9 @@ pub struct FilmTextOut { lines: Vec<LineOut>, suggestions: Vec<Suggestion> }
 /// machine where. Returns whether it was found.
 #[tauri::command] pub async fn library_learn_value(app: tauri::AppHandle, case_id: String, field: String, value: String) -> Result<bool, String> {
     let lines = remembered(&app, &case_id);
-    let Some((i, from, to)) = find_value(&lines, &field, &value) else { return Ok(false) };
+    // The real local date, so a two-digit year is completed the way the label reader completes it.
+    let (_, _, today) = film_context(&app, case_id.clone()).await?;
+    let Some((i, from, to)) = find_value(&lines, &field, &value, today) else { return Ok(false) };
     let l = lines[i].clone();
     with(&app, move |lib, _| {
         let Some(rule) = ceph_label::layout::rule_from_selection(&l, from, to, &field, &known(&lib.anchor_tokens(&case_id)?)) else { return Ok(false) };
@@ -415,6 +469,22 @@ async fn after_confirm(app: &tauri::AppHandle, case_id: String) {
 #[tauri::command] pub async fn library_rename_machine(app: tauri::AppHandle, id: String, name: String) -> Result<(), String> { with(&app, move |l, _| l.rename_machine(&id, &name)).await }
 #[tauri::command] pub async fn library_reset_machine(app: tauri::AppHandle, id: String) -> Result<(), String> { with(&app, move |l, _| l.reset_machine(&id)).await }
 #[tauri::command] pub async fn library_delete_machine(app: tauri::AppHandle, id: String) -> Result<(), String> { with(&app, move |l, _| l.delete_machine(&id)).await }
+/// Spec 2026-10-20 MS1: "Use for this machine" — the open film's ruler and size, for its machine.
+#[tauri::command] pub async fn library_machine_scale_from_film(app: tauri::AppHandle, case_id: String) -> Result<(String, ceph_store::MachineScaleRow), String> {
+    with(&app, move |l, _| l.machine_scale_from_film(&case_id)).await
+}
+/// MS4: what a change would do (the warning's count); `row` None = remove.
+#[tauri::command] pub async fn library_machine_scale_change(app: tauri::AppHandle, machine_id: String, row: Option<ceph_store::MachineScaleRow>) -> Result<ceph_store::ScaleChange, String> {
+    with(&app, move |l, _| l.machine_scale_change(&machine_id, row.as_ref())).await
+}
+/// MS1/MS4: set, change or remove; clears Tracing verified on exactly the films it changes.
+#[tauri::command] pub async fn library_set_machine_scale(app: tauri::AppHandle, machine_id: String, row: Option<ceph_store::MachineScaleRow>) -> Result<ceph_store::ScaleChange, String> {
+    with(&app, move |l, _| l.set_machine_scale(&machine_id, row.as_ref())).await
+}
+/// MS4: what deleting a machine would change (its scale goes with it).
+#[tauri::command] pub async fn library_machine_delete_change(app: tauri::AppHandle, id: String) -> Result<ceph_store::ScaleChange, String> {
+    with(&app, move |l, _| l.machine_delete_change(&id)).await
+}
 #[tauri::command] pub async fn library_confirm_identity(app: tauri::AppHandle, case_id: String, same_as: Option<PatientRef>) -> Result<(), String> {
     let id = case_id.clone();
     with(&app, move |l, _| l.confirm_identity(&id, same_as.as_ref())).await?;
@@ -433,9 +503,24 @@ async fn after_confirm(app: &tauri::AppHandle, case_id: String) {
 #[tauri::command] pub async fn library_set_in_series(app: tauri::AppHandle, case_id: String, on: bool) -> Result<(), String> {
     with(&app, move |l, _| l.set_in_series(&case_id, on)).await
 }
+/// Request G (format 12): "Save fit", "Reset" and "Use the scale from the fit" for one film (ceph_store::fits).
+#[tauri::command] pub async fn library_save_fit(app: tauri::AppHandle, case_id: String, fit: FitSave) -> Result<(), String> {
+    with(&app, move |l, op| l.save_fit(&case_id, &fit, op)).await
+}
+#[tauri::command] pub async fn library_clear_fit(app: tauri::AppHandle, case_id: String) -> Result<(), String> { with(&app, move |l, _| l.clear_fit(&case_id)).await }
+#[tauri::command] pub async fn library_set_fit_own(app: tauri::AppHandle, case_id: String, on: bool) -> Result<(), String> {
+    with(&app, move |l, _| l.set_fit_own(&case_id, on)).await
+}
 #[tauri::command] pub async fn library_set_verified(app: tauri::AppHandle, case_id: String, verified: bool) -> Result<(), String> { with(&app, move |l, op| set_verified_and_learn(l, &case_id, verified, op)).await }
 #[tauri::command] pub async fn library_calibrate(app: tauri::AppHandle, case_id: String, p1: [f64; 2], p2: [f64; 2], mm: f64) -> Result<f64, String> {
     with(&app, move |l, op| calibrate_and_learn(l, &case_id, (p1[0], p1[1]), (p2[0], p2[1]), mm, op)).await
+}
+#[tauri::command] pub async fn library_recalibrate(app: tauri::AppHandle, case_id: String, p1: [f64; 2], p2: [f64; 2], mm: f64, steps: i64) -> Result<f64, String> {
+    with(&app, move |l, op| recalibrate_and_learn(l, &case_id, (p1[0], p1[1]), (p2[0], p2[1]), mm, steps, op)).await
+}
+/// Spec 2026-10-19 (F): the ruler marks behind the open case's current scale, or none.
+#[tauri::command] pub async fn library_ruler(app: tauri::AppHandle, case_id: String) -> Result<Option<ceph_store::RulerMarks>, String> {
+    with(&app, move |l, _| l.ruler(&case_id)).await
 }
 #[tauri::command] pub async fn library_delete(app: tauri::AppHandle, case_id: String) -> Result<(), String> { with(&app, move |l, _| l.delete(&case_id)).await }
 #[tauri::command] pub async fn library_restore(app: tauri::AppHandle, case_id: String) -> Result<(), String> { with(&app, move |l, _| l.restore(&case_id)).await }
@@ -453,7 +538,15 @@ fn restore_into(st: &Mutex<Option<Library>>, root: &Path, dir: &Path) -> Result<
     *g = None;                                                                // close before the files move
     match Library::restore_backup(root, dir) {
         Ok(lib) => { *g = Some(noting(lib)); Ok(()) }
-        Err(e) => { *g = open_library(root).ok(); Err(format!("{e:#}")) }     // the library was put back: reopen it
+        Err(e) => {
+            // The library was put back: reopen it. But if there is NO database in the folder, the put-back itself failed
+            // The original is in `replaced-<id>/` and opening here would create a new, empty library
+            // over the top of it. Say so instead, and leave the folder alone.
+            if !root.join("library.sqlite3").exists() {
+                return Err(format!("{e:#} The library was not opened, so no empty library was made in its place. Quit OpenCephAI and do not delete anything in {}.", root.display()));
+            }
+            *g = open_library(root).ok(); Err(format!("{e:#}"))
+        }
     }
 }
 #[tauri::command] pub async fn settings_get(app: tauri::AppHandle, key: String) -> Result<Option<String>, String> { with(&app, move |l, _| l.setting(&key)).await }
@@ -474,9 +567,15 @@ fn restore_into(st: &Mutex<Option<Library>>, root: &Path, dir: &Path) -> Result<
 #[tauri::command] pub async fn settings_default_population_set(app: tauri::AppHandle, population: Option<String>) -> Result<(), String> {
     with(&app, move |l, _| l.set_default_population(population.as_deref())).await
 }
+/// Spec 2026-10-29 §4.8: the one-time note after the format-18 upgrade — how many live cases were switched to Auto
+/// (None: nothing to say, or already shown).
+#[tauri::command] pub async fn settings_auto_switch_note(app: tauri::AppHandle) -> Result<Option<i64>, String> { with(&app, |l, _| l.auto_switch_note()).await }
+/// The note was closed: never shown again for this library.
+#[tauri::command] pub async fn settings_auto_switch_note_dismiss(app: tauri::AppHandle) -> Result<(), String> { with(&app, |l, _| l.dismiss_auto_switch_note()).await }
 
 #[cfg(test)]
 mod tests {
+    const TODAY: ceph_label::Ymd = ceph_label::Ymd { y: 2026, m: 11, d: 2 };
     use super::*;
     /// Tests that open an old library share the process-wide `UPGRADE_COPY` note, so they take turns (review Minor 3).
     static NOTE_LOCK: Mutex<()> = Mutex::new(());
@@ -500,7 +599,8 @@ mod tests {
         assert_eq!(library_upgrade_copy_take(), None);
     }
     /// AB-2 (4): File ▸ Restore with a safety copy from upgrade-backups restores it, reopens the library, and (the
-    /// restored database being old) leaves the new copy's folder for the notice.
+    /// restored database being old) leaves the safety copy's folder for the notice. Owner ruling b (2 Nov 2026): the
+    /// restored library is exactly that copy (same rows, same films), so the copy itself is reused, not copied again.
     #[test] fn restoring_an_upgrade_copy_reopens_the_library() {
         let _turn = NOTE_LOCK.lock().unwrap_or_else(|e| e.into_inner());
         let t = tempfile::tempdir().unwrap();
@@ -511,9 +611,56 @@ mod tests {
         let st = Mutex::new(Some(open_library(t.path()).unwrap()));
         restore_into(&st, t.path(), &copy).unwrap();
         assert_eq!(st.lock().unwrap().as_ref().expect("reopened").setting("x").unwrap(), None);
-        let again = library_upgrade_copy_take().expect("the restored schema-7 database was copied before its upgrade");
-        assert_ne!(again, copy.display().to_string());
+        let again = library_upgrade_copy_take().expect("the restored schema-7 database has a safety copy before its upgrade");
+        assert_eq!(again, copy.display().to_string(), "the matching copy is reused (ruling b)");
+        assert_eq!(std::fs::read_dir(t.path().join(ceph_store::UPGRADE_BACKUPS_DIR)).unwrap().count(), 1, "no second full copy");
         assert!(copy.is_dir());
+    }
+    /// When a failed restore could not put the original database back, there is no library file in
+    /// the folder. The app must say so and NOT open a new, empty library there (which would look like data loss).
+    #[test] fn a_failed_restore_with_no_database_in_place_does_not_open_an_empty_library() {
+        let t = tempfile::tempdir().unwrap();
+        let st = Mutex::new(Some(open_library(t.path()).unwrap()));
+        for suffix in ["", "-wal", "-shm"] { std::fs::remove_file(t.path().join(format!("library.sqlite3{suffix}"))).ok(); }   // the state a failed put-back leaves behind
+        let e = restore_into(&st, t.path(), &t.path().join("no-such-backup")).unwrap_err();
+        assert!(!t.path().join("library.sqlite3").exists(), "no empty library was created over the missing one");
+        assert!(st.lock().unwrap().is_none(), "no library is held open");
+        assert!(e.contains("not opened") || e.contains("not open"), "the message says nothing was opened: {e}");
+    }
+    /// Final review C1: after a failed put-back the original database is only in `replaced-<id>/`.
+    /// Every lazy way into the library (`with`, `shared`, `setting`, `set_setting`; the next click, Settings, the
+    /// background weights check) must refuse to open, make no library.sqlite3 (nor -wal / -shm) in its place, and say
+    /// where the original is. The state is made by a real restore, then the restored database removed: what a put-back
+    /// that failed after the swap leaves.
+    #[test] fn after_a_failed_put_back_no_lazy_open_makes_an_empty_library() {
+        let _turn = NOTE_LOCK.lock().unwrap_or_else(|e| e.into_inner());
+        let (t, src, out) = (tempfile::tempdir().unwrap(), tempfile::tempdir().unwrap(), tempfile::tempdir().unwrap());
+        let backup = Library::open(src.path()).unwrap().backup(out.path()).unwrap();
+        let mut orig = open_library(t.path()).unwrap();
+        orig.set_setting("marker", "the original").unwrap();
+        let st = Mutex::new(Some(orig));
+        restore_into(&st, t.path(), &backup).unwrap();
+        *st.lock().unwrap() = None;
+        for suffix in ["", "-wal", "-shm"] { std::fs::remove_file(t.path().join(format!("library.sqlite3{suffix}"))).ok(); }
+        let replaced = std::fs::read_dir(t.path()).unwrap().map(|e| e.unwrap().path())
+            .find(|p| p.file_name().unwrap().to_string_lossy().starts_with("replaced-") && p.join("library.sqlite3").exists())
+            .expect("the original is kept in replaced-<id>/");
+        let none_made = |when: &str| for suffix in ["", "-wal", "-shm"] {
+            assert!(!t.path().join(format!("library.sqlite3{suffix}")).exists(), "{when} made library.sqlite3{suffix} over the missing library");
+        };
+        let names_it = |when: &str, e: &str| assert!(e.contains(&replaced.display().to_string()), "{when}: the error names where the original is: {e}");
+        let e = with_at(&st, t.path(), |l, _| l.list(false)).map(|_| ()).unwrap_err();
+        none_made("with"); names_it("with", &e);
+        let e = shared_at(&st, t.path()).unwrap_err();
+        none_made("shared"); names_it("shared", &e);
+        assert_eq!(setting_at(&st, t.path(), "marker"), None);
+        none_made("setting");
+        set_setting_at(&st, t.path(), "marker", "x");
+        none_made("set_setting");
+        assert!(st.lock().unwrap().is_none(), "no library is held open");
+        // Control: once the original is copied back as the message says, it opens with its own data.
+        std::fs::copy(replaced.join("library.sqlite3"), t.path().join("library.sqlite3")).unwrap();
+        assert_eq!(setting_at(&st, t.path(), "marker").as_deref(), Some("the original"));
     }
     #[test] fn the_picked_operator_is_who_verifies() {
         let (t, src) = (tempfile::tempdir().unwrap(), tempfile::tempdir().unwrap());
@@ -686,8 +833,8 @@ mod tests {
     /// Final review I3: the value's own words, not the label before it, so choosing and confirming teach one place.
     #[test] fn a_value_is_found_as_its_shortest_run_of_words() {
         let lines = vec![l("DOB 07/03/1990 SYNTHETIC", [0.02, 0.11, 0.25, 0.02]), l("Se: Feb 07, 2024 01:36 PM", [0.7, 0.05, 0.28, 0.02])];   // SYNTHETIC
-        assert_eq!(find_value(&lines, "dob", "1990-03-07"), Some((0, 1, 1)));   // SYNTHETIC
-        assert_eq!(find_value(&lines, "film_date", "2024-02-07"), Some((1, 1, 3)));
+        assert_eq!(find_value(&lines, "dob", "1990-03-07", TODAY), Some((0, 1, 1)));   // SYNTHETIC
+        assert_eq!(find_value(&lines, "film_date", "2024-02-07", TODAY), Some((1, 1, 3)));
     }
     /// Final review I4: the line the patient's name is printed on teaches nothing to the machine's pattern.
     #[test] fn the_name_line_never_joins_the_pattern() {
@@ -695,11 +842,22 @@ mod tests {
         let t = confirm_tokens(&lines, "O'Brien, Liam");   // SYNTHETIC
         assert_eq!(t.iter().map(|t| t.token.as_str()).collect::<Vec<_>>(), ["demo", "radiology", "northside"]);
     }
+    /// "today" is the real local date, so a two-digit year is completed against it (a 90s DOB is
+    /// 19yy, a recent one 20yy) instead of against 9999-12-31, which made every two-digit year 20yy and refused it.
+    #[test] fn a_two_digit_year_dob_is_found_against_the_real_date() {
+        let today = ceph_label::Ymd { y: 2026, m: 11, d: 2 };
+        let old = vec![l("DOB 07/03/90 SYNTHETIC", [0.02, 0.11, 0.25, 0.02])];   // SYNTHETIC
+        assert_eq!(find_value(&old, "dob", "1990-03-07", today), Some((0, 1, 1)));   // SYNTHETIC
+        assert_eq!(find_value(&old, "dob", "2090-03-07", today), None, "never the 21st century for a 90");   // SYNTHETIC
+        let recent = vec![l("DOB 07/03/24 SYNTHETIC", [0.02, 0.11, 0.25, 0.02])];   // SYNTHETIC
+        assert_eq!(find_value(&recent, "dob", "2024-03-07", today), Some((0, 1, 1)));   // SYNTHETIC
+        assert_eq!(find_value(&recent, "dob", "1924-03-07", today), None);   // SYNTHETIC
+    }
     #[test] fn a_typed_value_is_found_among_the_words() {
         let lines = vec![l("PID 12345", [0.02, 0.14, 0.12, 0.02]), l("SMITH, John", [0.02, 0.05, 0.3, 0.02])];   // SYNTHETIC
-        assert_eq!(find_value(&lines, "scan_id", "12345"), Some((0, 1, 1)));
-        assert_eq!(find_value(&lines, "full", "Smith, John"), Some((1, 0, 1)));   // SYNTHETIC
-        assert_eq!(find_value(&lines, "full", "Nobody Here"), None);
+        assert_eq!(find_value(&lines, "scan_id", "12345", TODAY), Some((0, 1, 1)));
+        assert_eq!(find_value(&lines, "full", "Smith, John", TODAY), Some((1, 0, 1)));   // SYNTHETIC
+        assert_eq!(find_value(&lines, "full", "Nobody Here", TODAY), None);
     }
     /// D-LEARN-1: the new details come from default places only, beside (not inside) the identity fields. Owner Q6
     /// (addendum 2026-10-17) extends this to Gender and Referring practitioner: default places on "M, Y26" and
@@ -763,9 +921,9 @@ mod tests {
     /// S7: Patient ID is found as a whole word with a digit; practice/xray_type ignore case and spacing.
     #[test] fn a_typed_film_detail_is_found_among_the_words_ignoring_case_and_spacing() {
         let lines = vec![l("Demo Radiology Northside", [0.02, 0.02, 0.3, 0.02]), l("PID 5566", [0.02, 0.14, 0.12, 0.02])];
-        assert_eq!(find_value(&lines, "practice", "demo  radiology northside"), Some((0, 0, 2)));
-        assert_eq!(find_value(&lines, "patient_id", "5566"), Some((1, 1, 1)));
-        assert_eq!(find_value(&lines, "xray_type", "Lateral Ceph"), None, "not on the film: nothing to learn");
+        assert_eq!(find_value(&lines, "practice", "demo  radiology northside", TODAY), Some((0, 0, 2)));
+        assert_eq!(find_value(&lines, "patient_id", "5566", TODAY), Some((1, 1, 1)));
+        assert_eq!(find_value(&lines, "xray_type", "Lateral Ceph", TODAY), None, "not on the film: nothing to learn");
     }
     #[test] fn operator_is_the_setting_then_the_login_name() {
         let t = std::env::temp_dir().join(format!("cephtrace-op-{}", std::process::id()));

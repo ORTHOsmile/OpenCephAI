@@ -96,6 +96,19 @@ impl ModelSpec {
         if let Some(w) = &self.weights { check(&dir.join(&w.file), &w.sha256)?; }
         Ok(())
     }
+    /// This model's fingerprint (`fingerprint`), from the hashes `verify` checks at every load.
+    pub fn fingerprint(&self) -> String { fingerprint(&self.sha256, self.weights.as_ref().map(|w| w.sha256.as_str())) }
+}
+
+/// Which version of a model this is (Part F, owner Q9): the SHA-256 of its one file, or, when its weights sit in a
+/// second file, the SHA-256 of "<network file SHA-256>+<weights file SHA-256>" (lower case), so a new weights file under
+/// the same name changes it. Every run stores this (`Detection.model_sha256`).
+pub fn fingerprint(file_sha256: &str, weights_sha256: Option<&str>) -> String {
+    let f = file_sha256.to_ascii_lowercase();
+    match weights_sha256 {
+        None => f,
+        Some(w) => Sha256::digest(format!("{f}+{}", w.to_ascii_lowercase()).as_bytes()).iter().map(|b| format!("{b:02x}")).collect(),
+    }
 }
 
 /// Streams the file through SHA-256 (weights can be hundreds of MB).
@@ -140,5 +153,17 @@ mod tests {
         assert_eq!(ModelSpec::load(&d.path().join("a.json")).unwrap().id, "hrnet-w32-isbi19");
         let b = ModelSpec::load(&d.path().join("b.json")).unwrap();
         assert_eq!((b.input.layout, b.output.decode, b.landmark_map[1].clone()), (Layout::Cwh, Decode::Argmax, None));
+    }
+    /// Part F Task 3 (owner Q9): the fingerprint covers the weights file, so a new weights file under the same name is
+    /// seen. Values: SRPose's pinned network and weights files (catalog.json, 18 Oct).
+    #[test] fn the_fingerprint_covers_both_files_and_a_one_file_model_keeps_its_hash() {
+        const NET: &str = "61b601aa6194e1142a39e5159fd498611257d82af0c68106bc18cc983228e368";
+        const W: &str = "70fe793b5a70a3bf419f0ab68168d455d3ee9de219ded109968fcd9e6fc5f40c";
+        let srpose = fingerprint(NET, Some(W));
+        assert_eq!(srpose, "09e6d41d36cac80eafc5af2b8d493f8e00203bd50dcb08fd24ca3fd2a8bf08ae");
+        assert_eq!(fingerprint(&NET.to_uppercase(), Some(&W.to_uppercase())), srpose, "case does not matter");
+        assert_ne!(fingerprint(NET, Some(&"0".repeat(64))), srpose, "a new weights file, same network: a new fingerprint");
+        assert_ne!(fingerprint(&"1".repeat(64), Some(W)), srpose, "a new network file, same weights: a new fingerprint");
+        assert_eq!(fingerprint("CACD38", None), "cacd38", "one file: its own hash, as stored before");
     }
 }

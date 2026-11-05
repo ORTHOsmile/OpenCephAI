@@ -4,7 +4,7 @@ import sharedDateCases from '../../../../test-fixtures/label-date-cases.json';
 // relative to THIS FILE (a module specifier is never resolved against process.cwd()), same as sharedDateCases above.
 import detailFields from '../../../../crates/ceph-label/tests/detail_fields.json';
 import {
-  ALL_CHOOSE_FIELDS, CHOOSE_LABELS, DETAIL_FIELDS, DETAIL_MAX, chosenValue, composeName, dateRefusal, dragSel, extendSel,
+  DETAIL_FIELDS, DETAIL_MAX, chosenValue, composeName, dateRefusal, dragSel, extendSel,
   isDetailField, labelMatcher, locate, nameAfterChoosing, selSpans, selText, unsureFields, wordAt,
 } from './choose';
 import { docOf } from './fixtures';
@@ -439,10 +439,6 @@ describe('the new Choose fields (spec 2026-10-17)', () => {
     expect(chosenValue('patient_id', `PID ${id198}`, 'AU')).toBe(id198);
     const id201 = 'x'.repeat(201);
     expect(chosenValue('patient_id', `PID ${id201}`, 'AU')).toBeNull();
-  });
-  it('lists all ten Choose buttons, in order', () => {
-    expect(ALL_CHOOSE_FIELDS.map((f) => CHOOSE_LABELS[f])).toEqual(['Last name', 'First name(s)', 'Full name', 'DOB', 'Film date', 'Scan ID',
-      'Patient ID', 'X-ray type', 'X-ray dimensions', 'Radiography practice']);
   });
   // D3 (preflight rulings): this guard already passes before Task 5's change — the four new ChooseFields are never
   // added to unsureFields, so a blank new detail never forces Choose mode open. See the report for the induced

@@ -69,7 +69,7 @@ const seed = { settings: {}, ops: ['Dr A'], userNorms: [], runs: { 'cwlachap-hrn
           case 'library_label_text': return { lines: [], suggestions: [] };
           case 'library_user_norms': return [];
           case 'operators_list': return { current: 'Dr A', names: db.ops };
-          case 'settings_get': return db.settings[a.key] ?? null;
+          case 'settings_get': return a.key === 'betaNoticeSeen' ? '1' : (db.settings[a.key] ?? null);
           case 'settings_set': db.settings[a.key] = a.value; store(db); return null;
           default: return null;
         }
@@ -104,7 +104,7 @@ const seed = { settings: {}, ops: ['Dr A'], userNorms: [], runs: { 'cwlachap-hrn
   await page.getByRole('tab', { name: 'Landmarks' }).click();
   const oldLine = await page.evaluate(() => {
     const b = [...document.querySelectorAll('.inspector .lm-list button')].find((x) => x.querySelector('b')?.textContent === 'S'); return b ? b.title : ''; });
-  ok('1b. an old case placed by cwlachap says so plainly, with no "better than Aariz" claim', /Placed by cwlachap/.test(oldLine) && !/better/.test(oldLine), oldLine.split(' — ').pop());
+  ok('1b. an old case placed by cwlachap says so plainly, with no "better than Aariz" claim', / — cwlachap$/.test(oldLine) && !/better/.test(oldLine), oldLine.split(' — ').pop());
   // 2. Positive control: Re-detect DOES change the unverified AI points (the instrument can see a change).
   await page.getByRole('tab', { name: 'Case' }).click().catch(() => {});
   await page.getByRole('button', { name: 'Re-detect' }).click();
@@ -115,12 +115,12 @@ const seed = { settings: {}, ops: ['Dr A'], userNorms: [], runs: { 'cwlachap-hrn
   // The S point's hover label in the Landmarks list (check 1 left the Inspector on Measurements; the list item is the
   // button whose bold label is exactly "S" — a "starts with S" match would find the Steps tab).
   await page.getByRole('tab', { name: 'Landmarks' }).click();
-  ok('2. and the point says it was placed by Aariz', /Placed by Aariz/.test(await page.evaluate(() => {
+  ok('2. and the point says it was placed by Aariz', / — Aariz$/.test(await page.evaluate(() => {
     const b = [...document.querySelectorAll('.inspector .lm-list button')].find((x) => x.querySelector('b')?.textContent === 'S'); return b ? b.title : ''; })));
   // 2b. The source line is derived, so it reads the same after closing and reopening (preflight a3).
   await page.reload(); await page.waitForSelector('.library'); await openCase();
   await page.locator('g.landmark[data-id="S"]').click().catch(() => {});
-  ok('2. closed and reopened: the point still says it was placed by Aariz', /Placed by Aariz/.test(await page.locator('.point-about').innerText().catch(() => '')));
+  ok('2. closed and reopened: the point still says it was placed by Aariz', (await page.locator('.point-about .placed-by').innerText().catch(() => '')) === 'Aariz');
   // 4. Aariz fails on a film: today's behaviour, unchanged (spec §5.1 as corrected 13 Oct, preflight e2) — the error is
   // shown, no point is placed or moved, no other model is tried, and Re-detect tries again.
   await page.evaluate(() => { localStorage.setItem('detectFails', '1'); window.__extras = 0; });
@@ -144,7 +144,7 @@ const seed = { settings: {}, ops: ['Dr A'], userNorms: [], runs: { 'cwlachap-hrn
   ok('3. Aariz is marked "recommended" in Models… (not installed here)', /recommended/.test(await page.locator('.model-row[data-id="aariz-cepha29"] .model-head').innerText()));
   ok('3. no other model is marked recommended', !/recommended/.test(await page.locator('.model-row[data-id="cwlachap-hrnet-w32"] .model-head').innerText()));
 
-  // 5. Task 10 (schema 10): "Placed by Aariz" survives closing and reopening from the stored placedBy alone. Control: the
+  // 5. Task 10 (schema 10): the label "Aariz" survives closing and reopening from the stored placedBy alone. Control: the
   // stub returns no runs (library_ghosts -> []), so the exact-match lookup cannot supply the answer.
   await page.evaluate(() => { const db = JSON.parse(localStorage.getItem('fakeLib')); db.runs = {};
     db.cases.c1.landmarks.forEach((l) => { l.placedBy = l.source === 'manual' ? null : 'aariz-cepha29'; }); localStorage.setItem('fakeLib', JSON.stringify(db)); });
@@ -152,9 +152,8 @@ const seed = { settings: {}, ops: ['Dr A'], userNorms: [], runs: { 'cwlachap-hrn
   // Select S from the Landmarks list (the canvas sits over the SVG marks, so a click on g.landmark does not land).
   await page.getByRole('tab', { name: 'Landmarks' }).click();
   await page.locator('.lm-list button', { has: page.locator('b', { hasText: /^S$/ }) }).click();
-  const about5 = await page.locator('.point-about').innerText().catch(() => '');
-  ok('5. reopened with no runs to hand: the source line still reads "Placed by Aariz" from the stored value', /Placed by Aariz/.test(about5),
-    about5.split('\n').find((l) => /Placed/.test(l)) || 'no "Placed" line');
+  const about5 = await page.locator('.point-about .placed-by').innerText().catch(() => '');
+  ok('5. reopened with no runs to hand: the label still reads "Aariz" from the stored value', about5 === 'Aariz', about5 || 'no label');
   // A real save must carry it back: nudge S (it becomes "moved", still placed by Aariz) and read the stored row. Before
   // Task 10 the front end sent no placedBy, so the stub (which stores rows as given) would lose it.
   const sBefore = (await stored()).find((l) => l.id === 'S');

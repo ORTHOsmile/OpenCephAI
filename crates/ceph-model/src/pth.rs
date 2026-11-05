@@ -194,6 +194,10 @@ impl<'a> Vm<'a> {
     }
 }
 
+/// The most bytes one zip entry or legacy storage may hold (2 GiB). The largest catalogue model is 350 MB (`sizeMb` in
+/// `catalog/catalog.json`), so no real model is near it; the cap stops a hostile file claiming terabytes.
+pub const MAX_ENTRY_BYTES: u64 = 2 << 30;
+
 /// The checkpoint's top-level object and each storage's type and bytes, by key.
 type Loaded = (V, BTreeMap<String, (DType, Vec<u8>)>);
 fn load(file: &Path) -> Result<Loaded, PthError> {
@@ -202,23 +206,34 @@ fn load(file: &Path) -> Result<Loaded, PthError> {
     if head == *b"PK\x03\x04" { load_zip(file) } else if head == [0x80, 0x02, 0x8a, 0x0a] { load_legacy(&std::fs::read(file).map_err(fmt_err)?) } else { Err(PthError::NotPyTorch) }
 }
 
-fn load_zip(file: &Path) -> Result<Loaded, PthError> {
+fn load_zip(file: &Path) -> Result<Loaded, PthError> { load_zip_with_cap(file, MAX_ENTRY_BYTES) }
+
+/// One zip entry's bytes. An entry that claims more than `cap` is refused before anything is read; one that claims
+/// less but really holds more is stopped by `take` (the claim in a hostile file is not trusted either way).
+fn read_entry(z: &mut zip::ZipArchive<std::fs::File>, name: &str, cap: u64) -> Result<Vec<u8>, PthError> {
+    let entry = z.by_name(name).map_err(fmt_err)?;
+    if entry.size() > cap { return Err(fmt_err(format!("{name} is too large"))); }
+    let mut out = Vec::new();
+    entry.take(cap.saturating_add(1)).read_to_end(&mut out).map_err(fmt_err)?;
+    if out.len() as u64 > cap { return Err(fmt_err(format!("{name} is too large"))); }
+    Ok(out)
+}
+
+fn load_zip_with_cap(file: &Path, cap: u64) -> Result<Loaded, PthError> {
     let mut z = zip::ZipArchive::new(std::fs::File::open(file).map_err(fmt_err)?).map_err(|_| PthError::NotPyTorch)?;
     let pkl_name = (0..z.len()).filter_map(|i| z.name_for_index(i).map(str::to_string)).find(|n| n.ends_with("data.pkl"))
         .ok_or_else(|| fmt_err("no data.pkl"))?;
     let prefix = pkl_name.trim_end_matches("data.pkl").to_string();
     if let Ok(mut bo) = z.by_name(&format!("{prefix}byteorder")) {
-        let mut s = String::new(); bo.read_to_string(&mut s).ok();
+        let mut s = String::new(); bo.by_ref().take(64).read_to_string(&mut s).ok();
         if s.trim() == "big" { return Err(fmt_err("big-endian files are not supported")); }
     }
-    let mut pkl = Vec::new();
-    z.by_name(&pkl_name).map_err(fmt_err)?.read_to_end(&mut pkl).map_err(fmt_err)?;
+    let pkl = read_entry(&mut z, &pkl_name, cap)?;
     let mut vm = Vm::new(&pkl, 0);
     let top = vm.run()?;
     let mut storages = BTreeMap::new();
     for (key, dtype) in vm.storages {
-        let mut raw = Vec::new();
-        z.by_name(&format!("{prefix}data/{key}")).map_err(fmt_err)?.read_to_end(&mut raw).map_err(fmt_err)?;
+        let raw = read_entry(&mut z, &format!("{prefix}data/{key}"), cap)?;
         storages.insert(key, (dtype, raw));
     }
     Ok((top, storages))
@@ -243,8 +258,8 @@ fn load_legacy(b: &[u8]) -> Result<Loaded, PthError> {
     for k in keys.borrow().iter() {
         let V::Str(key) = k else { return Err(fmt_err("bad storage key")) };
         let dtype = *main.storages.get(key).ok_or_else(|| fmt_err(format!("storage {key} has no type")))?;
-        let n = u64::from_le_bytes(b.get(at..at + 8).ok_or_else(|| fmt_err("truncated storage"))?.try_into().expect("8 bytes")) as usize;
-        let len = n.checked_mul(dtype.size()).ok_or_else(|| fmt_err("storage too large"))?;
+        let n = u64::from_le_bytes(b.get(at..at + 8).ok_or_else(|| fmt_err("truncated storage"))?.try_into().expect("8 bytes"));
+        let len = n.checked_mul(dtype.size() as u64).filter(|l| *l <= MAX_ENTRY_BYTES).ok_or_else(|| fmt_err(format!("storage {key} is too large")))? as usize;
         let data = b.get(at + 8..at + 8 + len).ok_or_else(|| fmt_err("truncated storage"))?.to_vec();
         at += 8 + len;
         storages.insert(key.clone(), (dtype, data));
@@ -274,13 +289,64 @@ pub fn read_state_dict(file: &Path, keys: &[String], strip: &[String]) -> Result
 
 /// Copies a strided view out of its storage in C order.
 fn gather(raw: &[u8], es: usize, offset: usize, shape: &[usize], stride: &[usize]) -> Result<Vec<u8>, PthError> {
-    let n: usize = shape.iter().product();
-    let mut out = Vec::with_capacity(n * es);
+    // The shape comes from the file: check the element count and byte count before allocating anything.
+    let too_large = || fmt_err("tensor is too large");
+    if shape.contains(&0) { return Ok(Vec::new()); }                      // an empty tensor reads nothing
+    let n = shape.iter().try_fold(1usize, |a, d| a.checked_mul(*d)).ok_or_else(too_large)?;
+    let bytes = n.checked_mul(es).ok_or_else(too_large)?;
+    if bytes as u64 > MAX_ENTRY_BYTES { return Err(fmt_err("tensor is too large")); }
+    // The furthest element the view touches must lie inside the storage. (An expanded view, stride 0, may have more
+    // elements than the storage holds; what matters is where it reads.)
+    let last = shape.iter().zip(stride).try_fold(offset, |a, (d, s)| (d - 1).checked_mul(*s).and_then(|v| a.checked_add(v))).ok_or_else(too_large)?;
+    if last.checked_add(1).and_then(|e| e.checked_mul(es)).is_none_or(|end| end > raw.len()) { return Err(fmt_err("tensor is too large for its storage")); }
+    let mut out = Vec::with_capacity(bytes);
     let mut idx = vec![0usize; shape.len()];
     for _ in 0..n {
-        let pos = offset + idx.iter().zip(stride).map(|(i, s)| i * s).sum::<usize>();
-        out.extend_from_slice(raw.get(pos * es..(pos + 1) * es).ok_or_else(|| fmt_err("tensor runs past its storage"))?);
+        let past = || fmt_err("tensor runs past its storage");
+        let pos = idx.iter().zip(stride).try_fold(offset, |a, (i, s)| i.checked_mul(*s).and_then(|v| a.checked_add(v))).ok_or_else(past)?;
+        out.extend_from_slice(raw.get(pos.checked_mul(es).ok_or_else(past)?..pos.checked_add(1).and_then(|p| p.checked_mul(es)).ok_or_else(past)?).ok_or_else(past)?);
         for d in (0..shape.len()).rev() { idx[d] += 1; if idx[d] < shape[d] { break; } idx[d] = 0; }
     }
     Ok(out)
+}
+
+#[cfg(test)]
+mod cap_tests {
+    use super::*;
+    use std::io::Write;
+    fn zip_with(path: &Path, entries: &[(&str, Vec<u8>)]) {
+        let mut z = zip::ZipWriter::new(std::fs::File::create(path).unwrap());
+        let o = zip::write::SimpleFileOptions::default().compression_method(zip::CompressionMethod::Stored);
+        for (n, b) in entries { z.start_file(*n, o).unwrap(); z.write_all(b).unwrap(); }
+        z.finish().unwrap();
+    }
+    #[test] fn an_entry_over_the_cap_is_refused_and_at_the_cap_is_read() {
+        let d = tempfile::tempdir().unwrap(); let f = d.path().join("a.zip");
+        zip_with(&f, &[("archive/data.pkl", vec![7u8; 65])]);
+        let mut z = zip::ZipArchive::new(std::fs::File::open(&f).unwrap()).unwrap();
+        let e = read_entry(&mut z, "archive/data.pkl", 64).unwrap_err();
+        assert!(matches!(e, PthError::Format(ref m) if m.contains("too large")), "{e}");
+        assert_eq!(read_entry(&mut z, "archive/data.pkl", 65).unwrap().len(), 65, "positive control: the same entry at a cap of 65");
+    }
+    #[test] fn a_whole_file_over_the_cap_is_refused_by_the_zip_loader() {
+        let d = tempfile::tempdir().unwrap(); let f = d.path().join("b.pt");
+        let pkl = crate::testing::P::new().op(b'}').stop();
+        zip_with(&f, &[("archive/data.pkl", pkl), ("archive/byteorder", b"little".to_vec())]);
+        assert!(load_zip_with_cap(&f, 1 << 20).is_ok(), "positive control");
+        let e = load_zip_with_cap(&f, 2).unwrap_err();
+        assert!(matches!(e, PthError::Format(ref m) if m.contains("too large")), "{e}");
+    }
+    #[test] fn an_entry_that_claims_4_gb_is_refused_before_it_is_read() {
+        // The central directory's uncompressed-size field (offset 24 in the record) says 0xFFFFFFFF; the bytes are 13.
+        let d = tempfile::tempdir().unwrap(); let f = d.path().join("c.pt");
+        zip_with(&f, &[("archive/data.pkl", crate::testing::P::new().op(b'}').stop())]);
+        let mut b = std::fs::read(&f).unwrap();
+        let at = b.windows(4).rposition(|w| w == b"PK\x01\x02").unwrap();
+        b[at + 24..at + 28].copy_from_slice(&u32::MAX.to_le_bytes());
+        std::fs::write(&f, &b).unwrap();
+        let t = std::time::Instant::now();
+        let e = load_zip_with_cap(&f, MAX_ENTRY_BYTES).unwrap_err();
+        assert!(matches!(e, PthError::Format(ref m) if m.contains("too large")), "{e}");
+        assert!(t.elapsed().as_secs() < 1);
+    }
 }

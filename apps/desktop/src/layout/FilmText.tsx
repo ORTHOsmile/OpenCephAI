@@ -1,7 +1,7 @@
 import { useContext, useEffect, useRef, useState } from 'react';
 import { formatDate, type DateFormat } from '../dates';
 import type { CaseDoc } from '../ipc';
-import { fresh, importDay, reread, savedChoices, valueFor, visibleChoices, type FilmChoice, type FilmDetail, type FilmRow } from '../library/filmTable';
+import { fresh, importDay, notesAfterRemove, notesAfterReread, reread, waitingAfterReread, savedChoices, valueFor, visibleChoices, type FilmChoice, type FilmDetail, type FilmRow } from '../library/filmTable';
 import { FilmDetailsOff } from '../settings/filmDetails';
 
 interface Props {
@@ -15,6 +15,7 @@ export function FilmText({ lines, reading, locked, dateFormat, doc, onRead, onUs
   const off = useContext(FilmDetailsOff);
   const [rows, setRows] = useState<FilmRow[]>(() => fresh(lines ?? []));
   const [notes, setNotes] = useState<Record<number, string>>({});
+  const waiting = useRef<number | null>(null);   // the row whose note says "Now choose the …" (Last/First, spec 2026-10-17)
   const [copied, setCopied] = useState<number | 'all' | null>(null);
   /** Owner's rule (approved in chat, 5 Oct): a line the owner edited is human-entered and is never overwritten by a
    *  re-read; a re-read only refreshes lines nobody edited. Covers both a full "Read the film again" and a
@@ -23,16 +24,8 @@ export function FilmText({ lines, reading, locked, dateFormat, doc, onRead, onUs
     const next = lines ?? [];
     const nextRows = reread(rows, next);
     setRows(nextRows);
-    setNotes((prevNotes) => {   // a note under a row survives only when that row is kept as edited; a refreshed row drops its note
-      const out: Record<number, string> = {};
-      for (const [iStr, note] of Object.entries(prevNotes)) {
-        const old = rows[+iStr];
-        if (!old || old.text === old.original) continue;
-        const j = nextRows.findIndex((r) => r.kept && r.original === old.original && r.text === old.text);
-        if (j >= 0) out[j] = note;
-      }
-      return out;
-    });
+    setNotes((prevNotes) => notesAfterReread(rows, nextRows, prevNotes));   // a note follows its row when that row is still the owner's edit
+    waiting.current = waitingAfterReread(rows, nextRows, waiting.current);   // the "Now choose the …" row moves with its row
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [lines]);
   const texts = rows.map((r) => r.text);
@@ -40,7 +33,6 @@ export function FilmText({ lines, reading, locked, dateFormat, doc, onRead, onUs
   const copy = (text: string, which: number | 'all') => {
     void navigator.clipboard?.writeText(text).then(() => { setCopied(which); setTimeout(() => setCopied(null), 1200); }).catch(() => {});
   };
-  const waiting = useRef<number | null>(null);   // the row whose note says "Now choose the …" (Last/First, spec 2026-10-17)
   const choose = (i: number, c: FilmChoice) => {
     if (c === 'none') return;                                              // — never clears a saved detail
     const r = valueFor(c, texts[i], dateFormat);
@@ -59,8 +51,12 @@ export function FilmText({ lines, reading, locked, dateFormat, doc, onRead, onUs
   /** The ↺ button: on an edited row, undoes the edit (the row becomes unedited); on a `kept` row (its film line is
    *  no longer in the latest reading) there is nothing to undo TO, so it removes the row instead. */
   const undo = (i: number) => {
+    const removes = rows[i].kept;
     setRows((rs) => (rs[i].kept ? rs.filter((_, j) => j !== i) : rs.map((r, j) => (j === i ? { original: r.original, text: r.original } : r))));
-    setNotes((n) => { const next = { ...n }; delete next[i]; return next; });
+    if (!removes) { setNotes((n) => { const next = { ...n }; delete next[i]; return next; }); return; }
+    setNotes((n) => notesAfterRemove(n, i));   // the row is gone: notes below it move up with their rows
+    const w = waiting.current;                 // and so does the row that is waiting for "Now choose the …"
+    if (w !== null) waiting.current = w === i ? null : w > i ? w - 1 : w;
   };
   /** Auto-grows the row's textarea to its content, so a long line is shown whole with no scrollbar (spreadsheet
    *  look, owner 5 Oct). Re-runs on every render — rows are few, and it has to see edits as they come in. */
@@ -82,8 +78,8 @@ export function FilmText({ lines, reading, locked, dateFormat, doc, onRead, onUs
   useEffect(() => () => resizeObs.current?.disconnect(), []);
   return (
     <div className="film-text">
-      {lines === null ? <p className="identity-note">Not read yet.</p>
-        : !lines.length && !rows.length ? <p className="identity-note">No text was found on the film.</p>
+      {lines === null ? <p className="identity-note film-text-unread">Not read yet.</p>
+        : !lines.length && !rows.length ? <p className="identity-note film-text-none">No text was found on the film.</p>
         : <table ref={attachTable} className="film-table" aria-label="Text on the film">
             <thead><tr><th>Text</th><th>What it is</th><th aria-label="Copy" /></tr></thead>
             <tbody>{rows.flatMap((row, i) => {

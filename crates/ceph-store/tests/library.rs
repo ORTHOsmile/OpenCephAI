@@ -1,5 +1,5 @@
 //! Library behaviour on synthetic films only: generated gradients, never a real radiograph.
-use ceph_store::{verify_backup, AiRun, CaseEdit, CaseMeta, LandmarkRow, Library};
+use ceph_store::{verify_backup, AiRun, CaseEdit, CaseMeta, LandmarkRow, Library, RulerMarks};
 use serde_json::json;
 use std::path::{Path, PathBuf};
 
@@ -8,7 +8,13 @@ fn synthetic_png(dir: &Path, name: &str, seed: u8) -> PathBuf {
     let p = dir.join(name); img.save(&p).unwrap(); p
 }
 fn ai(id: &str, x: f64, y: f64) -> LandmarkRow {
-    LandmarkRow { id: id.into(), x, y, source: "ai".into(), verified: false, ai_x: Some(x), ai_y: Some(y), confidence: Some(0.8), placed_by: None }
+    LandmarkRow { id: id.into(), x, y, source: "ai".into(), verified: false, ai_x: Some(x), ai_y: Some(y), confidence: Some(0.8), placed_by: None, accept_kind: None, placed_via: None }
+}
+/// An AI point with its placing model (and, for Automatic best, the 'auto-best' via mark), for the Library
+/// table's AI status column (owner decisions, 29 Oct: Table view, Part 4).
+fn ai_via(id: &str, x: f64, y: f64, placed_by: &str, placed_via: Option<&str>) -> LandmarkRow {
+    LandmarkRow { id: id.into(), x, y, source: "ai".into(), verified: false, ai_x: Some(x), ai_y: Some(y), confidence: Some(0.8),
+        placed_by: Some(placed_by.into()), accept_kind: None, placed_via: placed_via.map(String::from) }
 }
 fn edit(id: &str, landmarks: Vec<LandmarkRow>) -> CaseEdit {
     CaseEdit { id: id.into(), facing: "right".into(), orientation: json!({"mirror": false, "rotDeg": 0, "source": "none"}), display: json!({}), landmarks }
@@ -61,7 +67,7 @@ fn events(root: &Path, case: &str) -> Vec<(String, String)> {
         lib.save(&edit(&case, vec![ai("S", 100.25, 80.5), ai("N", 300.0, 60.0)]), "dr-a").unwrap();
         let moved = LandmarkRow { x: 101.75, source: "ai-adjusted".into(), verified: true, ..ai("S", 100.25, 80.5) };
         let mut accepted = ai("N", 300.0, 60.0); accepted.verified = true;
-        let manual = LandmarkRow { id: "Co".into(), x: 50.0, y: 90.0, source: "manual".into(), verified: true, ai_x: None, ai_y: None, confidence: None, placed_by: None };
+        let manual = LandmarkRow { id: "Co".into(), x: 50.0, y: 90.0, source: "manual".into(), verified: true, ai_x: None, ai_y: None, confidence: None, placed_by: None, accept_kind: None, placed_via: None };
         let mut e = edit(&case, vec![moved, accepted, manual]);
         e.facing = "left".into(); e.orientation = json!({"mirror": true, "rotDeg": -3.5, "source": "auto-FH"}); e.display = json!({"brightness": 1.2, "contrast": 1, "invert": false});
         lib.save(&e, "dr-a").unwrap();
@@ -197,6 +203,17 @@ fn events(root: &Path, case: &str) -> Vec<(String, String)> {
     assert_eq!(lib.setting("operator").unwrap().as_deref(), Some("dr-b"));
 }
 
+/// A deleted setting reads as never set; the others stay (Automatic best base Task 4: putting a setting back after a
+/// change that failed part-way).
+#[test] fn a_deleted_setting_reads_as_never_set_and_others_stay() {
+    let t = tempfile::tempdir().unwrap();
+    let mut lib = Library::open(t.path()).unwrap();
+    lib.set_setting("a", "1").unwrap(); lib.set_setting("b", "2").unwrap();
+    lib.delete_setting("a").unwrap();
+    assert_eq!((lib.setting("a").unwrap(), lib.setting("b").unwrap().as_deref()), (None, Some("2")));
+    lib.delete_setting("never-set").unwrap();
+}
+
 #[test] fn backup_then_restore_gives_identical_rows() {
     let (t, src, out) = (tempfile::tempdir().unwrap(), tempfile::tempdir().unwrap(), tempfile::tempdir().unwrap());
     let mut lib = Library::open(t.path()).unwrap();
@@ -249,7 +266,7 @@ fn events(root: &Path, case: &str) -> Vec<(String, String)> {
     let mut lib = Library::open(t.path()).unwrap();
     let opened = lib.import(&synthetic_png(src.path(), "a.png", 0)).unwrap().case_id;
     let untouched = lib.import(&synthetic_png(src.path(), "b.png", 1)).unwrap().case_id;
-    let mine = LandmarkRow { id: "S".into(), x: 1.0, y: 2.0, source: "manual".into(), verified: true, ai_x: None, ai_y: None, confidence: None, placed_by: None };
+    let mine = LandmarkRow { id: "S".into(), x: 1.0, y: 2.0, source: "manual".into(), verified: true, ai_x: None, ai_y: None, confidence: None, placed_by: None, accept_kind: None, placed_via: None };
     lib.save(&edit(&opened, vec![mine]), "op").unwrap();                     // the clinician traced it while the batch ran
     assert!(!lib.save_ai_if_untraced(&edit(&opened, vec![ai("S", 9.0, 9.0)]), "op").unwrap());
     assert_eq!(lib.load(&opened).unwrap().landmarks[0].source, "manual");     // review #3: the batch never overwrites it
@@ -398,4 +415,222 @@ fn meta(name: &str, tp: &str, taken_on: Option<&str>) -> CaseMeta {
     }
     let lib = Library::open(t.path()).unwrap();
     assert_eq!((lib.load("c2").unwrap().timepoint.as_str(), lib.load("c1").unwrap().timepoint.as_str()), ("T1", "T2"));
+}
+/// Spec 2026-10-19 (Part F interaction): a bulk accept — several points accepted where they are, in one save — logs
+/// one "accept" event per point, the same "accepted without moving" record a single Accept position gives.
+#[test] fn a_bulk_accept_logs_one_accept_event_per_point() {
+    let (t, src) = (tempfile::tempdir().unwrap(), tempfile::tempdir().unwrap());
+    let mut lib = Library::open(t.path()).unwrap();
+    let case = lib.import(&synthetic_png(src.path(), "a.png", 0)).unwrap().case_id;
+    lib.save(&edit(&case, vec![ai("S", 1.0, 2.0), ai("N", 3.0, 4.0), ai("A", 5.0, 6.0)]), "op").unwrap();
+    let acc = |id: &str, x: f64, y: f64| LandmarkRow { verified: true, ..ai(id, x, y) };
+    lib.save(&edit(&case, vec![acc("S", 1.0, 2.0), acc("N", 3.0, 4.0), acc("A", 5.0, 6.0)]), "op").unwrap();
+    let ev = events(t.path(), &case);
+    let ev: Vec<(&str, &str)> = ev.iter().map(|(a, b)| (a.as_str(), b.as_str())).collect();
+    assert_eq!(ev, [("S", "ai"), ("N", "ai"), ("A", "ai"), ("S", "accept"), ("N", "accept"), ("A", "accept")]);
+}
+/// Spec 2026-10-19 (F): the ruler marks stay with the case: the newest calibration, while its scale still stands.
+#[test] fn ruler_marks_are_the_newest_calibration_while_its_scale_stands() {
+    let (t, src) = (tempfile::tempdir().unwrap(), tempfile::tempdir().unwrap());
+    let mut lib = Library::open(t.path()).unwrap();
+    let case = lib.import(&synthetic_png(src.path(), "a.png", 0)).unwrap().case_id;
+    assert_eq!(lib.ruler(&case).unwrap(), None, "never calibrated: no marks");
+    lib.calibrate(&case, (10.0, 10.0), (210.0, 10.0), 20.0, "op").unwrap();
+    lib.calibrate(&case, (12.5, 11.0), (250.0, 11.0), 20.0, "op").unwrap();
+    assert_eq!(lib.ruler(&case).unwrap(), Some(RulerMarks { p1: [12.5, 11.0], p2: [250.0, 11.0], mm: 20.0, steps: 0 }), "the newest calibration");
+    assert!(lib.calibrate(&case, (12.5, 11.0), (14.0, 11.0), 20.0, "op").is_err());
+    assert_eq!(lib.ruler(&case).unwrap().unwrap().p2, [250.0, 11.0], "a refused calibration leaves the marks");
+    // Guard: if spacing_mm were ever set another way, the marks would no longer explain the mm, so none (G's fit never touches spacing_mm).
+    lib.conn_for_tests().execute("UPDATE cases SET spacing_mm = 0.123 WHERE id = ?1", [&case]).unwrap();
+    assert_eq!(lib.ruler(&case).unwrap(), None);
+    let other = lib.import(&synthetic_png(src.path(), "b.png", 9)).unwrap().case_id;
+    assert_eq!(lib.ruler(&other).unwrap(), None, "another case's calibration is not this one's");
+}
+
+/// Spec 2026-10-19 Addendum 3 (N): each fine-tune press is 0.5 % of the ruler's OWN mm per px (never of the last
+/// press), at most ±5 %; the marks and the true distance stay the ruler's; the presses read back as a whole number.
+#[test] fn a_fine_tune_is_whole_half_percent_presses_of_the_rulers_own_value() {
+    let (t, src) = (tempfile::tempdir().unwrap(), tempfile::tempdir().unwrap());
+    let mut lib = Library::open(t.path()).unwrap();
+    let case = lib.import(&synthetic_png(src.path(), "a.png", 0)).unwrap().case_id;
+    let (p1, p2, mm) = ((10.0, 10.0), (190.0, 47.0), 20.0);
+    let ruler = lib.calibrate(&case, p1, p2, mm, "op").unwrap();
+    assert_eq!(ruler.to_bits(), (mm / (p2.0 - p1.0).hypot(p2.1 - p1.1)).to_bits(), "no press: today's mm / px, bit for bit");
+    let mut compared = 0;
+    for k in (-10..=10).chain((-10..=10).rev()) {                       // up, then back down: no drift
+        let s = lib.recalibrate(&case, p1, p2, mm, k, "op").unwrap();
+        assert_eq!(s.to_bits(), (ruler * ((200.0 + k as f64) / 200.0)).to_bits(), "press {k}: the ruler's value × (200 + k) / 200");
+        assert!((s / ruler - (1.0 + 0.005 * k as f64)).abs() < 1e-15, "press {k}: {s} is not exactly {k} × 0.5 %");
+        let doc = lib.load(&case).unwrap();
+        assert_eq!((doc.spacing_mm, doc.scale_steps), (Some(s), k));
+        assert_eq!(lib.ruler(&case).unwrap(), Some(RulerMarks { p1: [p1.0, p1.1], p2: [p2.0, p2.1], mm, steps: k }), "marks and mm stay the ruler's");
+        compared += 1;
+    }
+    assert_eq!(compared, 42);
+    // Deviation from the brief, found while watching this test fail for the wrong reason (24 Oct): the chained
+    // sequence (-10..=10).chain((-10..=10).rev()) has 42 elements but ends at k = -10, not k = 0 — its per-step
+    // bit-check above already proves no drift at every k, including -10. Returning to 0 explicitly before this
+    // assertion is what the comment "back at 0 presses" actually needs.
+    lib.recalibrate(&case, p1, p2, mm, 0, "op").unwrap();
+    assert_eq!(lib.load(&case).unwrap().spacing_mm.unwrap().to_bits(), ruler.to_bits(), "back at 0 presses: the ruler's own value, bit for bit");
+    lib.recalibrate(&case, p1, p2, mm, 10, "op").unwrap();
+    for k in [11, -11, 1000, i64::MAX, i64::MIN] {
+        let e = lib.recalibrate(&case, p1, p2, mm, k, "op").unwrap_err().to_string();
+        assert!(e.contains("at most 5 %"), "{k}: {e}");
+    }
+    assert_eq!(lib.load(&case).unwrap().scale_steps, 10, "a refused press leaves the scale as it was");
+    // A fresh calibration (also what a dropped ruler mark stores) starts again from 0 presses.
+    lib.calibrate(&case, p1, (200.0, 47.0), mm, "op").unwrap();
+    assert_eq!((lib.ruler(&case).unwrap().unwrap().steps, lib.load(&case).unwrap().scale_steps), (0, 0));
+}
+
+/// Addendum 3 (N), the before/after for the store: with no press, `calibrate` gives today's mm / px bit for bit, on
+/// 1,000+ rulers. Positive control: compute `with_steps` as `(ruler × (200 + k)) / 200` and about one ruler in six fails.
+#[test] fn an_unadjusted_calibration_is_todays_mm_per_px_bit_for_bit() {
+    let (t, src) = (tempfile::tempdir().unwrap(), tempfile::tempdir().unwrap());
+    let mut lib = Library::open(t.path()).unwrap();
+    let case = lib.import(&synthetic_png(src.path(), "a.png", 0)).unwrap().case_id;
+    let (mut px, mut compared) = (20.0f64, 0);
+    while px < 2000.0 {
+        let (p1, p2) = ((10.0, 10.0), (10.0 + px, 13.0));
+        let s = lib.calibrate(&case, p1, p2, 20.0, "op").unwrap();
+        assert_eq!(s.to_bits(), (20.0 / (p2.0 - p1.0).hypot(p2.1 - p1.1)).to_bits(), "{px} px");   // library.rs:378-380 as it was
+        assert_eq!(lib.ruler(&case).unwrap().unwrap().steps, 0);
+        px += 1.37; compared += 1;
+    }
+    assert!(compared >= 1000, "{compared}");
+}
+
+/// Addendum 3 (N): only a spacing that is exactly a whole number of presses of its own marks (−10…+10) reads as a
+/// fine-tune. Anything else was not written by this app, so it claims no marks and no presses.
+#[test] fn a_spacing_that_is_not_whole_presses_of_its_marks_claims_none() {
+    let (t, src) = (tempfile::tempdir().unwrap(), tempfile::tempdir().unwrap());
+    let mut lib = Library::open(t.path()).unwrap();
+    let case = lib.import(&synthetic_png(src.path(), "a.png", 0)).unwrap().case_id;
+    lib.recalibrate(&case, (10.0, 10.0), (210.0, 10.0), 20.0, 3, "op").unwrap();
+    assert_eq!(lib.ruler(&case).unwrap().unwrap().steps, 3, "control: a real press reads back");
+    for (what, factor) in [("a third of a press off", 1.015 + 0.005 / 3.0), ("12 presses, beyond ±5 %", 1.06)] {
+        let s = 0.1 * factor;
+        lib.conn_for_tests().execute("UPDATE calibrations SET spacing_mm = ?2 WHERE id = (SELECT MAX(id) FROM calibrations WHERE case_id = ?1)", rusqlite::params![case, s]).unwrap();
+        lib.conn_for_tests().execute("UPDATE cases SET spacing_mm = ?2 WHERE id = ?1", rusqlite::params![case, s]).unwrap();
+        assert_eq!(lib.ruler(&case).unwrap(), None, "{what}");
+        assert_eq!(lib.load(&case).unwrap().scale_steps, 0, "{what}");
+    }
+}
+
+/// Addendum 3 (N) + V3: a press changes every mm value, so it clears Tracing verified, as any calibration does; the
+/// points do not move.
+#[test] fn a_fine_tune_clears_tracing_verified_and_moves_no_point() {
+    let (t, src) = (tempfile::tempdir().unwrap(), tempfile::tempdir().unwrap());
+    let mut lib = Library::open(t.path()).unwrap();
+    let case = lib.import(&synthetic_png(src.path(), "a.png", 0)).unwrap().case_id;
+    let mut s = ai("S", 1.0, 2.0); s.verified = true;
+    lib.save(&edit(&case, vec![s]), "op").unwrap();
+    lib.calibrate(&case, (10.0, 10.0), (210.0, 10.0), 20.0, "op").unwrap();
+    lib.set_verified(&case, true, "dr-a").unwrap();
+    assert!(lib.load(&case).unwrap().verified_at.is_some(), "control: signed off before the press");
+    lib.recalibrate(&case, (10.0, 10.0), (210.0, 10.0), 20.0, 1, "op").unwrap();
+    let doc = lib.load(&case).unwrap();
+    assert!(doc.verified_at.is_none(), "every mm changed: back to review");
+    assert_eq!((doc.landmarks[0].x, doc.landmarks[0].y, doc.landmarks[0].verified), (1.0, 2.0, true));
+}
+
+/// Fix round 1, review I-1 (Important): the read-back must tolerate the platform's `hypot` disagreeing by a few
+/// bits (a different libm on Windows, or a macOS update), as long as it cannot confuse two neighbouring presses
+/// (0.5 % apart). Perturbing the stored spacing by a few ULPs must still read back the same k.
+#[test] fn a_fine_tune_reads_back_within_a_few_ulps_of_tolerance() {
+    let (t, src) = (tempfile::tempdir().unwrap(), tempfile::tempdir().unwrap());
+    let mut lib = Library::open(t.path()).unwrap();
+    let case = lib.import(&synthetic_png(src.path(), "a.png", 0)).unwrap().case_id;
+    let (p1, p2, mm) = ((10.0, 10.0), (190.0, 47.0), 20.0);
+    for k in [-10i64, -3, 0, 4, 10] {
+        lib.recalibrate(&case, p1, p2, mm, k, "op").unwrap();
+        let stored = lib.load(&case).unwrap().spacing_mm.unwrap();
+        for ulps in [-3i64, -1, 1, 3] {
+            let perturbed = f64::from_bits((stored.to_bits() as i64 + ulps) as u64);
+            lib.conn_for_tests().execute("UPDATE calibrations SET spacing_mm = ?2 WHERE id = (SELECT MAX(id) FROM calibrations WHERE case_id = ?1)", rusqlite::params![case, perturbed]).unwrap();
+            lib.conn_for_tests().execute("UPDATE cases SET spacing_mm = ?2 WHERE id = ?1", rusqlite::params![case, perturbed]).unwrap();
+            assert_eq!(lib.ruler(&case).unwrap().map(|r| r.steps), Some(k), "k={k} ulps={ulps}");
+            assert_eq!(lib.load(&case).unwrap().scale_steps, k, "k={k} ulps={ulps}");
+        }
+    }
+}
+
+/// Fix round 1, review I-1: the tolerance (1e-12) is about 9 orders below the 0.25 % gap half way between two
+/// presses, so a spacing a quarter of a percent off the ruler still reads as no press at all — presses cannot be
+/// confused with each other.
+#[test] fn a_spacing_a_quarter_percent_off_still_claims_no_press() {
+    let (t, src) = (tempfile::tempdir().unwrap(), tempfile::tempdir().unwrap());
+    let mut lib = Library::open(t.path()).unwrap();
+    let case = lib.import(&synthetic_png(src.path(), "a.png", 0)).unwrap().case_id;
+    lib.calibrate(&case, (10.0, 10.0), (210.0, 10.0), 20.0, "op").unwrap();
+    let ruler = lib.load(&case).unwrap().spacing_mm.unwrap();
+    let s = ruler * 1.0025;   // half way between 0 presses (0 %) and 1 press (+0.5 %)
+    lib.conn_for_tests().execute("UPDATE calibrations SET spacing_mm = ?2 WHERE id = (SELECT MAX(id) FROM calibrations WHERE case_id = ?1)", rusqlite::params![case, s]).unwrap();
+    lib.conn_for_tests().execute("UPDATE cases SET spacing_mm = ?2 WHERE id = ?1", rusqlite::params![case, s]).unwrap();
+    assert_eq!(lib.ruler(&case).unwrap(), None, "a quarter of a press off either side: no press");
+    assert_eq!(lib.load(&case).unwrap().scale_steps, 0);
+}
+
+/// Library ▸ Table (owner decisions, 29 Oct 2026): `list()` carries the patient's gender and, for each film, which
+/// model placed its AI points — 'auto-best' when any point went through Automatic best, else the model most of its
+/// AI points carry, else `None` when every point is hand-placed (so the Table's AI status column never shows a raw
+/// file id for a case with no AI involvement). Positive control: a case whose landmarks are all hand-placed must
+/// come back with `ai_model_id: None`, proving the column is not always populated.
+#[test] fn list_carries_gender_and_the_model_that_placed_each_films_ai_points() {
+    let (t, src) = (tempfile::tempdir().unwrap(), tempfile::tempdir().unwrap());
+    let mut lib = Library::open(t.path()).unwrap();
+    let hand = lib.import(&synthetic_png(src.path(), "hand.png", 0)).unwrap().case_id;
+    lib.save(&edit(&hand, vec![LandmarkRow { id: "N".into(), x: 1.0, y: 2.0, source: "manual".into(), verified: true,
+        ai_x: None, ai_y: None, confidence: None, placed_by: None, accept_kind: Some("hand".into()), placed_via: None }]), "op").unwrap();
+    lib.set_patient_gender(&hand, Some("F")).unwrap();
+
+    let plain_ai = lib.import(&synthetic_png(src.path(), "plain.png", 1)).unwrap().case_id;
+    lib.save(&edit(&plain_ai, vec![ai_via("S", 1.0, 2.0, "aariz-cepha29", None), ai_via("N", 3.0, 4.0, "aariz-cepha29", None)]), "op").unwrap();
+    lib.set_patient_gender(&plain_ai, Some("M")).unwrap();
+
+    let auto_best = lib.import(&synthetic_png(src.path(), "auto.png", 2)).unwrap().case_id;
+    lib.save(&edit(&auto_best, vec![ai_via("S", 1.0, 2.0, "srpose-cldet23", Some("auto-best"))]), "op").unwrap();
+
+    // A patient with no gender recorded (default: None, not a stray "Not recorded" string).
+    let unrecorded = lib.import(&synthetic_png(src.path(), "unrec.png", 3)).unwrap().case_id;
+
+    let rows = lib.list(false).unwrap();
+    let find = |id: &str| rows.iter().find(|r| r.id == id).unwrap();
+    assert_eq!(find(&hand).gender.as_deref(), Some("F"), "patients.gender carried through");
+    assert_eq!(find(&hand).ai_model_id, None, "every point hand-placed: no model shown");
+    assert_eq!(find(&plain_ai).gender.as_deref(), Some("M"));
+    assert_eq!(find(&plain_ai).ai_model_id.as_deref(), Some("aariz-cepha29"), "the model that placed its AI points");
+    assert_eq!(find(&auto_best).ai_model_id.as_deref(), Some("auto-best"), "Automatic best, even though a real model ran it");
+    assert_eq!(find(&unrecorded).gender, None);
+}
+
+/// Library ▸ Table "Report" column (owner, 29 Oct; format 16): a film has no report date until one is recorded; recording
+/// sets it on that film only, never moves the film in "most recent first" (its `updated_at` is untouched), and is
+/// refused for a film that is not in the live library. Production change that fails it: `record_report_saved` writing
+/// `updated_at` too, or `list()` not reading the column.
+#[test] fn a_report_date_is_blank_until_recorded_and_recording_it_touches_nothing_else() {
+    let (t, src) = (tempfile::tempdir().unwrap(), tempfile::tempdir().unwrap());
+    let mut lib = Library::open(t.path()).unwrap();
+    let a = lib.import(&synthetic_png(src.path(), "a.png", 0)).unwrap().case_id;
+    let b = lib.import(&synthetic_png(src.path(), "b.png", 1)).unwrap().case_id;
+    let rows = lib.list(false).unwrap();
+    assert!(rows.iter().all(|r| r.report_saved_at.is_none()), "no report saved yet: {rows:?}");
+    let before = rows.iter().find(|r| r.id == a).unwrap().clone();
+
+    let at = lib.record_report_saved(&a).unwrap();
+    assert!(at.len() >= 20 && at.ends_with('Z'), "a UTC timestamp: {at}");
+    let rows = lib.list(false).unwrap();
+    let now_a = rows.iter().find(|r| r.id == a).unwrap();
+    assert_eq!(now_a.report_saved_at.as_deref(), Some(at.as_str()));
+    assert_eq!(now_a.updated_at, before.updated_at, "recording a report is not an edit of the film");
+    assert_eq!(rows.iter().find(|r| r.id == b).unwrap().report_saved_at, None, "only that film");
+
+    let again = lib.record_report_saved(&a).unwrap();
+    assert!(again >= at, "a later save replaces it with the later time: {at} -> {again}");
+
+    assert!(lib.record_report_saved("no-such-film").is_err(), "an unknown film is refused");
+    lib.delete(&b).unwrap();
+    assert!(lib.record_report_saved(&b).is_err(), "a film in Recently deleted is refused");
+    assert_eq!(lib.list(true).unwrap().iter().find(|r| r.id == b).unwrap().report_saved_at, None);
 }

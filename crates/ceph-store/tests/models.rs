@@ -13,7 +13,7 @@ fn pt(channel: u32, id: Option<&str>, x: f64) -> AiPoint { AiPoint { channel, la
 
 /// The user's own edit, independent of any model run (one manually-placed point).
 fn edit_moving_one_point(case_id: &str) -> CaseEdit {
-    let lm = LandmarkRow { id: "S".into(), x: 5.0, y: 6.0, source: "manual".into(), verified: false, ai_x: None, ai_y: None, confidence: None, placed_by: None };
+    let lm = LandmarkRow { id: "S".into(), x: 5.0, y: 6.0, source: "manual".into(), verified: false, ai_x: None, ai_y: None, confidence: None, placed_by: None, accept_kind: None, placed_via: None };
     CaseEdit { id: case_id.into(), facing: "right".into(), orientation: json!({"mirror": false, "rotDeg": 0, "source": "none"}), display: json!({}), landmarks: vec![lm] }
 }
 

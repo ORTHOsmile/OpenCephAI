@@ -10,8 +10,8 @@ struct Args {
     #[arg(long, default_value = "test1")] split: String,
     /// One manifest, or several separated by commas (one report per model in <out>/<model id>)
     #[arg(long, default_value = "models/manifest.json")] manifest: PathBuf,
-    /// Output folder, e.g. reports/2026-09-26 (gitignored)
-    #[arg(long)] out: PathBuf,
+    /// Output folder, e.g. reports/2026-09-26 (gitignored). Not used by --shape-prior.
+    #[arg(long, required_unless_present_any = ["shape_prior", "stage_a_acceptance"])] out: Option<PathBuf>,
     /// Python reference predictions.csv; exit non-zero if any point differs by more than 0.5 px
     #[arg(long)] parity: Option<PathBuf>,
     /// Check automatic facing instead: every film as-is must read as facing right and mirrored as facing left
@@ -53,6 +53,93 @@ struct Args {
     #[arg(long, default_value = "reference/main-point-source.json")] source: PathBuf,
     /// With --crosscheck-run: compare the cache with Task 4's points-bits.csv in this folder (one subfolder per model)
     #[arg(long = "check-bits")] check_bits: Option<PathBuf>,
+    /// Prove a chain stage on Ceph-400 (chain spec §6): "s1". Reads the caches named by --cache (comma-separated, each made
+    /// by --crosscheck-run on an allowed split); writes <out>/chain-proof-s1.json. Nothing in the app reads it.
+    #[arg(long = "chain-proof")] chain_proof: Option<String>,
+    /// With --chain-proof s1 only: POST-HOC (owner 27 Oct, not pre-registered); cannot change the S1 result. Re-runs only
+    /// P1.3 and its control with this many pretend clinicians (the same seed and pre-registration otherwise) and writes
+    /// <out>/posthoc-p13-<N>.json; never chain-proof-s1.json. Reports shares with Wilson 95% intervals, never a pass.
+    #[arg(long = "posthoc-clinicians")] posthoc_clinicians: Option<usize>,
+    /// Stage A: write the point check's starting knowledge (the 300 Ceph-400 Train and Test1 tracings' point
+    /// coordinates; no film, no image; Test2 never read) to this file, under the git-ignored models folder, e.g.
+    /// models/shape/ceph400-v1.shape. Runs alone. Prints the film count, the coordinates checked and the SHA-256.
+    #[arg(long = "shape-prior")] shape_prior: Option<PathBuf>,
+    /// Stage A Task 10: the pre-registered acceptance of the app's point check on public films
+    /// (reference/point-check-app-acceptance.json). Needs --cache <train cache>,<test1 cache> (FT-2's caches) and the
+    /// starting-knowledge file under models/. Runs alone; writes reports/stage-a-acceptance/acceptance.json. Exit 0 pass,
+    /// 3 fail, 1 broken.
+    #[arg(long = "stage-a-acceptance")] stage_a_acceptance: bool,
+}
+
+impl Args {
+    /// `--out`; clap requires it unless `--shape-prior` is given, and `--shape-prior` returns before any mode uses it.
+    fn out(&self) -> &PathBuf { self.out.as_ref().expect("clap requires --out unless --shape-prior or --stage-a-acceptance is given") }
+}
+
+/// `--shape-prior <out>` (Stage A Task 3): build, write, read the written file back with the app's loader, and print
+/// three lines: films, coordinates checked, SHA-256. Nothing else is printed (no film ids, no coordinates).
+fn shape_prior(a: &Args, out: &Path) -> anyhow::Result<()> {
+    let b = ceph_bench::shape_prior::build_counted(&a.data)?;
+    let dir = out.parent().filter(|p| !p.as_os_str().is_empty()).unwrap_or(Path::new("."));
+    std::fs::create_dir_all(dir)?;
+    ceph_bench::ft_common::ensure_ignored(dir)?;
+    std::fs::write(out, &b.text)?;
+    let p = ceph_model::pointcheck::load_prior(out)?;
+    anyhow::ensure!(p.sha256 == ceph_bench::ft_common::sha256_hex(b.text.as_bytes()), "{}: the written file is not the text that was checked", out.display());
+    anyhow::ensure!(p.films == b.films, "{}: read back {} films, built {}", out.display(), p.films, b.films);
+    println!("films {}", p.films);
+    println!("coordinates checked {}", b.coordinates_checked);
+    println!("sha256 {}", p.sha256);
+    Ok(())
+}
+
+/// `--chain-proof s1` (Part F Task 14): the pass marks must be committed as built, and every cache's header is checked
+/// for a held-back split BEFORE any cache's films are read (owner O7; question 8). Exit 0 only when the control holds and
+/// every pre-registered mark is met.
+fn chain_proof(a: &Args, stage: &str) -> anyhow::Result<()> {
+    use anyhow::Context;
+    anyhow::ensure!(stage == "s1", "--chain-proof knows only s1 (S2 and S3 come with their own plans), not {stage:?}");
+    let dirs = manifests(a.cache.as_ref().context("--chain-proof needs --cache: caches made by --crosscheck-run on Ceph-400 train and test1, comma-separated")?);
+    anyhow::ensure!(!dirs.is_empty(), "--cache names no cache");
+    // Every header first: one held-back cache refuses the run before any film of any cache is read.
+    for d in &dirs { ceph_bench::chainproof::cache_header(&a.data, d)?; }
+    anyhow::ensure!(!ceph_bench::provenance(&a.data, "").git_dirty, "commit first: the pass marks are pre-registered (reference/chain-proof-s1.json) and must be committed before the run");
+    let head = std::process::Command::new("git").args(["show", "HEAD:reference/chain-proof-s1.json"]).output().ok()
+        .filter(|o| o.status.success()).map(|o| o.stdout);
+    ceph_bench::chainproof::committed_as_built(head)?;
+    let (mut films, mut splits) = (Vec::new(), Vec::new());
+    for d in &dirs {
+        let (h, f) = ceph_bench::xcache::read_cache(d)?;
+        ceph_bench::chainproof::refuse_held_back_cache(&a.data, &h.split)?;
+        anyhow::ensure!(h.models.contains_key(ceph_model::best::DEFAULT_BASE), "{}: the cache has no Aariz run", d.display());
+        splits.push((h.split.clone(), f.iter().map(|x| x.film.clone()).collect::<Vec<_>>()));
+        films.extend(f);
+    }
+    let gt = ceph_bench::dataset::load_points(&a.data.join("gt.csv"))?;
+    let p: ceph_bench::chainproof::Prereg = serde_json::from_str(ceph_bench::chainproof::PREREG)?;
+    if let Some(n) = a.posthoc_clinicians { return posthoc_finish(a.out(), &films, &gt, &p, n).map(|_| ()); }
+    let report = ceph_bench::chainproof::run_s1(&films, &splits, &gt, &p)?;
+    std::fs::create_dir_all(a.out())?;
+    let path = a.out().join("chain-proof-s1.json");
+    std::fs::write(&path, serde_json::to_string_pretty(&report)?)?;
+    println!("{}", report.summary());
+    anyhow::ensure!(report.control_ok, "S1 proof: the control was not offered every time, so the instrument is broken; see {}", path.display());
+    anyhow::ensure!(report.passed, "S1 proof: a pre-registered pass mark was missed; see {}", path.display());
+    Ok(())
+}
+
+/// `--chain-proof s1 --posthoc-clinicians N` after every guard of the proof: P1.3 and its control only, written to
+/// <out>/posthoc-p13-<N>.json (never chain-proof-s1.json), every line labelled post-hoc, no pass or fail. Ok (exit 0) when
+/// the control held and films were analysed; an error (exit 1) when the control broke or nothing was analysed.
+fn posthoc_finish(out: &Path, films: &[ceph_bench::xcache::FilmRun], gt: &ceph_bench::dataset::Points, p: &ceph_bench::chainproof::Prereg, n: usize) -> anyhow::Result<PathBuf> {
+    use ceph_bench::chainproof::{run_posthoc_p13, write_posthoc, POSTHOC_LABEL};
+    let r = run_posthoc_p13(films, gt, p, n)?;
+    let path = write_posthoc(out, &r)?;
+    println!("{}", r.summary());
+    println!("{POSTHOC_LABEL} | written to {}", path.display());
+    anyhow::ensure!(r.films > 0, "{POSTHOC_LABEL} | nothing was analysed");
+    anyhow::ensure!(r.control_held, "{POSTHOC_LABEL} | the control was not offered every time, so the instrument is broken; see {}", path.display());
+    Ok(path)
 }
 
 /// `--manifest a/manifest.json,b/manifest.json` → each path.
@@ -74,6 +161,19 @@ fn preflight(a: &Args) -> anyhow::Result<()> {
     // pre-registration (crosscheck-pass/2), which needs the owner's OK and must remove this line on purpose.
     anyhow::ensure!(!a.single_test_run, "--single-test-run is switched off: the Aariz test films stay closed (owner PARK-FLAGS, 15 Oct 2026; \
         Task 8 cancelled). It can come back only with a new pre-registration and the owner's OK. Nothing was read or written.");
+    if let Some(out) = &a.shape_prior {
+        anyhow::ensure!(!(a.crosscheck_run || a.crosscheck_tune || a.decide_source || a.scale_check || a.orient || a.diag_facing
+            || a.chain_proof.is_some() || a.parity.is_some() || a.scores_out.is_some() || a.out.is_some()),
+            "--shape-prior runs alone (no other mode, and no --out: the file goes where --shape-prior says)");
+        ceph_bench::shape_prior::check_out(out)?;
+    }
+    anyhow::ensure!(!a.stage_a_acceptance || !(a.crosscheck_run || a.crosscheck_tune || a.decide_source || a.scale_check || a.orient || a.diag_facing
+        || a.chain_proof.is_some() || a.parity.is_some() || a.scores_out.is_some() || a.out.is_some() || a.shape_prior.is_some()),
+        "--stage-a-acceptance runs alone (no other mode, and no --out: the report goes to reports/stage-a-acceptance)");
+    anyhow::ensure!(a.posthoc_clinicians.is_none() || a.chain_proof.as_deref() == Some("s1"),
+        "--posthoc-clinicians goes only with --chain-proof s1 (POST-HOC, owner 27 Oct, not pre-registered; cannot change the S1 result)");
+    anyhow::ensure!(a.posthoc_clinicians != Some(0), "--posthoc-clinicians needs at least 1 clinician");
+    anyhow::ensure!(a.chain_proof.is_none() || !(a.crosscheck_run || a.crosscheck_tune || a.decide_source || a.scale_check || a.orient), "--chain-proof runs alone");
     // Held back (owner O7): refused, except the single test run (Task 8) and, after it, its cache (`opened`).
     anyhow::ensure!(!a.single_test_run || a.crosscheck_run, "--single-test-run goes only with --crosscheck-run");
     if a.crosscheck_run && a.single_test_run {
@@ -101,6 +201,14 @@ fn main() -> anyhow::Result<()> {
     let a = Args::parse();
     let list = manifests(&a.manifest);
     preflight(&a)?;
+    if let Some(out) = &a.shape_prior { return shape_prior(&a, out); }
+    if a.stage_a_acceptance {
+        let caches = a.cache.as_ref().map(|c| manifests(c)).unwrap_or_default();
+        let code = ceph_bench::stage_a_accept::run_cli(&a.data, &caches, Path::new("models"), Path::new("reports").join("stage-a-acceptance").as_path())?;
+        if code != 0 { std::process::exit(code); }
+        return Ok(());
+    }
+    if let Some(stage) = &a.chain_proof { return chain_proof(&a, stage); }
     if a.crosscheck_run && a.single_test_run {
         use anyhow::Context;
         let prov = ceph_bench::provenance(&a.data, "");
@@ -128,7 +236,7 @@ fn main() -> anyhow::Result<()> {
     if a.diag_facing {
         for manifest in list {
             let id = model_id(&manifest)?;
-            let cfg = BenchConfig { data: a.data.clone(), split: a.split.clone(), manifest, out: a.out.clone(), parity: None };
+            let cfg = BenchConfig { data: a.data.clone(), split: a.split.clone(), manifest, out: a.out().clone(), parity: None };
             eprintln!("{id} (diag-facing{}{})", if a.diag_flip_control { ", FLIP CONTROL: every film and its truth mirrored" } else { "" },
                 a.diag_pad_control.map(|f| format!(", PAD CONTROL: every film centred on a black canvas {f}× as wide and high")).unwrap_or_default()
                 + if a.diag_reframe_control { ", ORACLE REFRAME: head moved to the median ISBI position and size" } else { "" });
@@ -138,7 +246,7 @@ fn main() -> anyhow::Result<()> {
         return Ok(());
     }
     if a.orient {
-        let cfg = BenchConfig { data: a.data, split: a.split, manifest: list[0].clone(), out: a.out.clone(), parity: None };
+        let cfg = BenchConfig { out: a.out().clone(), data: a.data, split: a.split, manifest: list[0].clone(), parity: None };
         let r = run_orient(&cfg, |done, total| if done % 50 == 0 || done == total { eprintln!("  {done}/{total}") })?;
         println!("facing: as-is right {}/{} · mirrored left {}/{} · max mirror diff {:.2e} px · {:.0} ms per auto-detect",
             r.right_correct, r.n, r.left_correct, r.n, r.max_mirror_diff_px, r.mean_auto_ms);
@@ -150,7 +258,7 @@ fn main() -> anyhow::Result<()> {
     for manifest in list {
         let id = model_id(&manifest)?;
         // A single model keeps writing to <out> as before; several write one report each to <out>/<model id>.
-        let out = if several { a.out.join(&id) } else { a.out.clone() };
+        let out = if several { a.out().join(&id) } else { a.out().clone() };
         let cfg = BenchConfig { data: a.data.clone(), split: a.split.clone(), manifest, out: out.clone(), parity: a.parity.clone() };
         eprintln!("{id}");
         let r = run(&cfg, |done, total| if done % 50 == 0 || done == total { eprintln!("  {done}/{total}") })?;
@@ -221,10 +329,10 @@ fn crosscheck_run(a: &Args, manifests: &[PathBuf]) -> anyhow::Result<()> {
     anyhow::ensure!(!manifests.is_empty(), "--manifest names no model");
     // The cache records the git SHA it ran at; on an uncommitted tree that SHA would not say what code made it.
     anyhow::ensure!(!ceph_bench::provenance(&a.data, "").git_dirty, "commit first: the cache records the git SHA of the code that made it");
-    let h = ceph_bench::xcache::run_models(&a.data, &a.split, manifests, &a.out, |d, t| if d % 25 == 0 || d == t { eprintln!("  {d}/{t}") })?;
+    let h = ceph_bench::xcache::run_models(&a.data, &a.split, manifests, a.out(), |d, t| if d % 25 == 0 || d == t { eprintln!("  {d}/{t}") })?;
     println!("cached {} films x {} models ({} {}), windows {:?}, git {}, providers {:?}", h.films, h.models.len(), h.dataset, h.split, h.windows, h.git_sha, h.providers);
     if let Some(c) = &h.aariz_scale { println!("{}", ceph_bench::report::scale_line(c)); }
-    let (_, films) = ceph_bench::xcache::read_cache(&a.out)?;
+    let (_, films) = ceph_bench::xcache::read_cache(a.out())?;
     let errors: usize = films.iter().map(|f| f.models.values().filter(|m| m.is_err()).count()).sum();
     println!("model runs that failed on a film (recorded as not answering): {errors}");
     if let Some(dir) = &a.check_bits {
@@ -303,8 +411,8 @@ fn crosscheck_tune(a: &Args) -> anyhow::Result<()> {
         "leakage": "Aariz valid: SRPose, GU2Net, cwlachap clean; Aariz clean (not trained on, used by its authors for model selection)",
         "voters": voters, "cache": { "gitSha": h.git_sha, "models": h.models, "providers": h.providers, "aarizScale": h.aariz_scale },
         "aarizScale": h.aariz_scale, "gitSha": ceph_bench::provenance(&a.data, "").git_sha });
-    std::fs::create_dir_all(&a.out)?;
-    std::fs::write(a.out.join("tuning.json"), serde_json::to_string_pretty(&out)? + "\n")?;
+    std::fs::create_dir_all(a.out())?;
+    std::fs::write(a.out().join("tuning.json"), serde_json::to_string_pretty(&out)? + "\n")?;
     if let Some(c) = &h.aariz_scale { println!("{}", ceph_bench::report::scale_line(c)); }
     println!("cache git {}, providers {:?}", h.git_sha, h.providers);
     println!("window {} cells, sigma0 {} mm, k {}, T per landmark {}", tuned["window"], tuned["sigma0Mm"], tuned["k"], tuned["t"]);
@@ -320,7 +428,7 @@ fn crosscheck_tune(a: &Args) -> anyhow::Result<()> {
             c["burden"]["estimate"].as_f64().unwrap_or(f64::NAN), c["t"].as_object().map_or(0, |t| t.values().filter(|v| v.as_f64() != Some(5.99)).count()));
     }
     println!("valid verdict (in-sample, not the test): {:?}", valid.verdict);
-    println!("written {}", a.out.join("tuning.json").display());
+    println!("written {}", a.out().join("tuning.json").display());
     Ok(())
 }
 
@@ -343,6 +451,24 @@ mod tests {
         let s = |n: &str| d.path().join(n).to_string_lossy().to_string();
         let (a, c) = (s("aariz"), s("ceph400"));
         (d, a, c)
+    }
+    /// Stage A Task 3: `--shape-prior <out>` needs no `--out`, runs alone, and writes only under a folder named `models`.
+    /// Fails if it could be combined with another mode, or if an output outside `models` passed the preflight.
+    #[test] fn shape_prior_runs_alone_and_only_into_a_models_folder() {
+        let (_d, _, c4) = fixture();
+        let sp = |v: &[&str]| Args::try_parse_from([&["ceph-bench", "--data", &c4], v].concat());
+        let a = sp(&["--shape-prior", "models/shape/ceph400-v1.shape"]).unwrap();
+        assert!(preflight(&a).is_ok());
+        assert!(Args::try_parse_from(["ceph-bench"]).is_err(), "without --shape-prior, --out is still required");
+        for other in [&["--crosscheck-tune"][..], &["--scale-check"], &["--orient"], &["--decide-source"], &["--crosscheck-run"],
+                      &["--diag-facing"], &["--out", "/tmp/x"], &["--chain-proof", "s1"], &["--parity", "p.csv"]] {
+            let e = preflight(&sp(&[&["--shape-prior", "models/shape/x.shape"][..], other].concat()).unwrap()).unwrap_err().to_string();
+            eprintln!("--shape-prior with {other:?}: {e}");
+            assert!(e.contains("--shape-prior runs alone"), "{other:?}: {e}");
+        }
+        let e = preflight(&sp(&["--shape-prior", "reports/ceph400-v1.shape"]).unwrap()).unwrap_err().to_string();
+        eprintln!("--shape-prior reports/ceph400-v1.shape: {e}");
+        assert!(e.contains("git-ignored models folder"), "{e}");
     }
     #[test] fn the_held_back_splits_are_refused_before_anything_runs() {
         let (_d, az, c4) = fixture();
@@ -417,6 +543,83 @@ mod tests {
         }
         assert_eq!(std::fs::read(&ledger).ok(), before, "the ledger is not touched");
         assert!(preflight(&try_args(&["--data", &az, "--split", "valid", "--crosscheck-run"])).is_ok(), "control: a plain run on valid passes");
+    }
+    /// Task 14 edge cases: --chain-proof runs alone, knows only s1, needs --cache, and refuses a Test2 or `all` cache from
+    /// its header before any film is read (the synthetic films file below cannot be parsed) and before the git checks.
+    #[test] fn chain_proof_runs_alone_and_refuses_held_back_caches_first() {
+        let (d, _, c4) = fixture();
+        let e = preflight(&try_args(&["--data", &c4, "--split", "train", "--crosscheck-run", "--chain-proof", "s1"])).unwrap_err().to_string();
+        assert!(e.contains("runs alone"), "{e}");
+        assert!(preflight(&try_args(&["--data", &c4, "--chain-proof", "s1", "--cache", "/tmp/no-cache"])).is_ok(), "control: alone, it passes preflight");
+        let e = chain_proof(&try_args(&["--data", &c4, "--chain-proof", "s2"]), "s2").unwrap_err().to_string();
+        assert!(e.contains("only s1"), "{e}");
+        let e = chain_proof(&try_args(&["--data", &c4, "--chain-proof", "s1"]), "s1").unwrap_err().to_string();
+        assert!(e.contains("needs --cache"), "{e}");
+        let cache = |name: &str, split: &str| {
+            let c = d.path().join(name);
+            std::fs::create_dir_all(&c).unwrap();
+            std::fs::write(c.join("cache-header.json"), format!(r#"{{"dataset":"ceph400","split":"{split}","gitSha":"SYNTHETIC","models":{{}},"providers":{{}},"windows":[],"films":1}}"#)).unwrap();
+            std::fs::write(c.join("detections.jsonl"), "SYNTHETIC: not a film\n").unwrap();
+            c.to_string_lossy().to_string()
+        };
+        let train = cache("cache-train", "train");
+        for split in ["test2", "all"] {
+            let held = cache(&format!("cache-{split}"), split);
+            let e = chain_proof(&try_args(&["--data", &c4, "--chain-proof", "s1", "--cache", &format!("{train},{held}")]), "s1").unwrap_err().to_string();
+            assert!(e.contains("held back"), "{split}: {e}");
+        }
+        let e = chain_proof(&try_args(&["--data", &c4, "--chain-proof", "s1", "--cache", &train]), "s1").unwrap_err().to_string();
+        assert!(!e.contains("held back"), "control: an allowed cache gets past the held-back check: {e}");
+    }
+    /// The post-hoc P1.3 follow-up (owner 27 Oct): `--posthoc-clinicians` goes only with `--chain-proof s1`, needs at
+    /// least one clinician, and keeps every guard of the proof (a Test2 or `all` cache is refused from its header).
+    #[test] fn posthoc_clinicians_goes_only_with_the_chain_proof_and_keeps_its_guards() {
+        let (d, _, c4) = fixture();
+        let e = preflight(&try_args(&["--data", &c4, "--split", "train", "--posthoc-clinicians", "2000"])).unwrap_err().to_string();
+        assert!(e.contains("--posthoc-clinicians") && e.contains("--chain-proof s1"), "{e}");
+        let e = preflight(&try_args(&["--data", &c4, "--split", "train", "--crosscheck-run", "--posthoc-clinicians", "2000"])).unwrap_err().to_string();
+        assert!(e.contains("--chain-proof s1"), "{e}");
+        let e = preflight(&try_args(&["--data", &c4, "--chain-proof", "s1", "--cache", "/tmp/no-cache", "--posthoc-clinicians", "0"])).unwrap_err().to_string();
+        assert!(e.contains("at least 1"), "{e}");
+        assert!(preflight(&try_args(&["--data", &c4, "--chain-proof", "s1", "--cache", "/tmp/no-cache", "--posthoc-clinicians", "2000"])).is_ok(), "control: with the proof it passes preflight");
+        let c = d.path().join("cache-test2");
+        std::fs::create_dir_all(&c).unwrap();
+        std::fs::write(c.join("cache-header.json"), r#"{"dataset":"ceph400","split":"test2","gitSha":"SYNTHETIC","models":{},"providers":{},"windows":[],"films":1}"#).unwrap();
+        std::fs::write(c.join("detections.jsonl"), "SYNTHETIC: not a film\n").unwrap();
+        let e = chain_proof(&try_args(&["--data", &c4, "--chain-proof", "s1", "--cache", &c.to_string_lossy(), "--posthoc-clinicians", "2000"]), "s1").unwrap_err().to_string();
+        assert!(e.contains("held back"), "{e}");
+    }
+    /// SYNTHETIC films (uniform wobble of ±25 px about the answer, 0.1 mm per px) carrying Aariz on Go, Po and B.
+    fn synthetic_films(n: usize) -> (Vec<ceph_bench::xcache::FilmRun>, ceph_bench::dataset::Points) {
+        use ceph_bench::xcache::{CachedPoint, FilmRun};
+        let mut r = ceph_bench::chainproof::Rng::new(5);
+        let mut g = || ((r.next() >> 11) as f64 / (1u64 << 53) as f64 - 0.5) * 50.0;
+        let (mut films, mut gt) = (vec![], ceph_bench::dataset::Points::new());
+        for i in 0..n {
+            let film = format!("SYNTHETIC-{i:03}");
+            let pts: std::collections::BTreeMap<String, CachedPoint> = ["Go", "Po", "B"].iter().map(|p| (p.to_string(), CachedPoint { x: 500.0 + g(), y: 500.0 + g(), cov: Default::default() })).collect();
+            films.push(FilmRun { film: film.clone(), mm_per_px: 0.1, models: [(ceph_model::best::DEFAULT_BASE.to_string(), Ok(pts))].into_iter().collect() });
+            gt.insert(film, ["Go", "Po", "B"].iter().map(|p| (p.to_string(), 500.0, 500.0)).collect());
+        }
+        (films, gt)
+    }
+    /// The post-hoc run's ending: it writes posthoc-p13-<N>.json beside, never over, chain-proof-s1.json; exits 0 when the
+    /// control held and films were analysed; and exits 1 (an error) when the control broke or nothing was analysed.
+    #[test] fn posthoc_finish_writes_its_own_file_and_errs_on_a_broken_control_or_no_films() {
+        let (films, gt) = synthetic_films(80);
+        let p = ceph_bench::chainproof::Prereg { clinicians: 20, ..serde_json::from_str(ceph_bench::chainproof::PREREG).unwrap() };
+        let out = tempfile::tempdir().unwrap();
+        let s1 = out.path().join("chain-proof-s1.json");
+        std::fs::write(&s1, "SYNTHETIC S1 RESULT").unwrap();
+        let path = posthoc_finish(out.path(), &films, &gt, &p, 30).unwrap();
+        assert_eq!(path, out.path().join("posthoc-p13-30.json"));
+        assert_eq!(std::fs::read_to_string(&s1).unwrap(), "SYNTHETIC S1 RESULT", "the S1 report is never touched");
+        let broken = ceph_bench::chainproof::Prereg { control_offset_mm: 0.0, ..p.clone() };
+        let e = posthoc_finish(out.path(), &films, &gt, &broken, 30).unwrap_err().to_string();
+        assert!(e.contains("instrument is broken") && e.contains(ceph_bench::chainproof::POSTHOC_LABEL), "{e}");
+        let e = posthoc_finish(out.path(), &[], &gt, &p, 30).unwrap_err().to_string();
+        assert!(e.contains("only 0"), "{e}");
+        assert_eq!(std::fs::read_to_string(&s1).unwrap(), "SYNTHETIC S1 RESULT");
     }
     #[test] fn crosscheck_tune_takes_aariz_valid_only() {
         let (_d, _, c4) = fixture();

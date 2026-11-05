@@ -164,7 +164,7 @@ const results = []; const ok = (name, cond, extra = '') => { results.push(`${con
               localStorage.removeItem('__delayFilmDetails');
               return new Promise((r) => setTimeout(() => r(db.settings[a.key] ?? null), 700));
             }
-            return db.settings[a.key] ?? null;
+            return a.key === 'betaNoticeSeen' ? '1' : (db.settings[a.key] ?? null);
           }
           case 'settings_set': db.settings[a.key] = a.value; store(db); return null;
           default: return null;
@@ -194,8 +194,8 @@ const results = []; const ok = (name, cond, extra = '') => { results.push(`${con
   const ft = page.locator('section[aria-label="Text on the film"]');
   const what = (n) => ft.getByLabel(`What line ${n} is`, { exact: true });
   const optionLabels = await what(1).locator('option').allInnerTexts();
-  ok('D1. the drop-down lists the new choices in order', JSON.stringify(optionLabels) === JSON.stringify(['—', 'Full name', 'Last name', 'First name(s)', 'DOB',
-    'Film date', 'Scan ID', 'Patient ID', 'X-ray type', 'X-ray dimensions', 'Radiography practice', 'Referring practitioner', 'Gender']), JSON.stringify(optionLabels));
+  ok('D1. the drop-down lists the new choices in order', JSON.stringify(optionLabels) === JSON.stringify(['—', 'Title', 'Full name', 'Last name', 'First name(s)', 'DOB', 'Age',
+    'Gender', 'Film date', 'Scan ID', 'Patient ID', 'X-ray type', 'X-ray dimensions', 'Radiography practice', 'Referring practitioner']), JSON.stringify(optionLabels));
   await what(2).selectOption('last'); await page.waitForTimeout(200);
   // Fix round 1, item 5: `.innerText()` on a locator that never appears waits the full 30s timeout and crashes the
   // run (exit 2) instead of printing FAIL — count()/allInnerTexts() never wait, so a missing note reads as a clean
@@ -253,7 +253,13 @@ const results = []; const ok = (name, cond, extra = '') => { results.push(`${con
   // shows a BLANK Patient ID box, and the Library ID line lists the ID seen on its sibling X-ray instead.
   const timepoint = (tp) => page.locator('.case-panel label', { hasText: 'Timepoint' }).locator('input').fill(tp)
     .then(() => page.locator('.case-panel label', { hasText: 'Timepoint' }).locator('input').press('Tab')).then(() => page.waitForTimeout(200));
-  const libLine = () => page.locator('.library-line').innerText();
+  // Owner D2 (19 Oct): the Library ID line is a fold heading, closed by default — open it, then read the heading and
+  // what it folds (the Patient IDs line), triangle dropped. With nothing to fold there is no button and nothing to open.
+  const openLibFold = async () => { const t = page.locator('.library-fold button.library-line[aria-expanded="false"]');
+    if (await t.count()) { await t.click(); await page.waitForTimeout(100); } };
+  const libLine = async () => { await openLibFold();
+    return [(await page.locator('.library-fold .library-line').evaluate((e) => e.textContent)).replace(/^[▸▾]/, ''),
+      ...(await page.locator('.library-fold .library-ids').allInnerTexts())].join(' · '); };
   const libIdIn = (text) => (text.match(/Library ID (L-\d{5})/) || [])[1];
 
   await toLibrary();
@@ -448,7 +454,7 @@ const results = []; const ok = (name, cond, extra = '') => { results.push(`${con
   const set = page.getByRole('dialog', { name: 'Settings' });
   await set.getByRole('tab', { name: 'Text on the film' }).click();
   const boxes = set.locator('.film-details-settings input[type="checkbox"]');
-  ok('S1. Settings › Text on the film lists every detail, all on', (await boxes.count()) === 12
+  ok('S1. Settings › Text on the film lists every detail, all on', (await boxes.count()) === 14
     && (await boxes.evaluateAll((els) => els.every((e) => e.checked))));
   // S7 (owner Q12, Task 10): switching "Full name" off hides exactly what it says — the drop-down loses "Full
   // name" but keeps "Last name"/"First name(s)"; the Patient box and its Pick button are unaffected (they are
@@ -465,7 +471,8 @@ const results = []; const ok = (name, cond, extra = '') => { results.push(`${con
   await set.getByLabel('X-ray dimensions', { exact: true }).uncheck();
   await set.getByLabel('Gender', { exact: true }).uncheck(); await page.waitForTimeout(300);
   const saved = await page.evaluate(() => JSON.parse(localStorage.getItem('fakeLib')).settings.film_details_off);
-  ok('S2. two quick switches are both saved', saved === '["xraySize","gender"]', saved);
+  // E (Task 3): the saved order follows FILM_CHOICES, which now puts Gender before X-ray dimensions.
+  ok('S2. two quick switches are both saved', saved === '["gender","xraySize"]', saved);
   await set.getByRole('button', { name: 'Close' }).click();
   const opts = (n) => ft.getByLabel(`What line ${n} is`, { exact: true }).locator('option').allInnerTexts();
   const o2 = await opts(2);
@@ -476,7 +483,7 @@ const results = []; const ok = (name, cond, extra = '') => { results.push(`${con
   await importFile('nodob-details.png');                                    // DOB blank: Choose on the film opens by itself
   await page.waitForSelector('.choose-word');
   const w0 = await page.locator('.choose-word').nth(0).boundingBox(); await page.mouse.click(w0.x + w0.width / 2, w0.y + w0.height / 2);
-  const buttons = await page.locator('.chooser button').allInnerTexts();
+  const buttons = await page.locator('.chooser select option').allInnerTexts();
   ok('S5. the Choose-on-the-film buttons follow the switch (Q2 A)', !buttons.includes('X-ray dimensions') && buttons.includes('Patient ID'), JSON.stringify(buttons));
   // S7 control (owner Q12, I1): with "Full name" still ON at this point, the open chooser DOES offer it — proving
   // the assertion below isn't vacuous (it can see the button when it's there; the same selection, left open, is
@@ -486,7 +493,7 @@ const results = []; const ok = (name, cond, extra = '') => { results.push(`${con
   await set.getByRole('tab', { name: 'Text on the film' }).click();
   await set.getByLabel('Full name', { exact: true }).uncheck(); await page.waitForTimeout(300);
   await set.getByRole('button', { name: 'Close' }).click();
-  const buttonsFullOff = await page.locator('.chooser button').allInnerTexts();
+  const buttonsFullOff = await page.locator('.chooser select option').allInnerTexts();
   ok('S7. switching "Full name" off removes it from the Choose-on-the-film buttons too, keeps Last/First',
     !buttonsFullOff.includes('Full name') && buttonsFullOff.includes('Last name') && buttonsFullOff.includes('First name(s)'),
     JSON.stringify(buttonsFullOff));
@@ -494,21 +501,23 @@ const results = []; const ok = (name, cond, extra = '') => { results.push(`${con
   await set.getByRole('tab', { name: 'Text on the film' }).click();
   await set.getByLabel('Full name', { exact: true }).check(); await page.waitForTimeout(300);   // restore (D10 below expects xraySize,gender off only)
   await set.getByRole('button', { name: 'Close' }).click();
-  // Edge case (brief Step 6, I2): all 12 off, then on again — the drop-down keeps only "—" with nothing off,
+  // Edge case (brief Step 6, I2): all off, then on again — the drop-down keeps only "—" with nothing off,
   // then shows every box word again, in order. Ends back on the xraySize/gender-off state the rest of this file
-  // (D10, S3, S4) expects.
+  // (D10, S3, S4) expects. Counts the switches rather than hard-coding 12, so Tasks 10-11's two new switches
+  // (Title, Age) need no further edit here.
   await page.getByRole('button', { name: 'Settings…' }).click();
   await set.getByRole('tab', { name: 'Text on the film' }).click();
-  for (let i = 0; i < 12; i++) await set.locator('.film-details-settings input[type="checkbox"]').nth(i).uncheck();
+  const nBoxes = await set.locator('.film-details-settings input[type="checkbox"]').count();
+  for (let i = 0; i < nBoxes; i++) await set.locator('.film-details-settings input[type="checkbox"]').nth(i).uncheck();
   await page.waitForTimeout(300);
   const optsAllOff = await ft.getByLabel('What line 1 is', { exact: true }).locator('option').allInnerTexts();
-  ok('Edge (all 12 off): the drop-down keeps only "—"', JSON.stringify(optsAllOff) === JSON.stringify(['—']), JSON.stringify(optsAllOff));
-  for (let i = 0; i < 12; i++) await set.locator('.film-details-settings input[type="checkbox"]').nth(i).check();
+  ok('Edge (all off): the drop-down keeps only "—"', JSON.stringify(optsAllOff) === JSON.stringify(['—']), JSON.stringify(optsAllOff));
+  for (let i = 0; i < nBoxes; i++) await set.locator('.film-details-settings input[type="checkbox"]').nth(i).check();
   await page.waitForTimeout(300);
   const optsAllOn = await ft.getByLabel('What line 1 is', { exact: true }).locator('option').allInnerTexts();
-  ok('Edge (all 12 on again): the drop-down lists every box word again, in order', JSON.stringify(optsAllOn) === JSON.stringify(['—', 'Full name',
-    'Last name', 'First name(s)', 'DOB', 'Film date', 'Scan ID', 'Patient ID', 'X-ray type', 'X-ray dimensions', 'Radiography practice',
-    'Referring practitioner', 'Gender']), JSON.stringify(optsAllOn));
+  ok('Edge (all on again): the drop-down lists every box word again, in order', JSON.stringify(optsAllOn) === JSON.stringify(['—', 'Title', 'Full name',
+    'Last name', 'First name(s)', 'DOB', 'Age', 'Gender', 'Film date', 'Scan ID', 'Patient ID', 'X-ray type', 'X-ray dimensions', 'Radiography practice',
+    'Referring practitioner']), JSON.stringify(optsAllOn));
   await set.getByLabel('X-ray dimensions', { exact: true }).uncheck();
   await set.getByLabel('Gender', { exact: true }).uncheck(); await page.waitForTimeout(300);   // back to the state D10/S3/S4 expect
   await set.getByRole('button', { name: 'Close' }).click();
@@ -693,7 +702,7 @@ const results = []; const ok = (name, cond, extra = '') => { results.push(`${con
   await importFile('trail.png');
   await timepoint('TT1');
   await field('Patient').fill('Demo Trail'); await field('Patient').press('Tab'); await page.waitForTimeout(300);   // SYNTHETIC
-  const trailIs = () => page.locator('.library-trail li').allInnerTexts();
+  const trailIs = async () => { await openLibFold(); return page.locator('.library-trail li').allInnerTexts(); };
   const wantTrail = ['L-00090 was merged into L-00091 on 16/10/2026.', 'L-00091 was merged into this patient on 17/10/2026.',
     'An X-ray left this patient on 18/10/2026. It is now L-00092 (Smith, John).',
     'An X-ray left L-00091 on 18/10/2026. It has no name now, so it has no Library ID.'];
@@ -702,6 +711,7 @@ const results = []; const ok = (name, cond, extra = '') => { results.push(`${con
   await toLibrary();
   await page.getByRole('button', { name: 'Open Demo Trail TT1' }).click(); await page.waitForSelector('g.landmark[data-id="S"]');
   ok('TR2. closed and reopened, the same trail', JSON.stringify(await trailIs()) === JSON.stringify(wantTrail), (await trailIs()).join(' | '));
+  await openLibFold();
   const trailFit = (await page.locator('.library-trail').count()) === 1 ? await page.locator('.library-trail').evaluate((el) => ({ sw: el.scrollWidth,
     w: el.clientWidth, right: el.getBoundingClientRect().right, panelRight: el.closest('.case-panel').getBoundingClientRect().right })) : null;
   ok('TR3. the lines wrap inside the panel, nothing clipped', !!trailFit && trailFit.sw <= trailFit.w + 1 && trailFit.right <= trailFit.panelRight + 1, JSON.stringify(trailFit));
@@ -710,6 +720,7 @@ const results = []; const ok = (name, cond, extra = '') => { results.push(`${con
   await page.getByRole('button', { name: '‹ Tracing' }).click();
   await toLibrary();
   await page.getByRole('button', { name: 'Open Demo Target T1' }).click(); await page.waitForSelector('g.landmark[data-id="S"]');
+  await openLibFold();
   ok('TR5. a patient with nothing to trace shows no trail list at all', (await page.locator('.library-trail').count()) === 0);
 
   ok('no page errors', errors.length === 0, errors.slice(0, 3).join(' | '));

@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { differentIdNote, libraryLine, matchText, sameId, trailLines } from './patientIds';
+import { differentIdNote, foldedPatientNote, idsSeenLine, libraryHead, matchText, sameId, trailLines } from './patientIds';
 import type { TrailLine } from '../ipc';
 // SYNTHETIC names, dates and IDs only.
 describe('patient IDs on screen (Q8, LIBID-1)', () => {
@@ -7,12 +7,11 @@ describe('patient IDs on screen (Q8, LIBID-1)', () => {
     expect(sameId('zq 7781', 'ZQ7781')).toBe(true);
     expect(sameId('05566', '5566')).toBe(false);
   });
-  it('the Library ID line lists every Patient ID on the patient\'s X-rays', () => {
-    expect(libraryLine({ libraryId: 'L-00042', patientIdsSeen: ['5566', 'ZQ-7781'] }))
-      .toBe('Library ID L-00042 · Patient IDs on this patient\'s X-rays: 5566, ZQ-7781');
-    expect(libraryLine({ libraryId: 'L-00042', patientIdsSeen: [] })).toBe('Library ID L-00042');
-    expect(libraryLine({ libraryId: null, patientIdsSeen: ['5566'] }))
-      .toBe('Library ID: given once the patient has a name · Patient IDs on this patient\'s X-rays: 5566');
+  it('the Library ID heading, and the Patient IDs seen as their own line (owner D2)', () => {
+    expect(libraryHead({ libraryId: 'L-00042' })).toBe('Library ID L-00042');
+    expect(libraryHead({ libraryId: null })).toBe('Library ID: given once the patient has a name');
+    expect(idsSeenLine({ patientIdsSeen: ['5566', 'ZQ-7781'] })).toBe("Patient IDs on this patient's X-rays: 5566, ZQ-7781");
+    expect(idsSeenLine({ patientIdsSeen: [] })).toBeNull();
   });
   it('notes a different ID on another X-ray of this patient, and only then', () => {
     expect(differentIdNote({ printedPatientId: '5566', patientIdsSeen: ['5566', 'ZQ-7781'] })).toBe(
@@ -26,6 +25,10 @@ describe('patient IDs on screen (Q8, LIBID-1)', () => {
       .toBe('Patient ID 5566 is also on 2 X-rays of Smith, John · 07/03/1990 (L-00007).');
     expect(matchText({ libraryId: 'L-00007', patient: { name: 'Demo', dateOfBirth: null }, films: 1 }, '5566', 'AU'))
       .toBe('Patient ID 5566 is also on 1 X-ray of Demo (L-00007).');
+  });
+  it('the folded Patient heading names the Library ID, or says there is none yet (owner P3; R7)', () => {
+    expect(foldedPatientNote({ libraryId: 'L-00002' })).toBe('L-00002');
+    expect(foldedPatientNote({ libraryId: null })).toBe('no Library ID yet');
   });
   it('says where each number went, in plain words, oldest first (owner L9-A)', () => {
     const libraryTrail: TrailLine[] = [

@@ -622,8 +622,14 @@ describe('website values (Task 8, N4): Björk–Jarabak, ABO, Nagasaki, Radney, 
       expect([r.setId, r.mean, r.sd, r.range ? [r.range.low, r.range.high] : null]).toEqual([web.set, mean, sd, range]);
     });
 
-    it('the measurements the page gives no number for resolve to nothing', () => {
-      expect(web.none.filter((id) => resolveOwn(analysisId, id).kind !== 'none')).toEqual([]);
+    // Owner decision 6 (29 Oct 2026): with no population at all, Auto now fills a row neither the analysis nor your
+    // norms have (was: none). The page's set still never supplies these: each is either none or an Auto row from
+    // another study, flagged as such.
+    it('the measurements the page gives no number for never come from the page (none, or Auto from another study)', () => {
+      expect(web.none.filter((id) => {
+        const r = resolveOwn(analysisId, id);
+        return r.kind === 'norm' && (r.setId === web.set || !r.flags.includes('auto-fallback'));
+      })).toEqual([]);
     });
   });
 
@@ -704,9 +710,9 @@ describe('website values (Task 8, N4): Björk–Jarabak, ABO, Nagasaki, Radney, 
     expect(setById('onfile-kim-cf-ei')!.caveats.some((c) => /Kim IK \(1978, 1987\)/.test(c))).toBe(true);
   });
 
-  it('edges: a chosen population with no ABO norm asks (OWNFALL-1), the website value is a choice; with no population a girl of 12 or a man of unknown age gets the same pooled row, never coloured', () => {
+  it('edges: a chosen population with no ABO norm uses ABO\'s own (website) value, Auto, ungraded (N-A3, AUTO-Q5); with no population a girl of 12 or a man of unknown age gets the same pooled row, never coloured', () => {
     const jp = { measurement: 'm90_SNMP_ABO', analysisId: 'abo', clinicDefault: null, sets, userNorms: [], population: 'japanese', sex: 'F' as const, ageYears: 12 };
-    expect(resolveNorm(jp).kind).toBe('choose');
+    const auto = resolveNorm(jp); expect(auto.kind === 'norm' && [auto.setId, auto.mean, auto.colour, auto.flags.includes('website'), auto.flags.includes('auto-fallback')]).toEqual(['onfile-abo', 32, false, true, true]);   // AUTO-Q5: the own norm is a website value — shown, not graded
     const picked = resolveNorm({ ...jp, picks: { japanese: { m90_SNMP_ABO: 'analysis-own' } } });
     expect(picked.kind === 'norm' && [picked.setId, picked.mean, picked.colour, picked.flags.includes('website'), picked.flags.includes('chosen-by-you')]).toEqual(['onfile-abo', 32, false, true, true]);
     const cases = [
@@ -2252,13 +2258,13 @@ describe('deferred papers (Task 10): kim2025, alassiry2022-eastman, almaaitah202
       .toEqual(['gu2011-caucasian', 'mcnamara1984-annarbor', 'mcnamara1984-bolton', 'mcnamara1984-burlington']);
   });
 
-  it('JORDAN-1: Björk–Jarabak sum of angles — a Jordanian man of 30 gets Al Maaitah 2022 (397.21 ± 7.65); a Caucasian man is asked to choose again', () => {
+  it('JORDAN-1: Björk–Jarabak sum of angles — a Jordanian man of 30 gets Al Maaitah 2022 (397.21 ± 7.65); a Caucasian man gets Jarabak\'s own norm (Auto)', () => {
     const r = resolveNorm({ measurement: 'm39_SumAngles', analysisId: 'bjork-jarabak', population: 'jordanian', clinicDefault: null, sex: 'M', ageYears: 30, sets, userNorms: [] });
     expect(r.kind === 'norm' && [r.setId, r.mean, r.sd, r.colour, r.flags.includes('close')]).toEqual(['almaaitah2022', 397.21, 7.65, true, true]);
     expect(r.kind === 'norm' && r.sourceLine).toMatch(/^Al Maaitah 2022, Middle-Eastern \/ Jordanian \(Irbid\), 18–40 y/);
-    // Caucasian has no sum of angles once Al Maaitah left it, so the clinician chooses (NORM-PICK-1), Jordanian among the choices.
+    // N-A3: Caucasian has no sum of angles; step 2, Jarabak's own norm (step 3 is the same population).
     const cau = resolveNorm({ measurement: 'm39_SumAngles', analysisId: 'bjork-jarabak', population: 'caucasian', clinicDefault: null, sex: 'M', ageYears: 30, sets, userNorms: [] });
-    expect(cau.kind).toBe('choose');
+    expect(cau.kind === 'norm' && [cau.setId, cau.mean, cau.flags.includes('auto-fallback')]).toEqual(['jarabak-via-alshahrani2018', 396, true]);
     // No population: Jarabak's own norm, unchanged.
     const own = resolveAged('bjork-jarabak', 'm39_SumAngles', 'M', 30);
     expect(own.kind === 'norm' && own.setId).toBe('jarabak-via-alshahrani2018');

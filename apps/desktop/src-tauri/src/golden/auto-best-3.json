@@ -1,0 +1,1488 @@
+{
+  "no evidence": {
+    "map": {
+      "available": true,
+      "kept": {},
+      "latest": [],
+      "notes": {},
+      "on": true,
+      "uses": {}
+    },
+    "sync": []
+  },
+  "part f, after a decline": {
+    "choices": [
+      {
+        "action": "declined",
+        "at": "<time>",
+        "basis": "mm via assumed scale (an estimate), 60 films",
+        "id": 1,
+        "landmarkId": "Go",
+        "lastCaseId": "film-assumed-59",
+        "lastImportedAt": "2026-01-01T00:59:00.000Z",
+        "modelId": "srpose-cldet23",
+        "numbers": {
+          "acceptedUnmoved": 12,
+          "available": {
+            "assumed": 60,
+            "fit": 0,
+            "machine": 0,
+            "ruler": 0
+          },
+          "basis": "assumed",
+          "films": 60,
+          "leftOutEarlierFile": 0,
+          "modelId": "srpose-cldet23",
+          "verdict": {
+            "check": {
+              "acceptedUnmoved": 6,
+              "caseIds": [
+                "film-assumed-30",
+                "film-assumed-31",
+                "film-assumed-32",
+                "film-assumed-33",
+                "film-assumed-34",
+                "film-assumed-35",
+                "film-assumed-36",
+                "film-assumed-37",
+                "film-assumed-38",
+                "film-assumed-39",
+                "film-assumed-40",
+                "film-assumed-41",
+                "film-assumed-42",
+                "film-assumed-43",
+                "film-assumed-44",
+                "film-assumed-45",
+                "film-assumed-46",
+                "film-assumed-47",
+                "film-assumed-48",
+                "film-assumed-49",
+                "film-assumed-50",
+                "film-assumed-51",
+                "film-assumed-52",
+                "film-assumed-53",
+                "film-assumed-54",
+                "film-assumed-55",
+                "film-assumed-56",
+                "film-assumed-57",
+                "film-assumed-58",
+                "film-assumed-59"
+              ],
+              "challengerMeanMm": 1.2000000000000002,
+              "challengerMedianMm": 1.075,
+              "challengerPlainMeanMm": 1.2000000000000002,
+              "challengerPlainMedianMm": 1.075,
+              "challengerWithin": 30,
+              "challengerWithinShare": 1.0,
+              "first": {
+                "caseId": "film-assumed-30",
+                "importedAt": "2026-01-01T00:30:00.000Z"
+              },
+              "incumbentMeanMm": 1.8000000000000005,
+              "incumbentMedianMm": 2.075,
+              "incumbentPlainMeanMm": 1.8000000000000005,
+              "incumbentPlainMedianMm": 2.075,
+              "incumbentWithin": 14,
+              "incumbentWithinShare": 0.4666666666666667,
+              "last": {
+                "caseId": "film-assumed-59",
+                "importedAt": "2026-01-01T00:59:00.000Z"
+              },
+              "passed": true
+            },
+            "kind": "offer",
+            "look": {
+              "acceptedUnmoved": 6,
+              "caseIds": [
+                "film-assumed-00",
+                "film-assumed-01",
+                "film-assumed-02",
+                "film-assumed-03",
+                "film-assumed-04",
+                "film-assumed-05",
+                "film-assumed-06",
+                "film-assumed-07",
+                "film-assumed-08",
+                "film-assumed-09",
+                "film-assumed-10",
+                "film-assumed-11",
+                "film-assumed-12",
+                "film-assumed-13",
+                "film-assumed-14",
+                "film-assumed-15",
+                "film-assumed-16",
+                "film-assumed-17",
+                "film-assumed-18",
+                "film-assumed-19",
+                "film-assumed-20",
+                "film-assumed-21",
+                "film-assumed-22",
+                "film-assumed-23",
+                "film-assumed-24",
+                "film-assumed-25",
+                "film-assumed-26",
+                "film-assumed-27",
+                "film-assumed-28",
+                "film-assumed-29"
+              ],
+              "challengerMeanMm": 1.2000000000000002,
+              "challengerMedianMm": 1.075,
+              "challengerPlainMeanMm": 1.2000000000000002,
+              "challengerPlainMedianMm": 1.075,
+              "challengerWithin": 30,
+              "challengerWithinShare": 1.0,
+              "first": {
+                "caseId": "film-assumed-00",
+                "importedAt": "2026-01-01T00:00:00.000Z"
+              },
+              "incumbentMeanMm": 1.8000000000000005,
+              "incumbentMedianMm": 2.075,
+              "incumbentPlainMeanMm": 1.8000000000000005,
+              "incumbentPlainMedianMm": 2.075,
+              "incumbentWithin": 14,
+              "incumbentWithinShare": 0.4666666666666667,
+              "last": {
+                "caseId": "film-assumed-29",
+                "importedAt": "2026-01-01T00:29:00.000Z"
+              },
+              "passed": true
+            }
+          }
+        },
+        "operator": "Dr A",
+        "ruleVersion": "best-point/3"
+      }
+    ],
+    "points": [
+      {
+        "current": "aariz-cepha29",
+        "filmsByScale": {
+          "assumed": 0,
+          "fit": 0,
+          "machine": 0,
+          "ruler": 0
+        },
+        "fineTunedRuler": 0,
+        "landmarkId": "S",
+        "leftOutOtherPlacer": 0,
+        "offer": null,
+        "offerBasis": null,
+        "pairs": []
+      },
+      {
+        "current": "aariz-cepha29",
+        "filmsByScale": {
+          "assumed": 0,
+          "fit": 0,
+          "machine": 0,
+          "ruler": 0
+        },
+        "fineTunedRuler": 0,
+        "landmarkId": "N",
+        "leftOutOtherPlacer": 0,
+        "offer": null,
+        "offerBasis": null,
+        "pairs": []
+      },
+      {
+        "current": "aariz-cepha29",
+        "filmsByScale": {
+          "assumed": 0,
+          "fit": 0,
+          "machine": 0,
+          "ruler": 0
+        },
+        "fineTunedRuler": 0,
+        "landmarkId": "Or",
+        "leftOutOtherPlacer": 0,
+        "offer": null,
+        "offerBasis": null,
+        "pairs": []
+      },
+      {
+        "current": "aariz-cepha29",
+        "filmsByScale": {
+          "assumed": 0,
+          "fit": 0,
+          "machine": 0,
+          "ruler": 0
+        },
+        "fineTunedRuler": 0,
+        "landmarkId": "Po",
+        "leftOutOtherPlacer": 0,
+        "offer": null,
+        "offerBasis": null,
+        "pairs": []
+      },
+      {
+        "current": "aariz-cepha29",
+        "filmsByScale": {
+          "assumed": 0,
+          "fit": 0,
+          "machine": 0,
+          "ruler": 0
+        },
+        "fineTunedRuler": 0,
+        "landmarkId": "A",
+        "leftOutOtherPlacer": 0,
+        "offer": null,
+        "offerBasis": null,
+        "pairs": []
+      },
+      {
+        "current": "aariz-cepha29",
+        "filmsByScale": {
+          "assumed": 0,
+          "fit": 0,
+          "machine": 0,
+          "ruler": 0
+        },
+        "fineTunedRuler": 0,
+        "landmarkId": "B",
+        "leftOutOtherPlacer": 0,
+        "offer": null,
+        "offerBasis": null,
+        "pairs": []
+      },
+      {
+        "current": "aariz-cepha29",
+        "filmsByScale": {
+          "assumed": 0,
+          "fit": 0,
+          "machine": 0,
+          "ruler": 0
+        },
+        "fineTunedRuler": 0,
+        "landmarkId": "Pog",
+        "leftOutOtherPlacer": 0,
+        "offer": null,
+        "offerBasis": null,
+        "pairs": []
+      },
+      {
+        "current": "aariz-cepha29",
+        "filmsByScale": {
+          "assumed": 0,
+          "fit": 0,
+          "machine": 0,
+          "ruler": 0
+        },
+        "fineTunedRuler": 0,
+        "landmarkId": "Me",
+        "leftOutOtherPlacer": 0,
+        "offer": null,
+        "offerBasis": null,
+        "pairs": []
+      },
+      {
+        "current": "aariz-cepha29",
+        "filmsByScale": {
+          "assumed": 0,
+          "fit": 0,
+          "machine": 0,
+          "ruler": 0
+        },
+        "fineTunedRuler": 0,
+        "landmarkId": "Gn",
+        "leftOutOtherPlacer": 0,
+        "offer": null,
+        "offerBasis": null,
+        "pairs": []
+      },
+      {
+        "current": "aariz-cepha29",
+        "filmsByScale": {
+          "assumed": 60,
+          "fit": 0,
+          "machine": 0,
+          "ruler": 0
+        },
+        "fineTunedRuler": 0,
+        "landmarkId": "Go",
+        "leftOutOtherPlacer": 0,
+        "offer": null,
+        "offerBasis": null,
+        "pairs": [
+          {
+            "acceptedUnmoved": 0,
+            "available": {
+              "assumed": 0,
+              "fit": 0,
+              "machine": 0,
+              "ruler": 0
+            },
+            "basis": null,
+            "films": 0,
+            "leftOutEarlierFile": 0,
+            "modelId": "srpose-cldet23",
+            "verdict": {
+              "films": 0,
+              "kind": "notEnough"
+            }
+          }
+        ]
+      },
+      {
+        "current": "aariz-cepha29",
+        "filmsByScale": {
+          "assumed": 0,
+          "fit": 0,
+          "machine": 0,
+          "ruler": 0
+        },
+        "fineTunedRuler": 0,
+        "landmarkId": "L1T",
+        "leftOutOtherPlacer": 0,
+        "offer": null,
+        "offerBasis": null,
+        "pairs": []
+      },
+      {
+        "current": "aariz-cepha29",
+        "filmsByScale": {
+          "assumed": 0,
+          "fit": 0,
+          "machine": 0,
+          "ruler": 0
+        },
+        "fineTunedRuler": 0,
+        "landmarkId": "U1T",
+        "leftOutOtherPlacer": 0,
+        "offer": null,
+        "offerBasis": null,
+        "pairs": []
+      },
+      {
+        "current": "aariz-cepha29",
+        "filmsByScale": {
+          "assumed": 0,
+          "fit": 0,
+          "machine": 0,
+          "ruler": 0
+        },
+        "fineTunedRuler": 0,
+        "landmarkId": "UL",
+        "leftOutOtherPlacer": 0,
+        "offer": null,
+        "offerBasis": null,
+        "pairs": []
+      },
+      {
+        "current": "aariz-cepha29",
+        "filmsByScale": {
+          "assumed": 0,
+          "fit": 0,
+          "machine": 0,
+          "ruler": 0
+        },
+        "fineTunedRuler": 0,
+        "landmarkId": "LL",
+        "leftOutOtherPlacer": 0,
+        "offer": null,
+        "offerBasis": null,
+        "pairs": []
+      },
+      {
+        "current": "aariz-cepha29",
+        "filmsByScale": {
+          "assumed": 0,
+          "fit": 0,
+          "machine": 0,
+          "ruler": 0
+        },
+        "fineTunedRuler": 0,
+        "landmarkId": "Sn",
+        "leftOutOtherPlacer": 0,
+        "offer": null,
+        "offerBasis": null,
+        "pairs": []
+      },
+      {
+        "current": "aariz-cepha29",
+        "filmsByScale": {
+          "assumed": 0,
+          "fit": 0,
+          "machine": 0,
+          "ruler": 0
+        },
+        "fineTunedRuler": 0,
+        "landmarkId": "PogS",
+        "leftOutOtherPlacer": 0,
+        "offer": null,
+        "offerBasis": null,
+        "pairs": []
+      },
+      {
+        "current": "aariz-cepha29",
+        "filmsByScale": {
+          "assumed": 0,
+          "fit": 0,
+          "machine": 0,
+          "ruler": 0
+        },
+        "fineTunedRuler": 0,
+        "landmarkId": "PNS",
+        "leftOutOtherPlacer": 0,
+        "offer": null,
+        "offerBasis": null,
+        "pairs": []
+      },
+      {
+        "current": "aariz-cepha29",
+        "filmsByScale": {
+          "assumed": 0,
+          "fit": 0,
+          "machine": 0,
+          "ruler": 0
+        },
+        "fineTunedRuler": 0,
+        "landmarkId": "ANS",
+        "leftOutOtherPlacer": 0,
+        "offer": null,
+        "offerBasis": null,
+        "pairs": []
+      },
+      {
+        "current": "aariz-cepha29",
+        "filmsByScale": {
+          "assumed": 0,
+          "fit": 0,
+          "machine": 0,
+          "ruler": 0
+        },
+        "fineTunedRuler": 0,
+        "landmarkId": "Ar",
+        "leftOutOtherPlacer": 0,
+        "offer": null,
+        "offerBasis": null,
+        "pairs": []
+      }
+    ]
+  },
+  "part f, assumed scale": {
+    "choices": [],
+    "points": [
+      {
+        "current": "aariz-cepha29",
+        "filmsByScale": {
+          "assumed": 0,
+          "fit": 0,
+          "machine": 0,
+          "ruler": 0
+        },
+        "fineTunedRuler": 0,
+        "landmarkId": "S",
+        "leftOutOtherPlacer": 0,
+        "offer": null,
+        "offerBasis": null,
+        "pairs": []
+      },
+      {
+        "current": "aariz-cepha29",
+        "filmsByScale": {
+          "assumed": 0,
+          "fit": 0,
+          "machine": 0,
+          "ruler": 0
+        },
+        "fineTunedRuler": 0,
+        "landmarkId": "N",
+        "leftOutOtherPlacer": 0,
+        "offer": null,
+        "offerBasis": null,
+        "pairs": []
+      },
+      {
+        "current": "aariz-cepha29",
+        "filmsByScale": {
+          "assumed": 0,
+          "fit": 0,
+          "machine": 0,
+          "ruler": 0
+        },
+        "fineTunedRuler": 0,
+        "landmarkId": "Or",
+        "leftOutOtherPlacer": 0,
+        "offer": null,
+        "offerBasis": null,
+        "pairs": []
+      },
+      {
+        "current": "aariz-cepha29",
+        "filmsByScale": {
+          "assumed": 0,
+          "fit": 0,
+          "machine": 0,
+          "ruler": 0
+        },
+        "fineTunedRuler": 0,
+        "landmarkId": "Po",
+        "leftOutOtherPlacer": 0,
+        "offer": null,
+        "offerBasis": null,
+        "pairs": []
+      },
+      {
+        "current": "aariz-cepha29",
+        "filmsByScale": {
+          "assumed": 0,
+          "fit": 0,
+          "machine": 0,
+          "ruler": 0
+        },
+        "fineTunedRuler": 0,
+        "landmarkId": "A",
+        "leftOutOtherPlacer": 0,
+        "offer": null,
+        "offerBasis": null,
+        "pairs": []
+      },
+      {
+        "current": "aariz-cepha29",
+        "filmsByScale": {
+          "assumed": 0,
+          "fit": 0,
+          "machine": 0,
+          "ruler": 0
+        },
+        "fineTunedRuler": 0,
+        "landmarkId": "B",
+        "leftOutOtherPlacer": 0,
+        "offer": null,
+        "offerBasis": null,
+        "pairs": []
+      },
+      {
+        "current": "aariz-cepha29",
+        "filmsByScale": {
+          "assumed": 0,
+          "fit": 0,
+          "machine": 0,
+          "ruler": 0
+        },
+        "fineTunedRuler": 0,
+        "landmarkId": "Pog",
+        "leftOutOtherPlacer": 0,
+        "offer": null,
+        "offerBasis": null,
+        "pairs": []
+      },
+      {
+        "current": "aariz-cepha29",
+        "filmsByScale": {
+          "assumed": 0,
+          "fit": 0,
+          "machine": 0,
+          "ruler": 0
+        },
+        "fineTunedRuler": 0,
+        "landmarkId": "Me",
+        "leftOutOtherPlacer": 0,
+        "offer": null,
+        "offerBasis": null,
+        "pairs": []
+      },
+      {
+        "current": "aariz-cepha29",
+        "filmsByScale": {
+          "assumed": 0,
+          "fit": 0,
+          "machine": 0,
+          "ruler": 0
+        },
+        "fineTunedRuler": 0,
+        "landmarkId": "Gn",
+        "leftOutOtherPlacer": 0,
+        "offer": null,
+        "offerBasis": null,
+        "pairs": []
+      },
+      {
+        "current": "aariz-cepha29",
+        "filmsByScale": {
+          "assumed": 60,
+          "fit": 0,
+          "machine": 0,
+          "ruler": 0
+        },
+        "fineTunedRuler": 0,
+        "landmarkId": "Go",
+        "leftOutOtherPlacer": 0,
+        "offer": "srpose-cldet23",
+        "offerBasis": "assumed",
+        "pairs": [
+          {
+            "acceptedUnmoved": 12,
+            "available": {
+              "assumed": 60,
+              "fit": 0,
+              "machine": 0,
+              "ruler": 0
+            },
+            "basis": "assumed",
+            "films": 60,
+            "leftOutEarlierFile": 0,
+            "modelId": "srpose-cldet23",
+            "verdict": {
+              "check": {
+                "acceptedUnmoved": 6,
+                "caseIds": [
+                  "film-assumed-30",
+                  "film-assumed-31",
+                  "film-assumed-32",
+                  "film-assumed-33",
+                  "film-assumed-34",
+                  "film-assumed-35",
+                  "film-assumed-36",
+                  "film-assumed-37",
+                  "film-assumed-38",
+                  "film-assumed-39",
+                  "film-assumed-40",
+                  "film-assumed-41",
+                  "film-assumed-42",
+                  "film-assumed-43",
+                  "film-assumed-44",
+                  "film-assumed-45",
+                  "film-assumed-46",
+                  "film-assumed-47",
+                  "film-assumed-48",
+                  "film-assumed-49",
+                  "film-assumed-50",
+                  "film-assumed-51",
+                  "film-assumed-52",
+                  "film-assumed-53",
+                  "film-assumed-54",
+                  "film-assumed-55",
+                  "film-assumed-56",
+                  "film-assumed-57",
+                  "film-assumed-58",
+                  "film-assumed-59"
+                ],
+                "challengerMeanMm": 1.2000000000000002,
+                "challengerMedianMm": 1.075,
+                "challengerPlainMeanMm": 1.2000000000000002,
+                "challengerPlainMedianMm": 1.075,
+                "challengerWithin": 30,
+                "challengerWithinShare": 1.0,
+                "first": {
+                  "caseId": "film-assumed-30",
+                  "importedAt": "2026-01-01T00:30:00.000Z"
+                },
+                "incumbentMeanMm": 1.8000000000000005,
+                "incumbentMedianMm": 2.075,
+                "incumbentPlainMeanMm": 1.8000000000000005,
+                "incumbentPlainMedianMm": 2.075,
+                "incumbentWithin": 14,
+                "incumbentWithinShare": 0.4666666666666667,
+                "last": {
+                  "caseId": "film-assumed-59",
+                  "importedAt": "2026-01-01T00:59:00.000Z"
+                },
+                "passed": true
+              },
+              "kind": "offer",
+              "look": {
+                "acceptedUnmoved": 6,
+                "caseIds": [
+                  "film-assumed-00",
+                  "film-assumed-01",
+                  "film-assumed-02",
+                  "film-assumed-03",
+                  "film-assumed-04",
+                  "film-assumed-05",
+                  "film-assumed-06",
+                  "film-assumed-07",
+                  "film-assumed-08",
+                  "film-assumed-09",
+                  "film-assumed-10",
+                  "film-assumed-11",
+                  "film-assumed-12",
+                  "film-assumed-13",
+                  "film-assumed-14",
+                  "film-assumed-15",
+                  "film-assumed-16",
+                  "film-assumed-17",
+                  "film-assumed-18",
+                  "film-assumed-19",
+                  "film-assumed-20",
+                  "film-assumed-21",
+                  "film-assumed-22",
+                  "film-assumed-23",
+                  "film-assumed-24",
+                  "film-assumed-25",
+                  "film-assumed-26",
+                  "film-assumed-27",
+                  "film-assumed-28",
+                  "film-assumed-29"
+                ],
+                "challengerMeanMm": 1.2000000000000002,
+                "challengerMedianMm": 1.075,
+                "challengerPlainMeanMm": 1.2000000000000002,
+                "challengerPlainMedianMm": 1.075,
+                "challengerWithin": 30,
+                "challengerWithinShare": 1.0,
+                "first": {
+                  "caseId": "film-assumed-00",
+                  "importedAt": "2026-01-01T00:00:00.000Z"
+                },
+                "incumbentMeanMm": 1.8000000000000005,
+                "incumbentMedianMm": 2.075,
+                "incumbentPlainMeanMm": 1.8000000000000005,
+                "incumbentPlainMedianMm": 2.075,
+                "incumbentWithin": 14,
+                "incumbentWithinShare": 0.4666666666666667,
+                "last": {
+                  "caseId": "film-assumed-29",
+                  "importedAt": "2026-01-01T00:29:00.000Z"
+                },
+                "passed": true
+              }
+            }
+          }
+        ]
+      },
+      {
+        "current": "aariz-cepha29",
+        "filmsByScale": {
+          "assumed": 0,
+          "fit": 0,
+          "machine": 0,
+          "ruler": 0
+        },
+        "fineTunedRuler": 0,
+        "landmarkId": "L1T",
+        "leftOutOtherPlacer": 0,
+        "offer": null,
+        "offerBasis": null,
+        "pairs": []
+      },
+      {
+        "current": "aariz-cepha29",
+        "filmsByScale": {
+          "assumed": 0,
+          "fit": 0,
+          "machine": 0,
+          "ruler": 0
+        },
+        "fineTunedRuler": 0,
+        "landmarkId": "U1T",
+        "leftOutOtherPlacer": 0,
+        "offer": null,
+        "offerBasis": null,
+        "pairs": []
+      },
+      {
+        "current": "aariz-cepha29",
+        "filmsByScale": {
+          "assumed": 0,
+          "fit": 0,
+          "machine": 0,
+          "ruler": 0
+        },
+        "fineTunedRuler": 0,
+        "landmarkId": "UL",
+        "leftOutOtherPlacer": 0,
+        "offer": null,
+        "offerBasis": null,
+        "pairs": []
+      },
+      {
+        "current": "aariz-cepha29",
+        "filmsByScale": {
+          "assumed": 0,
+          "fit": 0,
+          "machine": 0,
+          "ruler": 0
+        },
+        "fineTunedRuler": 0,
+        "landmarkId": "LL",
+        "leftOutOtherPlacer": 0,
+        "offer": null,
+        "offerBasis": null,
+        "pairs": []
+      },
+      {
+        "current": "aariz-cepha29",
+        "filmsByScale": {
+          "assumed": 0,
+          "fit": 0,
+          "machine": 0,
+          "ruler": 0
+        },
+        "fineTunedRuler": 0,
+        "landmarkId": "Sn",
+        "leftOutOtherPlacer": 0,
+        "offer": null,
+        "offerBasis": null,
+        "pairs": []
+      },
+      {
+        "current": "aariz-cepha29",
+        "filmsByScale": {
+          "assumed": 0,
+          "fit": 0,
+          "machine": 0,
+          "ruler": 0
+        },
+        "fineTunedRuler": 0,
+        "landmarkId": "PogS",
+        "leftOutOtherPlacer": 0,
+        "offer": null,
+        "offerBasis": null,
+        "pairs": []
+      },
+      {
+        "current": "aariz-cepha29",
+        "filmsByScale": {
+          "assumed": 0,
+          "fit": 0,
+          "machine": 0,
+          "ruler": 0
+        },
+        "fineTunedRuler": 0,
+        "landmarkId": "PNS",
+        "leftOutOtherPlacer": 0,
+        "offer": null,
+        "offerBasis": null,
+        "pairs": []
+      },
+      {
+        "current": "aariz-cepha29",
+        "filmsByScale": {
+          "assumed": 0,
+          "fit": 0,
+          "machine": 0,
+          "ruler": 0
+        },
+        "fineTunedRuler": 0,
+        "landmarkId": "ANS",
+        "leftOutOtherPlacer": 0,
+        "offer": null,
+        "offerBasis": null,
+        "pairs": []
+      },
+      {
+        "current": "aariz-cepha29",
+        "filmsByScale": {
+          "assumed": 0,
+          "fit": 0,
+          "machine": 0,
+          "ruler": 0
+        },
+        "fineTunedRuler": 0,
+        "landmarkId": "Ar",
+        "leftOutOtherPlacer": 0,
+        "offer": null,
+        "offerBasis": null,
+        "pairs": []
+      }
+    ],
+    "ruleVersion": "best-point/3"
+  },
+  "sixty ruler films": {
+    "map": {
+      "available": true,
+      "kept": {},
+      "latest": [
+        {
+          "at": "<time>",
+          "basis": "mm, 60 ruler films",
+          "fingerprint": "09e6d41d36cac80eafc5af2b8d493f8e00203bd50dcb08fd24ca3fd2a8bf08ae",
+          "id": 1,
+          "kind": "adopted",
+          "landmarkId": "Go",
+          "lastCaseId": "film-sixty-59",
+          "lastImportedAt": "2026-01-01T00:59:00.000Z",
+          "modelId": "srpose-cldet23",
+          "numbers": {
+            "acceptedUnmoved": 12,
+            "available": {
+              "assumed": 0,
+              "fit": 0,
+              "machine": 0,
+              "ruler": 60
+            },
+            "basis": "ruler",
+            "films": 60,
+            "leftOutEarlierFile": 0,
+            "modelId": "srpose-cldet23",
+            "verdict": {
+              "check": {
+                "acceptedUnmoved": 6,
+                "caseIds": [
+                  "film-sixty-30",
+                  "film-sixty-31",
+                  "film-sixty-32",
+                  "film-sixty-33",
+                  "film-sixty-34",
+                  "film-sixty-35",
+                  "film-sixty-36",
+                  "film-sixty-37",
+                  "film-sixty-38",
+                  "film-sixty-39",
+                  "film-sixty-40",
+                  "film-sixty-41",
+                  "film-sixty-42",
+                  "film-sixty-43",
+                  "film-sixty-44",
+                  "film-sixty-45",
+                  "film-sixty-46",
+                  "film-sixty-47",
+                  "film-sixty-48",
+                  "film-sixty-49",
+                  "film-sixty-50",
+                  "film-sixty-51",
+                  "film-sixty-52",
+                  "film-sixty-53",
+                  "film-sixty-54",
+                  "film-sixty-55",
+                  "film-sixty-56",
+                  "film-sixty-57",
+                  "film-sixty-58",
+                  "film-sixty-59"
+                ],
+                "challengerMeanMm": 1.2000000000000002,
+                "challengerMedianMm": 1.075,
+                "challengerPlainMeanMm": 1.2000000000000002,
+                "challengerPlainMedianMm": 1.075,
+                "challengerWithin": 30,
+                "challengerWithinShare": 1.0,
+                "first": {
+                  "caseId": "film-sixty-30",
+                  "importedAt": "2026-01-01T00:30:00.000Z"
+                },
+                "incumbentMeanMm": 1.8000000000000005,
+                "incumbentMedianMm": 2.075,
+                "incumbentPlainMeanMm": 1.8,
+                "incumbentPlainMedianMm": 2.075,
+                "incumbentWithin": 14,
+                "incumbentWithinShare": 0.4666666666666667,
+                "last": {
+                  "caseId": "film-sixty-59",
+                  "importedAt": "2026-01-01T00:59:00.000Z"
+                },
+                "passed": true
+              },
+              "kind": "offer",
+              "look": {
+                "acceptedUnmoved": 6,
+                "caseIds": [
+                  "film-sixty-00",
+                  "film-sixty-01",
+                  "film-sixty-02",
+                  "film-sixty-03",
+                  "film-sixty-04",
+                  "film-sixty-05",
+                  "film-sixty-06",
+                  "film-sixty-07",
+                  "film-sixty-08",
+                  "film-sixty-09",
+                  "film-sixty-10",
+                  "film-sixty-11",
+                  "film-sixty-12",
+                  "film-sixty-13",
+                  "film-sixty-14",
+                  "film-sixty-15",
+                  "film-sixty-16",
+                  "film-sixty-17",
+                  "film-sixty-18",
+                  "film-sixty-19",
+                  "film-sixty-20",
+                  "film-sixty-21",
+                  "film-sixty-22",
+                  "film-sixty-23",
+                  "film-sixty-24",
+                  "film-sixty-25",
+                  "film-sixty-26",
+                  "film-sixty-27",
+                  "film-sixty-28",
+                  "film-sixty-29"
+                ],
+                "challengerMeanMm": 1.2000000000000002,
+                "challengerMedianMm": 1.075,
+                "challengerPlainMeanMm": 1.2000000000000002,
+                "challengerPlainMedianMm": 1.075,
+                "challengerWithin": 30,
+                "challengerWithinShare": 1.0,
+                "first": {
+                  "caseId": "film-sixty-00",
+                  "importedAt": "2026-01-01T00:00:00.000Z"
+                },
+                "incumbentMeanMm": 1.8000000000000005,
+                "incumbentMedianMm": 2.075,
+                "incumbentPlainMeanMm": 1.8,
+                "incumbentPlainMedianMm": 2.075,
+                "incumbentWithin": 14,
+                "incumbentWithinShare": 0.4666666666666667,
+                "last": {
+                  "caseId": "film-sixty-29",
+                  "importedAt": "2026-01-01T00:29:00.000Z"
+                },
+                "passed": true
+              }
+            }
+          },
+          "operator": "Dr A",
+          "reason": null,
+          "ruleVersion": "best-point/3",
+          "uses": "srpose-cldet23"
+        }
+      ],
+      "notes": {
+        "Go": {
+          "basis": "mm, 60 ruler films",
+          "since": "<time>"
+        }
+      },
+      "on": true,
+      "uses": {
+        "Go": "srpose-cldet23"
+      }
+    },
+    "map after undo": {
+      "available": true,
+      "kept": {
+        "Go": {
+          "modelId": "srpose-cldet23",
+          "since": "<time>"
+        }
+      },
+      "latest": [
+        {
+          "at": "<time>",
+          "basis": "mm, 60 ruler films",
+          "fingerprint": "09e6d41d36cac80eafc5af2b8d493f8e00203bd50dcb08fd24ca3fd2a8bf08ae",
+          "id": 2,
+          "kind": "undone",
+          "landmarkId": "Go",
+          "lastCaseId": "film-sixty-59",
+          "lastImportedAt": "2026-01-01T00:59:00.000Z",
+          "modelId": "srpose-cldet23",
+          "numbers": {
+            "acceptedUnmoved": 12,
+            "available": {
+              "assumed": 0,
+              "fit": 0,
+              "machine": 0,
+              "ruler": 60
+            },
+            "basis": "ruler",
+            "films": 60,
+            "leftOutEarlierFile": 0,
+            "modelId": "srpose-cldet23",
+            "verdict": {
+              "check": {
+                "acceptedUnmoved": 6,
+                "caseIds": [
+                  "film-sixty-30",
+                  "film-sixty-31",
+                  "film-sixty-32",
+                  "film-sixty-33",
+                  "film-sixty-34",
+                  "film-sixty-35",
+                  "film-sixty-36",
+                  "film-sixty-37",
+                  "film-sixty-38",
+                  "film-sixty-39",
+                  "film-sixty-40",
+                  "film-sixty-41",
+                  "film-sixty-42",
+                  "film-sixty-43",
+                  "film-sixty-44",
+                  "film-sixty-45",
+                  "film-sixty-46",
+                  "film-sixty-47",
+                  "film-sixty-48",
+                  "film-sixty-49",
+                  "film-sixty-50",
+                  "film-sixty-51",
+                  "film-sixty-52",
+                  "film-sixty-53",
+                  "film-sixty-54",
+                  "film-sixty-55",
+                  "film-sixty-56",
+                  "film-sixty-57",
+                  "film-sixty-58",
+                  "film-sixty-59"
+                ],
+                "challengerMeanMm": 1.2000000000000002,
+                "challengerMedianMm": 1.075,
+                "challengerPlainMeanMm": 1.2000000000000002,
+                "challengerPlainMedianMm": 1.075,
+                "challengerWithin": 30,
+                "challengerWithinShare": 1.0,
+                "first": {
+                  "caseId": "film-sixty-30",
+                  "importedAt": "2026-01-01T00:30:00.000Z"
+                },
+                "incumbentMeanMm": 1.8000000000000005,
+                "incumbentMedianMm": 2.075,
+                "incumbentPlainMeanMm": 1.8,
+                "incumbentPlainMedianMm": 2.075,
+                "incumbentWithin": 14,
+                "incumbentWithinShare": 0.4666666666666667,
+                "last": {
+                  "caseId": "film-sixty-59",
+                  "importedAt": "2026-01-01T00:59:00.000Z"
+                },
+                "passed": true
+              },
+              "kind": "offer",
+              "look": {
+                "acceptedUnmoved": 6,
+                "caseIds": [
+                  "film-sixty-00",
+                  "film-sixty-01",
+                  "film-sixty-02",
+                  "film-sixty-03",
+                  "film-sixty-04",
+                  "film-sixty-05",
+                  "film-sixty-06",
+                  "film-sixty-07",
+                  "film-sixty-08",
+                  "film-sixty-09",
+                  "film-sixty-10",
+                  "film-sixty-11",
+                  "film-sixty-12",
+                  "film-sixty-13",
+                  "film-sixty-14",
+                  "film-sixty-15",
+                  "film-sixty-16",
+                  "film-sixty-17",
+                  "film-sixty-18",
+                  "film-sixty-19",
+                  "film-sixty-20",
+                  "film-sixty-21",
+                  "film-sixty-22",
+                  "film-sixty-23",
+                  "film-sixty-24",
+                  "film-sixty-25",
+                  "film-sixty-26",
+                  "film-sixty-27",
+                  "film-sixty-28",
+                  "film-sixty-29"
+                ],
+                "challengerMeanMm": 1.2000000000000002,
+                "challengerMedianMm": 1.075,
+                "challengerPlainMeanMm": 1.2000000000000002,
+                "challengerPlainMedianMm": 1.075,
+                "challengerWithin": 30,
+                "challengerWithinShare": 1.0,
+                "first": {
+                  "caseId": "film-sixty-00",
+                  "importedAt": "2026-01-01T00:00:00.000Z"
+                },
+                "incumbentMeanMm": 1.8000000000000005,
+                "incumbentMedianMm": 2.075,
+                "incumbentPlainMeanMm": 1.8,
+                "incumbentPlainMedianMm": 2.075,
+                "incumbentWithin": 14,
+                "incumbentWithinShare": 0.4666666666666667,
+                "last": {
+                  "caseId": "film-sixty-29",
+                  "importedAt": "2026-01-01T00:29:00.000Z"
+                },
+                "passed": true
+              }
+            }
+          },
+          "operator": "Dr A",
+          "reason": null,
+          "ruleVersion": "best-point/3",
+          "uses": null
+        }
+      ],
+      "notes": {},
+      "on": true,
+      "uses": {}
+    },
+    "sync": [
+      {
+        "at": "<time>",
+        "basis": "mm, 60 ruler films",
+        "fingerprint": "09e6d41d36cac80eafc5af2b8d493f8e00203bd50dcb08fd24ca3fd2a8bf08ae",
+        "id": 1,
+        "kind": "adopted",
+        "landmarkId": "Go",
+        "lastCaseId": "film-sixty-59",
+        "lastImportedAt": "2026-01-01T00:59:00.000Z",
+        "modelId": "srpose-cldet23",
+        "numbers": {
+          "acceptedUnmoved": 12,
+          "available": {
+            "assumed": 0,
+            "fit": 0,
+            "machine": 0,
+            "ruler": 60
+          },
+          "basis": "ruler",
+          "films": 60,
+          "leftOutEarlierFile": 0,
+          "modelId": "srpose-cldet23",
+          "verdict": {
+            "check": {
+              "acceptedUnmoved": 6,
+              "caseIds": [
+                "film-sixty-30",
+                "film-sixty-31",
+                "film-sixty-32",
+                "film-sixty-33",
+                "film-sixty-34",
+                "film-sixty-35",
+                "film-sixty-36",
+                "film-sixty-37",
+                "film-sixty-38",
+                "film-sixty-39",
+                "film-sixty-40",
+                "film-sixty-41",
+                "film-sixty-42",
+                "film-sixty-43",
+                "film-sixty-44",
+                "film-sixty-45",
+                "film-sixty-46",
+                "film-sixty-47",
+                "film-sixty-48",
+                "film-sixty-49",
+                "film-sixty-50",
+                "film-sixty-51",
+                "film-sixty-52",
+                "film-sixty-53",
+                "film-sixty-54",
+                "film-sixty-55",
+                "film-sixty-56",
+                "film-sixty-57",
+                "film-sixty-58",
+                "film-sixty-59"
+              ],
+              "challengerMeanMm": 1.2000000000000002,
+              "challengerMedianMm": 1.075,
+              "challengerPlainMeanMm": 1.2000000000000002,
+              "challengerPlainMedianMm": 1.075,
+              "challengerWithin": 30,
+              "challengerWithinShare": 1.0,
+              "first": {
+                "caseId": "film-sixty-30",
+                "importedAt": "2026-01-01T00:30:00.000Z"
+              },
+              "incumbentMeanMm": 1.8000000000000005,
+              "incumbentMedianMm": 2.075,
+              "incumbentPlainMeanMm": 1.8,
+              "incumbentPlainMedianMm": 2.075,
+              "incumbentWithin": 14,
+              "incumbentWithinShare": 0.4666666666666667,
+              "last": {
+                "caseId": "film-sixty-59",
+                "importedAt": "2026-01-01T00:59:00.000Z"
+              },
+              "passed": true
+            },
+            "kind": "offer",
+            "look": {
+              "acceptedUnmoved": 6,
+              "caseIds": [
+                "film-sixty-00",
+                "film-sixty-01",
+                "film-sixty-02",
+                "film-sixty-03",
+                "film-sixty-04",
+                "film-sixty-05",
+                "film-sixty-06",
+                "film-sixty-07",
+                "film-sixty-08",
+                "film-sixty-09",
+                "film-sixty-10",
+                "film-sixty-11",
+                "film-sixty-12",
+                "film-sixty-13",
+                "film-sixty-14",
+                "film-sixty-15",
+                "film-sixty-16",
+                "film-sixty-17",
+                "film-sixty-18",
+                "film-sixty-19",
+                "film-sixty-20",
+                "film-sixty-21",
+                "film-sixty-22",
+                "film-sixty-23",
+                "film-sixty-24",
+                "film-sixty-25",
+                "film-sixty-26",
+                "film-sixty-27",
+                "film-sixty-28",
+                "film-sixty-29"
+              ],
+              "challengerMeanMm": 1.2000000000000002,
+              "challengerMedianMm": 1.075,
+              "challengerPlainMeanMm": 1.2000000000000002,
+              "challengerPlainMedianMm": 1.075,
+              "challengerWithin": 30,
+              "challengerWithinShare": 1.0,
+              "first": {
+                "caseId": "film-sixty-00",
+                "importedAt": "2026-01-01T00:00:00.000Z"
+              },
+              "incumbentMeanMm": 1.8000000000000005,
+              "incumbentMedianMm": 2.075,
+              "incumbentPlainMeanMm": 1.8,
+              "incumbentPlainMedianMm": 2.075,
+              "incumbentWithin": 14,
+              "incumbentWithinShare": 0.4666666666666667,
+              "last": {
+                "caseId": "film-sixty-29",
+                "importedAt": "2026-01-01T00:29:00.000Z"
+              },
+              "passed": true
+            }
+          }
+        },
+        "operator": "Dr A",
+        "reason": null,
+        "ruleVersion": "best-point/3",
+        "uses": "srpose-cldet23"
+      }
+    ],
+    "undo": {
+      "at": "<time>",
+      "basis": "mm, 60 ruler films",
+      "fingerprint": "09e6d41d36cac80eafc5af2b8d493f8e00203bd50dcb08fd24ca3fd2a8bf08ae",
+      "id": 2,
+      "kind": "undone",
+      "landmarkId": "Go",
+      "lastCaseId": "film-sixty-59",
+      "lastImportedAt": "2026-01-01T00:59:00.000Z",
+      "modelId": "srpose-cldet23",
+      "numbers": {
+        "acceptedUnmoved": 12,
+        "available": {
+          "assumed": 0,
+          "fit": 0,
+          "machine": 0,
+          "ruler": 60
+        },
+        "basis": "ruler",
+        "films": 60,
+        "leftOutEarlierFile": 0,
+        "modelId": "srpose-cldet23",
+        "verdict": {
+          "check": {
+            "acceptedUnmoved": 6,
+            "caseIds": [
+              "film-sixty-30",
+              "film-sixty-31",
+              "film-sixty-32",
+              "film-sixty-33",
+              "film-sixty-34",
+              "film-sixty-35",
+              "film-sixty-36",
+              "film-sixty-37",
+              "film-sixty-38",
+              "film-sixty-39",
+              "film-sixty-40",
+              "film-sixty-41",
+              "film-sixty-42",
+              "film-sixty-43",
+              "film-sixty-44",
+              "film-sixty-45",
+              "film-sixty-46",
+              "film-sixty-47",
+              "film-sixty-48",
+              "film-sixty-49",
+              "film-sixty-50",
+              "film-sixty-51",
+              "film-sixty-52",
+              "film-sixty-53",
+              "film-sixty-54",
+              "film-sixty-55",
+              "film-sixty-56",
+              "film-sixty-57",
+              "film-sixty-58",
+              "film-sixty-59"
+            ],
+            "challengerMeanMm": 1.2000000000000002,
+            "challengerMedianMm": 1.075,
+            "challengerPlainMeanMm": 1.2000000000000002,
+            "challengerPlainMedianMm": 1.075,
+            "challengerWithin": 30,
+            "challengerWithinShare": 1.0,
+            "first": {
+              "caseId": "film-sixty-30",
+              "importedAt": "2026-01-01T00:30:00.000Z"
+            },
+            "incumbentMeanMm": 1.8000000000000005,
+            "incumbentMedianMm": 2.075,
+            "incumbentPlainMeanMm": 1.8,
+            "incumbentPlainMedianMm": 2.075,
+            "incumbentWithin": 14,
+            "incumbentWithinShare": 0.4666666666666667,
+            "last": {
+              "caseId": "film-sixty-59",
+              "importedAt": "2026-01-01T00:59:00.000Z"
+            },
+            "passed": true
+          },
+          "kind": "offer",
+          "look": {
+            "acceptedUnmoved": 6,
+            "caseIds": [
+              "film-sixty-00",
+              "film-sixty-01",
+              "film-sixty-02",
+              "film-sixty-03",
+              "film-sixty-04",
+              "film-sixty-05",
+              "film-sixty-06",
+              "film-sixty-07",
+              "film-sixty-08",
+              "film-sixty-09",
+              "film-sixty-10",
+              "film-sixty-11",
+              "film-sixty-12",
+              "film-sixty-13",
+              "film-sixty-14",
+              "film-sixty-15",
+              "film-sixty-16",
+              "film-sixty-17",
+              "film-sixty-18",
+              "film-sixty-19",
+              "film-sixty-20",
+              "film-sixty-21",
+              "film-sixty-22",
+              "film-sixty-23",
+              "film-sixty-24",
+              "film-sixty-25",
+              "film-sixty-26",
+              "film-sixty-27",
+              "film-sixty-28",
+              "film-sixty-29"
+            ],
+            "challengerMeanMm": 1.2000000000000002,
+            "challengerMedianMm": 1.075,
+            "challengerPlainMeanMm": 1.2000000000000002,
+            "challengerPlainMedianMm": 1.075,
+            "challengerWithin": 30,
+            "challengerWithinShare": 1.0,
+            "first": {
+              "caseId": "film-sixty-00",
+              "importedAt": "2026-01-01T00:00:00.000Z"
+            },
+            "incumbentMeanMm": 1.8000000000000005,
+            "incumbentMedianMm": 2.075,
+            "incumbentPlainMeanMm": 1.8,
+            "incumbentPlainMedianMm": 2.075,
+            "incumbentWithin": 14,
+            "incumbentWithinShare": 0.4666666666666667,
+            "last": {
+              "caseId": "film-sixty-29",
+              "importedAt": "2026-01-01T00:29:00.000Z"
+            },
+            "passed": true
+          }
+        }
+      },
+      "operator": "Dr A",
+      "reason": null,
+      "ruleVersion": "best-point/3",
+      "uses": null
+    }
+  }
+}

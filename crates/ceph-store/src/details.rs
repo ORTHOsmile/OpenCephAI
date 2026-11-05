@@ -13,6 +13,19 @@ pub(crate) fn detail_value(v: Option<&str>) -> anyhow::Result<Option<String>> {
     if let Some(s) = v { ensure!(s.chars().count() <= DETAIL_MAX_CHARS, "that is too long (over {DETAIL_MAX_CHARS} characters)"); }
     Ok(v.map(str::to_string))
 }
+/// Owner T1 (19 Oct): refused Title, in the owner's words (the screen shows the same, library/title.ts).
+pub const NOT_A_TITLE: &str = "That isn't a title (Mr, Mrs, Ms, Miss, Master, Dr…)";
+/// Owner AG1 (19 Oct): refused age, in the owner's words.
+pub const NOT_AN_AGE: &str = "That isn't an age";
+/// The owner's title words (T1), lower case, without the dot. Pinned with the screen's `titleIn` to tests/fixtures/titles.json.
+const TITLE_WORDS: [&str; 10] = ["mr", "mrs", "ms", "miss", "mx", "master", "mast", "mstr", "dr", "prof"];
+/// A typed or chosen title: trimmed; blank is None; one of the owner's words with or without one dot, any case.
+pub(crate) fn title_value(v: Option<&str>) -> anyhow::Result<Option<String>> {
+    let Some(t) = v.map(str::trim).filter(|s| !s.is_empty()) else { return Ok(None) };
+    let word = t.strip_suffix('.').unwrap_or(t).to_ascii_lowercase();
+    ensure!(TITLE_WORDS.contains(&word.as_str()), "{NOT_A_TITLE}");
+    Ok(Some(t.to_string()))
+}
 /// The film column of a film detail. A column name never comes from outside: anything else is refused.
 pub(crate) fn film_column(field: &str) -> anyhow::Result<&'static str> {
     match field {
@@ -138,6 +151,31 @@ impl Library {
         let tx = self.conn.transaction()?;
         live_case(&tx, case_id)?;
         drop_learned(&tx, case_id, field)?;
+        tx.commit()?;
+        Ok(())
+    }
+    /// The patient's title (owner T1): saved on the case's patient, so every film of that patient shows it; the last
+    /// one saved wins (R6, as Gender). Writes only this column; blank clears. Not taught to the machine (R3).
+    pub fn set_patient_title(&mut self, case_id: &str, title: Option<&str>) -> anyhow::Result<()> {
+        let v = title_value(title)?;
+        let tx = self.conn.transaction()?;
+        live_case(&tx, case_id)?;
+        tx.execute("UPDATE patients SET title = ?2 WHERE id = (SELECT patient_id FROM cases WHERE id = ?1)", params![case_id, v])?;
+        tx.commit()?;
+        Ok(())
+    }
+    /// The age printed on (or typed for) this X-ray (owner AG1): `printed` as printed and `years` its value, both or
+    /// neither (0 < years ≤ 120). Writes only these two columns, on this film only. Not taught to the machine (R3).
+    pub fn set_film_age(&mut self, case_id: &str, printed: Option<&str>, years: Option<f64>) -> anyhow::Result<()> {
+        let printed = detail_value(printed)?;
+        match (&printed, years) {
+            (None, None) => {}
+            (Some(_), Some(y)) => ensure!(y.is_finite() && y > 0.0 && y <= 120.0, "{NOT_AN_AGE}"),
+            _ => anyhow::bail!("{NOT_AN_AGE}"),
+        }
+        let tx = self.conn.transaction()?;
+        live_case(&tx, case_id)?;
+        tx.execute("UPDATE cases SET age_on_film = ?2, age_on_film_years = ?3 WHERE id = ?1", params![case_id, printed, years])?;
         tx.commit()?;
         Ok(())
     }

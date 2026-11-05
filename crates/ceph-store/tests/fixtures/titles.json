@@ -1,0 +1,5 @@
+{
+  "_note": "Owner T1 (19 Oct): the stored Title. The screen's titleIn (apps/desktop/src/library/title.ts) and the library's details::title_value are each pinned to this table. Made-up values only.",
+  "accept": ["Mr", "mr.", "MR", "Mrs", "MRS.", "Ms", "ms.", "Miss", "Mx", "Mx.", "Master", "Mast.", "Mstr", "Dr", "Dr.", "dr", "Prof", "PROF."],
+  "refuse": ["Sir", "Mister", "M", "Mr..", "Dr Demo", "Professor", "Madam", "Rev", "Mrs Smith", "Mr.Mr"]
+}

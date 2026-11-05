@@ -8,8 +8,6 @@ export const CHOOSE_LABELS: Record<ChooseField, string> = {
   last: 'Last name', first: 'First name(s)', full: 'Full name', dob: 'DOB', film_date: 'Film date', scan_id: 'Scan ID',
   patient_id: 'Patient ID', xray_type: 'X-ray type', xray_size: 'X-ray dimensions', practice: 'Radiography practice',
 };
-/** The Choose-on-the-film buttons, in order (Settings › Text on the film can hide some, Task 8). */
-export const ALL_CHOOSE_FIELDS: ChooseField[] = ['last', 'first', 'full', 'dob', 'film_date', 'scan_id', 'patient_id', 'xray_type', 'xray_size', 'practice'];
 /** Format 11 (spec 2026-10-17): the details saved by their own single-field saves, never through CaseMeta. */
 export type DetailField = 'patient_id' | 'xray_type' | 'xray_size' | 'practice';
 export const DETAIL_FIELDS: DetailField[] = ['patient_id', 'xray_type', 'xray_size', 'practice'];

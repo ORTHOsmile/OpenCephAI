@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { aiEdit, aiRunOf, detectionAction, hydrateAction, identityFields, parseOverlays, toEdit, toRow } from './persist';
+import { aiEdit, aiRunOf, detectionAction, fromRow, hydrateAction, identityFields, parseOverlays, toEdit, toRow, viaOf } from './persist';
 import { DISPLAY_DEFAULT, initialTracing, tracingReducer as r } from '../tracing/state';
 import { detection, docOf } from './fixtures';
 
@@ -51,12 +51,13 @@ describe('identityFields', () => {
       { patientName: 'Demo Synthetic', dateOfBirth: '1990-03-07', scanId: '4471', identitySource: 'film', identityChecked: false, takenOnSource: 'image',
         identityIssues: [{ kind: 'noDateOfBirth' }], learnedFields: ['dob'], gender: 'F', referringPractitioner: 'Dr Demo',
         printedPatientId: 'ZQ-7781', xrayType: 'Lateral Ceph', xraySize: '8x10', radiographyPractice: 'Demo Radiology Northside',
-        libraryTrail: [{ kind: 'merged', number: 'L-00002', into: 'L-00001', on: '2026-10-17' }] });
+        libraryTrail: [{ kind: 'merged', number: 'L-00002', into: 'L-00001', on: '2026-10-17' }], background: 'chinese' });
     expect(identityFields(d)).toEqual({ patientName: 'Demo Synthetic', patientKey: 'demo patient 01', timepoint: 'T1', takenOn: null,
       dateOfBirth: '1990-03-07', scanId: '4471', identitySource: 'film', identityChecked: false, identityIssues: [{ kind: 'noDateOfBirth' }], takenOnSource: 'image',
       learnedFields: ['dob'], gender: 'F', referringPractitioner: 'Dr Demo',
       printedPatientId: 'ZQ-7781', xrayType: 'Lateral Ceph', xraySize: '8x10', radiographyPractice: 'Demo Radiology Northside',
-      libraryId: null, patientIdsSeen: [], idMatches: [], libraryTrail: [{ kind: 'merged', number: 'L-00002', into: 'L-00001', on: '2026-10-17' }] });
+      libraryId: null, patientIdsSeen: [], idMatches: [], libraryTrail: [{ kind: 'merged', number: 'L-00002', into: 'L-00001', on: '2026-10-17' }],
+      title: null, ageOnFilm: null, ageOnFilmYears: null, background: 'chinese' });   // spec 2026-10-29 §4.1: on the patient
   });
 });
 
@@ -76,5 +77,37 @@ describe('placed_by and the model fingerprint (Task 10, schema 10)', () => {
   it('a run carries the model fingerprint when the engine gave one', () => {
     expect(aiRunOf({ ...detection(true), modelSha256: 'abc' }).modelSha256).toBe('abc');
     expect(aiRunOf(detection(true)).modelSha256).toBeNull();
+  });
+});
+
+describe('placed_via (format 15; spec §5, §9)', () => {
+  const SR = 'srpose-cldet23', AZ = 'aariz-cepha29';
+  const p = (source: 'ai' | 'ai-adjusted' | 'manual') => ({ x: 1, y: 2, source, verified: false });
+  it('travels with placedBy: only with a placer, never on a hand-placed point', () => {
+    expect(toRow('Go', p('ai'), SR, 'auto-best').placedVia).toBe('auto-best');
+    expect(toRow('Go', p('ai-adjusted'), SR, 'auto-best').placedVia).toBe('auto-best');
+    expect(toRow('Go', p('ai'), undefined, 'auto-best').placedVia).toBeNull();
+    expect(toRow('Go', p('manual'), SR, 'auto-best').placedVia).toBeNull();
+    expect(toRow('Go', p('ai'), SR).placedVia).toBeNull();
+  });
+  it('viaOf marks every point of an Automatic best placement and none of any other', () => {
+    expect(viaOf({ source: { Go: SR, S: AZ }, via: 'auto-best' })).toEqual({ Go: 'auto-best', S: 'auto-best' });
+    expect(viaOf({ source: { Go: SR }, via: null })).toEqual({});
+  });
+  it('toEdit and aiEdit carry it', () => {
+    const s = { ...initialTracing, points: { Go: p('ai') } };
+    expect(toEdit('c1', 'right', s, { Go: SR }, { Go: 'auto-best' }).landmarks[0].placedVia).toBe('auto-best');
+    const rr = { modelId: AZ, imageWidth: 1, imageHeight: 1, executionProvider: 'cpu', timingsMs: { preprocess: 0, inference: 0, decode: 0, total: 0 },
+      landmarks: [{ id: 'Go', x: 1, y: 2, confidence: 0.9 }], raw: [], facingLeft: false, meanPeakRight: null, meanPeakLeft: null };
+    expect(aiEdit('c1', rr, { Go: SR }, { Go: 'auto-best' }).landmarks[0].placedVia).toBe('auto-best');
+  });
+});
+
+describe('Part F: accept_kind travels with the point', () => {
+  it('kept on an accepted point, null on an unaccepted one, and read back', () => {
+    expect(toRow('S', { x: 1, y: 2, source: 'ai', verified: true, acceptKind: 'bulk' }).acceptKind).toBe('bulk');
+    expect(toRow('S', { x: 1, y: 2, source: 'ai', verified: false, acceptKind: 'bulk' }).acceptKind).toBeNull();
+    expect(fromRow({ id: 'S', x: 1, y: 2, source: 'ai', verified: true, aiX: 1, aiY: 2, confidence: null, acceptKind: 'single' }).acceptKind).toBe('single');
+    expect('acceptKind' in fromRow({ id: 'S', x: 1, y: 2, source: 'ai', verified: false, aiX: 1, aiY: 2, confidence: null })).toBe(false);
   });
 });

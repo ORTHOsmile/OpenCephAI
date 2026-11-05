@@ -15,13 +15,16 @@ export const FLAG_WORDS: Record<NormFlag, { badge: string; tip: string }> = {
   'second-hand': { badge: 'via', tip: 'Quoted by a later paper, not read in the original. The source line names it.' },
   'sd-from-other-paper': { badge: 'SD from another paper', tip: "This paper's mean with the SD of a cited paper, named in the source line." },
   'converted-to-true-size': { badge: 'true size', tip: 'Measured on an enlarged film. Shown at true size; the printed value is in the source line.' },
-  'scale-assumed': { badge: 'assumed scale', tip: 'The paper does not state its film scale. Assumed true size, as modern papers report. Colours kept.' },
+  // Owner, addendum 2 J (19 Oct 2026): the tag leaves the Measurements/Chart/Compare row (normCell's
+  // HIDDEN_ON_SCREEN) — it read as if the PATIENT's film scale were assumed, when it is the PAPER's. The badge word
+  // is kept (M-2) for any list that still uses it; the tip is the words shown on the source hover instead.
+  'scale-assumed': { badge: 'assumed scale', tip: 'The paper did not say whether its X-rays were enlarged; its mm are taken as true size.' },
   'sd-borrowed': { badge: 'SD borrowed', tip: 'The paper printed no SD. One is borrowed from the closest matching paper, named in the source line.' },
   // Ruling T4-1 (Task 4 fix round 1): 'ideal' is now raised only on a coloured cell; 'ideal-uncoloured' below.
   ideal: { badge: 'ideal', tip: "The author's ideal value, not a sample average. Coloured using an SD; the source line says whose." },
   interpolated: { badge: 'age-interpolated', tip: "Worked out between the two printed ages either side of the patient's age." },
   'other-sex-values': { badge: "other sex's values", tip: 'The author printed these values for one sex only; they are used for the other too.' },
-  'sexes-averaged': { badge: 'sexes averaged', tip: "Men's and women's norms averaged — record sex for the exact norm." },
+  'sexes-averaged': { badge: 'average of male and female', tip: 'Average of the male and female norms (sex not recorded) — record sex for the exact norm.' },
   /** Owner AGE-UNK-1 (12 Oct): no date of birth or film date, so an adult is assumed. The resolver's own words
    *  (AGE_NOT_ENTERED_WORDS, already in the source line) plus the one thing the clinician can do about it. */
   'age-assumed-adult': { badge: 'age not entered', tip: `${capitalise(AGE_NOT_ENTERED_WORDS)} — enter the age for the exact norm.` },
@@ -40,6 +43,12 @@ export const FLAG_WORDS: Record<NormFlag, { badge: string; tip: string }> = {
   'film-date-missing': { badge: 'film date missing', tip: `${capitalise(FILM_DATE_MISSING_WORDS)}. Enter the date the film was taken for the exact norm.` },
   // Owner NORM-PICK-1 (12 Oct). Words for owner glance.
   'chosen-by-you': { badge: 'chosen by you', tip: "The case's population has no norm for this, so you chose this source for this case. Click to choose another." },
+  // Owner N-A5 (19 Oct 2026): never shown as a tag on screen (normCell's HIDDEN_ON_SCREEN) — the mark is the ◆ in the
+  // row's norm drop-down and the report's footnote. The words serve the report and any future list. Words for owner glance.
+  'auto-fallback': { badge: 'Auto', tip: "The case's population has no norm for this. Auto used the analysis's own norm, else the best-matching Caucasian sample, else the best-matching study of another population; the source line names it." },
+  // Owner rulings R1/R5 and NAP-P3 (b) (3 Nov 2026; spec 2026-11-03 §8). Words for owner glance.
+  'combined-adult': { badge: 'combined adults', tip: 'Every adult study in the app that measured this, combined and weighted by its number of people (men and women separately). Not one population: the source line names the studies.' },
+  'single-study': { badge: 'single study', tip: 'Fewer than 2 adult studies measured this, so the one study that did is used. The source line names it.' },
 };
 /** Owner, 12 Oct (SEX-AVG-1): the one-line hint for an averaged or other-sex-copied result when the patient's sex is
  *  not recorded — shown once above the Measurements table (Tasks 5-6) and offered by normCell's `hint` field. */

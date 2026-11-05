@@ -4,18 +4,23 @@ import { OperatorPicker } from './OperatorPicker';
 interface Props {
   state: TracingState; dispatch: (a: Action) => void; canEdit: boolean; title: string; page: 'tracing' | 'superimposition';
   onLibrary: () => void; onPage: (p: 'tracing' | 'superimposition') => void; onCalibrate: () => void; calibrating: boolean;
+  /** Spec 2026-10-17 report-exports: Export › opens the Report preview for the open film on the Tracing page. */
+  onExport: () => void; canExport: boolean;
+  /** Final review m-1: a ruler store (press, drop or ⌘Z/⌘⇧Z replay) is still queued or in flight; Undo is held
+   *  back, the same reason the keyboard shortcut is (`input/keymap.ts`'s `applies`). */
+  rulerPending: boolean;
 }
 const Tool = ({ label, onClick, pressed, disabled, title }: { label: string; onClick: () => void; pressed?: boolean; disabled?: boolean; title: string }) =>
   <button type="button" className={pressed ? 'tool pressed' : 'tool'} aria-pressed={pressed} disabled={disabled} title={title} onClick={onClick}>{label}</button>;
 
 /** Tool buttons left of the case title; the page links grouped to its right (decision 19). */
-export function Toolbar({ state, dispatch, canEdit, title, page, onLibrary, onPage, onCalibrate, calibrating }: Props) {
+export function Toolbar({ state, dispatch, canEdit, title, page, onLibrary, onPage, onCalibrate, calibrating, onExport, canExport, rulerPending }: Props) {
   const o = state.orientation, planesOn = Object.values(state.overlays.planes).some(Boolean), edit = canEdit && page === 'tracing';
   return (
     <header className="toolbar" data-tauri-drag-region>
       <Tool label="‹ Library" title="Back to the library (everything is saved)" onClick={onLibrary} />
       <span className="sep" />
-      <Tool label="Undo" title="Undo (⌘Z)" disabled={!edit || !state.past.length} onClick={() => dispatch({ type: 'undo' })} />
+      <Tool label="Undo" title="Undo (⌘Z)" disabled={!edit || !state.past.length || rulerPending} onClick={() => dispatch({ type: 'undo' })} />
       <Tool label="Flip" title="Flip horizontally (⌘⇧M)" pressed={o.mirror} disabled={!edit} onClick={() => dispatch({ type: 'orient', op: 'flip' })} />
       <span className="sep" />
       <Tool label="Level to FH" title="Level to Frankfort (⌘L)" pressed={o.source === 'auto-FH'} disabled={!edit} onClick={() => dispatch({ type: 'orient', op: 'level' })} />
@@ -32,7 +37,7 @@ export function Toolbar({ state, dispatch, canEdit, title, page, onLibrary, onPa
           title={page === 'superimposition' ? 'Back to tracing' : 'Superimposition: this patient\u2019s films lined up on S\u2013N'}
           onClick={() => onPage(page === 'superimposition' ? 'tracing' : 'superimposition')}>
           {page === 'superimposition' ? '‹ Tracing' : 'Superimposition ›'}</button>
-        <button type="button" className="primary" disabled title="Arrives in Week 5">Export ›</button>
+        <button type="button" className="primary" disabled={!canExport} title={canExport ? 'Report and CSV for this film' : 'Open a film on the Tracing page to make its report'} onClick={onExport}>Export ›</button>
       </nav>
     </header>
   );

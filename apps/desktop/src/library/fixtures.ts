@@ -3,12 +3,13 @@ import type { CaseDoc, CaseEdit, DetectResult } from '../ipc';
 export const docOf = (e: CaseEdit, over: Partial<CaseDoc> = {}): CaseDoc => ({
   id: e.id, patientName: 'Demo patient 01', timepoint: 'T1', takenOn: null,
   image: { sha256: 'synthetic', ext: 'png', width: 2000, height: 2400, originalName: 'demo.png', path: '/tmp/demo.png' },
-  facing: e.facing, orientation: e.orientation, display: e.display, spacingMm: null, verifiedAt: null, verifiedBy: null,
+  facing: e.facing, orientation: e.orientation, display: e.display, spacingMm: null, scaleSteps: 0, verifiedAt: null, verifiedBy: null,
   landmarks: e.landmarks, createdAt: '', updatedAt: '',
   patientKey: 'demo patient 01', dateOfBirth: null, scanId: null, identitySource: 'manual', identityChecked: true, identityIssues: [], takenOnSource: null, learnedFields: [],
-  gender: null, referringPractitioner: null, population: null,
+  gender: null, referringPractitioner: null, population: null, background: null, switchedFromClinicDefault: false,
   printedPatientId: null, xrayType: null, xraySize: null, radiographyPractice: null,
-  libraryId: null, patientIdsSeen: [], idMatches: [], libraryTrail: [], ...over,
+  libraryId: null, patientIdsSeen: [], idMatches: [], libraryTrail: [],
+  title: null, ageOnFilm: null, ageOnFilmYears: null, ...over,
 });
 export const detection = (facingLeft: boolean): DetectResult => ({
   modelId: 'hrnet-w32-isbi19', imageWidth: 2000, imageHeight: 2400, executionProvider: 'cpu',

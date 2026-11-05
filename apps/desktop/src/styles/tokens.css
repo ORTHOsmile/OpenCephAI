@@ -175,8 +175,15 @@ button.tool.pressed { background: var(--accent-fill); border-color: var(--accent
 .drop-overlay { position: absolute; inset: 12px; z-index: 10; pointer-events: none; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; border: 2px dashed var(--accent); border-radius: 14px; background: rgba(10, 132, 255, 0.14); color: var(--text); font-size: 13px; }
 .drop-overlay b { font-size: 20px; }
 .drop-overlay span { color: var(--text-2); }
-.sidebar { padding: 16px; min-height: 0; overflow: auto; display: flex; flex-direction: column; gap: 12px; background: transparent; }
+.sidebar { padding: 16px 16px 10px; min-height: 0; overflow: hidden; display: flex; flex-direction: column; gap: 8px; background: transparent; }
+/* Owner, 1 Nov 2026: only the part above the thanks line scrolls; the line stays pinned at the sidebar's foot. */
+.sidebar > .sidebar-scroll { flex: 1 1 auto; min-height: 0; overflow: auto; display: flex; flex-direction: column; gap: 12px; }
+.sidebar-scroll > * { flex-shrink: 0; }
+.sidebar-credit { flex-shrink: 0; font-size: 11px; line-height: 1.3; color: var(--text-3); }
 .sidebar .hint { color: var(--text-2); font-size: 12px; }
+/* Spec 2026-10-19 addendum 3: the − / + beside the film's scale line (Measurements). */
+.inspector .fine-tune { display: inline-flex; gap: 2px; margin: 0 6px; vertical-align: middle; }
+.inspector .fine-tune button { min-width: 22px; padding: 0 6px; line-height: 18px; }
 .stage { position: relative; background: var(--canvas); overflow: hidden; }
 .stage canvas, .stage svg { position: absolute; inset: 0; width: 100%; height: 100%; }
 .stage .empty { position: absolute; inset: 0; display: grid; place-items: center; color: var(--text-3); }
@@ -208,18 +215,20 @@ button.tool.pressed { background: var(--accent-fill); border-color: var(--accent
 button:disabled { opacity: .45; }
 .active-head { display: flex; justify-content: space-between; align-items: baseline; }
 .active-head b { font-size: var(--size-lg); } .active-head span { color: var(--text-3); font-size: var(--size-sm); }
-.status-row { display: flex; align-items: center; justify-content: space-between; gap: var(--space-2); }
+.status-row { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--space-2); }
+.status-row .sign-off { display: flex; flex-direction: column; gap: 2px; } .status-row .verified-note { color: var(--link); }
 .tabs button { border: 0; background: transparent; font-weight: var(--weight-semibold); color: var(--text-2); padding: 4px 5px; white-space: nowrap; font-size: var(--size-sm); }   /* all five tabs on one line (owner, 16 Oct: Chart; review M-4) */
 .tabs button[aria-selected="true"] { color: var(--text); }
 .lm-list, .steps { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 2px; }
 .lm-list button, .steps button { width: 100%; display: flex; gap: 10px; align-items: center; text-align: left; border: 0; background: transparent; padding: 6px 8px; }
 .lm-list button[aria-current="true"] { background: var(--control); }
+.lm-list button[data-picked="true"] { box-shadow: inset 3px 0 0 var(--link); }
 .lm-list b { width: 44px; } .lm-list span:nth-child(2) { flex: 1; color: var(--text-2); }
 .lm-list .st { font-size: var(--size-sm); font-weight: var(--weight-semibold); } .lm-list .st.ai { color: var(--text-3); } .lm-list .st.verified { color: var(--link); }
 .point-about { display: flex; flex-direction: column; gap: 4px; padding-top: var(--space-2); border-top: 1px solid var(--line); font-size: var(--size-sm); }
 .point-about ul { margin: 0; padding-left: 1.1em; }
 .m-label .unconfirmed { font-size: var(--size-xs); }
-/* Owner, 16 Oct (F): uses unconfirmed AI points -> a small red "AI" pill on the row's own line. */
+/* Owner, 16 Oct (F): uses an AI point not yet accepted -> a small red "AI" pill on the row's own line. */
 .ai-tag { display: inline-block; margin-left: var(--space-1, 4px); padding: 0 5px; border: 1px solid currentColor; border-radius: var(--radius-xs);
   background: transparent; font-size: var(--size-xs); line-height: 1.4; vertical-align: baseline; height: auto; }
 button.ai-tag { cursor: pointer; }
@@ -231,6 +240,8 @@ button.ai-tag { cursor: pointer; }
 .measures td.norm-amber { background: var(--warn-bg); color: var(--warn-text); }
 .measures td.norm-red { color: var(--danger-text); font-weight: var(--weight-semibold); }
 .norm-badge { display: inline-block; margin-left: var(--space-1); padding: 0 var(--space-1); border-radius: var(--radius-pill); border: 1px solid var(--line); font-size: var(--size-xs); color: var(--text-2); }
+.norm-auto-mark { font-size: var(--size-xs); color: var(--text-2); }   /* owner N-A5: the Auto mark, in the norm list only */
+.norm-choice[aria-current="true"] > button { font-weight: var(--weight-semibold); }   /* N-A2: the source in use */
 button.link { border: none; background: none; padding: 0; color: var(--link); text-decoration: underline; cursor: pointer; font: inherit; }
 .loupe .ai-ring { position: absolute; width: 14px; height: 14px; border-radius: 50%; border: 1.5px dashed var(--mark-ai); pointer-events: none; }
 
@@ -267,6 +278,18 @@ button.link { border: none; background: none; padding: 0; color: var(--link); te
 .card-action { position: absolute; right: var(--space-2); top: var(--space-2); }
 .card .del { opacity: 0; }
 .card:hover .del, .card .del:focus-visible { opacity: 1; }
+/* Library ▸ Table (owner decisions, 29 Oct 2026): one row per film, no images. */
+.lib-table { width: 100%; border-collapse: collapse; font-size: var(--size-sm); }
+.lib-table th, .lib-table td { padding: var(--space-2) var(--space-3); text-align: left; border-bottom: 1px solid var(--line); }
+.lib-table th button { border: 0; background: none; color: var(--text-2); font-weight: var(--weight-bold); padding: 0; cursor: pointer; }
+.lib-table th button:hover, .lib-table th button:focus-visible { color: var(--text); }
+.lib-table tbody tr { cursor: pointer; }
+.lib-table tbody tr:hover, .lib-table tbody tr:focus-visible { background: var(--control); }
+.lib-table td.pick, .lib-table td.pick.on { width: 20px; }
+.lib-table .lib-open { border: 0; background: none; color: inherit; font: inherit; padding: 0; cursor: pointer; text-align: left; }
+.lib-table .lib-open:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.lib-table .del { opacity: 0; }
+.lib-table tbody tr:hover .del, .lib-table .del:focus-visible { opacity: 1; }
 
 /* ---- Case panel (sidebar) ---- */
 .case-panel { display: flex; flex-direction: column; gap: 12px; }
@@ -275,6 +298,9 @@ button.link { border: none; background: none; padding: 0; color: var(--link); te
 .case-panel input:not([type=checkbox]):not([type=range]) { height: 26px; padding: 0 6px; border-radius: var(--radius-sm); border: 1px solid var(--control-line); background: var(--control); color: var(--text); }
 .case-panel .row { display: flex; gap: var(--space-2); }
 .case-panel .row > * { flex: 1; min-width: 0; }
+.title-row .title-box { flex: 0 0 64px; }
+.age-row { display: flex; flex-direction: column; gap: 2px; }
+.age-row .age-note { overflow-wrap: anywhere; }
 /* Format 11 details (spec 2026-10-17): one-row boxes that grow, so a long value wraps and shows whole. */
 .case-panel .details { display: flex; flex-direction: column; gap: 12px; }
 .case-panel textarea.detail-box { display: block; width: 100%; box-sizing: border-box; min-height: 26px; padding: 4px 6px; border-radius: var(--radius-sm);
@@ -293,8 +319,18 @@ button.link { border: none; background: none; padding: 0; color: var(--link); te
 .identity-note button { margin-left: var(--space-1); }
 /* LIBID-1 (addendum D2): the Library ID line, the Q8 differing-ID note and the link suggestion reuse the existing
  * .hint / .identity-note look (no new colours) — just given their own block so each sits on its own line. */
-.library-line { display: block; margin: -2px 0 2px; }
-.library-trail { margin: -1px 0 2px; padding: 0; list-style: none; } .library-trail li { overflow-wrap: anywhere; }
+.library-fold { display: flex; flex-direction: column; margin: -2px 0 2px; }
+.library-line { display: block; }
+/* Owner D2: the heading keeps the line's own font and size; only a triangle is added. A button resets its own
+ * font-family (and the rest of the shorthand), so copy those from the ambient text — but leave font-size alone:
+ * `.sidebar .hint` (above) is what actually sets it to 12px on every hint, including this one and `.library-ids`/
+ * `.library-trail` below, and a `font: inherit` shorthand here would out-specificity that rule and only this
+ * button would grow to the page's 13px base, breaking "same font and size as the lines it folds" (F5). */
+button.library-line.toggle { display: flex; align-items: baseline; gap: 4px; padding: 0; border: 0; background: none; color: inherit;
+  font-family: inherit; font-weight: inherit; font-style: inherit; line-height: inherit; text-align: left; cursor: default; overflow-wrap: anywhere; }
+button.library-line.toggle .tri { width: 10px; color: var(--text); }
+.library-ids { overflow-wrap: anywhere; padding-left: 14px; }
+.library-trail { margin: 0; padding: 0 0 0 14px; list-style: none; } .library-trail li { overflow-wrap: anywhere; }
 .id-note { display: block; margin-bottom: 2px; }
 .id-link { display: block; margin-top: 2px; }
 /* Choose on the film (spec 2026-09-29): recognised words outlined, learned places tagged, a chooser under the selection. */
@@ -312,14 +348,19 @@ button.link { border: none; background: none; padding: 0; color: var(--link); te
 .choose-word.used.f-film { stroke: var(--text-3); fill: color-mix(in srgb, var(--text-3) 16%, transparent); }
 .identity-note.conflicts { margin: 0; padding-left: 1.1em; color: var(--warn-text); }
 .choose-suggested { position: absolute; pointer-events: none; padding: 1px 6px; border-radius: var(--radius-sm); background: var(--warn-bg); color: var(--warn-text); font-size: var(--size-xs); white-space: nowrap; }
-.chooser { position: absolute; display: flex; flex-wrap: wrap; gap: 4px; max-width: 360px; padding: 6px; border-radius: var(--radius-sm); background: var(--raised); box-shadow: 0 4px 16px rgba(0,0,0,.25); z-index: 3; }
-.chooser button { padding: 2px 8px; font-size: var(--size-xs); }
+.chooser { position: absolute; display: flex; align-items: center; gap: 4px; padding: 4px; border-radius: var(--radius-sm); background: var(--raised); box-shadow: 0 4px 16px rgba(0,0,0,.25); z-index: 3; }
+.chooser select { font-size: var(--size-xs); }   /* the panel's drop-down size (owner E) */
+.chooser .icon-btn { padding: 0 6px; font-size: var(--size-xs); }
 .case-panel .label-row { display: flex; justify-content: space-between; align-items: center; }
 .film-layouts ul { list-style: none; margin: var(--space-1) 0 0; padding: 0; display: flex; flex-direction: column; gap: var(--space-2); }
 .film-layouts li { display: flex; flex-direction: column; gap: 2px; }
 .film-layouts input { height: 24px; padding: 0 6px; border-radius: var(--radius-sm); border: 1px solid var(--control-line); background: var(--control); color: var(--text); }
 .film-layouts .row { display: flex; gap: var(--space-1); }
 .film-layouts button { padding: 1px 8px; font-size: var(--size-xs); }
+/* Spec 2026-10-20 (MS6): the three-input "Enter scale…" form, and "Use for this machine" beside the scale line. */
+.film-layouts .scale-editor { align-items: center; }
+.film-layouts .scale-editor label { display: flex; flex-direction: column; font-size: var(--size-xs); gap: 2px; }
+.use-for-machine { font-size: var(--size-xs); }
 .case-panel button.pick { padding: 0 6px; font-size: var(--size-xs); line-height: 16px; border-radius: var(--radius-sm); }
 /* Spreadsheet-style table (owner, 5 Oct): fixed layout so the Text column gets all spare width and nothing overflows
  * the panel; visible cell lines; a one-line header; lightly shaded alternate rows; a compact "What it is" column and
@@ -370,6 +411,7 @@ h2.section-head { font-size: var(--size-xs); font-weight: var(--weight-bold); le
 .section-head > button:not(.toggle) { padding: 1px 8px; font-size: var(--size-xs); font-weight: var(--weight-regular, 400); letter-spacing: 0; text-transform: none; }
 .section-head .toggle { text-transform: inherit; display: flex; align-items: center; width: 100%; justify-content: flex-start; gap: var(--space-2); padding: 2px 0; border: 0; background: none; color: var(--text-2); cursor: default; text-align: left; white-space: nowrap; font-size: var(--size-xs); font-weight: var(--weight-bold); letter-spacing: .06em; }
 .section-head .tri { font-size: 16px; width: 16px; line-height: 1; color: var(--text); }
+.section-head .toggle .fold-note { overflow: hidden; text-overflow: ellipsis; }   /* owner P3: "PATIENT · L-00002" */
 .series-key ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: var(--space-2); }
 .series-key li { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-1); font-size: var(--size-sm); }
 .series-line { display: flex; align-items: center; gap: var(--space-1); flex: 1 1 auto; }
@@ -396,6 +438,7 @@ h2.section-head { font-size: var(--size-xs); font-weight: var(--weight-bold); le
    edited below — set apart from the ordinary .hint text so it reads as a notice, not instructions. */
 .settings-meanings .referrer-note { color: var(--text-2); font-style: italic; }
 .measures .stars { margin-left: 2px; letter-spacing: -1px; }
+.measures .extreme-note { display: block; font-size: var(--size-xs); color: var(--text-3); }
 /* Owner CHART-TAB-1 (16 Oct): the Chart tab is the Measurements table with the chart drawn over its Result and
    Mean ± SD cells (kept in place, invisible, so every row keeps its height). Grey scale, green norm, patient line in
    the text colour (black in light mode). */
@@ -432,6 +475,13 @@ h2.section-head { font-size: var(--size-xs); font-weight: var(--weight-bold); le
 .model-manager > .row, .model-row .row { display: flex; gap: var(--space-2); align-items: center; justify-content: flex-end; }
 .model-row { display: flex; flex-direction: column; gap: var(--space-1); padding: var(--space-3); border-radius: var(--radius-sm); border: 1px solid var(--line); background: var(--panel); }
 .model-head { display: flex; gap: var(--space-2); align-items: center; }
+.best-per-point { display: flex; flex-direction: column; gap: var(--space-2); padding: var(--space-3); border-radius: var(--radius-sm); border: 1px solid var(--line); background: var(--panel); }
+.best-per-point h3, .best-per-point h4 { margin: 0; font-size: var(--size-md); }
+.best-table { width: 100%; border-collapse: collapse; font-size: var(--size-sm); }
+.best-table th, .best-table td { text-align: left; vertical-align: top; padding: var(--space-1); border-top: 1px solid var(--line); }
+.best-switches { margin: 0; padding-left: var(--space-4); }
+.best-checks { display: flex; flex-direction: column; gap: var(--space-1); }
+.best-checks ul { margin: 0; padding-left: var(--space-4); font-size: var(--size-sm); }
 .model-row .chip { background: var(--bg); color: var(--text-2); border: 1px solid var(--line); font-size: var(--size-xs); }
 .model-row .chip.warn { background: var(--warn-bg); color: var(--warn-text); border-color: var(--warn); }
 .model-status { margin-left: auto; font-size: var(--size-sm); color: var(--text-2); }
@@ -502,9 +552,19 @@ h2.section-head { font-size: var(--size-xs); font-weight: var(--weight-bold); le
 .settings-window { display: flex; flex-direction: column; gap: var(--space-3); width: 640px; max-height: calc(100vh - var(--layout-toolbar) - var(--space-8)); overflow-y: auto; padding: var(--space-4); border-radius: var(--radius-md); border: 1px solid var(--line); background: var(--raised); box-shadow: var(--shadow-popover); color: var(--text); }
 .settings-window h2 { margin: 0; font-size: var(--size-lg); }
 .settings-window > .row { display: flex; gap: var(--space-2); align-items: center; justify-content: flex-end; }
+/* The left panel's Settings… on its own row, centred (owner, 29 Oct). */
+.sidebar .row.settings-row { display: flex; justify-content: center; }
 .settings-window .settings-version { margin: 0; text-align: right; font-size: var(--size-sm); color: var(--text-2); user-select: text; }
 .settings-window label.dec-control { display: flex; gap: var(--space-2); align-items: center; font-size: var(--size-sm); }
 .settings-window .settings-norms { display: flex; flex-direction: column; gap: var(--space-3); }
+/* Settings tabs: blue text (owner, 29 Oct); --link, not --accent: --accent fails AA as small text here (spec 2026-10-29
+   §2a). The selected tab keeps its raised background and gains an underline, so it is not marked by colour alone. */
+.settings-window .tabs button { color: var(--link); }
+.settings-window .tabs button[aria-selected="true"] { color: var(--link); box-shadow: inset 0 -2px 0 var(--link); }
+/* Settings › Best model (spec 2026-10-29 §2). */
+.settings-window .best-model-head { display: flex; flex-wrap: wrap; gap: var(--space-2); align-items: center; }
+.settings-window .best-model-head h3 { margin: 0; }
+.base-select { display: inline-flex; gap: var(--space-2); align-items: center; font-size: var(--size-sm); }
 .settings-window .settings-norms > label { display: flex; flex-direction: column; gap: 2px; font-size: var(--size-sm); }
 .user-norm-editor { display: flex; flex-direction: column; gap: var(--space-2); padding: var(--space-2); border-radius: var(--radius-sm); border: 1px solid var(--line); background: var(--panel); }
 .user-norm-editor h3 { margin: 0; font-size: var(--size-sm); }
@@ -542,3 +602,92 @@ h2.section-head { font-size: var(--size-xs); font-weight: var(--weight-bold); le
 .compare-ticks label.inline { display: flex; align-items: center; gap: var(--space-1); }
 .measures-wrap { overflow-x: auto; }
 .compare-table th.pop, .compare-table td.pop-value { min-width: 110px; }
+
+/* Report preview (spec 2026-10-17 report-exports): the report as it will print, on white "pages" over the app. */
+.report-preview { display: flex; flex-direction: column; gap: var(--space-3); width: min(900px, calc(100vw - var(--space-8))); max-height: calc(100vh - var(--layout-toolbar) - var(--space-8)); overflow-y: auto; padding: var(--space-4); border-radius: var(--radius-md); border: 1px solid var(--line); background: var(--raised); box-shadow: var(--shadow-popover); color: var(--text); }
+.report-preview .report-actions { position: sticky; top: calc(-1 * var(--space-4)); z-index: 1; display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2); padding: var(--space-2) 0; background: var(--raised); }
+/* Owner, 29 Oct 2026 (item 6): the top actions bar wrapped badly — "One row per measurement" etc. squeezed into
+ * narrow columns of broken-up text, with the explanatory sentence fighting them for room. Each control (the paper
+ * segmented group, a checkbox label, a button) is its own `.report-ctrl-group`: never shrinks below its own
+ * content (`flex: 0 0 auto`) and never wraps its label text mid-word — at the narrowest supported width, a WHOLE
+ * group drops to the next line instead. The hint sentence gets its own full-width line rather than squeezing in. */
+.report-preview .report-actions .report-ctrl-group, .report-preview .report-actions .segmented { flex: 0 0 auto; white-space: nowrap; }
+.report-preview .report-actions .segmented button { white-space: nowrap; }
+.report-preview .csv-options { flex-wrap: wrap; }
+.report-preview .csv-options .hint { flex-basis: 100%; white-space: normal; }
+/* Owner, 29 Oct 2026 (item 7): Close is the primary (blue) action, at the BOTTOM of the window — its own row,
+ * never inside the scrolling top actions bar. */
+.report-preview .report-close-row { position: static; justify-content: flex-end; }
+.report-preview .report-error, .report-preview .report-warn, .report-preview .stale-note { color: var(--warn-text); }
+/* FONT-2 (preflight-rulings Task 8): a found system font is good news, not a warning — its own muted note colour. */
+.report-preview .report-note { color: var(--text-2); }
+.report-page { padding: var(--space-6); border-radius: 4px; background: #fff; color: #1d1d1f; box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2); }
+.report-page h2 { margin: 0 0 var(--space-2); font-size: 18px; }
+.report-header { display: grid; grid-template-columns: max-content 1fr; gap: 2px var(--space-3); margin: 0; font-size: 12px; }
+.report-header > div { display: contents; } .report-header dt { font-weight: 600; } .report-header dd { margin: 0; }
+.report-figure svg, .report-chart svg { display: block; width: 100%; height: auto; }
+/* Owner, 29 Oct 2026 (item 5, the zig-zag plot beside the ceph): page 1's film and chart side by side — the film
+ * scaled down slightly (its own box is already narrower, page.ts `pageOneBoxes`), the chart a long, thin strip
+ * running the film's full height, like the app's own Chart column. */
+.report-page-one-figure { display: flex; align-items: flex-start; gap: 4mm; }
+.report-page-one-figure .report-figure { flex: 1 1 auto; min-width: 0; }
+.report-page-one-figure .report-chart-beside { flex: 0 0 auto; width: 46mm; }
+/* Owner, 29 Oct 2026 (item 1): the profilogram's own page — never drawn over the film. */
+.report-profilogram-page .report-figure { max-width: 100%; }
+.report-block h3 { margin: var(--space-4) 0 var(--space-2); font-size: 14px; }
+/* Ruling (final-review.md's "known gap"): a "My analysis" block's dropped-measurement note, under the
+ * heading and before the table — the same wording and placement as Inspector.tsx's own `p.unavailable`. */
+.report-block .r-unavailable { margin: 0 0 var(--space-2); font-size: 11px; font-style: italic; color: #555; }
+.report-block table { width: 100%; border-collapse: collapse; font-size: 12px; }
+.report-block th, .report-block td { padding: 3px 6px; border: 1px solid #d0d0d0; text-align: left; vertical-align: top; }
+.report-block th { background: #ebebeb; }
+.report-block td.r-meaning input { width: 100%; box-sizing: border-box; font: inherit; color: inherit; border: 1px solid transparent; background: #fffbe6; }
+.report-block td.r-meaning input:focus { border-color: #0a84ff; }
+.report-block .r-sources { font-size: 10px; color: #555; }
+/* Owner N-A5, AUTO-Q10 (19 Oct 2026): the ◆ beside an Auto row's norm, in the report preview (the PDF draws it —
+ * Noto Sans has no glyph for it). */
+.report-block .r-auto { color: #1d1d1f; }
+/* M7 (preflight-rulings.md): the Auto footnote, then addendum 2 J's unstated-enlargement list, before the context
+ * line — the same small, muted styling as the report's other footer notes. */
+.report-auto-note, .report-scale-note { font-size: 11px; color: #555; }
+.report-context { font-style: italic; font-size: 12px; }
+/* R3 (request G): what the † on a fitted film's mm values means, once, under the context line. */
+.report-fit-note { font-size: 12px; }
+.report-footer { font-size: 10px; color: #666; }
+
+/* Task 9: the Report preview's own action buttons (paper, film, Save PDF…, CSV choices, Export CSV…). */
+.report-preview .csv-options { display: inline-flex; align-items: center; gap: var(--space-2); }
+.report-preview .sep { width: 1px; align-self: stretch; background: var(--line); }
+
+/* Library ▸ Select (spec 2026-10-17 report-exports): a tick box on each card while choosing films for one CSV. */
+.card .pick { position: absolute; top: 6px; right: 6px; z-index: 1; width: 18px; height: 18px; margin: 0 !important; border-radius: 4px; border: 1.5px solid var(--on-fill); background: rgba(0, 0, 0, 0.35); color: var(--on-fill); font-size: 13px; line-height: 15px; text-align: center; }
+.card .pick.on { background: var(--accent); border-color: var(--accent); }
+.csv-dialog .csv-options { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2); }
+
+/* Request G: what a fit did to a column, and its note. */
+.measures th .fit-mark { display: block; font-weight: normal; font-size: var(--size-xs); color: var(--warn-text); }
+.fit-note { font-size: var(--size-xs); color: var(--text-2); }
+/* Owner, 19 Oct: an mm value scaled by a fit carries a small dagger, never a star — in the Change table and on the
+ * Measurements tab alike (final review Minor 1: the selector was the Change table's only). */
+.measures td .fit-dagger { font-size: var(--size-xs); color: var(--warn-text); margin-left: 1px; }
+/* Owner G1 (Task 9): "This film is not scaled", the same on the Superimposition key and the tracing page. */
+.scale-advice { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-1); font-size: var(--size-xs); color: var(--warn-text); margin: var(--space-1) 0; }
+.scale-advice-buttons { display: inline-flex; gap: var(--space-1); }
+.scale-advice-why { flex-basis: 100%; color: var(--text-2); }
+/* Request G (Task 7): the fit panel under the comparison key. */
+.fit-panel { display: flex; flex-direction: column; gap: var(--space-2); margin-top: var(--space-2); }
+.fit-panel h3 { margin: 0; font-size: var(--size-sm); }
+.fit-panel .row { display: flex; gap: var(--space-1); flex-wrap: wrap; }
+.fit-size { display: flex; align-items: center; gap: var(--space-1); }
+.fit-size input { width: 4.5em; }
+/* Stage A: the point-check mark beside a flagged pin (its hit area takes the hover; the pin is untouched) and its hover. */
+.stage .overlay .check-hit { pointer-events: all; fill: transparent; cursor: inherit; }
+.stage .overlay .check-mark-text { font-size: var(--size-xs); font-weight: var(--weight-semibold); paint-order: stroke; stroke: rgba(0,0,0,.75); stroke-width: 3px; }
+/* Stage A: the point check's "not run" lines, above the AI line under the film (its own class: the AI line stays the only .banner). */
+.stage .check-line { position: absolute; left: 12px; bottom: 44px; padding: 4px 10px; border-radius: 6px; background: rgba(0,0,0,.6); color: #fff; font-size: 12px; }
+
+/* Stage A task 7: the film note ("This film looks unusual overall…") with its Checked button, top left of the film. */
+.stage .check-note { pointer-events: none; position: absolute; left: 12px; top: 12px; max-width: 60%; padding: 4px 10px; border-radius: 6px; background: rgba(0,0,0,.6); color: #fff; font-size: 12px; }
+.stage .check-note button { pointer-events: auto; }
+.stage .check-note-line { display: flex; align-items: center; gap: var(--space-2); }
+.stage .check-note-line[data-resolved="true"] { opacity: .75; }

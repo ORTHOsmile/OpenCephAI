@@ -2,7 +2,8 @@ import type { Vec2 } from '@ceph/geometry';
 import type { ExtraResult, ModelPointRow, ModelPoints, ModelRow } from '../ipc';
 import type { TracingPoint } from '../tracing/state';
 import { fmtValue, type Decimals } from '../format';
-export interface Ghost { modelId: string; title: string; shade: 1 | 2; points: Record<string, Vec2> }
+export interface Ghost { modelId: string; title: string; shade: 1 | 2; points: Record<string, Vec2>;
+  /** Automatic best: each point's own title ("Automatic best · SRPose"); others use `title`. */ titles?: Record<string, string> }
 /** What the extra models' run on this film leaves for the screen (Task 12, rulings T12-1, T12-2): `errors`, one whole
  *  sentence per model that gave no points (a model past its time limit, or still busy with an earlier film, says so in
  *  Rust's own words; one that errored keeps the short sentence), for the case panel; `failed`, those models' titles, so

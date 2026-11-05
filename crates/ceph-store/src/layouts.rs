@@ -60,6 +60,7 @@ impl Library {
         let tx = self.conn.transaction()?;
         let (w, h): (u32, u32) = tx.query_row("SELECT i.width, i.height FROM cases c JOIN images i ON i.sha256 = c.image_sha256 WHERE c.id = ?1",
             [case_id], |r| Ok((r.get(0)?, r.get(1)?))).optional()?.ok_or_else(|| anyhow!("no case {case_id} in the library"))?;
+        let before = crate::machine_scale::base_spacing(&tx, case_id)?;
         let salt = layout_salt(&tx)?;
         let machines: Vec<(String, u32, u32)> = tx.prepare("SELECT id, width, height FROM layout_machines")?
             .query_map([], |r| Ok((r.get(0)?, r.get(1)?, r.get(2)?)))?.collect::<Result<_, _>>()?;
@@ -113,6 +114,14 @@ impl Library {
         }
         tx.execute(&format!("UPDATE layout_machines SET films = films + 1, updated_at = {NOW} WHERE id = ?1"), [&machine_id])?;
         tx.execute("UPDATE cases SET layout_machine_id = ?2, layout_mirrored = ?3, layout_dy = ?4 WHERE id = ?1", params![case_id, machine_id, mirrored, dy])?;
+        // MQ12 / D-c: only when the film's own mm move (its base scale), and then also every film whose mm come from
+        // it through a fit with "Use the scale from the fit" on (final review I1: the same rule a scale change uses).
+        if crate::machine_scale::base_spacing(&tx, case_id)?.map(f64::to_bits) != before.map(f64::to_bits) {
+            let me = [case_id.to_string()];
+            let fitted = crate::machine_scale::fitted_to(&tx, &me, |f| Ok(f == case_id || crate::machine_scale::base_spacing(&tx, f)?.is_some()))?;
+            let all: Vec<String> = me.into_iter().chain(fitted.into_iter().map(|f| f.0)).collect();
+            crate::machine_scale::unverify_all(&tx, &all)?;
+        }
         tx.commit()?;
         Ok(MachineMatch { machine_id, mirrored, created })
     }
@@ -190,7 +199,13 @@ fn name_machine(tx: &Connection, machine: &str) -> rusqlite::Result<()> {
 
 #[derive(Debug, Clone, PartialEq, Serialize)]
 #[serde(rename_all = "camelCase")]
-pub struct MachineSummary { pub id: String, pub name: String, pub films: i64, pub learned: Vec<String> }
+pub struct MachineSummary {
+    pub id: String, pub name: String, pub films: i64, pub learned: Vec<String>,
+    /// This machine's calibrated scale (spec 2026-10-20), if any; `applies` is unused here (no film in view).
+    pub scale: Option<crate::machine_scale::MachineScale>,
+    /// Live films with no ruler that this scale applies to, right now.
+    pub scale_films: i64,
+}
 
 impl Library {
     /// Every machine recognised on this Mac, with the fields it has a default for (Preferences › Film layouts).
@@ -206,7 +221,8 @@ impl Library {
                 c.sort_unstable_by(|a, b| b.cmp(a));
                 c.first().is_some_and(|top| *top >= DEFAULT_AFTER && c.get(1).is_none_or(|n| top > n))
             }).map(|f| f.to_string()).collect();
-            Ok(MachineSummary { id, name, films, learned })
+            let (scale, scale_films) = crate::machine_scale::scale_of_machine(&self.conn, &id)?;
+            Ok(MachineSummary { id, name, films, learned, scale, scale_films })
         }).collect()
     }
     /// A name the clinician chose; it is kept as the machine learns.
@@ -224,9 +240,11 @@ impl Library {
     /// Forgets everything about this machine; its films keep their cases and simply have no machine.
     pub fn delete_machine(&mut self, id: &str) -> anyhow::Result<()> {
         let tx = self.conn.transaction()?;
+        let (_, all) = crate::machine_scale::change_for_delete(&tx, id)?;
         tx.execute("UPDATE cases SET layout_machine_id = NULL, layout_mirrored = 0 WHERE layout_machine_id = ?1", [id])?;
         for t in ["layout_places", "layout_anchors", "layout_candidates"] { tx.execute(&format!("DELETE FROM {t} WHERE machine_id = ?1"), [id])?; }
         tx.execute("DELETE FROM layout_machines WHERE id = ?1", [id])?;
+        crate::machine_scale::unverify_all(&tx, &all)?;
         tx.commit()?;
         Ok(())
     }

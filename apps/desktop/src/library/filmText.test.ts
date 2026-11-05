@@ -122,6 +122,14 @@ describe('genderIn: F or M on the film', () => {
     for (const l of ['FM', 'Fe', 'Mr Demo', 'Demo Radiology Northside', 'Im: 1/1', '', '   ', 'M. Smith', 'F. Jones', 'M.D. Demo'])
       expect(genderIn(l), l).toBeNull();
   });
+  it('reads a lone F or M in brackets, after a label, or "M." alone (owner E, 19 Oct)', () => {
+    for (const [l, g] of [['(M)', 'M'], ['[F]', 'F'], ['(Male)', 'M'], ['Sex: (F)', 'F'], ['M.', 'M'], ['gender: [male]', 'M']] as const)
+      expect(genderIn(l), l).toBe(g);
+  });
+  it('refuses two genders on one line, and anything else in brackets (R4: "M F" read M before)', () => {
+    for (const l of ['MF', 'M F', '(X)', 'F (M)', 'M/F', 'male female', '(M'])
+      expect(genderIn(l), l).toBeNull();
+  });
 });
 describe('referrerIn: who referred the patient', () => {
   it('drops a leading label and keeps "Dr"', () => {

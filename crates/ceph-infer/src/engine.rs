@@ -52,7 +52,7 @@ pub struct Detection {
     pub landmarks: Vec<DetectedLandmark>,
     /// Every channel's point, including channels not mapped to a landmark yet.
     pub raw: Vec<RawPoint>,
-    /// The SHA-256 of the model file that ran (the manifest's, verified at load): which version of the model this was.
+    /// Which version of the model ran: its fingerprint (spec::fingerprint; Part F, owner Q9), from the hashes verified at load.
     pub model_sha256: String,
 }
 
@@ -64,6 +64,31 @@ pub const MIN_SIDE: u32 = 64;
 struct Stages { input: Option<Vec<f32>>, heatmaps: Vec<f32>, geometry: Geometry, preprocessed: Instant }
 
 pub struct Engine { session: Mutex<Session>, m: ModelSpec, provider: &'static str }
+
+/// One model load at a time in this process. ONNX Runtime 1.22 finds a model's separate weights
+/// file through the C library's `dirname()`, and on macOS that returns one buffer shared by the whole process. Two
+/// loads at once could each read the other's folder, look for `weights.bin` in the wrong place and fail with
+/// "Encountered unknown exception in Initialize()". Only the start-up of a session waits here; runs on films do not.
+static SESSION_START: Mutex<()> = Mutex::new(());
+
+/// Test-only (Review I-1): poisons `SESSION_START` by panicking on another thread while it holds the lock, so an
+/// integration test can exercise the `into_inner()` recovery at `Engine::load`'s line above without needing a real
+/// ONNX Runtime panic. Not called by any production path. `#[doc(hidden)]` because integration tests (a separate
+/// crate) cannot see a `#[cfg(test)]` item from the library they link against.
+#[doc(hidden)]
+pub fn poison_session_start_for_test() {
+    std::thread::spawn(|| {
+        let _guard = SESSION_START.lock().unwrap();
+        panic!("SYNTHETIC: poisoning SESSION_START for test (Review I-1)");
+    })
+    .join()
+    .expect_err("the spawned thread must panic to poison the lock");
+}
+
+/// Test-only (Part F I-1 residual): holds `SESSION_START` until the returned guard is dropped, as a model load part-way
+/// through does, so a test can stand a slow load in front of another load. Not called by any production path.
+#[doc(hidden)]
+pub fn hold_session_start_for_test() -> impl Sized { SESSION_START.lock().unwrap_or_else(|p| p.into_inner()) }
 
 impl Engine {
     pub fn load(manifest_path: &Path) -> anyhow::Result<Self> {
@@ -86,7 +111,11 @@ impl Engine {
         } else {
             (Session::builder()?, "cpu")
         };
-        let e = Self { session: Mutex::new(builder.commit_from_file(&model)?), m, provider };
+        let session = {
+            let _one_at_a_time = SESSION_START.lock().unwrap_or_else(|p| p.into_inner());
+            builder.commit_from_file(&model)?
+        };
+        let e = Self { session: Mutex::new(session), m, provider };
         e.warmup()?;                                                       // first CoreML run compiles; pay it at startup
         Ok(e)
     }
@@ -115,6 +144,12 @@ impl Engine {
         let (shape, _) = out[self.m.output.name.as_str()].try_extract_tensor::<f32>()?;
         self.check_output_shape(shape)
     }
+
+    /// Test-only (Part F final review I-1): holds this engine's session as a run on a film does, until the returned guard
+    /// is dropped, so a test can stand a "film part-way through" in front of another run. Not called by any production
+    /// path; `#[doc(hidden)]` because the app's tests (another crate) cannot see a `#[cfg(test)]` item.
+    #[doc(hidden)]
+    pub fn hold_session_for_test(&self) -> impl Sized + '_ { self.lock().expect("SYNTHETIC: the session lock is healthy in tests") }
 
     fn lock(&self) -> anyhow::Result<std::sync::MutexGuard<'_, Session>> {
         self.session.lock().map_err(|_| anyhow::anyhow!("inference engine is unavailable after an earlier failure; reload the model"))
@@ -158,7 +193,7 @@ impl Engine {
         let (t1, t2) = (s.preprocessed, Instant::now());
         let (landmarks, raw) = points_from_heatmaps(&self.m, &s.geometry, &s.heatmaps, img.width(), facing_left);
         Ok(Detection { model_id: self.m.id.clone(), image_width: img.width(), image_height: img.height(), execution_provider: self.provider.into(),
-            timings_ms: Timings::from(t0, t1, t2, Instant::now()), landmarks, raw, model_sha256: self.m.sha256.clone() })
+            timings_ms: Timings::from(t0, t1, t2, Instant::now()), landmarks, raw, model_sha256: self.m.fingerprint() })
     }
 
     pub fn detect_path(&self, path: &Path, facing_left: bool) -> anyhow::Result<Detection> { self.detect(&load_gray(path)?, facing_left) }

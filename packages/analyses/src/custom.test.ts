@@ -142,10 +142,10 @@ describe('which analysis\'s own norm (owner B3)', () => {
   it.each([
     ['m10_CoA', 'mcnamara'], ['m18_PogNB', 'steiner'], ['m43_SNtoGoMe', 'bjork-jarabak'],
     ['m79_ULStrain', 'holdaway'], ['m82_InfSulcusH', 'holdaway'], ['m84_UpperPharynx', 'mcnamara'],
-  ])('%s: %s lists it but has no own norm for it, so the words never name its own', (node, from) => {
+  ])('%s: %s lists it but has no own norm for it, so the words name Auto, not its own (M8, N-A3 19 Oct 2026)', (node, from) => {
     expect(originFor(node, sets)).toBe(from);
     const name = ALL_ANALYSES.find((a) => a.id === from)!.name;
-    expect(normFromWords(from, node, sets)).toBe(`Norm: your population's (${name} lists it but has no norm of its own for it)`);
+    expect(normFromWords(from, node, sets)).toBe(`Norm: your population's, else Auto (${name} lists it but has no norm of its own for it)`);
   });
 });
 

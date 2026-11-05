@@ -120,7 +120,8 @@ thing (`definitionMatch: 'same'`), carry its **own** SD (never an `sdSource` or 
 chains), and come from a verified or single-extracted population set. An explicit `sdSource` in the
 data always wins over this search. A mm donor SD is converted to true size by the **donor's** `scale`
 (and the conversion is named in the line); a mm SD from a donor whose scale is `not-stated` is used
-as printed and the line says "(donor's film scale not stated; assumed true size)". The result is flagged `sd-borrowed`, `Resolved.sdDonor`
+as printed and the line says "(donor's X-ray enlargement not stated; mm taken as true size)" (owner ruling Q-B, 24
+Oct 2026 — the words only; the shape is unchanged). The result is flagged `sd-borrowed`, `Resolved.sdDonor`
 names the donor, and the source line reads e.g. "… · SD borrowed from Tan 2015, Chinese, 11–14 y, boys,
 Table 3", or for an ideal "… · ideal value (Steiner C); SD borrowed from …". A range-only ideal is
 centred on the midpoint of the author's range (the line says so, and `printed.mean` holds the
@@ -373,38 +374,44 @@ whatever the paper's sample held. Recording the sex gives the exact norm; the av
 entry, not a norm for a population of mixed sex. And it inherits the paper choice a man or a woman would get, so the
 two can only differ in the row, never in the paper.
 
-## No norm in the case's population — you choose (owner NORM-PICK-1, 12 Oct)
+## No norm in the case's population — Auto, or you choose (owner N-A1 to N-A5 and AUTO-Q6, 19 Oct 2026; was NORM-PICK-1)
 
 **The picture.** The case is set to a population (or the clinic default is one), and that population's papers never
-measured this angle or distance. Before, the app quietly showed your own norm if you had entered one, under that
-population's name, with nothing saying the population had none. Now the norm cell says **"no Saudi norm — choose one"**
-(the population named), with no number and no colour. Clicking it lists every source that does have the measurement —
-the other populations, the analysis's own norm, and your own norm sets — each with its value and the row you would be
-compared with: who (women, men, both), its age band and its n — both rows' n when men's and women's rows are averaged
-(ruling FR-1: the row, never the whole study; Thilander 2005 studied 469 people aged 4.2–32.2 y, but an adult woman is
-compared with its 19 women of 29–32 y). The one you click is saved on the case, for that population and that measurement only, and the
-cell then shows that source's norm, coloured as usual, marked **"chosen by you"**; the source line adds "chosen by you
-(no Saudi norm)". The compare window does the same for each ticked population, each with its own choice.
+measured this angle or distance. The row is filled automatically ("Auto"): the analysis's own norm (Steiner's, Ricketts'
+…), else the Caucasian sample with the most people in the row the patient is compared with, among those with a row for
+the patient's sex and age (the nearest age when none has; ties to the newer paper, then the usual order), else the same
+choice among every other population's papers (owner AUTO-Q6, "best evidence anywhere"). The
+source line ends "Auto (no Saudi norm)"; a ◆ beside "Auto" marks it in the row's norm list too (Task 6, present); the report marks every such row with a ◆ and names it in a footnote under the tables, and the tidy CSV's `norm_auto` column says which step filled it (tidy only). Clicking the norm lists Auto first (marked ◆, and marked as the source in
+use when nothing else is chosen), then every other
+source that has the measurement —
+the other populations, the analysis's own norm, your own norm sets — each with its value and the row you would be
+compared with (who, its age band and its n — both rows' n when men's and women's rows are averaged; ruling FR-1). The
+one you click is saved on the case, for that population and that measurement only, and wins over Auto: the cell shows
+that source's norm, marked **"chosen by you"**, and that source is marked as in use in the list. Clicking "Auto" removes
+the stored pick (nothing is stored for "Auto" — N-A2) — so the cell and the list both show Auto in use again, even
+closed and reopened.
 
-**What is compared with what.** The patient's value against the source you chose, resolved exactly as if the case were
-set to that source (its own age row, sex row, film-scale and SD rules). A choice made for "no Saudi norm" never answers
-"no Japanese norm": change the case to Japanese and it asks again. The analysis's own norm (Steiner, Ricketts…) no longer stands
-in by itself under a population that has nothing (owner OWNFALL-1, 12 Oct; it used to, marked "analysis norm"): it is
-one of the choices. Unchanged: a case with no population at all (no clinic default) uses the analysis's own norm — that
-is the default then, not a stand-in — and your own norms when the analysis has none.
+**When Auto has nothing.** Only when your own norm sets are the sole source of the measurement does the cell say **"no
+Saudi norm — choose one"**, with no number and no colour, as before (your own norms are never used without your choice,
+NORM-PICK-1). With nothing anywhere: "No norm". The Compare-populations window never uses Auto or a choice: each column
+is that population's own norm, or "—" (ruling AUTO-Q7, 19 Oct 2026).
 
-**Against the literature.** Eastman's SN–MxP (the maxillary plane to SN) for a Saudi adult: no Saudi paper and no
-Eastman own norm has it. The list offers Thilander 2005 (Swedish, 29–32 y, men's and women's rows averaged when the sex
-is not recorded: 5.9 ± 2.7°, measured to the nasal line sp–pm rather than ANS–PNS, marked "close") and the NUS sheet
-(Singapore teaching, 7.5 ± 3.5°). A Saudi patient at 9° reads within 2 SD of the Swedish norm and within 1 SD of the
-Singapore one: the choice can change the colour, which is why the app asks rather than picks.
+**What is compared with what.** The patient's value against the source used, resolved exactly as if the case were set to
+it (its own age row, sex row, film-scale and SD rules). A choice made for "no Saudi norm" never answers "no Japanese
+norm". Unchanged: a case with no population at all uses the analysis's own norm — the default then, not Auto — and your
+own norms when the analysis has none.
 
-**What it cannot show.** A chosen source is still another population's norm: it says how the patient compares with
-Swedes or with Singapore's teaching values, not with Saudis. Nothing in the app judges whether that population is a
-fair stand-in; the "chosen by you" mark is the only reminder. Before/after (whole catalogue, 37,440 queries): 1,284
-results that were your own norm shown silently under a population now ask for a choice, and 1,344 that read "No norm"
-while another source had the measurement now ask too; then, with OWNFALL-1, the 18,448 results where the analysis's own
-norm stood in under a population ask too; every other result is unchanged (final-fix-report.md).
+**Against the literature.** Eastman's SN–MxP for a Saudi adult: no Saudi paper has it; Auto uses Eastman's own norm,
+8 ± 3° (Alassiry 2022, quoted second-hand). The list also offers Thilander 2005 (Swedish, 29–32 y, measured to the nasal
+line sp–pm rather than ANS–PNS, "close") and the NUS sheet (Singapore teaching, 7.5 ± 3.5°).
+
+**What it cannot show.** Auto's norm is another group's: it says how the patient compares with that author's target or
+with Caucasians or another population's study, not with Saudis. Nothing in the app judges whether that is a fair stand-in. What the comparison can and
+cannot tell you is in `docs/norms/SEVERITY.md` ("Auto norms"). Before/after: only former "choose one" rows changed; every
+other result is bit-identical (`docs/norms/evidence/2026-10-19-norms-auto-before-after.md`).
+
+For a Saudi man of 30 at 9°: 0.3 SD above Eastman's 8 ± 3° ("within normal range"), but 1.04 SD above Thilander 2005's
+Swedish men of 29–32 y, 6.4 ± 2.5° (n = 11) — "Mild", one star. The source chosen changes the grade.
 
 ## `status: "website"` — values from a web page, not a paper (owner N4; Task 8, 8 Oct)
 

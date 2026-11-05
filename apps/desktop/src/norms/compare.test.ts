@@ -1,21 +1,47 @@
 import { describe, it, expect } from 'vitest';
-import { loadSets, resolveNorm } from '@ceph/analyses';
+import { loadSets, resolveNorm, type PopulationChoice } from '@ceph/analyses';
 import { DEFAULT_DECIMALS } from '../format';
 import { normCell, queryFor } from './normCell';
-import { compareCells, parseCompare, populationOptions, readCompare, ticksAfterRead } from './compare';
+import { autoOptionLabel, compareCells, parseCompare, populationOptions, readCompare, ticksAfterRead } from './compare';
 
 const sets = loadSets();
 const ctx = { sets, userNorms: [], clinicDefault: null };
 const doc = { population: null, gender: 'M' as const, dateOfBirth: '2000-01-02', takenOn: '2026-01-10' };   // SYNTHETIC
 const sna = { analysis: 'Steiner', analysisId: 'steiner', normAnalysisId: 'steiner', node: 'm01_SNA', label: 'SNA', unit: 'deg' as const, value: '84.0°', num: 84, hidden: false, needs: [], undefinedReason: null };
 describe('the population picker', () => {
-  it('first the clinic default, saying what it is; then every population with a usable set', () => {
-    const o = populationOptions(sets, [], 'chinese');
-    expect(o[0]).toEqual({ value: '', label: 'Clinic default (Chinese)' });
+  // Owner decision 3 (29 Oct 2026): Auto first; the old "Clinic default (…)" entry only while the case holds NULL.
+  it('on a case on "Clinic default": Auto, then the clinic default saying what it is, then every population with a usable set', () => {
+    const o = populationOptions(sets, [], 'chinese', null, null);
+    expect(o[0].value).toBe('auto');
+    expect(o[1]).toEqual({ value: '', label: 'Clinic default (Chinese)' });
     expect(o.map((x) => x.value)).toEqual(expect.arrayContaining(['chinese', 'caucasian', 'analysis-own']));
   });
   it('no clinic default: the analysis\'s own norms', () => {
-    expect(populationOptions(sets, [], null)[0].label).toBe("Clinic default (each analysis's own norms)");
+    expect(populationOptions(sets, [], null, null, null)[1].label).toBe("Clinic default (each analysis's own norms)");
+  });
+});
+describe('owner decision 3 (29 Oct 2026): Auto in the chooser', () => {
+  const choice = (o: Partial<PopulationChoice>): PopulationChoice => ({ population: 'swedish', how: 'best-evidence', setId: 'thilander2005', ageCovered: true, label: 'Swedish', ...o });
+  it('Auto first, saying what it chose and why', () => {
+    expect(autoOptionLabel(choice({}), sets, [])).toBe('Auto — Swedish (largest study for this sex and age)');
+    expect(autoOptionLabel(choice({ ageCovered: false }), sets, [])).toBe('Auto — Swedish (largest study for this sex, nearest age)');
+    expect(autoOptionLabel(choice({ population: 'chinese', how: 'background' }), sets, [])).toBe("Auto — Chinese (patient's background)");
+    expect(autoOptionLabel(choice({ population: 'caucasian', how: 'clinic-default' }), sets, [])).toBe('Auto — Caucasian (clinic default)');
+    expect(autoOptionLabel(choice({ population: 'analysis-own', how: 'clinic-default' }), sets, [])).toBe("Auto — each analysis's own norms (clinic default)");
+    expect(autoOptionLabel(choice({ population: 'user:Mine', how: 'clinic-default' }), sets, [{ setName: 'Mine', measurement: 'm01_SNA', mean: 82, sd: 3, sourceNote: 'SYNTHETIC' }])).toBe('Auto — Mine (your norms) (clinic default)');
+    expect(autoOptionLabel(choice({ population: null, how: 'none' }), sets, [])).toBe("Auto — each analysis's own norms (nothing to choose from)");
+    // Owner R1/R5 (3 Nov 2026; spec 2026-11-03 §8.2).
+    expect(autoOptionLabel(choice({ population: 'combined-adult', how: 'combined', setId: null, label: 'combined adult' }), sets, [])).toBe('Auto — combined adult norm (no background or clinic default)');
+  });
+  it('the "Clinic default" entries: the undo on a switched case, the old entry on a NULL case, none on a new case', () => {
+    const onAuto = populationOptions(sets, [], 'chinese', 'auto', choice({})).map((o) => o.value);
+    expect(onAuto[0]).toBe('auto');
+    expect(onAuto).not.toContain('');
+    const switched = populationOptions(sets, [], 'chinese', 'auto', choice({}), true);
+    expect(switched[1]).toEqual({ value: '', label: 'Clinic default (as before the upgrade)' });
+    const old = populationOptions(sets, [], 'chinese', null, choice({}));
+    expect(old.slice(0, 2).map((o) => [o.value, o.label])).toEqual([['auto', 'Auto — Swedish (largest study for this sex and age)'], ['', 'Clinic default (Chinese)']]);
+    expect(populationOptions(sets, [], 'chinese', 'japanese', choice({}), false).map((o) => o.value)).not.toContain('');
   });
 });
 describe('compare populations (master plan §9: 2–4 side by side)', () => {
@@ -58,19 +84,14 @@ describe('compare populations (master plan §9: 2–4 side by side)', () => {
     expect(compared).toBe(docCases.length * pops.length);   // 12: every row actually compared, not a loop that ran zero times
   });
 
-  // Owner NORM-PICK-1 (12 Oct): each ticked population's cell asks for (and keeps) its OWN choice. Eastman has no own
-  // norm and Saudi has no SNA in the committed sets, so Eastman SNA under Saudi needs a choice.
-  it('NORM-PICK-1: a population with nothing asks for a choice for itself; a pick saved for it is used under its heading only', () => {
+  // Ruling AUTO-Q7 (19 Oct 2026): Eastman's SNA under Saudi (Saudi has no SNA): the Saudi column shows "—",
+  // uncoloured, no tag, no choice — not Eastman's own norm, not a pick; the Chinese column is exactly the Inspector's.
+  it('AUTO-Q7: a population with no norm of its own shows "—"; one with its own norm shows it as the Inspector would', () => {
     const e = { ...sna, analysis: 'Eastman', analysisId: 'eastman', normAnalysisId: 'eastman' };
     const [r] = compareCells([e], ['saudi', 'chinese'], doc, ctx);
-    expect([r.cells[0].text, r.cells[0].choose, r.cells[1].choose]).toEqual(['no Saudi norm — choose one', { population: 'saudi' }, null]);
-    const picks = { saudi: { m01_SNA: 'caucasian' } };
-    const [p] = compareCells([e], ['saudi', 'chinese'], doc, ctx, DEFAULT_DECIMALS, picks);
-    expect([p.cells[0].badges.map((b) => b.flag), p.cells[0].choose, p.cells[1].badges.some((b) => b.flag === 'chosen-by-you')])
-      .toEqual([['chosen-by-you'], { population: 'saudi' }, false]);
-    // The same as the Inspector shows for a case set to Saudi with that pick (T11-2's construct, with picks).
-    const q = queryFor(e.node, e.normAnalysisId, { ...doc, population: 'saudi' }, ctx, picks);
-    expect(p.cells[0]).toEqual(normCell(e.num, resolveNorm(q), q, DEFAULT_DECIMALS));
+    expect([r.cells[0].text, r.cells[0].band, r.cells[0].badges, r.cells[0].choose]).toEqual(['—', null, [], null]);
+    const q = queryFor(e.node, e.normAnalysisId, { ...doc, population: 'chinese' }, ctx);
+    expect(r.cells[1]).toEqual(normCell(e.num, resolveNorm(q), q, DEFAULT_DECIMALS));
   });
 });
 

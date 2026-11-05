@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { applies, commandFor, type KeyLike } from './keymap';
+import { applies, commandFor, isMod, isSpacePan, modLabel, shortcut, type KeyLike } from './keymap';
 
 const k = (key: string, mods: Partial<KeyLike> = {}): KeyLike => ({ key, metaKey: false, ctrlKey: false, shiftKey: false, altKey: false, ...mods });
 describe('keymap (§2 controls table, decision 18)', () => {
@@ -31,7 +31,7 @@ describe('keymap (§2 controls table, decision 18)', () => {
     expect(commandFor(k('Backspace', { targetTag: 'INPUT', targetType: 'date' }))).toBeNull();
   });
   it('keys that would do nothing are left to the browser (Week 2 carry-over)', () => {
-    const none = { hasCase: false, hasActivePoint: false, calibrating: false };
+    const none = { hasCase: false, hasActivePoint: false, calibrating: false, rulerPending: false };
     expect(applies({ t: 'nudge', dx: 1, dy: 0 }, { ...none, hasCase: true })).toBe(false);
     expect(applies({ t: 'nudge', dx: 1, dy: 0 }, { ...none, hasCase: true, hasActivePoint: true })).toBe(true);
     expect(applies({ t: 'remove' }, { ...none, hasCase: true })).toBe(false);
@@ -42,7 +42,38 @@ describe('keymap (§2 controls table, decision 18)', () => {
   });
   it('K calibrates, and K or Esc still work while calibrating', () => {
     expect(commandFor(k('k'))).toEqual({ t: 'calibrate' });
-    expect(applies({ t: 'calibrate' }, { hasCase: true, hasActivePoint: false, calibrating: true })).toBe(true);
-    expect(applies({ t: 'calibrate' }, { hasCase: false, hasActivePoint: false, calibrating: false })).toBe(false);
+    expect(applies({ t: 'calibrate' }, { hasCase: true, hasActivePoint: false, calibrating: true, rulerPending: false })).toBe(true);
+    expect(applies({ t: 'calibrate' }, { hasCase: false, hasActivePoint: false, calibrating: false, rulerPending: false })).toBe(false);
+  });
+  // Final review m-1: ⌘Z / ⌘⇧Z while a ruler store is still being saved can leave the marks on screen different
+  // from the library (a store queued behind it can land last and overwrite the drop the clinician just saw land).
+  // `applies` is the one gate every keyboard command passes through (App.tsx), so this is where it is proven.
+  it('m-1: undo and redo are inert while a ruler store is still pending, even with a case open and not calibrating', () => {
+    const open = { hasCase: true, hasActivePoint: false, calibrating: false, rulerPending: false };
+    expect(applies({ t: 'undo' }, open)).toBe(true);
+    expect(applies({ t: 'redo' }, open)).toBe(true);
+    expect(applies({ t: 'undo' }, { ...open, rulerPending: true })).toBe(false);
+    expect(applies({ t: 'redo' }, { ...open, rulerPending: true })).toBe(false);
+    expect(applies({ t: 'calibrate' }, { ...open, rulerPending: true })).toBe(true);   // only undo/redo are held back
+  });
+});
+
+describe('the one ⌘/Ctrl helper (Windows-ready rule, master plan §13)', () => {
+  it('names ⌘ on a Mac and Ctrl elsewhere', () => {
+    expect([modLabel('MacIntel'), modLabel('Win32'), modLabel('Linux x86_64')]).toEqual(['⌘', 'Ctrl', 'Ctrl']);
+  });
+  it('writes a shortcut the platform way', () => { expect([shortcut('⌘', 'Z'), shortcut('Ctrl', 'Z')]).toEqual(['⌘Z', 'Ctrl+Z']); });
+  it('takes ⌘ or Ctrl as the modifier, as the key commands always have', () => {
+    expect([isMod({ metaKey: true, ctrlKey: false }), isMod({ metaKey: false, ctrlKey: true }), isMod({ metaKey: false, ctrlKey: false })]).toEqual([true, true, false]);
+  });
+});
+
+describe('Space-drag pans the film (spec 2026-10-19 addendum, G)', () => {
+  it('only Space, only with the pointer over the film, never while typing', () => {
+    expect(isSpacePan(k(' '), true)).toBe(true);
+    expect(isSpacePan(k(' '), false)).toBe(false);
+    expect(isSpacePan(k(' ', { targetTag: 'INPUT', targetType: 'text' }), true)).toBe(false);
+    expect(isSpacePan(k(' ', { targetTag: 'TEXTAREA' }), true)).toBe(false);
+    expect(isSpacePan(k('a'), true)).toBe(false);
   });
 });

@@ -27,12 +27,15 @@ fn placing_run<'a>(row: &LandmarkRow, placer: &str, facing: &str, history: &'a [
 /// the case's facing (final review I-1: a stale pass made with the other facing is never compared; a model with no run
 /// of this facing has no row). `history`: every stored run of the case, newest first. Distances are in film pixels for
 /// both the point and the guesses, so a left-facing film needs no flip. Millimetres use the case's ruler, else the
-/// assumed 0.1 mm per px (Q10, `mm_assumed`).
+/// assumed 0.1 mm per px (Q10, `mm_assumed`). Each row also keeps its film's scale (ruler, machine, fit or assumed;
+/// `ceph_store::film_scale`, owner E1, format 14); `dist_mm` and `mm_assumed` keep their meaning (the ruler, else the
+/// assumed 0.1).
 pub fn learning_rows_for(doc: &CaseDoc, history: &[ModelPoints], machine: Option<String>) -> Vec<LearningRow> {
     let (mm, assumed) = match doc.spacing_mm {
         Some(s) if ceph_infer::crosscheck::scale_ok(s) => (s, false),
         _ => (ceph_infer::crosscheck::params().assumed_mm_per_px, true),
     };
+    let fs = ceph_store::film_scale(doc, ceph_infer::crosscheck::params().assumed_mm_per_px);
     let machine = machine.unwrap_or_else(|| "unknown".into());
     let mut out = Vec::new();
     for row in doc.landmarks.iter().filter(|r| r.verified || r.source == "manual") {
@@ -48,10 +51,21 @@ pub fn learning_rows_for(doc: &CaseDoc, history: &[ModelPoints], machine: Option
             let px = (q.x - row.x).hypot(q.y - row.y);
             out.push(LearningRow { landmark_id: row.id.clone(), model_id: r.model_id.clone(), model_sha256: r.model_sha256.clone(),
                 execution_provider: r.execution_provider.clone(), dist_px: px, dist_mm: px * mm, mm_assumed: assumed, machine: machine.clone(),
-                how: how.into(), placer: is_placer });
+                how: how.into(), placer: is_placer, mm_per_px: Some(fs.mm_per_px), scale_source: Some(fs.source.as_str().into()) });
         }
     }
     out
+}
+
+/// Part F Task 13 (chain spec §5, the CSV's `model_file`): for each AI point whose placing run is stored, the fingerprint
+/// of the model file that made it (the stored value read through `ceph_model::fingerprint::normalise`). A hand-placed
+/// point, or one whose placing run is not stored, has none.
+pub fn point_files(doc: &CaseDoc, history: &[ModelPoints]) -> std::collections::BTreeMap<String, String> {
+    doc.landmarks.iter().filter_map(|row| {
+        let placer = placer_of(row, history)?;
+        let (run, _) = placing_run(row, &placer, &doc.facing, history)?;
+        ceph_model::fingerprint::normalise(&run.model_id, run.model_sha256.as_deref()).map(|f| (row.id.clone(), f))
+    }).collect()
 }
 
 /// The points in the record whose placing model is known but whose placing run (made with the case's facing) is not
@@ -91,7 +105,7 @@ mod tests {
             points: pts.iter().enumerate().map(|(i, (id, x, y))| AiPoint { channel: i as u32, landmark_id: Some(id.to_string()), x: *x, y: *y, peak: 1.0 }).collect() }
     }
     fn lm(id: &str, x: f64, y: f64, source: &str, verified: bool, ai: Option<(f64, f64)>, placed_by: Option<&str>) -> LandmarkRow {
-        LandmarkRow { id: id.into(), x, y, source: source.into(), verified, ai_x: ai.map(|a| a.0), ai_y: ai.map(|a| a.1), confidence: None, placed_by: placed_by.map(String::from) }
+        LandmarkRow { id: id.into(), x, y, source: source.into(), verified, ai_x: ai.map(|a| a.0), ai_y: ai.map(|a| a.1), confidence: None, placed_by: placed_by.map(String::from), accept_kind: None, placed_via: None }
     }
     fn doc(landmarks: Vec<LandmarkRow>, spacing: Option<f64>, facing: &str) -> CaseDoc {
         let mut d: CaseDoc = serde_json::from_value(serde_json::json!({ "id": "c", "patientName": "Demo Synthetic", "timepoint": "T1", "takenOn": null, "facing": facing,   // SYNTHETIC
@@ -189,6 +203,47 @@ mod tests {
         let ruled = &learning_rows_for(&doc(vec![lm("S", 0.0, 0.0, "manual", true, None, None)], Some(0.25), "right"), &runs, None)[0];
         assert_eq!((ruled.dist_mm, ruled.mm_assumed), (2.5, false), "a ruler: its own scale");
     }
+    /// Part F Task 5 (owner E1): every row carries its film's scale when written; on a ruler film the row's mm are
+    /// exactly px × that scale (the measurement Part F uses), on a film without one they stay at the assumed 0.1 as before.
+    #[test] fn each_row_keeps_its_films_scale_and_ruler_mm_are_px_times_it() {
+        let runs = [run(AZ, &[("S", 30.0, 40.0)])];
+        let ruled = learning_rows_for(&doc(vec![lm("S", 0.0, 0.0, "manual", true, None, None)], Some(0.125), "right"), &runs, None);
+        assert_eq!((ruled[0].mm_per_px, ruled[0].scale_source.as_deref(), ruled[0].dist_mm), (Some(0.125), Some("ruler"), 50.0 * 0.125));
+        let assumed = learning_rows_for(&doc(vec![lm("S", 0.0, 0.0, "manual", true, None, None)], None, "right"), &runs, None);
+        assert_eq!((assumed[0].mm_per_px, assumed[0].scale_source.as_deref(), assumed[0].mm_assumed), (Some(0.1), Some("assumed"), true));
+        let mut machine = doc(vec![lm("S", 0.0, 0.0, "manual", true, None, None)], None, "right");
+        machine.machine_scale = Some(serde_json::from_value(serde_json::json!({ "machineId": "m", "machineName": "Demo Radiology", "spacingMm": 0.0625,
+            "widthPx": 10, "heightPx": 10, "source": "entered", "sourceCaseId": null, "sourceFilmDate": null, "setAt": "x", "applies": true })).unwrap());
+        let m = learning_rows_for(&machine, &runs, None);
+        assert_eq!((m[0].mm_per_px, m[0].scale_source.as_deref(), m[0].mm_assumed, m[0].dist_mm), (Some(0.0625), Some("machine"), true, 5.0),
+            "dist_mm and mm_assumed keep their meaning (ruler or assumed); the machine scale is kept beside them");
+    }
+    /// Part F Task 5: the stored row's scale is the film's scale now (`film_scale` on the loaded film), through the
+    /// library, as the film moves from no scale to its machine's scale to its own ruler.
+    #[test] fn the_stored_rows_scale_equals_the_films_scale() {
+        let (_t, mut l, id) = new_lib();
+        az_run(&mut l, &id, "cpu");
+        l.save(&edit(&id, vec![s_at(13.0, true)]), "Dr A").unwrap();
+        let mut seen = Vec::new();
+        for step in 0..3 {
+            match step {
+                1 => {   // its machine's calibrated scale, at exactly this film's 64 × 64 px
+                    l.conn_for_tests().execute("INSERT INTO layout_machines (id, name, named_by_user, width, height, created_at, updated_at, spacing_mm, width_px, height_px, scale_source, scale_set_at)
+                        VALUES ('m1', 'Demo Radiology', 1, 64, 64, 'x', 'x', 0.0625, 64, 64, 'entered', '2026-10-27T00:00:00.000Z')", []).unwrap();
+                    l.conn_for_tests().execute("UPDATE cases SET layout_machine_id = 'm1' WHERE id = ?1", [&id]).unwrap();
+                }
+                2 => { l.calibrate(&id, (0.0, 0.0), (100.0, 0.0), 12.5, "Dr A").unwrap(); }
+                _ => {}
+            }
+            assert_eq!(record_learning(&mut l, &id, "Dr A").unwrap(), 1);
+            let fs = ceph_store::film_scale(&l.load(&id).unwrap(), ceph_infer::crosscheck::params().assumed_mm_per_px);
+            let r = &l.learning_rows(&id).unwrap()[0];
+            assert_eq!((r.mm_per_px, r.scale_source.as_deref()), (Some(fs.mm_per_px), Some(fs.source.as_str())), "step {step}");
+            seen.push((r.mm_per_px.unwrap(), r.scale_source.clone().unwrap(), r.dist_px));
+        }
+        assert_eq!(seen, [(0.1, "assumed".to_string(), 3.0), (0.0625, "machine".to_string(), 3.0), (0.125, "ruler".to_string(), 3.0)],
+            "each step of the order reached, and the raw pixel distance never moves");
+    }
     /// A run made with this facing (the store records each run's facing).
     fn faced(f: &str, r: ModelPoints) -> ModelPoints { ModelPoints { facing: f.into(), ..r } }
     /// Final review I-1: the runs carry the case's own facing (a left-facing case is run left-facing), so the distances
@@ -228,6 +283,35 @@ mod tests {
         let rows = learning_rows_for(&d("left"), &history, None);
         assert_eq!(rows.iter().map(|r| (r.model_id.as_str(), r.placer, r.dist_px)).collect::<Vec<_>>(), [(AZ, true, 0.0), (SR, false, 5.0)]);
     }
+    /// Preflight ruling M16 (Task 5, carried from Task 1's review): a bulk accept (the tracing reducer's `acceptMany` /
+    /// `acceptRemaining`, Part F's "accepted without moving") only ever flips `verified`; it never touches `source` —
+    /// so a point accepted that way reaches the store with `source == "ai"`, exactly like a single "Accept position",
+    /// and the row this function writes for it is "accepted-unmoved". The classification is by `source`, so the
+    /// learning record cannot tell a bulk accept from a single one (ruling 19 Oct: accepted; no format
+    /// change) — this test only confirms the existing rule already covers it, for both points of a two-point bulk
+    /// accept (`acceptMany(['S', 'N'])` / `acceptRemaining`).
+    /// Part F Task 13: each AI point's model file is its placing run's fingerprint (read through BEFORE_13); a hand point
+    /// and a point whose placing run is not stored have none.
+    #[test] fn point_files_name_the_file_of_the_run_that_placed_each_point() {
+        let mut sr = run(SR, &[("N", 5.0, 5.0)]);
+        sr.model_sha256 = Some(ceph_model::fingerprint::BEFORE_13[2].recorded.into());
+        let history = [run(AZ, &[("S", 0.0, 0.0)]), sr];
+        let d = doc(vec![lm("S", 1.0, 0.0, "ai-adjusted", true, Some((0.0, 0.0)), Some(AZ)), lm("N", 5.0, 5.0, "ai", false, Some((5.0, 5.0)), Some(SR)),
+            lm("Go", 9.0, 9.0, "ai", false, Some((9.0, 9.0)), Some(AZ)), lm("Ba", 1.0, 1.0, "manual", true, None, None)], None, "right");
+        let f = point_files(&d, &history);
+        assert_eq!(f.get("S").map(String::as_str), Some("sha-aariz-cepha29"));
+        assert_eq!(f.get("N").map(String::as_str), Some(ceph_model::fingerprint::BEFORE_13[2].fingerprint), "SRPose's network hash, read as its pinned files");
+        assert!(!f.contains_key("Go") && !f.contains_key("Ba"), "no stored placing run; a hand point");
+    }
+    #[test] fn a_bulk_accept_files_as_accepted_unmoved_same_as_a_single_accept() {
+        let runs = [run(AZ, &[("S", 0.0, 0.0), ("N", 10.0, 10.0)])];
+        let d = doc(vec![lm("S", 0.0, 0.0, "ai", true, Some((0.0, 0.0)), Some(AZ)), lm("N", 10.0, 10.0, "ai", true, Some((10.0, 10.0)), Some(AZ))], None, "right");
+        let rows = learning_rows_for(&d, &runs, None);
+        assert_eq!(rows.iter().map(|r| r.how.as_str()).collect::<Vec<_>>(), ["accepted-unmoved", "accepted-unmoved"], "{rows:?}");
+        // Positive control: the same point with `source` the reducer gives after a drag ("ai-adjusted") files as "moved".
+        let moved = doc(vec![lm("S", 1.0, 0.0, "ai-adjusted", true, Some((0.0, 0.0)), Some(AZ))], None, "right");
+        assert_eq!(find(&learning_rows_for(&moved, &runs, None), "S", AZ).map(|r| r.how.as_str()), Some("moved"));
+    }
 
     // ---- through the library (synthetic film in a temp folder; never the real library) ----
     fn new_lib() -> (tempfile::TempDir, ceph_store::Library, String) {
@@ -244,7 +328,7 @@ mod tests {
     }
     fn s_at(x: f64, verified: bool) -> LandmarkRow {
         LandmarkRow { id: "S".into(), x, y: 20.0, source: if x == 10.0 { "ai".into() } else { "ai-adjusted".into() }, verified,
-            ai_x: Some(10.0), ai_y: Some(20.0), confidence: None, placed_by: Some(AZ.into()) }
+            ai_x: Some(10.0), ai_y: Some(20.0), confidence: None, placed_by: Some(AZ.into()), accept_kind: None, placed_via: None }
     }
     fn edit(id: &str, landmarks: Vec<LandmarkRow>) -> ceph_store::CaseEdit {
         ceph_store::CaseEdit { id: id.into(), facing: "right".into(), orientation: serde_json::json!({}), display: serde_json::json!({}), landmarks }
@@ -290,7 +374,7 @@ mod tests {
     #[test] fn un_verify_delete_and_nothing_verified_remove_rows() {
         let (_t, mut l, id) = new_lib();
         az_run(&mut l, &id, "cpu");
-        let n = LandmarkRow { id: "N".into(), x: 40.0, y: 20.0, source: "ai".into(), verified: true, ai_x: Some(40.0), ai_y: Some(20.0), confidence: None, placed_by: Some(AZ.into()) };
+        let n = LandmarkRow { id: "N".into(), x: 40.0, y: 20.0, source: "ai".into(), verified: true, ai_x: Some(40.0), ai_y: Some(20.0), confidence: None, placed_by: Some(AZ.into()), accept_kind: None, placed_via: None };
         crate::library::save_and_learn(&mut l, &edit(&id, vec![s_at(10.0, true), n.clone()]), "Dr A").unwrap();
         assert_eq!(px(&l, &id).len(), 2);
         crate::library::save_and_learn(&mut l, &edit(&id, vec![s_at(10.0, false), n.clone()]), "Dr A").unwrap();
@@ -303,7 +387,7 @@ mod tests {
         crate::library::save_and_learn(&mut l, &edit(&id, vec![s_at(13.0, true)]), "Dr A").unwrap();
         assert!(px(&l, &id).is_empty(), "no run yet: no rows");
         crate::library::record_ai_and_learn(&mut l, &id, &ceph_store::AiRun { model_id: GU.into(), execution_provider: "coreml".into(), facing: "right".into(), total_ms: 1.0, model_sha256: Some("g".into()) },
-            &[AiPoint { channel: 0, landmark_id: Some("S".into()), x: 13.0, y: 24.0, peak: 1.0 }], "Dr A").unwrap();
+            &[AiPoint { channel: 0, landmark_id: Some("S".into()), x: 13.0, y: 24.0, peak: 1.0 }], &crate::point_check::PointCheckState::default(), "Dr A").unwrap();
         let r = &l.learning_rows(&id).unwrap()[0];
         assert_eq!((r.model_id.as_str(), r.execution_provider.as_str(), r.model_sha256.as_deref(), r.dist_px, r.placer), (GU, "coreml", Some("g"), 4.0, false));
         az_run(&mut l, &id, "cpu");
@@ -316,7 +400,7 @@ mod tests {
         az_run(&mut l, &id, "cpu");
         crate::library::save_and_learn(&mut l, &edit(&id, vec![s_at(10.0, true)]), "Dr A").unwrap();
         crate::library::record_ai_and_learn(&mut l, &id, &ceph_store::AiRun { model_id: AZ.into(), execution_provider: "coreml".into(), facing: "right".into(),
-            total_ms: 1.0, model_sha256: Some("b".into()) }, &[AiPoint { channel: 0, landmark_id: Some("S".into()), x: 13.0, y: 24.0, peak: 1.0 }], "Dr A").unwrap();
+            total_ms: 1.0, model_sha256: Some("b".into()) }, &[AiPoint { channel: 0, landmark_id: Some("S".into()), x: 13.0, y: 24.0, peak: 1.0 }], &crate::point_check::PointCheckState::default(), "Dr A").unwrap();
         let r = &l.learning_rows(&id).unwrap()[0];
         assert_eq!((r.dist_px, r.placer, r.model_sha256.as_deref(), r.execution_provider.as_str()), (0.0, true, Some("a"), "cpu"));
     }
@@ -377,5 +461,18 @@ mod tests {
         let l = ceph_store::Library::open(t.path()).unwrap();
         assert_eq!(l.load(&id).unwrap().landmarks[0].placed_by.as_deref(), Some(AZ));
         assert_eq!(px(&l, &id), [("S".to_string(), "moved".to_string(), 3.0)]);
+    }
+    /// Spec §7: a point placed through Automatic best is credited to the real model that made the mark; no row ever
+    /// names Automatic best. Positive control: make `placer_of` return `Some("auto-best")` when `placed_via` is set →
+    /// this fails.
+    #[test] fn a_point_placed_via_automatic_best_credits_the_real_model() {
+        let runs = vec![run("srpose-cldet23", &[("Go", 100.0, 100.0)]), run("aariz-cepha29", &[("Go", 104.0, 100.0)])];
+        let mut go = lm("Go", 101.0, 100.0, "ai-adjusted", true, Some((100.0, 100.0)), Some("srpose-cldet23"));
+        go.placed_via = Some(ceph_store::AUTO_BEST.into());
+        let rows = learning_rows_for(&doc(vec![go.clone()], Some(0.1), "right"), &runs, None);
+        assert_eq!(placer_of(&go, &runs).as_deref(), Some("srpose-cldet23"));
+        assert!(find(&rows, "Go", "srpose-cldet23").is_some_and(|r| r.placer), "the real model is the placer");
+        assert!(find(&rows, "Go", "aariz-cepha29").is_some_and(|r| !r.placer), "Aariz still compared");
+        assert!(rows.iter().all(|r| r.model_id != ceph_store::AUTO_BEST));
     }
 }

@@ -64,3 +64,10 @@ use ceph_model::{catalog::{builtin, Format}, install::sha256_bytes};
     let old: Vec<&str> = text.lines().filter(|l| l.contains("CephTrace")).collect();
     assert!(old.is_empty(), "old app name in catalog.json: {old:?}");
 }
+/// Automatic best spec §7: the virtual model is never a catalogue entry, so no proof, weights check or install can see it.
+/// Positive control: add an entry with id "auto-best" to catalog/catalog.json → this fails; remove it.
+#[test] fn the_catalogue_never_lists_automatic_best() {
+    let ids: Vec<String> = ceph_model::catalog::builtin().into_iter().map(|m| m.entry.id).collect();
+    assert!(ids.len() >= 4 && ids.contains(&"aariz-cepha29".to_string()), "the instrument reads the catalogue: {ids:?}");
+    assert!(!ids.iter().any(|i| i == "auto-best"), "{ids:?}");
+}

@@ -36,8 +36,8 @@ const shot = (page, n) => page.screenshot({ path: `${__dirname}/out/w3-${n}.png`
           case 'plugin:dialog|open': return a.options && a.options.multiple ? ['/Users/demo/SYNTHETIC-demo.png'] : '/Users/demo';
           // `ask()` (@tauri-apps/plugin-dialog) invokes 'plugin:dialog|message', never 'plugin:dialog|ask' — fix
           // round 1 (Task 10 review M2): the dead `case 'plugin:dialog|ask'` that used to sit here never matched
-          // anything real; corrected. Nothing in this smoke clicks an `ask()`-gated action yet (Delete case,
-          // Restore backup — pre-existing gap, not this task's).
+          // anything real; corrected. This smoke clicks no `ask()`-gated action; Delete case, Restore backup and
+          // Replace all are covered by e2e16 (CF1-CF3).
           case 'plugin:dialog|message': return 'Yes';
           case 'plugin:event|listen': (window.__listeners ||= []).push(a); return 1;
           case 'detect_landmarks': { window.__detects = (window.__detects || 0) + 1;
@@ -111,7 +111,7 @@ const shot = (page, n) => page.screenshot({ path: `${__dirname}/out/w3-${n}.png`
             c.spacingMm = a.mm / px; c.verifiedAt = null; store(db); return c.spacingMm; }
           case 'library_set_meta': Object.assign(db.cases[a.caseId], a.meta); store(db); return null;
           case 'library_set_verified': Object.assign(db.cases[a.caseId], a.verified ? { verifiedAt: now(), verifiedBy: 'SYNTHETIC-operator' } : { verifiedAt: null }); store(db); return null;
-          case 'settings_get': return db.settings[a.key] ?? null;
+          case 'settings_get': return a.key === 'betaNoticeSeen' && localStorage.getItem('betaDone') ? '1' : (db.settings[a.key] ?? null);
           case 'settings_set': db.settings[a.key] = a.value; store(db); return null;
           default: return null;
         }
@@ -122,6 +122,16 @@ const shot = (page, n) => page.screenshot({ path: `${__dirname}/out/w3-${n}.png`
   await page.goto((process.env.E2E_URL || 'http://localhost:4173/'));
   await page.evaluate(() => localStorage.clear()); await page.reload();
   await page.waitForSelector('.library');
+  // Owner, 2 Nov 2026: the one-time Beta notice. First open shows it (nothing stored yet); OK dismisses it; a reload (quit + reopen) does not bring it back.
+  const betaDlg = page.getByRole('dialog', { name: 'OpenCephAI 1.1 Beta' });
+  await betaDlg.waitFor();
+  ok('BETA1. first open: the notice shows the owner\'s exact words', (await betaDlg.innerText()).includes('OpenCephAI is beta research software, not a diagnostic device. Every point must be checked by a clinician. Please report any problem.'));
+  ok('BETA2. the window title (document title) is "OpenCephAI 1.1 Beta"', (await page.title()) === 'OpenCephAI 1.1 Beta', await page.title());
+  await betaDlg.getByRole('button', { name: 'OK' }).click();
+  ok('BETA3. OK closes it', (await page.getByRole('dialog', { name: 'OpenCephAI 1.1 Beta' }).count()) === 0);
+  await page.reload(); await page.waitForSelector('.library'); await page.waitForTimeout(400);
+  ok('BETA4. closed and reopened: it does not come back (remembered)', (await page.getByRole('dialog', { name: 'OpenCephAI 1.1 Beta' }).count()) === 0);
+  await page.evaluate(() => localStorage.setItem('betaDone', '1'));   // later checks replace the whole fake library; they must not meet the notice again
   ok('1. starts on the Library, empty', (await page.locator('.lib-empty').innerText()).includes('Drop cephalograms'));
   // Owner, 16 Oct (A): the OPEN CEPH AI wordmark sits at the top left, just right of the window buttons (traffic lights end ~78 px).
   const brand = await page.evaluate(() => { const el = document.querySelector('.lib-toolbar .brand-title'), r = el.getBoundingClientRect(), cs = getComputedStyle(el);
@@ -296,7 +306,7 @@ const shot = (page, n) => page.screenshot({ path: `${__dirname}/out/w3-${n}.png`
   await page.getByRole('button', { name: 'Save', exact: true }).click();
   await page.waitForSelector('.calibrate-dialog', { state: 'detached' });
   await page.getByRole('tab', { name: 'Measurements' }).click();
-  ok('5. the scale is now labelled calibrated', (await page.locator('.inspector .hint', { hasText: 'Scale' }).innerText()).includes('(calibrated)'));
+  ok('5. the scale is now labelled "calibrated scale"', (await page.locator('.inspector .hint', { hasText: 'Scale' }).innerText()).includes('(calibrated scale)'));
 
   await page.getByRole('button', { name: 'Superimposition ›' }).click();
   ok('6. superimposition shows the profilogram', (await page.locator('svg.overlay path[stroke="var(--profile)"]').count()) >= 1);
@@ -371,7 +381,9 @@ const shot = (page, n) => page.screenshot({ path: `${__dirname}/out/w3-${n}.png`
   ok('I1. the main model\'s own U1A over 2 mm is not placed: "Not placed" lists it', np4.includes('U1A') && (await page.locator('g.landmark[data-id="U1A"]').count()) === 0, np4.join(', '));
   ok('I1. … and it shows as the main model\'s ghost diamond, U1A only', mainGhostIds.length === 1 && mainGhostIds[0] === 'U1A', JSON.stringify(mainGhostIds));
   // Owner, 16 Oct: a loading bar per model at the top of the film while it is traced; they fade when all have ended.
-  await page.evaluate(() => localStorage.setItem('fakeLib', JSON.stringify({ cases: {}, settings: {}, extraMode: 'bars' })));
+  // Automatic best Task 7 fix round 1: a bar shows only once the ghost ticks are known (`ghosts_hidden`, stored since
+  // format 15's upgrade; this fake library has no model catalogue, so it could never be upgraded): every ghost on here.
+  await page.evaluate(() => localStorage.setItem('fakeLib', JSON.stringify({ cases: {}, settings: { ghosts_hidden: '[]' }, extraMode: 'bars' })));
   await page.reload(); await page.waitForSelector('.library');
   await page.getByRole('button', { name: 'Import…' }).click();
   await page.waitForSelector('.model-bar[data-model="aariz-cepha29"]', { timeout: 3000 }).catch(() => {});
@@ -382,8 +394,39 @@ const shot = (page, n) => page.screenshot({ path: `${__dirname}/out/w3-${n}.png`
   await page.waitForTimeout(1700);
   ok('B2. then Aariz is done and GU2Net shows it gave up at its limit', JSON.stringify(await barsNow()) === JSON.stringify(['main:✓', 'aariz-cepha29:✓', 'gu2net:gave up after 15 s']),
     JSON.stringify(await barsNow()));
+  const lineShown = await page.evaluate(() => document.body.innerText.includes('GU2Net took longer than 15 s'));
+  ok('B2. … and with its ghost on, its "gave up" line shows (the instrument B4 relies on can see it)', lineShown);
   await page.waitForTimeout(3500);
   ok('B3. a few seconds after the last one ends, the bars are gone', (await page.locator('.model-bars').count()) === 0);
+  // Owner D2: GU2Net's ghost ticked off: its bar and its "gave up" line stay hidden (no point waits for it); Aariz's show.
+  await page.evaluate(() => localStorage.setItem('fakeLib', JSON.stringify({ cases: {}, settings: { ghosts_hidden: '["gu2net"]' }, extraMode: 'bars' })));
+  await page.reload(); await page.waitForSelector('.library');
+  await page.getByRole('button', { name: 'Import…' }).click();
+  await page.waitForSelector('.model-bar[data-model="aariz-cepha29"]', { timeout: 3000 }).catch(() => {});
+  await page.waitForTimeout(1700);
+  const quiet = { bars: await barsNow(), line: await page.evaluate(() => document.body.innerText.includes('GU2Net took longer than 15 s')) };
+  ok('B4. a model whose ghost is off shows no bar and no "gave up" line; the others do', JSON.stringify(quiet) === JSON.stringify({ bars: ['main:✓', 'aariz-cepha29:✓'], line: false }), JSON.stringify(quiet));
+
+  // Owner, 1 Nov 2026: "Thanks to Dr Linton Nash" is always visible at the foot of the left sidebar, at the narrowest
+  // supported size too (tauri.conf.json minWidth/minHeight, 1100x700), below the Models…/Analyses…/Settings… row, never overlapping it.
+  await page.setViewportSize({ width: 1100, height: 700 });
+  await page.waitForTimeout(200);
+  const credit = page.locator('.sidebar .sidebar-credit');
+  const cb = await credit.boundingBox();
+  const sbBox = await page.locator('aside.sidebar').boundingBox();
+  ok('CR1. 1100x700: the thanks line is visible and reads exactly "Thanks to Dr Linton Nash"', (await credit.isVisible()) && (await credit.innerText()) === 'Thanks to Dr Linton Nash', String(await credit.innerText()));
+  ok('CR2. 1100x700: it sits inside the window and the sidebar, at the sidebar\'s foot', !!cb && cb.y >= 0 && cb.y + cb.height <= 700 && cb.y + cb.height <= sbBox.y + sbBox.height + 1 && cb.y + cb.height >= sbBox.y + sbBox.height - 40, JSON.stringify({ cb, sbBox }));
+  // With a film open the sidebar's contents are taller than 700 px, so they scroll; the line must stay put while they do.
+  await page.locator('.sidebar-scroll').evaluate((el) => { el.scrollTop = el.scrollHeight; });
+  const cb2 = await credit.boundingBox();
+  ok('CR3. scrolling the sidebar to its end does not move the thanks line (pinned)', !!cb2 && Math.abs(cb2.y - cb.y) < 0.5, `${cb && cb.y} -> ${cb2 && cb2.y}`);
+  const scrollBox = await page.locator('.sidebar-scroll').boundingBox();
+  ok('CR4. the scrolling part ends above the thanks line (no overlap)', scrollBox.y + scrollBox.height <= cb2.y + 0.5, `${scrollBox.y + scrollBox.height} vs ${cb2.y}`);
+  const btnBoxes = [];
+  for (const n of ['Models…', 'Analyses…', 'Settings…']) { const bb = await page.locator('aside.sidebar').getByRole('button', { name: n }).boundingBox(); if (bb) btnBoxes.push(bb); }
+  ok('CR5. scrolled to the end, Models…/Analyses…/Settings… are all visible above the thanks line, none overlapped', btnBoxes.length === 3 && btnBoxes.every((bb) => bb.y >= scrollBox.y - 0.5 && bb.y + bb.height <= cb2.y + 0.5), JSON.stringify(btnBoxes.map((bb) => [bb.y, bb.y + bb.height])) + ' vs ' + cb2.y);
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.waitForTimeout(200);
 
   ok('no page errors', errors.length === 0, errors.slice(0, 3).join(' | '));
   console.log(results.join('\n'));

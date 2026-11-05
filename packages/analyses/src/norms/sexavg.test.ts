@@ -26,7 +26,7 @@ describe('SEX-AVG-1: sex not recorded, men\'s and women\'s rows only → average
     expect(r.sd).toBeCloseTo(Math.sqrt(5), 10);            // √((4 + 4)/2 + 1²) = 2.2360…
     expect(r.flags).toContain('sexes-averaged');
     expect(r.colour).toBe(true);
-    expect(r.sourceLine).toMatch(/averaged/);
+    expect(r.sourceLine).toContain(" · average of male and female (sex not recorded)");
   });
   it('a row for both sexes at that age wins (not averaged)', () => {
     const r = resolveNorm(q([mk([men, women, { sex: 'pooled', ageBand: adult, mean: -4.5, sd: 2.1 }])]));
@@ -192,5 +192,26 @@ describe('final review M-1: an averaged pair never mixes ages', () => {
       .toEqual([-2, [10, 12], true, true, false]);
     const woman = resolveNorm(q([set], { ageYears: null, sex: 'F' }));
     expect(woman.kind === 'norm' && [woman.mean, woman.flags.includes('age-assumed-adult')]).toEqual([-4, true]);
+  });
+});
+
+import { FLAG_WORDS } from './flags';
+
+describe('owner decision 5 (29 Oct 2026): sex not recorded, the worked example on real data', () => {
+  it('Gu 2011 Caucasian SNB: 80.95 ± 3.2791, worded "average of male and female"', () => {
+    const r = resolveNorm({ measurement: 'm02_SNB', analysisId: 'steiner', population: 'caucasian', clinicDefault: null,
+      sex: null, ageYears: 25, sets: loadSets(), userNorms: [] });
+    if (r.kind !== 'norm') throw new Error(r.kind);
+    expect(r.setId).toBe('gu2011-caucasian');
+    expect(r.mean).toBeCloseTo((82.0 + 79.9) / 2, 12);
+    expect(r.sd).toBeCloseTo(Math.sqrt((2.9 ** 2 + 3.3 ** 2) / 2 + ((82.0 - 79.9) / 2) ** 2), 12);
+    expect(r.sd).toBeCloseTo(3.2791, 4);
+    expect(r.flags).toContain('sexes-averaged');
+    expect(r.sourceLine).toContain(' · average of male and female (sex not recorded)');
+    expect(r.sourceLine).not.toContain("men's and women's rows averaged");
+  });
+  it('the badge and hover', () => {
+    expect(FLAG_WORDS['sexes-averaged']).toEqual({ badge: 'average of male and female',
+      tip: 'Average of the male and female norms (sex not recorded) — record sex for the exact norm.' });
   });
 });

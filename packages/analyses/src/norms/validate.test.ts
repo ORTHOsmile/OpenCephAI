@@ -27,6 +27,14 @@ describe('validateSet', () => {
   it('source is mandatory', () => expect(problems((s) => { s.entries[0].source = ''; })).toHaveLength(1));
   it("'close' and 'different' need a definitionNote", () => expect(problems((s) => { s.entries[0].definitionMatch = 'close'; })).toHaveLength(1));
   it('an unknown population id is refused', () => expect(problems((s) => { s.population.id = 'martian'; })).toHaveLength(1));
+  // Owner I1 (a), 3 Nov 2026: a both-sexes row may record how many of its people were men and women.
+  it('a both-sexes row may give its own men/women split, adding up to its n', () => {
+    expect(problems((s) => { Object.assign(s.entries[0], { n: 60, nMale: 30, nFemale: 30 }); })).toEqual([]);
+    expect(problems((s) => { Object.assign(s.entries[0], { n: 60, nMale: 30, nFemale: 20 }); })).toHaveLength(1);
+    expect(problems((s) => { Object.assign(s.entries[0], { nMale: 30 }); })).toHaveLength(1);                 // both or neither
+    expect(problems((s) => { Object.assign(s.entries[0], { nMale: 0, nFemale: 30 }); })).toHaveLength(1);
+    expect(problems((s) => { Object.assign(s.entries[0], { sex: 'M', nMale: 30, nFemale: 30 }); })).toHaveLength(1);   // only on a both-sexes row
+  });
   it('an analysis-own set must name existing analysis ids', () => {
     expect(problems((s) => { s.kind = 'analysis-own'; s.population.id = 'analysis-own'; s.analyses = ['steiner']; })).toEqual([]);
     expect(problems((s) => { s.kind = 'analysis-own'; s.population.id = 'analysis-own'; s.analyses = ['nope']; })).toHaveLength(1);

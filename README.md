@@ -1,4 +1,18 @@
-# OpenCephAI
+# OpenCephAI 1.1 Beta
+
+**Beta:** OpenCephAI is beta research software, not a diagnostic device. Every point must be checked by a clinician.
+See the legal disclaimer below: research and education only, not a medical device.
+
+A lateral cephalogram tracing app for macOS, for research and education only. Source-available under a noncommercial
+licence; see `LICENSE`.
+
+## Credits
+
+Program and Design: Dr Linton Nash
+
+With thanks to Dr Linton Nash.
+
+## About
 
 OpenCephAI is a source-available app for tracing lateral cephalograms (side-on skull X-rays used in orthodontics) on a
 Mac. You import a film, mark or check the landmarks, and the app works out the cephalometric measurements and
@@ -8,8 +22,9 @@ films over time.
 The app can use landmark-detection AI models. These are other people's work under their own licences; see
 "Model weights" below.
 
-**Research tool — not a medical device.** OpenCephAI is for research and education. It is not approved for diagnosis
-or treatment planning. Check every landmark and every number yourself.
+**Research and education only — not a medical device.** OpenCephAI is beta research software for research and
+education. It is not approved for diagnosis or treatment planning. Check every landmark and every number yourself. See
+"Legal disclaimer and terms of use" below.
 
 ## What is in this repository
 
@@ -72,13 +87,40 @@ are licensed for non-commercial use only; check that your use is allowed.
 
 ## Licences
 
-- OpenCephAI's own code: PolyForm Noncommercial License 1.0.0, for research and education only. Required Notice:
-  Copyright © 2026 Dr Linton Nash. OpenCephAI. Any commercial use needs prior written permission. See `LICENSE` and
-  the legal disclaimer below.
-- Fonts: the app embeds no font files; it uses the system's fonts. If a font is ever embedded, it will be one under
-  the SIL Open Font License (OFL), with its licence file beside it.
+- OpenCephAI's own code: PolyForm Noncommercial License 1.0.0, for research and education only. Any commercial use
+  needs prior written permission from Dr Linton Nash. Required Notice: Copyright © 2026 Dr Linton Nash. OpenCephAI.
+  See `LICENSE` for the full terms.
+- Fonts: the PDF report embeds two Noto Sans font files (`apps/desktop/src/report/fonts`), under the SIL Open Font
+  License (OFL), with its licence file beside them.
 - AI models and their weights: their authors' own licences (`THIRD_PARTY_MODELS.md`).
 - Norm values: each set cites the paper it comes from (`reference/norms/sets`, `reference/norms/SOURCES.md`).
+
+## Roadmap
+
+### Now (1.0)
+
+- AI tracing with several models. You verify every point.
+- Automatic best: for each point it picks the model that is closest on your own verified films.
+- Analyses and norms, with an automatic fallback when a norm is missing.
+- The profilogram.
+- Superimposition.
+- The PDF report and CSV export.
+- The Library table.
+
+### Next
+
+- Norms that choose the population automatically from the patient's details.
+- Choosing the base model for Automatic best.
+- A cross-check between two AI models.
+- A "far outside the usual position" warning.
+
+### Later
+
+- Your own personal AI model that learns your habits, always verified by you.
+- Outline tracing.
+- CVM staging.
+- Soft-tissue profile.
+- Windows.
 
 ## Legal disclaimer and terms of use
 
@@ -115,4 +157,3 @@ the maximum extent permitted by applicable law, the developers, creators and dis
 liable for any direct, indirect, incidental, consequential or punitive damages arising out of or related to the use
 of, or reliance on, the Software or its Content. That includes clinical complications, malpractice claims and
 patient injury. This adds to the "No Liability" terms of the licence in `LICENSE`.
-

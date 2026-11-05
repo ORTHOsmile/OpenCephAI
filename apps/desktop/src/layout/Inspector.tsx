@@ -1,11 +1,19 @@
-import { Fragment, useEffect, useMemo, useRef, useState } from 'react';
+import { Fragment, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import type { AnalysisDef, Compiled, Expr, NodeId, Value } from '@ceph/geometry';
-import { DEFAULT_MEANINGS, DEFINITION_TO_COME, guidedSteps, isMine, meaningPhrase, nextStep, pointDefinition, stepDone, unavailableLine, unconfirmedAiPointsLine, LANDMARKS, type LandmarkId, type NormQuery } from '@ceph/analyses';
+import { EXTREME_NOTE, extremeForNorm, DEFAULT_MEANINGS, DEFINITION_TO_COME, guidedSteps, isMine, meaningPhrase, neededLandmarks, nextStep, pointDefinition, stepDone, unavailableLine, unconfirmedAiPointsLine, LANDMARKS, type LandmarkId, type NormQuery } from '@ceph/analyses';
 import type { ModelPointRow } from '../ipc';
 import type { Action, TracingState } from '../tracing/state';
-import { verifiedSet } from '../tracing/state';
-import { AI_POINT_LABEL } from '../confidence';
-import { scaleLabel, type Scale } from '../tracing/spacing';
+import { remaining, verifiedSet } from '../tracing/state';
+import type { SignOff } from '../tracing/signOff';
+import { StatusRow } from './StatusRow';
+import { listClick, listDoubleClick } from '../tracing/pointGestures';
+import { isMod } from '../input/keymap';
+import { POINT_ACCEPTED } from '../confidence';
+import { fitMark, fitNoteLine, scaleLabel, type Scale } from '../tracing/spacing';
+import type { DateFormat } from '../dates';
+import { formatDate } from '../dates';
+import type { FineTune } from '../tracing/fineTune';
+import { ScaleFineTune } from './ScaleFineTune';
 import { Loupe, type Ruler } from '../loupe/Loupe';
 import { ChartOverlay } from '../chart/ChartOverlay';
 import { useStepAdvance } from '../tracing/advance';
@@ -15,6 +23,8 @@ import { changeOf, pairs, type SeriesRow } from '../compare/series';
 import { CALIBRATE_TO_SHOW, clinicalTargetText, firstHint, valueClass, type NormCell } from '../norms/normCell';
 import { NormChooser } from '../norms/NormChooser';
 import { PointAbout } from './PointAbout';
+import { UseForMachine } from './UseForMachine';
+import type { MachineRef } from '../ipc';
 
 interface Props { bitmap: ImageBitmap | null; state: TracingState; dispatch: (a: Action) => void;
   defs: AnalysisDef[]; registry: Record<NodeId, Expr>; compiled: Compiled; values: Record<NodeId, Value | null>; scale: Scale;
@@ -51,23 +61,43 @@ interface Props { bitmap: ImageBitmap | null; state: TracingState; dispatch: (a:
    *  choosing is not allowed (the read-only Superimposition page, or the case's choices not read yet). */
   normQueryFor: ((r: MeasurementRow) => NormQuery | null) | null;
   onPickNorm: ((population: string, measurement: string, source: string) => void) | null;
-  /** Task 3 (spec 2026-10-13 §5.1 "Shown"): the point's source line ("Placed by Aariz", …), derived in App.tsx; null
-   *  for points the main placement did not place. */
+  /** Task 3 (spec 2026-10-13 §5.1 "Shown"), as changed by Part F Task 8: the point's label (chain spec §5: "Aariz",
+   *  "Moved by you · was: Aariz", "Placed by you"), derived in App.tsx; null for points the main placement did not
+   *  place. */
   placedLineFor: (id: string) => string | null;
+  /** Part F Task 8: the hover that says why a point sits where it is (chain spec §5). */
+  placedWhyFor?: (id: string) => string | null;
   /** Owner, 16 Oct (C): the ruler marks while calibrating (the magnifier works on them); null otherwise. */
   ruler?: Ruler | null;
   /** Owner MEANING-PER-CLINICIAN (16 Oct): the current clinician's (or the approved) words for a measurement. */
   meaningWords?: (id: string) => { high: string; low: string } | undefined;
+  /** Owner G1/G2: the line about the film's scale, above the Measurements and Chart tables (tracing page). */
+  advice?: ReactNode;
+  /** The open film's timepoint, so the † note names it as the report does (owner, 23 Oct). */
+  filmTimepoint?: string;
+  /** MS-4: the operator's date format, for a machine-scaled film's "from film of …" words on the scale line. */
+  dateFormat: DateFormat;
+  /** Spec 2026-10-19 (V1): the open film's sign-off, shown in the status row; null with no case. */
+  signOff?: SignOff | null;
+  /** Spec 2026-10-19 Addendum 3: the − / + beside the scale line; null = none (no ruler behind the scale). */
+  fineTune?: FineTune | null;
+  /** Spec 2026-10-20 (MS6): the open film's machine, for "Use for this machine" beside the scale line; null = none
+   *  (no machine recognised, or the Superimposition page, which passes null). */
+  machine?: MachineRef | null;
+  /** Spec 2026-10-20 (MS6): makes the open film's own ruler the whole machine's scale. */
+  onUseForMachine?: () => void;
 }
 export interface SeriesChange {
   heads: string[]; ids: string[]; rows: SeriesRow[]; pair: { from: string; to: string }; labels: Record<string, string>;
   onPair: (p: { from: string; to: string }) => void; note: string | null;
+  /** Request G (owner G2, G3): per column, the fit mark, 'assumed scale' or null; and the notes under the table. */
+  marks?: (string | null)[]; fitted?: boolean[]; fitNotes?: string[];
 }
 
 /** The hover label of a point in the Landmarks list, with its source line when there is one. */
 const withPlaced = (title: string, line: string | null) => (line ? `${title} — ${line}` : title);
 
-export function Inspector({ bitmap, state, dispatch, defs, registry, compiled, values, scale, change, otherPointsOpen, onOtherPoints, decimals, normFor, normsError, onCalibrate, readOnly, found, pointTable, unconfirmedFor, normQueryFor, onPickNorm, placedLineFor, ruler = null, meaningWords }: Props) {
+export function Inspector({ bitmap, state, dispatch, defs, registry, compiled, values, scale, change, otherPointsOpen, onOtherPoints, decimals, normFor, normsError, onCalibrate, readOnly, found, pointTable, unconfirmedFor, normQueryFor, onPickNorm, placedLineFor, placedWhyFor, ruler = null, meaningWords, advice, filmTimepoint = '', signOff = null, fineTune = null, dateFormat, machine = null, onUseForMachine }: Props) {
   const [tab, setTab] = useState<'steps' | 'landmarks' | 'measures' | 'chart' | 'change'>('landmarks');
   // Owner CHART-TAB-1 (16 Oct): the Chart tab is the Measurements table with the chart drawn over its Result and
   // Mean ± SD cells, so its rows are the same rows.
@@ -90,7 +120,11 @@ export function Inspector({ bitmap, state, dispatch, defs, registry, compiled, v
   // no enabled analysis needs (e.g. SPogS) — kept reachable here, collapsed by default, under
   // "Other points".
   const other = useMemo(() => otherLandmarks(defs, compiled, new Set(Object.keys(state.points))), [defs, compiled, state.points]);
+  // Spec 2026-10-19: "Accept remaining" counts the points no shown analysis uses in its hover text (they are accepted too).
+  const needed = useMemo(() => neededLandmarks(defs, compiled), [defs, compiled]);
+  const outside = remaining(state).filter((k) => !needed.has(k) && !state.flagged.includes(k)).length;   // flagged points are left out of Accept remaining
   const rows = measurementRows(defs, compiled, values, new Set(Object.keys(state.points)), decimals, scale);
+  const fitDagger = (r: MeasurementRow) => scale.source === 'fit' && r.unit === 'mm' && !r.hidden && r.value !== null;
   // Part D task 7: the points no installed model finds and that are not placed yet, and what they'd complete.
   const miss = useMemo(() => missingPoints(defs, compiled, found, new Set(Object.keys(state.points))), [defs, compiled, found, state.points]);
   // One norm cell per row, computed once per render (the sex hint above the table and every row's cell share it).
@@ -107,10 +141,7 @@ export function Inspector({ bitmap, state, dispatch, defs, registry, compiled, v
         ? (ruler.marks.length < 2 ? `Click the ${ruler.marks.length ? 'second' : 'first'} ruler mark, on the film or in the magnifier. Esc cancels.` : 'Drag a ruler mark, on the film or in the magnifier, to fine-tune it.')
         : id && !p ? `Click the film to place ${id}. Esc cancels.` : `Drag the ring or press in the magnifier to place ${id ?? 'a point'}. Arrow keys nudge 1 px (⇧ 10). ⌫ removes it.`}</p>
       {/* Re-review M-3: while calibrating there is no landmark to accept. */}
-      {!ruler && <div className="status-row">
-        <span className={p?.verified ? 'chip verified' : 'chip ai'}>{p?.verified ? 'Verified' : AI_POINT_LABEL}</span>
-        <button type="button" className="primary" disabled={!p || p.verified} onClick={() => dispatch({ type: 'accept' })}>Accept position</button>
-      </div>}
+      {!ruler && <StatusRow state={state} dispatch={dispatch} signOff={signOff} readOnly={readOnly} outside={outside} />}
       <div role="tablist" className="tabs">
         {(['steps', 'landmarks', 'measures', 'chart'] as const).map((t) => (
           <button key={t} role="tab" aria-selected={tab === t} onClick={() => setTab(t)}>{t === 'steps' ? 'Steps' : t === 'landmarks' ? 'Landmarks' : t === 'measures' ? 'Measurements' : 'Chart'}</button>
@@ -125,8 +156,11 @@ export function Inspector({ bitmap, state, dispatch, defs, registry, compiled, v
         </li>))}</ol>}
       {tab === 'landmarks' && <ul className="lm-list">
         {Object.entries(state.points).map(([k, q]) => (
-          <li key={k}><button type="button" aria-current={k === id} title={withPlaced(pointDefinition(k as LandmarkId).definition ?? `${LANDMARKS[k as LandmarkId]?.name} — ${DEFINITION_TO_COME}`, placedLineFor(k))} onClick={() => dispatch({ type: 'select', id: k })}>
-            <b>{k}</b><span>{LANDMARKS[k as LandmarkId]?.name}</span><span className={q.verified ? 'st verified' : 'st ai'}>{q.verified ? 'Verified' : 'AI'}</span></button></li>))}
+          <li key={k}><button type="button" aria-current={k === id} data-picked={state.picked.includes(k) ? 'true' : undefined}
+            title={withPlaced(pointDefinition(k as LandmarkId).definition ?? `${LANDMARKS[k as LandmarkId]?.name} — ${DEFINITION_TO_COME}`, placedLineFor(k))}
+            onClick={(e) => dispatch(listClick(k, isMod(e), readOnly))}
+            onDoubleClick={() => { const a = listDoubleClick(k, readOnly); if (a) dispatch(a); }}>
+            <b>{k}</b><span>{LANDMARKS[k as LandmarkId]?.name}</span><span className={q.verified ? 'st verified' : 'st ai'}>{q.verified ? POINT_ACCEPTED : 'AI'}</span></button></li>))}
         {unplaced.length > 0 && <li className="lm-head">Not placed</li>}
         {unplaced.map((k) => (
           <li key={k}><button type="button" aria-current={k === id} title={withPlaced(pointDefinition(k).definition ?? `${LANDMARKS[k].name} — ${DEFINITION_TO_COME}`, placedLineFor(k))} onClick={() => dispatch({ type: 'select', id: k })}>
@@ -137,7 +171,7 @@ export function Inspector({ bitmap, state, dispatch, defs, registry, compiled, v
           <li key={k}><button type="button" aria-current={k === id} title={withPlaced(pointDefinition(k).definition ?? `${LANDMARKS[k].name} — ${DEFINITION_TO_COME}`, placedLineFor(k))} onClick={() => dispatch({ type: 'select', id: k })}>
             <b>{k}</b><span>{LANDMARKS[k].name}</span><span className="st todo">Place</span></button></li>))}
       </ul>}
-      {tab === 'landmarks' && <PointAbout id={id} table={pointTable} placedLine={id ? placedLineFor(id) : null} />}
+      {tab === 'landmarks' && <PointAbout id={id} table={pointTable} placedLine={id ? placedLineFor(id) : null} placedWhy={id && placedWhyFor ? placedWhyFor(id) : null} />}
       {table && normsError && <p className="hint warn">{normsError}</p>}
       {table && hint && <p className="hint warn sex-hint">{hint}</p>}
       {table && gone.map((t) => <p key={t} className="hint warn unavailable">{t}</p>)}
@@ -146,6 +180,7 @@ export function Inspector({ bitmap, state, dispatch, defs, registry, compiled, v
          and "Place them" switches to Steps and selects a point to edit. */}
       {table && miss.points.length > 0 && <p className="hint warn missing-points">{missingText(miss)}
         {!readOnly && <>{' '}<button type="button" className="link" onClick={() => { setTab('steps'); dispatch({ type: 'select', id: miss.points[0] }); }}>Place them</button></>}</p>}
+      {table && advice}
       {table && <div className="measures-box" ref={tableBox}>
       <table className={tab === 'chart' ? 'measures chart' : 'measures'}>
         {/* Owner TABLE-2 (16 Oct): no "Measurement" heading (the tab says it); Result, then Mean ± SD. */}
@@ -173,8 +208,13 @@ export function Inspector({ bitmap, state, dispatch, defs, registry, compiled, v
               {r.hidden
                 ? (readOnly ? <span>{CALIBRATE_TO_SHOW}</span> : <button type="button" className="link" onClick={onCalibrate}>{CALIBRATE_TO_SHOW}</button>)
                 : r.value ?? <span className="needs">{r.undefinedReason ?? `Needs: ${r.needs.join(', ')}`}</span>}
+              {/* Owner G2 + owner, 19 Oct (Task 10): with "Use the scale from the fit" on, each mm value carries the same
+                 small † as the Change table ("scaled by a fit"; a star means severity). */}
+              {fitDagger(r) && <small className="fit-dagger" title={scale.source === 'fit' ? fitMark(scale.fit) : undefined}>†</small>}
               {/* Owner SEVERITY-1/TABLE-2: the stars straight after the Result. */}
-              {c?.severity?.stars && !r.hidden && <span className="stars" aria-label={`${c.severity.word}, ${c.severity.side} the norm`}> {c.severity.stars}</span>}</td>
+              {c?.severity?.stars && !r.hidden && <span className="stars" aria-label={`${c.severity.word}, ${c.severity.side} the norm`}> {c.severity.stars}</span>}
+              {/* Stage A task 9 (spec 14.4): at 4 SD or more, a note on the measurement; never a point action. Not drawn on the Chart tab, where the cell is hidden and a taller row would shift the overlay. */}
+              {extremeForNorm(c?.z) && !r.hidden && tab !== 'chart' && <small className="extreme-note"> {EXTREME_NOTE}</small>}</td>
             <td className="m-norm">{c ? <>{q && c.choose
               ? <button type="button" className="link norm-choose" onClick={() => setChoosing({ key: rowKey(r), population: c.choose!.population })}>{c.text}</button>
               : c.text}{c.badges.map((b) => <span key={b.flag} className="norm-badge" title={b.tip}>{b.badge}</span>)}</> : null}
@@ -188,12 +228,13 @@ export function Inspector({ bitmap, state, dispatch, defs, registry, compiled, v
           {open && q && <tr className="norm-choose-row"><td colSpan={3}>
             <NormChooser q={{ ...q, population: open }} decimals={decimals} onClose={() => setChoosing(null)}
               onPick={(source) => { onPickNorm?.(open, r.node, source); setChoosing(null); }} /></td></tr>}
-          {srcOpen && <tr className="norm-src"><td colSpan={3}>{src}</td></tr>}
+          {srcOpen && <tr className="norm-src"><td colSpan={3} title={c?.sourceTips.join(' ') || undefined}>{src}</td></tr>}
         </Fragment>); })}</tbody>
       </table>
       {tab === 'chart' && <ChartOverlay box={tableBox} decimals={decimals} items={rows.map((r, i) => ({ key: rowKey(r), group: r.analysisId, node: r.node, z: r.hidden ? null : cells[i]?.z ?? null,
         mean: cells[i]?.mean ?? null, sd: cells[i]?.sd ?? null, unit: r.unit }))} />}
       </div>}
+      {table && scale.source === 'fit' && <p className="hint fit-note">† {fitNoteLine(filmTimepoint, scale.fit)}</p>}
       {tab === 'change' && change && <>
         <label className="pair">Change <select aria-label="Change between" value={`${change.pair.from}>${change.pair.to}`}
           onChange={(e) => { const [from, to] = e.target.value.split('>'); change.onPair({ from, to }); }}>
@@ -201,18 +242,26 @@ export function Inspector({ bitmap, state, dispatch, defs, registry, compiled, v
         </select></label>
         <div className="change-wrap"><table className="measures">
           <thead><tr><th>Measurement</th>{change.heads.map((h, i) => { const [tp, date] = h.split(' · ');
-            return <th key={change.ids[i]} title={h}>{tp}{date && <small>{date}</small>}</th>; })}<th>Change</th></tr></thead>
+            return <th key={change.ids[i]} title={h}>{tp}{date && <small>{date}</small>}{change.marks?.[i] && <small className="fit-mark">{change.marks[i]}</small>}</th>; })}<th>Change</th></tr></thead>
           {/* Fix round 1 (review Minor 4, decision 5): plain text, never a link — the Change table only ever
              appears on the read-only Superimposition page, where "calibrate to show" must not offer a working
              shortcut (the toolbar's own Calibrate button is disabled there). Confirmed by testing: see e2e10's
              Superimposition checks. */}
-          <tbody>{change.rows.map((r) => { const d = changeOf(r, change.ids.indexOf(change.pair.from), change.ids.indexOf(change.pair.to));
-            return <tr key={r.node}><td>{r.label}</td>{r.values.map((v, i) => <td key={i}>{r.hidden?.[i] ? CALIBRATE_TO_SHOW : v === null ? '—' : fmtValue(v, r.unit, decimals)}</td>)}
-              <td>{d === null ? '' : fmtDelta(d, r.unit, decimals)}</td></tr>; })}</tbody>
+          <tbody>{change.rows.map((r) => { const from = change.ids.indexOf(change.pair.from), to = change.ids.indexOf(change.pair.to), d = changeOf(r, from, to);
+            // Request G (owner G2): an mm value scaled by a fit carries a small † (owner, 19 Oct: not a star — on the
+            // Measurements tab a star means "Mild"); fix round 2: an assumed-scale reference (G3) carries none.
+            const mark = (i: number) => r.unit === 'mm' && !!change.fitted?.[i], dagger = <small className="fit-dagger">†</small>;
+            return <tr key={r.node}><td>{r.label}</td>{r.values.map((v, i) => <td key={i} title={mark(i) ? change.marks![i]! : undefined}>{r.hidden?.[i] ? CALIBRATE_TO_SHOW : v === null ? '—' : <>{fmtValue(v, r.unit, decimals)}{mark(i) && dagger}</>}</td>)}
+              <td>{d === null ? '' : <>{fmtDelta(d, r.unit, decimals)}{(mark(from) || mark(to)) && dagger}</>}</td></tr>; })}</tbody>
         </table></div>
         {change.note && <p className="hint warn">{change.note}</p>}
+        {change.fitNotes?.map((n, i) => <p key={i} className="hint fit-note">† {n}</p>)}
       </>}
-      {tab === 'measures' && <p className="hint">Scale {scaleLabel(scale)}. Levelling, mirroring or enhancing the film never changes a value.</p>}
+      {tab === 'measures' && <p className="hint scale-line">Scale {scaleLabel(scale, (iso) => formatDate(iso, dateFormat))}.{fineTune && <ScaleFineTune t={fineTune} />}
+        {/* Spec 2026-10-20 (MS6): only a ruler-calibrated film with a recognised machine, and only when editing is
+           allowed — mirrors the fine-tune's own readOnly guard just above. */}
+        {scale.source === 'calibration' && machine && !readOnly && onUseForMachine && <> <UseForMachine name={machine.name} onUse={onUseForMachine} /></>}
+        {' '}Levelling, mirroring or enhancing the film never changes a value.</p>}
       </div>
     </aside>
   );

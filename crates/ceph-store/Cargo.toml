@@ -9,6 +9,7 @@ description = "CephTrace case library: SQLite (WAL) plus content-addressed image
 rusqlite = { version = "0.40", features = ["bundled", "backup"] }
 image = "0.25"
 ceph-label = { path = "../ceph-label" }
+ceph-model = { path = "../ceph-model" }
 sha2 = "0.10"
 uuid = { version = "1", features = ["v4"] }
 serde = { version = "1", features = ["derive"] }

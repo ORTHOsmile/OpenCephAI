@@ -12,6 +12,11 @@ pub fn find_manifest(candidates: &[Option<PathBuf>]) -> Option<PathBuf> {
     candidates.iter().flatten().map(|d| d.join("manifest.json")).find(|m| m.is_file())
 }
 
+/// First candidate directory that holds the point check's tracings file (`shape/ceph400-v1.shape`, joins only).
+pub fn find_shape_prior(candidates: &[Option<PathBuf>]) -> Option<PathBuf> {
+    candidates.iter().flatten().map(|d| ceph_model::pointcheck::prior_path(d)).find(|p| p.is_file())
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -37,6 +42,16 @@ mod tests {
         std::fs::remove_dir_all(&chosen).ok();                                        // moved or deleted since: fall back
         assert_eq!(find_manifest(&order), Some(appdata.join("manifest.json")));
         for d in [env, appdata] { std::fs::remove_dir_all(d).ok(); }
+    }
+    /// Task 5: the point check's tracings file is found like the manifest: the first candidate folder that holds
+    /// `shape/ceph400-v1.shape`. Fails if a folder without the file were taken, or the order ignored.
+    #[test] fn the_first_folder_holding_the_tracings_file_wins() {
+        let (a, b, c) = (tmp("shape-a"), tmp("shape-b"), tmp("shape-c"));
+        for d in [&b, &c] { let p = ceph_model::pointcheck::prior_path(d); std::fs::create_dir_all(p.parent().unwrap()).unwrap(); std::fs::write(&p, "x").unwrap(); }
+        std::fs::write(a.join("manifest.json"), "{}").unwrap();                       // a model folder without the file
+        assert_eq!(find_shape_prior(&[None, Some(a.clone()), Some(b.clone()), Some(c.clone())]), Some(ceph_model::pointcheck::prior_path(&b)));
+        assert_eq!(find_shape_prior(&[Some(a.clone())]), None);
+        for d in [a, b, c] { std::fs::remove_dir_all(d).ok(); }
     }
     #[test] fn nothing_found_is_none() {
         let a = tmp("empty");

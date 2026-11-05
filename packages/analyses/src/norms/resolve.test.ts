@@ -161,10 +161,9 @@ describe('resolveNorm', () => {
   });
 
   it('rule 2: pending sets and "different" entries are never used; single-extracted is used and flagged unverified', () => {
-    // OWNFALL-1 (12 Oct): Saudi's only SNA set is pending, so Saudi has nothing — the clinician chooses (was Steiner's own).
-    expect(resolveNorm(q({ population: 'saudi' })).kind).toBe('choose');
-    // The malay ANB row is 'different', so Malay has no ANB: choose (was Steiner's own); the own norm is a choice.
-    expect(resolveNorm(q({ measurement: 'm03_ANB', population: 'malay' })).kind).toBe('choose');
+    expect(norm(resolveNorm(q({ population: 'saudi' }))).auto?.step).toBe('analysis-own');   // N-A3: Steiner's own (was 'choose', OWNFALL-1)
+    // The malay ANB row is 'different', so Malay has no ANB: Auto, Steiner's own (was 'choose', OWNFALL-1).
+    expect(norm(resolveNorm(q({ measurement: 'm03_ANB', population: 'malay' }))).auto?.step).toBe('analysis-own');
     const d = norm(resolveNorm(q({ measurement: 'm03_ANB', population: 'malay', picks: { malay: { m03_ANB: 'analysis-own' } } })));
     expect([d.setId, d.entry.definitionMatch]).toEqual(['steiner-own', 'same']);
     const s = norm(resolveNorm(q({ population: 'malay' })));
@@ -383,15 +382,15 @@ describe('resolveNorm', () => {
   });
 
   it("rule 6: nothing in the population → the analysis's own norm; nothing there → choose one (owner NORM-PICK-1, never the user norm silently); no population → user norms (first by name); nothing → none with a plain reason", () => {
-    // OWNFALL-1 (12 Oct): before, Steiner's own norm stood in here, flagged 'own-norm-fallback'; now the clinician chooses.
-    expect(resolveNorm(q({ population: 'saudi' })).kind).toBe('choose');
+    // OWNFALL-1/N-A3 (12/19 Oct): before, Steiner's own norm stood in here unflagged; now it's Auto (was 'choose').
+    expect(norm(resolveNorm(q({ population: 'saudi' }))).auto?.step).toBe('analysis-own');
     // Choosing the own norms directly is not a fallback.
     expect(norm(resolveNorm(q({ population: 'analysis-own' }))).setId).toBe('steiner-own');
-    // The own norm of a different analysis is not used; other populations hold SNA, so (NORM-PICK-1) the clinician
-    // chooses — before, 'none', though other populations had it.
-    const notMine = resolveNorm(q({ population: 'saudi', analysisId: 'downs' }));
-    expect(notMine.kind).toBe('choose');
-    // Owner NORM-PICK-1 (12 Oct): before, this was the user norm 'user:Alpha', unflagged under the Saudi heading.
+    // The own norm of a different analysis is not used; no Caucasian set in these fixtures, so step 4 (AUTO-Q6): sex and
+    // age not entered → the adult row: Chen (band-less, sample 80) and Malay (band-less, 50) have one, Wu has none → Chen.
+    const notMine = norm(resolveNorm(q({ population: 'saudi', analysisId: 'downs' })));
+    expect([notMine.setId, notMine.auto?.step]).toEqual(['chen-synthetic', 'anywhere']);
+    // AUTO-Q11: only the user norms Zeta and Alpha have Wits (never an Auto candidate) — stays 'choose', as before.
     expect(resolveNorm(q({ measurement: 'm13_Wits', analysisId: 'wits', population: 'saudi' })))
       .toEqual({ kind: 'choose', population: 'saudi', reason: 'no Saudi norm — choose one' });
     const user = norm(resolveNorm(q({ measurement: 'm13_Wits', analysisId: 'wits', population: null })));
@@ -467,8 +466,8 @@ describe('resolveAcross and populationsOffered', () => {
   it('resolveAcross returns one result per population, in the order asked', () => {
     const rs = resolveAcross(q({ sex: 'M', ageYears: 12, clinicDefault: 'malay' }), ['malay', 'chinese', 'saudi', 'user:Zeta']);
     expect(rs).toHaveLength(4);
-    // OWNFALL-1: Saudi and user:Zeta have no SNA → each asks (was Steiner's own norm under both headings).
-    expect(rs.map((r) => (r.kind === 'norm' ? r.setId : r.kind))).toEqual(['malay-synthetic', 'wu-synthetic', 'choose', 'choose']);
+    // Ruling AUTO-Q7 (19 Oct 2026): Compare columns are a population's own norm or none (was 'choose', NORM-PICK-1).
+    expect(rs.map((r) => (r.kind === 'norm' ? r.setId : r.kind))).toEqual(['malay-synthetic', 'wu-synthetic', 'none', 'none']);
   });
   it('populationsOffered lists set populations (not pending-only or research-only) then user: sets, with labels from POPULATIONS', () => {
     expect(populationsOffered(SETS, USER)).toEqual([

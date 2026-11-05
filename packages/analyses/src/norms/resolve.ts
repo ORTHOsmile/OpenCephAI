@@ -1,6 +1,7 @@
 import { byId } from '../catalogue';
 import { ALL_ANALYSES } from '../analyses';
 import { POPULATIONS } from './load';
+import { adultPool, combineGroups, type PoolRow } from './combined';
 import type { NormEntry, NormSet, NormSex } from './types';
 
 /** A clinician's own norm (stored in the library, never in git; always labelled "your norm"). */
@@ -61,6 +62,9 @@ export const NORM_FLAGS = [
   'ideal-uncoloured', //       an ideal with no SD that can be used: not coloured (was 'ideal')
   'film-date-missing', //      owner FILMDATE-1: as 'age-assumed-adult', but the date of birth is entered and the film date is not
   'chosen-by-you', //          owner NORM-PICK-1: the population had no norm; the clinician picked this source for the case
+  'auto-fallback', //          owner N-A3 (19 Oct 2026): the population had no norm and no pick; Auto used the analysis's own norm or bestCaucasian
+  'combined-adult', //         owner R1/R5 (3 Nov 2026): every adult study combined, weighted by size (spec 2026-11-03)
+  'single-study', //           owner NAP-P3 (b): fewer than 2 adult studies have it; that one study's row, marked ◆
 ] as const;
 export type NormFlag = (typeof NORM_FLAGS)[number];
 
@@ -68,6 +72,23 @@ export type NormFlag = (typeof NORM_FLAGS)[number];
 export const AGE_NOT_ENTERED_WORDS = 'age not entered — adult norms assumed';
 /** Owner FILMDATE-1 (12 Oct): the words for flag 'film-date-missing' — date of birth entered, film date missing. */
 export const FILM_DATE_MISSING_WORDS = 'film date missing — adult norms assumed';
+
+/** Owner N-A3/N-A5 (19 Oct 2026): what Auto used, on a result it filled (absent on every other result). */
+export interface AutoNote {
+  /** The population that had no norm (the case's, else the clinic default) — its id. */
+  population: string;
+  /** Its words in "no <…> norm" (noNormLabel): "Chinese", "Wits's own", "Mine (your norms)". */
+  populationWords: string;
+  /** Step 2 ('analysis-own': the analysis's own norm), step 3 ('caucasian': bestCaucasian) or step 4 ('anywhere':
+   *  bestStudy over every other population, owner AUTO-Q6). */
+  step: 'analysis-own' | 'caucasian' | 'anywhere' | 'single-study';
+  /** The population whose study was used, in short words ("Caucasian", "Chinese"); null for step 2. */
+  usedPopulation: string | null;
+  /** Who, in a few words: "Steiner's own norm", "McNamara 1984 Ann Arbor", "Zheng 2026 Beijing". */
+  source: string;
+  /** The people in the row compared with (FR-1: both rows' n when the sexes are averaged); null when a row states none. */
+  n: number | null;
+}
 
 export type Resolved =
   | { kind: 'none'; reason: string }
@@ -92,6 +113,8 @@ export type Resolved =
       /** Rules 13-17 (Task 4c, owner B-1): the paper whose SD this norm borrowed because its own
        *  paper printed none; null when nothing was borrowed (own SD, sdSource, or no donor). */
       sdDonor: SdDonor | null;
+      /** Owner N-A3 (19 Oct 2026): set only when Auto filled this result; absent otherwise. */
+      auto?: AutoNote;
     };
 
 export interface SdDonor {
@@ -106,7 +129,10 @@ const USER_PREFIX = 'user:';
 
 /** Resolves the norm for one measurement of one patient (Part C rules 1–9):
  *  population (case, else clinic default) → the best set there → the patient's sex row (else pooled)
- *  → the age row (N2; age not entered → an adult is assumed, owner AGE-UNK-1) → else (population chosen) "choose one" (owner NORM-PICK-1, OWNFALL-1) → (no population) the analysis's own norm, else the clinician's own norms → else none.
+ *  → the age row (N2; age not entered → an adult is assumed, owner AGE-UNK-1) → else (population chosen) the
+ *  clinician's pick (NORM-PICK-1), else Auto — the analysis's own norm, else bestCaucasian, else the best study anywhere
+ *  (owner N-A3, AUTO-Q6, 19 Oct 2026), else (only your own norms have it, AUTO-Q11) "choose one" → (no population)
+ *  the analysis's own norm, else the clinician's own norms → else none.
  *  Rules 10–12: film scale (applyFilmScale). Rules 13–17 (Task 4c, owner B-1/B-2): a chosen entry
  *  with no SD of its own and no sdSource, in a set that is not a website set, borrows the SD of the
  *  closest matching paper (findSdDonor), flagged 'sd-borrowed' and named in the source line; an
@@ -118,20 +144,28 @@ export function resolveNorm(q: NormQuery): Resolved {
   // 1. The chosen population.
   if (popId !== null) {
     const hit = fromSource(q, popId);
-    if (hit) return hit;
+    // Owner NAP-P3 (b), 3 Nov 2026: a combined adult norm from a single study is Auto's ◆ answer, so a source the
+    // clinician picked for the row comes first, as for every other Auto row; every other hit is returned at once.
+    const singleStudy = hit?.flags.includes('single-study') ? hit : null;
+    if (hit && !singleStudy) return hit;
     // NORM-PICK-1: the population has nothing; the source the clinician picked for it on this case, if it still has one.
+    // Review M-3 (fix round 1): the `picked !== AUTO_CHOICE_ID` and `picked !== popId` guards are defensive, not
+    // observable today — `fromSource(q, picked)` already returns null for both ('auto' names no population or user
+    // set; `picked === popId` means `fromSource(q, popId)` already returned null above, so it would too) — so removing
+    // either leaves every test green (confirmed, mutation). Kept as defence against a future `fromSource` change; the
+    // outcome itself ("a stored 'auto' falls to Auto") is pinned by auto.test.ts, not by this line.
     const picked = q.picks?.[popId]?.[q.measurement];
-    const chosen = picked !== undefined && picked !== popId ? fromSource(q, picked) : null;
+    const chosen = picked !== undefined && picked !== popId && picked !== AUTO_CHOICE_ID ? fromSource(q, picked) : null;
     if (chosen) {
       chosen.flags.push('chosen-by-you');
       chosen.sourceLine += ` · chosen by you (no ${noNormLabel(popId, q.analysisId)} norm)`;
       return chosen;
     }
-  }
-  // 6b. Owner NORM-PICK-1 (12 Oct), replacing the silent user-norm fallback, and OWNFALL-1 (12 Oct), replacing the
-  // analysis's-own-norm fallback (was rule 6a, flag 'own-norm-fallback'): a chosen population with nothing says so and
-  // lets the clinician choose — when some source has the measurement (the analysis's own norm is one of the choices).
-  if (popId !== null) {
+    if (singleStudy) return singleStudy;
+    // Owner N-A3 (19 Oct 2026), superseding the default of NORM-PICK-1 and OWNFALL-1 (the choice list itself stays): Auto.
+    const auto = autoFallback(q, popId);
+    if (auto) return auto;
+    // 6b. AUTO-Q11: only the clinician's own norm sets have it (never an Auto candidate): "choose one", as before.
     if (normChoices(q).length > 0) return { kind: 'choose', population: popId, reason: `no ${noNormLabel(popId, q.analysisId)} norm — choose one` };
   } else {
     // No population chosen at all (N6 a): the analysis's own norm — the default then, not a fallback — else the
@@ -140,6 +174,19 @@ export function resolveNorm(q: NormQuery): Resolved {
     if (own) return own;
     const user = fromUserNorms(q, q.userNorms);
     if (user) return user;
+    // Owner decision 6 (29 Oct 2026), superseding the 19 Oct spec's edge case "no population: Auto adds nothing": the
+    // owner's own words that day were "falls back for every value". The clinician's pick for the row (stored under the
+    // own-norms key, pickPopulation), else Auto as if the analyses' own norms had been chosen (steps 3-4; step 2 is
+    // this same source).
+    const picked = q.picks?.[OWN_POPULATION]?.[q.measurement];
+    const chosen = picked !== undefined && picked !== OWN_POPULATION && picked !== AUTO_CHOICE_ID ? fromSource(q, picked) : null;
+    if (chosen) {
+      chosen.flags.push('chosen-by-you');
+      chosen.sourceLine += ` · chosen by you (no ${noNormLabel(OWN_POPULATION, q.analysisId)} norm)`;
+      return chosen;
+    }
+    const auto = autoFallback(q, OWN_POPULATION);
+    if (auto) return auto;
   }
   // 6c. Nothing.
   const places = [popId !== null ? populationLabel(popId) : null, analysisName(q.analysisId), 'your norms'].filter(Boolean);
@@ -153,12 +200,25 @@ export function resolveNorm(q: NormQuery): Resolved {
  *  `ageRowUsed`; null for a row with no age band), and the resolver's own result for it (value, flags, source line). */
 export interface NormChoice { id: string; label: string; rows: { who: string; n: number | null }[]; ages: string | null; resolved: Extract<Resolved, { kind: 'norm' }> }
 
-/** Every source that has this measurement, other than the query's own population (case, else clinic default): other
- *  populations in the picker's order (populationsOffered), the analysis's own norm, the clinician's own norm sets. Each
- *  is resolved exactly as if it were the chosen population, with no fallback — so a source listed here really has it. */
+/** Owner N-A2 (19 Oct 2026): "Auto" first (when Auto has an answer), then every source that has this measurement, other
+ *  than the query's own population (case, else clinic default): other populations in the picker's order
+ *  (populationsOffered), the analysis's own norm, the clinician's own norm sets. Each is resolved exactly as if it were
+ *  the chosen population, with no fallback — so a source listed here really has it. */
 export function normChoices(q: NormQuery): NormChoice[] {
-  const popId = q.population ?? q.clinicDefault;
+  // Owner decision 6 (29 Oct 2026): with no population at all, the choices are those of the analyses' own norms.
+  const popId = pickPopulation(q);
   const out: NormChoice[] = [];
+  // Owner N-A2 (19 Oct 2026): "Auto" first, whenever Auto has an answer for this population (it ignores any pick).
+  // Owner NAP-P3 (b): for the combined adult norm, Auto's answer is the single study when only one has the row.
+  const single = popId === COMBINED_ADULT ? fromCombined({ ...q, picks: undefined }) : null;
+  const auto = single?.auto ? single : autoFallback(q, popId);
+  if (auto?.auto) {
+    const a = auto.auto;
+    // AUTO-Q9: "Auto · Caucasian — McNamara 1984 Ann Arbor, n = 73 (no Japanese norm)"; the row's n (AUTO-Q1).
+    const who = a.usedPopulation ? `${a.usedPopulation} — ${a.source}` : a.source;
+    out.push({ id: AUTO_CHOICE_ID, label: `Auto · ${who}${a.n !== null ? `, n = ${a.n}` : ''} (no ${a.populationWords} norm)`,
+      rows: rowsUsed(auto, q.sets.find((s) => s.id === auto.setId) ?? null), ages: auto.ageRowUsed, resolved: auto });
+  }
   for (const p of populationsOffered(q.sets, q.userNorms)) {
     if (p.id === popId) continue;
     const hit = fromSource({ ...q, picks: undefined }, p.id);
@@ -201,9 +261,13 @@ export function band(z: number): 'neutral' | 'amber' | 'red' {
   return a <= 1 ? 'neutral' : a <= 2 ? 'amber' : 'red';
 }
 
-/** One result per population, in the order given (the compare-populations view, Part D). */
+/** One result per population, in the order given — the Compare-populations window (Part D). Ruling AUTO-Q7 (19 Oct
+ *  2026): each column is that population's OWN norm (resolved exactly as for a case set to it), else 'none' — never a
+ *  pick, never Auto, never "choose one", because filling a Japanese column with another population's value would
+ *  misrepresent the comparison the window exists for. */
 export function resolveAcross(q: NormQuery, populations: string[]): Resolved[] {
-  return populations.map((p) => resolveNorm({ ...q, population: p }));
+  return populations.map((p) => fromSource({ ...q, population: p, picks: undefined }, p)
+    ?? { kind: 'none', reason: `No ${populationLabel(p)} norm for this measurement.` });
 }
 
 /** The populations the picker offers: every population holding a usable set (not pending; a
@@ -221,6 +285,195 @@ export function populationsOffered(sets: NormSet[], userNorms: UserNorm[]): { id
   return [...known, ...unknown, ...userNames.map((n) => ({ id: USER_PREFIX + n, label: `${n} (your norms)` }))];
 }
 
+/** Owner N-A3 (19 Oct 2026): the population Auto's third step looks in. */
+export const AUTO_POPULATION = 'caucasian';
+
+/** Owner N-A1/N-A4 and AUTO-Q1/Q2/Q6 (19 Oct 2026): the set Auto uses, among these populations' usable sets (pending and
+ *  research-SD sets never, and — owner ruling Q-T5-1, 24 Oct 2026 fix round 1 — a `kind: 'analysis-own'` set filed under
+ *  a population id never: a teaching sheet or author's material with no described sample, such as the real NUS/NDC
+ *  sheet, is not "the best study anywhere"; it stays reachable only as its own analysis's own norm, step 2, and as a
+ *  manual choice), for this measurement and this patient; null when none has it. Ranked: a paper before a
+ *  website value and any sample before a treatment-seeking one (P14a, P37-FIRST, unchanged — AUTO-Q4); then a set with a
+ *  row for the patient's sex and age (AGE-1; no age entered → an adult row, AGE-UNK-1; sex not recorded → a pooled row or
+ *  a men's and women's pair, SEX-AVG-1); among sets with none, the nearest age (AGE-2 — AUTO-Q2); then the most people in
+ *  the row the patient would be compared with (FR-1's n, `rowsUsed`: both rows' n added when the sexes are averaged; a
+ *  row stating no n ranks after every row that states one — AUTO-Q1); then the newer paper (undated last); then the
+ *  populations' order in populations.json (AUTO-Q12); then each population's usual order (rule 5), so two sets still
+ *  tied — McNamara 1984's Ann Arbor and Burlington samples share a year — always resolve the same way (AUTO-Q3). Pure. */
+export function bestStudy(q: NormQuery, populations: string[]): NormSet | null {
+  const usual = populations.flatMap((p) => orderSets(q, setsOfPopulation(q, p), true)).filter((s) => s.kind !== 'analysis-own');
+  const cands = usual.flatMap((set) => {
+    const pick = pickForSet(set, q);
+    return pick ? [{ set, hit: build(q, set, pick) }] : [];
+  });
+  const web = (s: NormSet) => (s.status === 'website' ? 1 : 0);
+  const treat = (s: NormSet) => (s.selection === 'mixed-occlusion' ? 1 : 0);
+  const cover = (s: NormSet) => (coversAge(s, q) ? 0 : 1);
+  const dist = (s: NormSet) => (cover(s) === 1 ? nearestBandDistance(s, q) : 0);
+  const near = (a: number, b: number) => (a === b ? 0 : a < b ? -1 : 1); // Infinity-safe
+  const people = (c: { set: NormSet; hit: Hit }) => {
+    const ns = rowsUsed(c.hit, c.set).map((r) => r.n);
+    return ns.some((n) => n === null) ? -1 : ns.reduce((sum: number, n) => sum + (n as number), 0);
+  };
+  const popRank = (s: NormSet) => {
+    const i = POPULATIONS.findIndex((p) => p.id === s.population.id);
+    return i < 0 ? POPULATIONS.length : i;
+  };
+  const rank = (a: (typeof cands)[number], b: (typeof cands)[number]) =>
+    web(a.set) - web(b.set) || treat(a.set) - treat(b.set) || cover(a.set) - cover(b.set) || near(dist(a.set), dist(b.set)) ||
+    people(b) - people(a) || byYear(a.set, b.set) || popRank(a.set) - popRank(b.set) || usual.indexOf(a.set) - usual.indexOf(b.set);
+  return [...cands].sort(rank)[0]?.set ?? null;
+}
+
+/** Step 3 (owner N-A3): the best Caucasian set. */
+export const bestCaucasian = (q: NormQuery): NormSet | null => bestStudy(q, [AUTO_POPULATION]);
+
+/** Owner N-A2 (19 Oct 2026): the id of the "Auto" entry in the choice list. Never stored: choosing it removes the case's
+ *  pick (normPicks.withPick). A stored 'auto' is ignored by resolveNorm, so it falls to Auto too. */
+export const AUTO_CHOICE_ID = 'auto';
+/** The analyses' own norms, as a population id (populations.json). */
+export const OWN_POPULATION = 'analysis-own';
+/** Owner decision 6 (29 Oct 2026): the key a per-row pick is stored and read under — the case's population, else the
+ *  clinic default, else (no population at all) the analyses' own norms. */
+export const pickPopulation = (q: NormQuery): string => q.population ?? q.clinicDefault ?? OWN_POPULATION;
+
+/** Owner N-A3 and AUTO-Q6 (19 Oct 2026): Auto, for a chosen population with no norm and no usable pick — step 2, the
+ *  analysis's own norm (skipped when the analyses' own norms ARE the chosen population); else step 3, bestCaucasian
+ *  (skipped when Caucasian IS the chosen population); else step 4, the best study of every other people population
+ *  (otherPopulations: never the clinician's own norm sets, AUTO-Q11). Flagged 'auto-fallback'; the source line names the
+ *  population that had none; `auto` says which step, which population and who. null when none has the measurement. */
+function autoFallback(q: NormQuery, popId: string): Hit | null {
+  const free: NormQuery = { ...q, picks: undefined };
+  const own = popId === 'analysis-own' ? null : fromSource(free, 'analysis-own');
+  let step: AutoNote['step'] = 'analysis-own';
+  let used: NormSet | null = null;
+  if (!own && popId !== AUTO_POPULATION) { used = bestCaucasian(free); step = 'caucasian'; }
+  if (!own && !used) { used = bestStudy(free, otherPopulations(free, [popId, AUTO_POPULATION])); step = 'anywhere'; }
+  const hit = own ?? (used ? fromSets(free, [used], true) : null);
+  if (!hit) return null;
+  const ns = rowsUsed(hit, q.sets.find((s) => s.id === hit.setId) ?? null).map((r) => r.n);
+  const populationWords = noNormLabel(popId, q.analysisId);
+  hit.flags.push('auto-fallback');
+  hit.sourceLine += ` · Auto (no ${populationWords} norm)`;
+  hit.auto = {
+    population: popId, populationWords, step,
+    usedPopulation: used ? used.population.label.split(' (')[0] : null,
+    source: used ? `${shortCitation(used)}${placeWords(used)}` : `${noNormLabel('analysis-own', q.analysisId)} norm`,
+    n: ns.some((n) => n === null) ? null : ns.reduce((sum: number, n) => sum + (n as number), 0),
+  };
+  return hit;
+}
+
+/** A set's place in a few words, to tell samples of one paper apart: " Ann Arbor", " Cleveland", " Burlington",
+ *  " Beijing" (a region's text up to its first comma or bracket). */
+const placeWords = (s: NormSet) => {
+  const p = s.population.region ?? s.population.country;
+  return p ? ` ${p.split(/[,(]/)[0].trim()}` : '';
+};
+
+/** Step 4's candidates (owner AUTO-Q6): every people population holding a usable set, minus `exclude` — never the
+ *  analyses' own norms (an analysis's own norm is step 2, and only its own analysis's) and never the clinician's own
+ *  norm sets (AUTO-Q11: not studies; NORM-PICK-1 keeps them a deliberate choice). */
+export function otherPopulations(q: NormQuery, exclude: string[]): string[] {
+  return populationsOffered(q.sets, []).map((p) => p.id).filter((id) => id !== 'analysis-own' && !exclude.includes(id));
+}
+
+/** Owner rulings R1/R5 (3 Nov 2026; spec 2026-11-03): the population id Auto gives an adult with no background and no
+ *  clinic default. Not a population in populations.json and never stored on a case (the case stores 'auto'). */
+export const COMBINED_ADULT = 'combined-adult';
+/** Its words: "no combined adult norm", the report's "combined adult norms". */
+export const COMBINED_ADULT_LABEL = 'combined adult';
+
+/** One sex's combined norm: the pool at true size, combined (NAP-P1 (a)); null when no adult study has it. */
+function combinedForSex(q: NormQuery, sex: 'M' | 'F'): { pool: PoolRow[]; mean: number; sd: number; n: number; flags: NormFlag[] } | null {
+  const pool = adultPool(q.sets, q.measurement, sex);
+  if (!pool.length) return null;
+  const flags: NormFlag[] = [];
+  const groups = pool.map((p) => {
+    const s = applyFilmScale(p.entry, p.set);
+    if (s.flag && !flags.includes(s.flag)) flags.push(s.flag);
+    return { n: p.n, mean: s.mean!, sd: s.sd! };
+  });
+  const g = combineGroups(groups);
+  return { pool, ...g, flags };
+}
+
+const poolWho = (pool: PoolRow[]) => pool.map((p) => `${shortCitation(p.set)}${placeWords(p.set)}`).join(', ');
+const adultWords = (sex: 'M' | 'F') => (sex === 'M' ? 'men' : 'women');
+
+/** Spec 2026-11-03 §5–§8: the combined adult norm for this measurement and patient (rulings R1/R5, NAP-P1 (a), P2 (a),
+ *  P3 (b)). Two studies or more for the sex: the combined norm (flag 'combined-adult'). One: that study's own row (flag
+ *  'single-study' and an Auto note, so it is marked ◆). None: null — the caller's Auto fall-back. Sex not recorded:
+ *  the men's and the women's results averaged as SEX-AVG-1 averages two rows; null unless both sexes have one. */
+function fromCombined(q: NormQuery): Hit | null {
+  const sexes: ('M' | 'F')[] = q.sex ? [q.sex] : ['M', 'F'];
+  const parts = sexes.map((sex) => ({ sex, c: combinedForSex(q, sex) }));
+  if (parts.some((p) => !p.c)) return null;
+  const all = parts.map((p) => ({ sex: p.sex, ...p.c! }));
+  const single = all.some((p) => p.pool.length < 2);
+  const adultAssumed = q.ageYears === null;
+  const ageFlag: NormFlag = q.filmDateMissing ? 'film-date-missing' : 'age-assumed-adult';
+  const ageWords = q.filmDateMissing ? FILM_DATE_MISSING_WORDS : AGE_NOT_ENTERED_WORDS;
+  const singleNote = (set: NormSet, n: number | null): AutoNote => ({ population: COMBINED_ADULT, populationWords: COMBINED_ADULT_LABEL, step: 'single-study',
+    usedPopulation: set.population.label.split(' (')[0], source: `${shortCitation(set)}${placeWords(set)}`, n });
+  const SINGLE_WORDS = ' · single study: fewer than 2 adult studies have this';
+
+  if (q.sex && single) {
+    // One study for this sex: its own row, exactly as that study is shown anywhere else.
+    const p = all[0].pool[0];
+    const hit = build(q, p.set, { entry: p.entry, ageMismatched: false });
+    hit.flags.push('single-study', 'auto-fallback');
+    hit.sourceLine += SINGLE_WORDS;
+    // Final review M3: a both-sexes row's own people (the Auto note quotes the row compared with, FR-1).
+    hit.auto = singleNote(p.set, p.bothSexes ? p.entry.n ?? null : p.n);
+    return hit;
+  }
+
+  const flags: NormFlag[] = ['combined-adult'];
+  const flag = (f: NormFlag) => { if (!flags.includes(f)) flags.push(f); };
+  const pools = all.flatMap((p) => p.pool);
+  const close = (pool: PoolRow[]) => pool.filter((p) => p.entry.definitionMatch === 'close').length;
+  if (pools.some((p) => p.entry.definitionMatch === 'close')) flag('close');
+  if (pools.some((p) => p.set.secondHand)) flag('second-hand');
+  all.forEach((p) => p.flags.forEach(flag));
+  let mean: number, sd: number;
+  if (all.length === 1) ({ mean, sd } = all[0]);
+  else {
+    const [m, f] = all;
+    mean = (m.mean + f.mean) / 2;
+    sd = Math.sqrt((m.sd ** 2 + f.sd ** 2) / 2 + ((m.mean - f.mean) / 2) ** 2);   // SEX-AVG-1, as averageSexes
+    flag('sexes-averaged');
+  }
+  // Final review M2: a single-study row is Auto's ◆ answer, so it can be chosen like any other ◆ row.
+  if (single) { flag('single-study'); flag('auto-fallback'); }
+  if (adultAssumed) flag(ageFlag);
+  const n = all.reduce((a, p) => a + p.n, 0);
+  const closeWords = all.map((p) => close(p.pool) ? `${close(p.pool)} of ${p.pool.length} studies${all.length > 1 ? ` (${adultWords(p.sex)})` : ''} measured it a little differently` : null).filter(Boolean);
+  const unit = all[0].pool[0].entry.unit;
+  const entry: NormEntry = { measurement: q.measurement, sex: q.sex ?? 'pooled', ageBand: [18, 99], mean, sd, n, unit, source: 'combined adult norm',
+    definitionMatch: closeWords.length ? 'close' : 'same', ...(closeWords.length ? { definitionNote: closeWords.join('; ') } : {}) };
+  const heads = all.map((p) => `${adultWords(p.sex)}: ${p.pool.length} ${p.pool.length === 1 ? 'study' : 'studies'}, ${p.n} people (${poolWho(p.pool)})`);
+  let line = `Combined adult norm, ${heads.join('; ')}`;
+  if (closeWords.length) line += ` · ${closeWords.join('; ')}`;
+  // Final review M1: say when a crowd includes rows printed for men and women together (angles, % and ratios only).
+  const bothWords = all.map((p) => { const j = p.pool.filter((r) => r.bothSexes).length; return j ? `${j} of ${p.pool.length} studies${all.length > 1 ? ` (${adultWords(p.sex)})` : ''} give men and women together` : null; }).filter(Boolean);
+  if (bothWords.length) line += ` · ${bothWords.join('; ')}`;
+  if (flags.includes('converted-to-true-size')) line += ' · mm converted to true size where a paper\'s films were enlarged';
+  if (flags.includes('scale-assumed')) line += ' · film scale not stated in the paper; assumed true size, as modern papers report';
+  const second = [...new Set(pools.filter((p) => p.set.secondHand).map((p) => `${shortCitation(p.set)} via ${p.set.secondHand!.via}`))];
+  if (second.length) line += ` · quoted second-hand: ${second.join('; ')}`;
+  if (all.length > 1) line += ' · average of male and female (sex not recorded)';
+  if (single) line += SINGLE_WORDS;
+  if (adultAssumed) line += ` · ${ageWords}`;
+  const hit: Hit = { kind: 'norm', setId: COMBINED_ADULT, entry, mean, sd, range: null, printed: null, colour: true, flags, sourceLine: line,
+    ageRowUsed: bandLabel([18, 99]), sdDonor: null };
+  if (single) {
+    const one = all.find((p) => p.pool.length < 2)!.pool[0];
+    hit.auto = singleNote(one.set, null);
+  }
+  return hit;
+}
+
 // ---------------------------------------------------------------------------------------------
 
 type Hit = Extract<Resolved, { kind: 'norm' }>;
@@ -228,6 +481,7 @@ type Hit = Extract<Resolved, { kind: 'norm' }>;
 const byName = (a: string, b: string) => a.localeCompare(b);
 
 function populationLabel(popId: string): string {
+  if (popId === COMBINED_ADULT) return COMBINED_ADULT_LABEL;
   if (popId.startsWith(USER_PREFIX)) return `${popId.slice(USER_PREFIX.length)} (your norms)`;
   return POPULATIONS.find((p) => p.id === popId)?.label ?? popId;
 }
@@ -245,6 +499,7 @@ function noNormLabel(popId: string, analysisId: string): string {
 /** One source resolved as the chosen population, with no fallback: a user-norm set, the analysis's own norms, or a
  *  population's sets (nearest age on, AGE-2). */
 function fromSource(q: NormQuery, popId: string): Hit | null {
+  if (popId === COMBINED_ADULT) return fromCombined(q);
   return popId.startsWith(USER_PREFIX)
     ? fromUserNorms(q, q.userNorms.filter((u) => u.setName === popId.slice(USER_PREFIX.length)))
     : fromSets(q, setsOfPopulation(q, popId), popId !== 'analysis-own');
@@ -279,11 +534,15 @@ function rankSets(a: NormSet, b: NormSet): number {
   const treat = (s: NormSet) => (s.selection === 'mixed-occlusion' ? 1 : 0);
   const bal = (s: NormSet) => (s.selection === 'class-I-balanced' ? 0 : 1);
   const hand = (s: NormSet) => (s.secondHand ? 1 : 0); // FIRSTHAND-1
-  return web(a) - web(b) || treat(a) - treat(b) || bal(a) - bal(b) || (b.sample.n ?? 0) - (a.sample.n ?? 0) || hand(a) - hand(b) || byYear(a, b);
+  // Review I-3 (24 Oct 2026, no owner ruling needed): without a final key, two sets tied on every
+  // rule above returned 0 here, and the stable sort then kept them in whatever order q.sets happened to arrive in
+  // (both inside fromSets/orderSets, and — through orderSets — inside bestStudy's usual.indexOf tiebreak). The set
+  // id makes the order the same every time, for any input order.
+  return web(a) - web(b) || treat(a) - treat(b) || bal(a) - bal(b) || (b.sample.n ?? 0) - (a.sample.n ?? 0) || hand(a) - hand(b) || byYear(a, b) || a.id.localeCompare(b.id);
 }
 
 /** Later paper first; an undated source (no year) after every dated one; two undated sets tie. */
-function byYear(a: NormSet, b: NormSet): number {
+export function byYear(a: NormSet, b: NormSet): number {
   const ya = a.citation.undated ? null : a.citation.year ?? null;
   const yb = b.citation.undated ? null : b.citation.year ?? null;
   if (ya === null && yb === null) return 0;
@@ -336,14 +595,25 @@ function nearestBandDistance(set: NormSet, q: NormQuery): number {
   return rows.length === 0 ? Infinity : Math.min(...rows.map((e) => yearsOutside(e.ageBand!, whole)));
 }
 
-/** `nearest` (owner AGE-2) is on for a people population, off for the analyses' own norms (not a
- *  population; their order is left as it was). */
-function fromSets(q: NormQuery, sets: NormSet[], nearest = false): Hit | null {
-  // Set order (one wording everywhere, owner P37-FIRST 12 Oct): website sets last (a paper always
-  // beats a website, P14a); treatment-seeking samples last (P37) — this comes BEFORE age coverage, so a
-  // treatment sample is used only when no other set has the measurement; then AGE-1 ("age first, then
-  // sample quality"): a set that covers the patient's age ranks before one that does not; AGE-2: among
-  // the sets that do not cover it, the nearest band first; rule 5 (rankSets) orders what is left tied.
+/** Owner decision 1 (29 Oct 2026): a minimal query for one measurement of a patient of this sex and age. */
+const patientQ = (measurement: string, sex: 'M' | 'F' | null, ageYears: number | null): NormQuery =>
+  ({ measurement, analysisId: '', population: null, clinicDefault: null, sex, ageYears, sets: [], userNorms: [] });
+/** Owner decision 1 (29 Oct 2026): does the set hold, for ANY measurement, a row this patient can use at their age
+ *  (coversAge: AGE-1, AGE-UNK-1, SEX-AVG-1's pairs for an unknown sex)? */
+export function setCoversPatient(set: NormSet, sex: 'M' | 'F' | null, ageYears: number | null): boolean {
+  return [...new Set(set.entries.map((e) => e.measurement))].some((m) => coversAge(set, patientQ(m, sex, ageYears)));
+}
+/** The nearest completed-year distance from the patient's age to any usable banded row of the set (AGE-2). */
+export function setNearestAge(set: NormSet, sex: 'M' | 'F' | null, ageYears: number | null): number {
+  return Math.min(...[...new Set(set.entries.map((e) => e.measurement))].map((m) => nearestBandDistance(set, patientQ(m, sex, ageYears))));
+}
+
+/** The order a population's sets are tried in (one wording everywhere, owner P37-FIRST 12 Oct): website sets last (a
+ *  paper always beats a website, P14a); treatment-seeking samples last (P37) — BEFORE age coverage, so a treatment
+ *  sample is used only when no other set has the measurement; then AGE-1 ("age first, then sample quality"): a set that
+ *  covers the patient's age ranks before one that does not; AGE-2 (`nearest`, people's populations only): among the sets
+ *  that do not cover it, the nearest band first; rule 5 (rankSets) orders what is left tied. */
+function orderSets(q: NormQuery, sets: NormSet[], nearest: boolean): NormSet[] {
   const web = (s: NormSet) => (s.status === 'website' ? 1 : 0);
   const treat = (s: NormSet) => (s.selection === 'mixed-occlusion' ? 1 : 0);
   const cover = new Map(sets.map((s) => [s, coversAge(s, q) ? 0 : 1]));
@@ -353,7 +623,13 @@ function fromSets(q: NormQuery, sets: NormSet[], nearest = false): Hit | null {
     return da === db ? 0 : da < db ? -1 : 1; // Infinity − Infinity is NaN, so compare, never subtract
   };
   const order = (a: NormSet, b: NormSet) => web(a) - web(b) || treat(a) - treat(b) || cover.get(a)! - cover.get(b)! || byDist(a, b) || rankSets(a, b);
-  for (const set of [...sets].sort(order)) {
+  return [...sets].sort(order);
+}
+
+/** `nearest` (owner AGE-2) is on for a people population, off for the analyses' own norms (not a
+ *  population; their order is left as it was). */
+function fromSets(q: NormQuery, sets: NormSet[], nearest = false): Hit | null {
+  for (const set of orderSets(q, sets, nearest)) {
     const pick = pickForSet(set, q);
     if (pick) return build(q, set, pick);
   }
@@ -942,7 +1218,7 @@ function build(q: NormQuery, set: NormSet, pick: RowPick): Hit {
   else if (pick.ageMismatched) line += ' · no row for the patient’s age';
   if (pick.interpolated) line += ` · interpolated between ${shortCitation(set)}'s ages ${pick.interpolated.a} and ${pick.interpolated.b}`;
   if (e.fromOtherSex && e.note) line += ` · ${e.note.split(';')[0].trim()}`;
-  if (pick.averaged) line += " · men's and women's rows averaged (sex not recorded)";
+  if (pick.averaged) line += ' · average of male and female (sex not recorded)';
   if (adultAssumed) line += ` · ${q.filmDateMissing ? FILM_DATE_MISSING_WORDS : AGE_NOT_ENTERED_WORDS}`;
   if (website) line += ' · website value, not from a paper';
   const sdClauses = [ideal ? `ideal value (${set.citation.authors})` : null, donorClause].filter((p): p is string => !!p);

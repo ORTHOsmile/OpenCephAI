@@ -20,18 +20,27 @@ const q = (over: Partial<NormQuery>): NormQuery => ({ measurement: 'm86_Nasolabi
   sex: null, ageYears: null, sets: [CHINESE, STEINER_OWN], userNorms: [], ...over });
 
 describe('a measurement no built-in analysis lists (analysisId "")', () => {
-  it('the analyses\' own norms chosen: "no built-in analysis norm — choose one", never "no \'s own norm"', () => {
-    expect(resolveNorm(q({ population: 'analysis-own' }))).toEqual({ kind: 'choose', population: 'analysis-own', reason: `no ${NO_ANALYSIS_LABEL} norm — choose one` });
+  // N-A3 (19 Oct 2026), found during Task 5 (not in the task brief's file list — this file's SYNTHETIC CHINESE fixture here
+  // has this measurement, so step 4 (anywhere) now fills it; checked by hand against the fixture above). Was
+  // `{ kind: 'choose', population: 'analysis-own', reason: 'no ${NO_ANALYSIS_LABEL} norm — choose one' }`.
+  it('the analyses\' own norms chosen: Auto takes the Chinese set (step 4, anywhere) — never "no \'s own norm"', () => {
+    const r = resolveNorm(q({ population: 'analysis-own' }));
+    expect(r.kind === 'norm' && [r.setId, r.auto?.step, r.auto?.populationWords, r.flags.includes('auto-fallback')]).toEqual(['chinese-nasolabial-SYNTHETIC', 'anywhere', NO_ANALYSIS_LABEL, true]);
   });
-  it('no population: none, naming only your norms', () => {
-    expect(resolveNorm(q({}))).toEqual({ kind: 'none', reason: 'No norm for this measurement in your norms.' });
+  // Owner decision 6 (29 Oct 2026), superseding the 19 Oct edge case: was `{ kind: 'none', reason: 'No norm for this
+  // measurement in your norms.' }`.
+  it('no population: Auto takes the Chinese set (step 4) — owner decision 6, was none', () => {
+    const r = resolveNorm(q({}));
+    expect(r.kind === 'norm' && [r.setId, r.auto?.step, r.auto?.population]).toEqual(['chinese-nasolabial-SYNTHETIC', 'anywhere', 'analysis-own']);
   });
   it('its population norm is used as for any analysis', () => {
     const r = resolveNorm(q({ population: 'chinese' }));
     expect(r.kind === 'norm' && r.setId).toBe('chinese-nasolabial-SYNTHETIC');
   });
-  it('unchanged for a built-in (control): "no Steiner\'s own norm — choose one"', () => {
-    expect(resolveNorm(q({ analysisId: 'steiner', population: 'analysis-own' }))).toEqual(
-      { kind: 'choose', population: 'analysis-own', reason: "no Steiner's own norm — choose one" });
+  // N-A3 (19 Oct 2026), found during Task 5: this measurement has no Steiner own norm either, so the same Chinese
+  // fixture answers (step 4); was `{ kind: 'choose', population: 'analysis-own', reason: "no Steiner's own norm — choose one" }`.
+  it("a built-in analysis with no own norm for this measurement: Auto takes the Chinese set too", () => {
+    const r = resolveNorm(q({ analysisId: 'steiner', population: 'analysis-own' }));
+    expect(r.kind === 'norm' && [r.setId, r.auto?.step, r.auto?.populationWords]).toEqual(['chinese-nasolabial-SYNTHETIC', 'anywhere', "Steiner's own"]);
   });
 });

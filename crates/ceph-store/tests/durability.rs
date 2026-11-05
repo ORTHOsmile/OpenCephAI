@@ -7,7 +7,7 @@ const IDS: [&str; 19] = ["S", "N", "Or", "Po", "A", "B", "Pog", "Me", "Gn", "Go"
 
 fn edit(case: &str, x: f64) -> CaseEdit {
     CaseEdit { id: case.into(), facing: "right".into(), orientation: serde_json::json!({}), display: serde_json::json!({}),
-        landmarks: IDS.iter().map(|id| LandmarkRow { id: (*id).into(), x, y: x, source: "manual".into(), verified: true, ai_x: None, ai_y: None, confidence: None, placed_by: None }).collect() }
+        landmarks: IDS.iter().map(|id| LandmarkRow { id: (*id).into(), x, y: x, source: "manual".into(), verified: true, ai_x: None, ai_y: None, confidence: None, placed_by: None, accept_kind: None, placed_via: None }).collect() }
 }
 
 /// Child side: only does anything when the parent sets CEPH_STORE_CHILD.

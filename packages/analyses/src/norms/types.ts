@@ -22,6 +22,10 @@ export interface NormEntry {
   sdSource?: { set: string; source: string }; // N3: SD taken from another set's entry (its id and table/page)
   range?: { low: number; high: number }; // low < high
   n?: number;
+  /** Owner I1 (a), 3 Nov 2026: on a both-sexes ('pooled') row, how many of its n were men and women, when the paper
+   *  says (both or neither; they add up to n). The combined adult norm counts that row's own people per sex. */
+  nMale?: number;
+  nFemale?: number;
   unit: Unit; // must equal the catalogue entry's unit ('' = a ratio, @ceph/geometry Unit)
   source: string; // mandatory exact location, e.g. 'Table 2, p. 4'
   definitionMatch: DefinitionMatch;

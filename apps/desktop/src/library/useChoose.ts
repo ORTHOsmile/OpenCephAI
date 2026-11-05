@@ -1,8 +1,11 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import type { CaseDoc, CaseMeta } from '../ipc';
+import type { CaseDoc, CaseMeta, Gender } from '../ipc';
 import type { DateFormat } from '../dates';
 import type { CaseApi } from './useCase';
 import { CHOOSE_LABELS, chosenValue, dateRefusal, dragSel, extendSel, isDetailField, labelMatcher, locate, nameAfterChoosing, selSpans, selText, unsureFields, type ChooseField, type NameParts, type Sel } from './choose';
+import { CHOOSE_FIELD_OF, CHOOSE_TO_DETAIL, valueFor, type FilmDetail } from './filmTable';
+import { splitTitle } from './title';
+import { ageIn } from './age';
 
 /** Choose mode (spec 2026-09-29 Part 1): open on the film, with a selection and, from a Pick button, a target field. */
 export interface ChooseState { target: ChooseField | null; sel: Sel | null; hint: string | null; fromPick: boolean }
@@ -12,7 +15,7 @@ const metaOf = (d: CaseDoc): CaseMeta => ({ patientName: d.patientName, timepoin
 /** Choose mode for the open case: opens by itself when a detail is blank or unsure, or from a Pick button. */
 export function useChoose(kase: CaseApi, fmt: DateFormat) {
   const [choose, setChoose] = useState<ChooseState | null>(null);
-  const [used, setUsed] = useState<Record<string, ChooseField>>({});
+  const [used, setUsed] = useState<Record<string, FilmDetail>>({});
   const [parts, setParts] = useState<NameParts>({ last: null, first: null });
   const opened = useRef<string | null>(null);
   const doc = kase.doc, lines = kase.filmText?.lines ?? [];
@@ -63,7 +66,7 @@ export function useChoose(kase: CaseApi, fmt: DateFormat) {
     }
     if (isDetailField(field)) {                       // format 11 (spec 2026-10-17): its own single-field save, never CaseMeta
       const sel = c.sel;
-      setUsed((u) => { const n = { ...u }; for (const p of spans) for (let w = p.from; w <= p.to; w++) n[`${p.line}:${w}`] = field; return n; });
+      setUsed((u) => { const n = { ...u }; for (const p of spans) for (let w = p.from; w <= p.to; w++) n[`${p.line}:${w}`] = CHOOSE_TO_DETAIL[field]; return n; });
       setChoose(c.fromPick ? null : { ...c, sel: null, target: null, hint: null });
       if (!reread && !multi) await kase.learnSelection(field, sel.line, sel.from, sel.to, selText(lines, sel));
       await kase.setDetail(field, v, { learn: reread && !multi });
@@ -71,21 +74,41 @@ export function useChoose(kase: CaseApi, fmt: DateFormat) {
     }
     const m = metaOf(d);
     let waiting: string | null = null;
+    let title: string | null = null;
     if (field === 'last' || field === 'first') {
       const r = nameAfterChoosing(field, v, d.patientName, parts);
       setParts(r.pending);
       if (r.save) m.patientName = r.save;
       else waiting = `Now choose the ${field === 'last' ? 'first name(s)' : 'last name'}`;
-    } else if (field === 'full') m.patientName = v;
+    } else if (field === 'full') { const s = splitTitle(v); m.patientName = s.rest; title = s.title; }
     else if (field === 'dob') m.dateOfBirth = v;
     else if (field === 'film_date') m.takenOn = v;
     else m.scanId = v;
     const sel = c.sel;
-    setUsed((u) => { const n = { ...u }; for (const p of spans) for (let w = p.from; w <= p.to; w++) n[`${p.line}:${w}`] = field; return n; });
+    setUsed((u) => { const n = { ...u }; for (const p of spans) for (let w = p.from; w <= p.to; w++) n[`${p.line}:${w}`] = CHOOSE_TO_DETAIL[field]; return n; });
     setChoose(c.fromPick && !waiting ? null : { ...c, sel: null, target: null, hint: waiting });
     if (!reread && !multi) await kase.learnSelection(field, sel.line, sel.from, sel.to, selText(lines, sel));
     if (!waiting) await kase.setMeta(m, { learn: reread && !multi });
+    if (title) await kase.setPatientTitle(title);
   }, [choose, kase, lines, fmt, parts]);
+
+  /** The chooser's drop-down (owner E, 19 Oct): one list for the panel and the film. A detail Choose already knew goes
+   *  through `onLabel` unchanged (re-read, learning, Last/First). Gender and Referring practitioner are read exactly as
+   *  the panel's drop-down reads them (`valueFor`) and saved on the patient; their saves teach the machine (useCase). */
+  const onChoice = useCallback(async (d: FilmDetail) => {
+    const f = CHOOSE_FIELD_OF[d];
+    if (f) { await onLabel(f); return; }
+    const c = choose; if (!c?.sel) return;
+    const spans = selSpans(lines, c.sel);
+    const r = valueFor(d, selText(lines, c.sel), fmt);
+    if ('note' in r) { setChoose({ ...c, hint: r.note }); return; }
+    setUsed((u) => { const n = { ...u }; for (const p of spans) for (let w = p.from; w <= p.to; w++) n[`${p.line}:${w}`] = d; return n; });
+    setChoose(c.fromPick ? null : { ...c, sel: null, target: null, hint: null });
+    if (d === 'gender') await kase.setPatientGender(r.value as Gender);
+    else if (d === 'referrer') await kase.setPatientReferrer(r.value);
+    else if (d === 'title') await kase.setPatientTitle(r.value);
+    else if (d === 'age') { const a = ageIn(r.value); if (a) await kase.setFilmAge(a); }
+  }, [choose, kase, lines, fmt, onLabel]);
 
   /** Pick next to a field: Choose mode aimed at that field. With no text read yet, the film is read first. */
   const pick = useCallback((field: ChooseField) => {
@@ -100,6 +123,6 @@ export function useChoose(kase: CaseApi, fmt: DateFormat) {
     : 'Click the words on the film, then choose what they are · Esc cancels');
   /** Where the label's own value is printed, for each field the label and the machine disagreed on (owner, 30 Sep: M1). */
   const labels = (kase.filmText?.conflicts ?? []).flatMap((c) => { const s = locate(lines, labelMatcher(c.field, c.label, fmt)); return s ? [{ field: c.field, sel: s }] : []; });
-  return { choose, hint, lines, used, labels, suggestions: kase.filmText?.suggestions ?? [], onWord, onDrag, onEmpty, onLabel, pick, open, cancel, clearSel };
+  return { choose, hint, lines, used, labels, suggestions: kase.filmText?.suggestions ?? [], onWord, onDrag, onEmpty, onLabel, onChoice, pick, open, cancel, clearSel };
 }
 export type ChooseApi = ReturnType<typeof useChoose>;

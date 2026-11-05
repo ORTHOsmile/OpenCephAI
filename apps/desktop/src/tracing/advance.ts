@@ -33,7 +33,7 @@ export function advanceDecision(shown: ReadonlySet<string>, verified: ReadonlySe
 export function useStepAdvance(state: TracingState, steps: Step[], dispatch: (a: Action) => void): ReadonlySet<string> {
   const verified = useMemo(() => verifiedSet(state), [state.points]);
   const [shown, setShown] = useState<ReadonlySet<string>>(verified);
-  const live = useRef({ steps, active: state.active, shown }); live.current = { steps, active: state.active, shown };
+  const live = useRef({ steps, active: state.active, shown, picked: state.picked }); live.current = { steps, active: state.active, shown, picked: state.picked };
   useEffect(() => {
     const d = advanceDecision(live.current.shown, verified, { dragging: !!state.dragging || state.rotating, fresh: state.past.length === 0 });
     if (d === 'sync') { setShown(verified); return; }
@@ -42,7 +42,7 @@ export function useStepAdvance(state: TracingState, steps: Step[], dispatch: (a:
     const t = setTimeout(() => {
       setShown(verified);
       const next = nextToPlace(live.current.steps, verified);
-      if (next && next !== from && live.current.active === from) dispatch({ type: 'select', id: next });
+      if (next && next !== from && live.current.active === from && !live.current.picked.length) dispatch({ type: 'select', id: next });   // spec 2026-10-19: never clear a ⌘-picked set by advancing
     }, ADVANCE_DELAY_MS);
     return () => clearTimeout(t);
   }, [state.points, state.dragging, state.rotating]);   // eslint-disable-line react-hooks/exhaustive-deps

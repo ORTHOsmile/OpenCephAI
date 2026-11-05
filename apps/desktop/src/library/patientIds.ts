@@ -5,11 +5,15 @@ import { formatDate, type DateFormat } from '../dates';
 const norm = (s: string) => s.replace(/\s+/g, '').toLowerCase();
 /** Owner L8: two printed Patient IDs are the same when equal ignoring spaces and capitals; never a near miss. */
 export const sameId = (a: string, b: string) => norm(a) === norm(b);
-/** LIBID-1: the patient's own Library ID beside every Patient ID printed on its X-rays. */
-export function libraryLine(d: Pick<CaseDoc, 'libraryId' | 'patientIdsSeen'>): string {
-  const head = d.libraryId ? `Library ID ${d.libraryId}` : 'Library ID: given once the patient has a name';
-  return d.patientIdsSeen.length ? `${head} · Patient IDs on this patient's X-rays: ${d.patientIdsSeen.join(', ')}` : head;
-}
+/** Owner P3 (19 Oct): what the folded PATIENT heading names, so it is never unclear whose film is open (R7: an unnamed
+ *  patient has no Library ID yet). */
+export const foldedPatientNote = (d: Pick<CaseDoc, 'libraryId'>): string => d.libraryId ?? 'no Library ID yet';
+/** LIBID-1, owner D2 (19 Oct): the Library ID fold's heading. */
+export const libraryHead = (d: Pick<CaseDoc, 'libraryId'>): string =>
+  (d.libraryId ? `Library ID ${d.libraryId}` : 'Library ID: given once the patient has a name');
+/** LIBID-1: every Patient ID printed on the patient's X-rays, inside the Library ID fold; null when there is none. */
+export const idsSeenLine = (d: Pick<CaseDoc, 'patientIdsSeen'>): string | null =>
+  (d.patientIdsSeen.length ? `Patient IDs on this patient's X-rays: ${d.patientIdsSeen.join(', ')}` : null);
 /** Owner Q8: this X-ray's ID differs from another X-ray's of the same patient — a subtle note, never a warning (Q5). */
 export function differentIdNote(d: Pick<CaseDoc, 'printedPatientId' | 'patientIdsSeen'>): string | null {
   const own = d.printedPatientId; if (!own) return null;

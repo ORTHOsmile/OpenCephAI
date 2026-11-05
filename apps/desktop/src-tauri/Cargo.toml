@@ -1,6 +1,6 @@
 [package]
 name = "cephtrace-desktop"
-version = "0.1.0"
+version = "1.1.0"
 edition.workspace = true
 license.workspace = true
 description = "CephTrace desktop app (Tauri 2)"
@@ -26,6 +26,8 @@ reqwest = { version = "0.12", default-features = false, features = ["blocking", 
 image = "0.25"
 
 [dev-dependencies]
+# `test` adds Tauri's mock runtime for tests only (no new crate): tests/asset_scope.rs asks the real asset scope.
+tauri = { version = "2", features = ["test"] }
 tempfile = "3"
 rusqlite = { version = "0.40", features = ["bundled"] }
 

@@ -1,9 +1,10 @@
 import { describe, it, expect } from 'vitest';
 import { compile } from '@ceph/geometry';
-import { ALL_ANALYSES, BUILT_INS, buildRegistry, ISBI19, LANDMARKS, MCNAMARA, STEINER } from '@ceph/analyses';
-import { measurementRows, missingPoints, missingText, otherLandmarks, placerOf, placerStatus, rowKey, unconfirmedAiPoints, unplacedLandmarks } from './measurements';
+import { ALL_ANALYSES, BUILT_INS, buildRegistry, ISBI19, LANDMARKS, MCNAMARA, STEINER, unconfirmedAiPointsLine } from '@ceph/analyses';
+import { measurementRows, missingPoints, missingText, otherLandmarks, placedViaOf, placerOf, placerStatus, rowKey, unconfirmedAiPoints, unplacedLandmarks } from './measurements';
 import { DEFAULT_DECIMALS } from './format';
 import { scaleOf } from './tracing/spacing';
+import { initialTracing, tracingReducer } from './tracing/state';
 
 const g = compile(buildRegistry(BUILT_INS));
 const pos = { S: { x: 0, y: 0 }, N: { x: 700, y: -100 }, A: { x: 720, y: 300 }, B: { x: 690, y: 650 }, Gn: { x: 680, y: 820 } };
@@ -191,51 +192,22 @@ describe('"Needs points no model finds" (appendix §2 wording)', () => {
   });
 });
 
-describe('"uses unconfirmed AI points" (owner, 7 Oct)', () => {
+// Spec 2026-10-19 addendum 2 (M) supersedes the owner's 7 Oct rule and reviews I-3/T9-3 and T9-2: the placing model,
+// its score and the "to confirm" wording no longer decide the bubble; only "AI and not yet accepted" does.
+describe('the AI bubble does not depend on the placing model, its score or the definition (addendum 2, M)', () => {
   const gAll = compile(buildRegistry(ALL_ANALYSES));
-  const table = [{ modelId: 'm', title: 'Main', main: true, points: [{ id: 'Pt', status: { kind: 'notScored' as const } }, { id: 'U6', status: { kind: 'scored' as const, mre: 1.4, n: 150, dataset: 'aariz' } }] }];
   const ai = () => ({ x: 1, y: 1, source: 'ai' as const, verified: false, ai: { x: 1, y: 1 } });
-  const byM = () => 'm';
-  it('an AI-placed, unverified point from a not-scored model is listed (Pt in the Ricketts facial axis)', () => {
-    expect(unconfirmedAiPoints('m31_FacAxisM', gAll, { Pt: ai() }, table, byM)).toEqual([]);   // #31 uses PTM, not Pt
-    expect(unconfirmedAiPoints('m30_FacAxisR', gAll, { Pt: ai() }, table, byM)).toEqual(['Pt']);
+  it('Co, AI and not accepted, is listed: placement, score and definition are no longer consulted', () => {
+    expect(unconfirmedAiPoints('m10_CoA', gAll, { Co: ai() })).toEqual(['Co']);
   });
-  it('a point whose definition is still to be confirmed is listed even when scored (U6)', () => {
-    expect(unconfirmedAiPoints('m60_OPSN', gAll, { U6: ai() }, table, byM)).toContain('U6');
+  it('Pt (not scored, "unconfirmed") and U6 (scored, "to confirm") are listed exactly like any other point', () => {
+    expect(unconfirmedAiPoints('m31_FacAxisM', gAll, { Pt: ai() })).toEqual([]);   // #31 uses PTM, not Pt
+    expect(unconfirmedAiPoints('m30_FacAxisR', gAll, { Pt: ai() })).toEqual(['Pt']);
+    expect(unconfirmedAiPoints('m60_OPSN', gAll, { U6: ai() })).toContain('U6');
   });
-  it('once the clinician verifies it, it is no longer listed', () => {
-    expect(unconfirmedAiPoints('m30_FacAxisR', gAll, { Pt: { ...ai(), verified: true } }, table, byM)).toEqual([]);
-  });
-  it('a hand-placed point is never listed', () => {
-    expect(unconfirmedAiPoints('m30_FacAxisR', gAll, { Pt: { x: 1, y: 1, source: 'manual', verified: true } }, table, byM)).toEqual([]);
-  });
-});
-// Review I-3/T9-3: Pt and U6 (above) are both in UNCONFIRMED_POINTS by definition (their words say "unconfirmed" /
-// "to confirm"), so the `||` short-circuits before ever calling placerStatus/placer — those tests cannot catch the
-// P16 wiring breaking. Co carries neither word, so this is the one that actually exercises the record.
-describe('"uses unconfirmed AI points" is wired to the real placer, not table order (review I-3/T9-3)', () => {
-  const gAll = compile(buildRegistry(ALL_ANALYSES));
-  const table = [
-    { modelId: 'main', title: 'Main', main: true, points: [{ id: 'Co', status: { kind: 'scored' as const, mre: 1.0, n: 100, dataset: 'isbi' } }] },
-    { modelId: 'aariz', title: 'Aariz', main: false, points: [{ id: 'Co', status: { kind: 'notScored' as const } }] },
-  ];
-  const co = () => ({ x: 1, y: 1, source: 'ai' as const, verified: false, ai: { x: 1, y: 1 } });
-  it('the record says Aariz (not scored) placed it: marked, though table order alone (Main, scored) would not be', () => {
-    expect(unconfirmedAiPoints('m10_CoA', gAll, { Co: co() }, table, () => 'aariz')).toEqual(['Co']);
-  });
-});
-describe('"uses unconfirmed AI points" fails safe when the placing model\'s status is unknown (owner ruling T9-2)', () => {
-  const gAll = compile(buildRegistry(ALL_ANALYSES));
-  const table = [{ modelId: 'main', title: 'Main', main: true, points: [{ id: 'Co', status: { kind: 'scored' as const, mre: 1.0, n: 100, dataset: 'isbi' } }] }];
-  const co = () => ({ x: 1, y: 1, source: 'ai' as const, verified: false, ai: { x: 1, y: 1 } });
-  it('the placing model has no row in the table (e.g. removed since placement): marked, not silently cleared', () => {
-    expect(unconfirmedAiPoints('m10_CoA', gAll, { Co: co() }, table, () => 'removed-model')).toEqual(['Co']);
-  });
-  it('the models table could not be read at all: marked', () => {
-    expect(unconfirmedAiPoints('m10_CoA', gAll, { Co: co() }, null, () => 'main')).toEqual(['Co']);
-  });
-  it('control: a known, scored placer on a readable table is NOT marked (the fail-safe covers only unknown status)', () => {
-    expect(unconfirmedAiPoints('m10_CoA', gAll, { Co: co() }, table, () => 'main')).toEqual([]);
+  it('control: once accepted, or hand-placed, a point is not listed', () => {
+    expect(unconfirmedAiPoints('m10_CoA', gAll, { Co: { ...ai(), verified: true } })).toEqual([]);
+    expect(unconfirmedAiPoints('m30_FacAxisR', gAll, { Pt: { x: 1, y: 1, source: 'manual', verified: true } })).toEqual([]);
   });
 });
 describe('placerStatus skips an over-the-gate row in the table-order fallback (Minor, induction 3)', () => {
@@ -247,6 +219,12 @@ describe('placerStatus skips an over-the-gate row in the table-order fallback (M
     expect(placerStatus('Pt', null, table)).toBe('scored');
   });
 });
+describe('placedViaOf: the stored via of each point; none before format 15', () => {
+  it('reads placedVia, skipping null and missing', () => {
+    expect(placedViaOf({ landmarks: [{ id: 'Go', placedVia: 'auto-best' }, { id: 'S', placedVia: null }, { id: 'N' }] })).toEqual({ Go: 'auto-best' });
+  });
+});
+
 describe('who placed an AI point: the record, not a re-derivation (pre-flight P16)', () => {
   // Main finds nothing for Pt; Aariz scores it; SRPose finds it unscored. Aariz errored on this film, so SRPose placed it.
   const table = [
@@ -267,5 +245,34 @@ describe('who placed an AI point: the record, not a re-derivation (pre-flight P1
   });
   it('no record at all: null, and the table order is the fallback', () => {
     expect(placerOf('Pt', pt, null, [])).toBeNull();
+  });
+});
+
+describe('the AI bubble: every row that uses an AI point not yet accepted (spec 2026-10-19 addendum 2, M)', () => {
+  const gAll = compile(buildRegistry(ALL_ANALYSES));
+  const ai = () => ({ x: 1, y: 1, source: 'ai' as const, verified: false, ai: { x: 1, y: 1 } });
+  it('N, AI and not accepted (status original): SNA (deg), N–Me (mm), Jarabak (%) and SN:GoMe (ratio) each list it', () => {
+    for (const node of ['m01_SNA', 'm41_NMe', 'm42_Jarabak', 'm43_SNtoGoMe']) expect(unconfirmedAiPoints(node, gAll, { N: ai() }), node).toEqual(['N']);
+  });
+  it('catalogue-wide: with every point AI and not accepted, each row lists exactly the points it uses', () => {
+    const all = Object.fromEntries(Object.keys(LANDMARKS).map((id) => [id, ai()]));
+    const nodes = [...new Set(ALL_ANALYSES.flatMap((d) => d.measurements.map((m) => m.node)))];
+    expect(nodes.length).toBeGreaterThan(80);                                  // control: the catalogue was read (85 rows, 19 Oct)
+    const wrong = nodes.filter((n) => JSON.stringify(unconfirmedAiPoints(n, gAll, all))
+      !== JSON.stringify(Object.keys(LANDMARKS).filter((id) => gAll.requiredLandmarks(n).has(id))));
+    expect(wrong).toEqual([]);
+  });
+  it('accepted, moved (ai-adjusted) or hand-placed points are never listed; the rest of the row still is', () => {
+    const pts = { S: { x: 1, y: 1, source: 'manual' as const, verified: true }, N: { ...ai(), verified: true }, A: ai() };
+    expect(unconfirmedAiPoints('m01_SNA', gAll, pts)).toEqual(['A']);
+    expect(unconfirmedAiPoints('m01_SNA', gAll, { ...pts, A: { ...ai(), source: 'ai-adjusted' as const, verified: true } })).toEqual([]);
+  });
+  it('a bulk accept (Accept remaining) clears every bubble it covers', () => {
+    const loaded = tracingReducer(initialTracing, { type: 'load', landmarks: [{ id: 'S', x: 1, y: 1 }, { id: 'N', x: 50, y: 1 }, { id: 'A', x: 50, y: 50 }] });
+    expect(unconfirmedAiPoints('m01_SNA', gAll, loaded.points)).toEqual(['S', 'N', 'A']);
+    expect(unconfirmedAiPoints('m01_SNA', gAll, tracingReducer(loaded, { type: 'acceptRemaining' }).points)).toEqual([]);
+  });
+  it('the hover words say "not yet accepted" (P1), in one place', () => {
+    expect(unconfirmedAiPointsLine(['N', 'Go'])).toBe('Uses AI points not yet accepted: N, Go');
   });
 });

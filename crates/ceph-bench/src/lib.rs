@@ -1,14 +1,24 @@
 //! ceph-bench: MRE/SDR on Ceph-Biometrics-400 through the exact `ceph-infer` pipeline the app ships.
+pub mod chainproof;
 pub mod dataset;
 pub mod diag;
+pub mod ft2;
+pub mod ft2b;
+pub mod ft_common;
 pub mod ledger;
+pub mod linalg;
 pub mod metrics;
 pub mod parity;
 pub mod passrule;
+pub mod pointcheck;
 pub mod report;
 pub mod runs;
 pub mod scale;
+pub mod shape;
+pub mod shape_prior;
 pub mod source;
+pub mod stage_a_accept;
+#[cfg(test)] mod stage_a_faces;
 pub mod stats;
 pub mod tune;
 pub mod xcache;

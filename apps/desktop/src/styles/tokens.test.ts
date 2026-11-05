@@ -72,3 +72,28 @@ describe('tokens.css uses only defined custom properties (review M5)', () => {
     expect(used.filter((v) => !defined.has(v))).toEqual([]);
   });
 });
+
+// Plan 2026-10-29 Task 10; spec §2a (owner, 29 Oct: "Next to these words, and blue"): the Settings tab text is --link,
+// never --accent, which fails AA as small text on the Settings window. Scoped to the Settings window: the Inspector's
+// tabs share `.tabs` and must not change.
+describe('blue Settings tabs (spec §2a)', () => {
+  for (const theme of ['light', 'dark'] as const) {
+    const c = tokens.color[theme];
+    it(`${theme}: the Settings tab text (--link) reaches 4.5:1 on the window, a selected tab and the panel`, () => {
+      for (const bg of ['raised', 'control', 'panel'] as const) expect(contrastRatio(c.link, c[bg])).toBeGreaterThanOrEqual(4.5);
+    });
+  }
+  it('the instrument can fail: --accent as tab text on the dark Settings window is 3.92:1, below 4.5', () => {
+    const r = contrastRatio(tokens.color.dark.accent, tokens.color.dark.raised);
+    expect(r).toBeLessThan(4.5);
+    expect(r).toBeCloseTo(3.92, 2);
+  });
+  it('the CSS gives the Settings tabs --link with an underlined selected tab, and only the Settings tabs', () => {
+    expect(tokensCss).toMatch(/\.settings-window \.tabs button \{ color: var\(--link\); \}/);
+    expect(tokensCss).toMatch(/\.settings-window \.tabs button\[aria-selected="true"\] \{ color: var\(--link\); box-shadow: inset 0 -2px 0 var\(--link\); \}/);
+    expect(tokensCss).not.toMatch(/^\.tabs button[^{]*\{[^}]*--link/m);
+  });
+  it('the left panel centres its Settings… row', () => {
+    expect(tokensCss).toMatch(/\.sidebar \.row\.settings-row \{[^}]*justify-content: center;[^}]*\}/);
+  });
+});

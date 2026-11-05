@@ -90,7 +90,10 @@ const shot = (page, n) => page.screenshot({ path: `${__dirname}/out/ch-${n}.png`
           case 'library_rename_machine': db.machines.find((m) => m.id === a.id).name = a.name; store(db); return null;
           case 'library_reset_machine': db.machines.find((m) => m.id === a.id).learned = []; store(db); return null;
           case 'library_delete_machine': db.machines = db.machines.filter((m) => m.id !== a.id); store(db); return null;
-          case 'settings_get': return db.settings[a.key] ?? null;
+          // Task MS-6: Delete now counts what it changes first (`machineDeleteChange`) before asking; this fixture
+          // predates MS-1…MS-6 and has no scale to clear, so the count is always empty (M-2-style gap fix).
+          case 'library_machine_delete_change': return { films: [], fitted: [], deleted: 0 };
+          case 'settings_get': return a.key === 'betaNoticeSeen' ? '1' : (db.settings[a.key] ?? null);
           case 'settings_set': db.settings[a.key] = a.value; store(db); return null;
           default: return null;
         }
@@ -135,14 +138,14 @@ const shot = (page, n) => page.screenshot({ path: `${__dirname}/out/ch-${n}.png`
   await page.keyboard.press('Meta+0'); await page.waitForTimeout(200);
   await clickWord(3);                                                                     // "DEMO,"
   ok('2. clicking a word shows the chooser', (await page.locator('.chooser').count()) === 1);
-  const chooserButtons = await page.locator('.chooser button').allInnerTexts();
-  ok('2. the chooser offers all ten details (film details Task 7)', JSON.stringify(chooserButtons) === JSON.stringify(['Last name', 'First name(s)', 'Full name', 'DOB',
-    'Film date', 'Scan ID', 'Patient ID', 'X-ray type', 'X-ray dimensions', 'Radiography practice', 'Cancel']), JSON.stringify(chooserButtons));
+  const chooserButtons = await page.locator('.chooser select option').allInnerTexts();
+  ok('2. the chooser offers every detail, in the panel\'s order (owner E)', JSON.stringify(chooserButtons) === JSON.stringify(['Use as…', 'Title', 'Full name', 'Last name', 'First name(s)', 'DOB', 'Age',
+    'Gender', 'Film date', 'Scan ID', 'Patient ID', 'X-ray type', 'X-ray dimensions', 'Radiography practice', 'Referring practitioner']), JSON.stringify(chooserButtons));
   await shot(page, '2-chooser');
-  await page.locator('.chooser').getByRole('button', { name: 'Last name' }).click();
+  await page.locator('.chooser select').selectOption('last');
   await page.waitForTimeout(200);
   await clickWord(4);                                                                     // "Synthetic"
-  await page.locator('.chooser').getByRole('button', { name: 'First name(s)' }).click();
+  await page.locator('.chooser select').selectOption('first');
   await page.waitForTimeout(300);
   ok('2. Last name then First name(s) make "Demo, Synthetic"', (await field('Patient').inputValue()) === 'Demo, Synthetic', await field('Patient').inputValue());
   const learned = (await calls()).filter(([c]) => c === 'library_learn_selection').map(([, a]) => `${a.field}:${a.line}:${a.from}-${a.to}`);
@@ -304,7 +307,30 @@ const shot = (page, n) => page.screenshot({ path: `${__dirname}/out/ch-${n}.png`
   ok('22. Esc while a point waits cancels the placing', !(await page.locator('.place-hint').allInnerTexts()).join(' ').includes('Click the film to place'),
     (await page.locator('.place-hint').allInnerTexts()).join(' | '));
   ok('22. and leaves Choose mode open', (await words().count()) > 0, String(await words().count()));
-  await page.keyboard.press('Escape');
+  await page.keyboard.press('Escape'); await page.waitForTimeout(150);
+
+  // Final review Minor 1: in Choose mode, Enter must not write a film detail while the Report preview is open —
+  // gated like the other keys (hasCaseRef), not left to depend on the preview's backdrop hiding the canvas.
+  const dateBefore = await field('Film date').inputValue();
+  await page.getByRole('button', { name: 'Pick Film date on the film' }).click();
+  await page.waitForTimeout(200);
+  await clickWord(6);                                                                     // "07/03/1990"
+  await page.waitForTimeout(200);
+  await page.getByRole('button', { name: 'Export ›' }).click();
+  const reportPreview = page.locator('[role="dialog"][aria-label="Report preview"]');
+  await reportPreview.waitFor();
+  await page.waitForTimeout(300);
+  await page.keyboard.press('Enter');
+  await page.waitForTimeout(300);
+  ok('24. Enter does not write a film detail while the Report preview is open',
+    (await field('Film date').inputValue()) === dateBefore, `${dateBefore} -> ${await field('Film date').inputValue()}`);
+  await reportPreview.getByRole('button', { name: 'Close' }).click();
+  await reportPreview.waitFor({ state: 'detached' });
+  await page.waitForTimeout(200);
+  await page.keyboard.press('Enter');
+  await page.waitForTimeout(300);
+  ok('24 control. once the preview is closed, the same Enter still finishes the pick (so the check above is not vacuous)',
+    (await field('Film date').inputValue()) === '07/03/1990' && dateBefore !== '07/03/1990', `${dateBefore} -> ${await field('Film date').inputValue()}`);
 
   ok('no page errors', errors.length === 0, errors.slice(0, 3).join(' | '));
   console.log(results.join('\n'));

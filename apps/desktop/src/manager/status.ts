@@ -10,3 +10,5 @@ export function statusText(r: ModelRow, p?: ModelProgress | null): string {
   return r.status === 'failed' ? 'Failed' : 'Not installed';
 }
 export const blocked = (r: ModelRow) => r.status === 'failed' && r.error === 'DOWNLOAD_BLOCKED';
+/** The button on a row that is not Ready or installing: a Failed row says Retry. */
+export const actionLabel = (r: ModelRow): 'Install' | 'Retry' => (r.status === 'failed' ? 'Retry' : 'Install');

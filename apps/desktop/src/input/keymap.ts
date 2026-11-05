@@ -1,3 +1,5 @@
+import { CMD } from './modName';
+
 export type Command =
   | { t: 'import' } | { t: 'undo' } | { t: 'redo' } | { t: 'zoom'; factor: number } | { t: 'fit' }
   | { t: 'level' } | { t: 'flip' } | { t: 'restore' } | { t: 'rotate'; deg: number }
@@ -12,9 +14,18 @@ const TYPING = /^(text|search|email|number|password|tel|url|date|time|datetime-l
 const typing = (e: KeyLike) => !!e.targetEditable || e.targetTag === 'TEXTAREA' || e.targetTag === 'SELECT'
   || (e.targetTag === 'INPUT' && TYPING.test((e.targetType ?? '').toLowerCase()));
 
+/** The one ⌘/Ctrl helper (master plan §13, Windows-ready rule): ⌘ or Ctrl held. Every command and gesture asks this. */
+export const isMod = (e: { metaKey: boolean; ctrlKey: boolean }): boolean => e.metaKey || e.ctrlKey;
+/** The modifier's name for hover text: "⌘" on a Mac, "Ctrl" elsewhere. With no platform given, this is the one real
+ *  runtime answer (`modName.ts`'s `CMD()`) — a caller asking the actual platform must use that, not duplicate the
+ *  Mac-detection here; a caller testing a specific platform string passes it explicitly. */
+export const modLabel = (platform?: string): string => (platform === undefined ? CMD() : (/Mac|iPhone|iPad/.test(platform) ? '⌘' : 'Ctrl'));
+/** A shortcut written the platform's way: "⌘Z" on a Mac, "Ctrl+Z" elsewhere. */
+export const shortcut = (mod: string, key: string): string => (mod === '⌘' ? `⌘${key}` : `${mod}+${key}`);
+
 export function commandFor(e: KeyLike): Command | null {
   if (typing(e)) return null;
-  const mod = e.metaKey || e.ctrlKey, key = e.key.length === 1 ? e.key.toLowerCase() : e.key;
+  const mod = isMod(e), key = e.key.length === 1 ? e.key.toLowerCase() : e.key;
   if (mod) {
     if (key === 'o') return { t: 'import' };
     if (key === 'z') return e.shiftKey ? { t: 'redo' } : { t: 'undo' };
@@ -37,7 +48,14 @@ export function commandFor(e: KeyLike): Command | null {
   if (a) { const n = e.shiftKey ? 10 : 1; return { t: 'nudge', dx: a[0] * n, dy: a[1] * n }; }
   return null;
 }
-export interface KeyContext { hasCase: boolean; hasActivePoint: boolean; calibrating: boolean }
+/** Spec 2026-10-19 addendum (G): Space held with the pointer over the film pans it by dragging; never while typing,
+ *  and nowhere else, so Space still presses a focused button or ticks a box away from the film. */
+export const isSpacePan = (e: KeyLike, overStage: boolean): boolean => overStage && e.key === ' ' && !typing(e);
+
+/** `rulerPending`: final review m-1 — true while any ruler store (press, drop or ⌘Z/⌘⇧Z replay) is queued or in
+ *  flight. Undo/redo must wait: a store that lands after one more undo/redo has run would put the library's
+ *  marks ahead of or behind the ones on screen until the film is reopened. */
+export interface KeyContext { hasCase: boolean; hasActivePoint: boolean; calibrating: boolean; rulerPending: boolean }
 /** Whether a command does anything right now; keys that don't are left to the browser (not preventDefault-ed). */
 export function applies(c: Command, x: KeyContext): boolean {
   switch (c.t) {
@@ -45,6 +63,7 @@ export function applies(c: Command, x: KeyContext): boolean {
     case 'cancel': return x.calibrating || x.hasCase;
     case 'nudge': case 'remove': return x.hasCase && x.hasActivePoint && !x.calibrating;
     case 'calibrate': return x.hasCase;
+    case 'undo': case 'redo': return x.hasCase && !x.calibrating && !x.rulerPending;
     default: return x.hasCase && !x.calibrating;
   }
 }

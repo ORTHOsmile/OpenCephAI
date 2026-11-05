@@ -11,8 +11,9 @@ fn detects_19_landmarks_inside_the_image() {
     let e = engine();
     let d = e.detect_path(&root().join("data/ceph400/images/001.png"), false).unwrap();
     assert_eq!((d.image_width, d.image_height, d.landmarks.len()), (1935, 2400, 19));
-    // Task 10 (schema 10): each detection names the model file it ran, by the SHA-256 the manifest verified at load.
-    assert_eq!(d.model_sha256, e.manifest().sha256);
+    // Task 10 (schema 10); Part F Task 3 (owner Q9): each detection names the version of the model that ran, by its
+    // fingerprint (both files, when it has two) rather than the network file's hash alone.
+    assert_eq!(d.model_sha256, e.manifest().fingerprint());
     assert_eq!(d.model_sha256.len(), 64);
     for l in &d.landmarks {
         assert!(l.x >= 0.0 && l.x < 1935.0 && l.y >= 0.0 && l.y < 2400.0, "{l:?}");

@@ -1,0 +1,37 @@
+{
+  "about": "Part F Task 5: a film's scale in the app's order (ruler, machine, fit, assumed). Read by ceph-store film_scale's test and apps/desktop/src/compare/filmScale.test.ts (ownPages). SYNTHETIC values. scaleSteps (fine-tune presses) is 0 and expect.fineTuned false unless a case says otherwise.",
+  "assumedMmPerPx": 0.1,
+  "cases": [
+    { "name": "ruler", "spacingMm": 0.125, "machine": null, "fit": null, "expect": { "mmPerPx": 0.125, "source": "ruler" } },
+    { "name": "ruler beats machine and fit", "spacingMm": 0.125, "machine": { "spacingMm": 0.0625, "applies": true }, "fit": { "useOwn": true, "scale": 1.5, "refSpacingMm": 0.125, "refMachineSpacingMm": null }, "expect": { "mmPerPx": 0.125, "source": "ruler" } },
+    { "name": "machine when it applies", "spacingMm": null, "machine": { "spacingMm": 0.0625, "applies": true }, "fit": null, "expect": { "mmPerPx": 0.0625, "source": "machine" } },
+    { "name": "machine of another pixel size does not apply", "spacingMm": null, "machine": { "spacingMm": 0.0625, "applies": false }, "fit": null, "expect": { "mmPerPx": 0.1, "source": "assumed" } },
+    { "name": "machine beats fit", "spacingMm": null, "machine": { "spacingMm": 0.0625, "applies": true }, "fit": { "useOwn": true, "scale": 1.5, "refSpacingMm": 0.125, "refMachineSpacingMm": null }, "expect": { "mmPerPx": 0.0625, "source": "machine" } },
+    { "name": "fit to a ruler film, switched on", "spacingMm": null, "machine": null, "fit": { "useOwn": true, "scale": 1.5, "refSpacingMm": 0.125, "refMachineSpacingMm": null }, "expect": { "mmPerPx": 0.1875, "source": "fit" } },
+    { "name": "fit to a machine-scaled film", "spacingMm": null, "machine": null, "fit": { "useOwn": true, "scale": 2.0, "refSpacingMm": null, "refMachineSpacingMm": 0.0625 }, "expect": { "mmPerPx": 0.125, "source": "fit" } },
+    { "name": "fit switched off", "spacingMm": null, "machine": null, "fit": { "useOwn": false, "scale": 1.5, "refSpacingMm": 0.125, "refMachineSpacingMm": null }, "expect": { "mmPerPx": 0.1, "source": "assumed" } },
+    { "name": "fit to a film with no scale (G3)", "spacingMm": null, "machine": null, "fit": { "useOwn": true, "scale": 2.0, "refSpacingMm": null, "refMachineSpacingMm": null }, "expect": { "mmPerPx": 0.2, "source": "assumed" } },
+    { "name": "fit size out of range", "spacingMm": null, "machine": null, "fit": { "useOwn": true, "scale": 6.0, "refSpacingMm": 0.125, "refMachineSpacingMm": null }, "expect": { "mmPerPx": 0.1, "source": "assumed" } },
+    { "name": "nothing", "spacingMm": null, "machine": null, "fit": null, "expect": { "mmPerPx": 0.1, "source": "assumed" } },
+    { "name": "a zero ruler reads as none", "spacingMm": 0, "machine": { "spacingMm": 0.0625, "applies": true }, "fit": null, "expect": { "mmPerPx": 0.0625, "source": "machine" } },
+
+    { "name": "a ruler fine-tuned by eye (+1 press) is a ruler, fine-tuned", "spacingMm": 0.1005, "scaleSteps": 1, "machine": { "spacingMm": 0.0625, "applies": true }, "fit": null, "expect": { "mmPerPx": 0.1005, "source": "ruler", "fineTuned": true } },
+    { "name": "fine-tune presses count only on a ruler film", "spacingMm": null, "scaleSteps": 3, "machine": { "spacingMm": 0.0625, "applies": true }, "fit": null, "expect": { "mmPerPx": 0.0625, "source": "machine" } },
+    { "name": "fine-tune presses on a zero ruler count for nothing", "spacingMm": 0, "scaleSteps": -2, "machine": null, "fit": null, "expect": { "mmPerPx": 0.1, "source": "assumed" } },
+    { "name": "machine of another pixel size, fit switched on: the fit", "spacingMm": null, "machine": { "spacingMm": 0.0625, "applies": false }, "fit": { "useOwn": true, "scale": 1.5, "refSpacingMm": 0.125, "refMachineSpacingMm": null }, "expect": { "mmPerPx": 0.1875, "source": "fit" } },
+    { "name": "machine beats fit even when the fit is switched off", "spacingMm": null, "machine": { "spacingMm": 0.0625, "applies": true }, "fit": { "useOwn": false, "scale": 1.5, "refSpacingMm": 0.125, "refMachineSpacingMm": null }, "expect": { "mmPerPx": 0.0625, "source": "machine" } },
+    { "name": "reference in Recently deleted: the library returns no fit, so assumed", "spacingMm": null, "machine": null, "fit": null, "expect": { "mmPerPx": 0.1, "source": "assumed" } },
+    { "name": "a negative ruler reads as none", "spacingMm": -0.125, "machine": null, "fit": null, "expect": { "mmPerPx": 0.1, "source": "assumed" } },
+    { "name": "a zero machine scale reads as none", "spacingMm": null, "machine": { "spacingMm": 0, "applies": true }, "fit": null, "expect": { "mmPerPx": 0.1, "source": "assumed" } },
+    { "name": "a negative machine scale reads as none, and the fit is next", "spacingMm": null, "machine": { "spacingMm": -0.0625, "applies": true }, "fit": { "useOwn": true, "scale": 1.5, "refSpacingMm": 0.125, "refMachineSpacingMm": null }, "expect": { "mmPerPx": 0.1875, "source": "fit" } },
+    { "name": "fit to a film with a zero ruler: assumed (a bad ruler is not read as its machine)", "spacingMm": null, "machine": null, "fit": { "useOwn": true, "scale": 2.0, "refSpacingMm": 0, "refMachineSpacingMm": 0.0625 }, "expect": { "mmPerPx": 0.2, "source": "assumed" } },
+    { "name": "fit to a film with a negative ruler: assumed", "spacingMm": null, "machine": null, "fit": { "useOwn": true, "scale": 2.0, "refSpacingMm": -0.125, "refMachineSpacingMm": null }, "expect": { "mmPerPx": 0.2, "source": "assumed" } },
+    { "name": "fit to a film with a zero machine scale: assumed", "spacingMm": null, "machine": null, "fit": { "useOwn": true, "scale": 2.0, "refSpacingMm": null, "refMachineSpacingMm": 0 }, "expect": { "mmPerPx": 0.2, "source": "assumed" } },
+    { "name": "fit to a film with a negative machine scale: assumed", "spacingMm": null, "machine": null, "fit": { "useOwn": true, "scale": 2.0, "refSpacingMm": null, "refMachineSpacingMm": -0.0625 }, "expect": { "mmPerPx": 0.2, "source": "assumed" } },
+    { "name": "fit size zero", "spacingMm": null, "machine": null, "fit": { "useOwn": true, "scale": 0, "refSpacingMm": 0.125, "refMachineSpacingMm": null }, "expect": { "mmPerPx": 0.1, "source": "assumed" } },
+    { "name": "fit size negative", "spacingMm": null, "machine": null, "fit": { "useOwn": true, "scale": -1.5, "refSpacingMm": 0.125, "refMachineSpacingMm": null }, "expect": { "mmPerPx": 0.1, "source": "assumed" } },
+    { "name": "fit size at the upper limit (x5) counts", "spacingMm": null, "machine": null, "fit": { "useOwn": true, "scale": 5.0, "refSpacingMm": 0.125, "refMachineSpacingMm": null }, "expect": { "mmPerPx": 0.625, "source": "fit" } },
+    { "name": "fit size at the lower limit (x0.2) counts", "spacingMm": null, "machine": null, "fit": { "useOwn": true, "scale": 0.2, "refSpacingMm": 0.5, "refMachineSpacingMm": null }, "expect": { "mmPerPx": 0.1, "source": "fit" } },
+    { "name": "fit size just under the lower limit is refused", "spacingMm": null, "machine": null, "fit": { "useOwn": true, "scale": 0.19, "refSpacingMm": 0.5, "refMachineSpacingMm": null }, "expect": { "mmPerPx": 0.1, "source": "assumed" } }
+  ]
+}

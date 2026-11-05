@@ -25,6 +25,17 @@ export function ageAt(dateOfBirth: string | null, filmDate: string | null): numb
   return days === 0 ? years : years + days / 365.2425;
 }
 
+/** Whole years and months from the date of birth to the film date, on the calendar — for the screen only ("12 y 6 m";
+ *  owner AG1, 19 Oct); the norm's age row uses `ageAt`. A month is complete on the same day-of-month, so a 29 February
+ *  birthday is not yet a year on 28 February, as in `ageAt`. Null exactly when `ageAt` is. */
+export function calendarAge(dateOfBirth: string | null, filmDate: string | null): { years: number; months: number } | null {
+  const b = parseDay(dateOfBirth), f = parseDay(filmDate);
+  if (!b || !f || Date.UTC(f.y, f.m - 1, f.d) < Date.UTC(b.y, b.m - 1, b.d)) return null;
+  let months = (f.y - b.y) * 12 + (f.m - b.m);
+  if (f.d < b.d) months -= 1;
+  return { years: Math.floor(months / 12), months: months % 12 };
+}
+
 const DAY = /^(\d{4})-(\d{2})-(\d{2})(T.*)?$/;
 
 function parseDay(s: string | null): { y: number; m: number; d: number } | null {

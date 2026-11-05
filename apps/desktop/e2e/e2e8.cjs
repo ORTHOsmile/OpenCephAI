@@ -47,13 +47,22 @@ const seed = { settings: {}, runs: [], delayExtras: 0, base, cases: {
     window.__TAURI_EVENT_PLUGIN_INTERNALS__ = { unregisterListener() {} };
     window.__TAURI_INTERNALS__ = {
       metadata: { currentWindow: { label: 'main' }, currentWebview: { windowLabel: 'main', label: 'main' } },
-      transformCallback: () => ++cb,
+      transformCallback: (fn) => { const id = ++cb; window['_cb' + id] = fn; return id; },   // kept, so a test can emit an event
       convertFileSrc: () => 'data:image/png;base64,' + png,
       invoke: async (cmd, a = {}) => {
         const db = load();
         switch (cmd) {
           case 'model_status': return { loaded: true, modelId: 'cwlachap-hrnet-w32', searched: [], error: null };
-          case 'plugin:event|listen': return 1;
+          case 'plugin:event|listen': { (window.__listeners ||= {})[a.event] = [...(window.__listeners[a.event] || []), a.handler]; return a.handler; }
+          // Leftovers Task 3 (M2): the first-open step, as Rust answers it. db.introStep: undefined → not stubbed (null, as
+          // before); 'waiting' → the base is not installed yet (null); 'base-ready' → the step runs once (its note), then
+          // 'done' (null for ever after). Each call is counted.
+          case 'models_auto_best_intro': {
+            db.introCalls = (db.introCalls || 0) + 1;
+            const n = db.introStep === 'base-ready' ? { before: null, keptDeclines: 1 } : null;
+            if (n) db.introStep = 'done';
+            store(db); return n;
+          }
           case 'models_list': return db.models;
           case 'library_list': return Object.values(db.cases).filter((c) => !!c.deletedAt === a.deleted).map((c) => ({ id: c.id, patientName: c.patientName,
             timepoint: c.timepoint, takenOn: c.takenOn, createdAt: c.createdAt, updatedAt: c.updatedAt, thumbPath: '/t.jpg', orientation: c.orientation,
@@ -90,7 +99,7 @@ const seed = { settings: {}, runs: [], delayExtras: 0, base, cases: {
             // I3 (owner, 5 Oct): on demand, delay just the old ghosts_shown flag so models_list (and modelList.rows)
             // answers first — the race that used to let the ghosts_hidden upgrade silently never run.
             if (localStorage.getItem('delaySettings') === '1' && a.key === 'ghosts_shown') await new Promise((r) => setTimeout(r, 400));
-            return db.settings[a.key] ?? null;
+            return a.key === 'betaNoticeSeen' ? '1' : (db.settings[a.key] ?? null);
           case 'settings_set': db.settings[a.key] = a.value; store(db); return null;
           default: return null;
         }
@@ -478,6 +487,34 @@ const seed = { settings: {}, runs: [], delayExtras: 0, base, cases: {
   await openCase('T1');
   await page.waitForTimeout(300);
   ok('19. no other models installed: the section doesn\'t appear', (await page.locator('.ghost-key').count()) === 0);
+
+  // Leftovers Task 3 (M2): a library with films and no first-open record; the base (Aariz) is not installed at launch,
+  // so the step waits. Installing it mid-session (its progress ends 'ready') runs the step again at once: the upgrade
+  // note shows in the same session, no relaunch. A later install that ends Ready shows no second note.
+  const emitReady = (id) => page.evaluate((id) => { for (const h of (window.__listeners || {})['models://progress'] || [])
+    window['_cb' + h]({ event: 'models://progress', id: 1, payload: { id, stage: 'ready' } }); }, id);
+  const introNote = page.locator('.auto-best-intro');
+  await page.evaluate(() => { const d = JSON.parse(localStorage.getItem('fakeLib')); d.introStep = 'waiting'; d.introCalls = 0; localStorage.setItem('fakeLib', JSON.stringify(d)); });
+  await page.reload();
+  await page.waitForSelector('.library');
+  await page.waitForFunction(() => (JSON.parse(localStorage.getItem('fakeLib')).introCalls || 0) >= 1, null, { timeout: 5000 }).catch(() => {});
+  await page.waitForTimeout(300);
+  ok('M2. at launch without the base: the first-open step runs once and shows no note',
+    (await db()).introCalls === 1 && (await introNote.count()) === 0, `calls ${(await db()).introCalls}`);
+  await page.evaluate(() => { const d = JSON.parse(localStorage.getItem('fakeLib')); d.introStep = 'base-ready'; localStorage.setItem('fakeLib', JSON.stringify(d)); });
+  await emitReady('aariz-cepha29');                          // the base's install ends Ready
+  await introNote.waitFor({ timeout: 5000 }).catch(() => {});
+  const shownText = await introNote.innerText().catch(() => '');
+  ok('M2. the base installed mid-session: the step runs again and its note shows in the same session',
+    (await db()).introCalls === 2 && shownText.includes('Automatic best now starts your tracings.') && shownText.includes('Your Part F declines are kept.'),
+    `calls ${(await db()).introCalls}; ${shownText}`);
+  await page.screenshot({ path: `${__dirname}/out/auto-best-reintro.png` });
+  await introNote.getByRole('button', { name: 'Dismiss' }).click();
+  await emitReady('gu2net-isbi19');                          // another install later: the step has run, no second note
+  await page.waitForFunction(() => (JSON.parse(localStorage.getItem('fakeLib')).introCalls || 0) >= 3, null, { timeout: 5000 }).catch(() => {});
+  await page.waitForTimeout(300);
+  ok('M2. a later install: the step is asked again but has already run, so no second note',
+    (await db()).introCalls === 3 && (await introNote.count()) === 0, `calls ${(await db()).introCalls}`);
 
   ok('no page errors', errors.length === 0, errors.join(' | '));
   console.log(results.join('\n'));

@@ -68,7 +68,7 @@ export const ALLOWED_KEYS = {
   curation: ['extractedBy', 'comparedOn', 'date', 'notes'],
   scale: ['kind', 'percent', 'source'],
   secondHand: ['via'],
-  entry: ['measurement', 'sex', 'ageBand', 'mean', 'sd', 'sdSource', 'range', 'n', 'unit', 'source', 'definitionMatch', 'definitionNote', 'clinicalTarget', 'centre', 'fromOtherSex', 'note'],
+  entry: ['measurement', 'sex', 'ageBand', 'mean', 'sd', 'sdSource', 'range', 'n', 'nMale', 'nFemale', 'unit', 'source', 'definitionMatch', 'definitionNote', 'clinicalTarget', 'centre', 'fromOtherSex', 'note'],
   range: ['low', 'high'],
   sdSource: ['set', 'source'],
 } as const;
@@ -187,6 +187,14 @@ function validateEntry(e: any, status: string): string[] {
     if (e.fromOtherSex !== 'M' && e.fromOtherSex !== 'F') out.push("fromOtherSex must be 'M' or 'F'");
     else if (e.sex === 'pooled' || e.fromOtherSex === e.sex) out.push("fromOtherSex must name the other sex of a 'M' or 'F' row");
     if (typeof e.note !== 'string' || e.note.trim() === '') out.push('a fromOtherSex row needs a note saying why');
+  }
+
+  // Owner I1 (a), 3 Nov 2026: a both-sexes row's own men/women split — both or neither, whole people, adding up to n.
+  if (e.nMale !== undefined || e.nFemale !== undefined) {
+    const whole = (x: unknown) => typeof x === 'number' && Number.isInteger(x) && x >= 1;
+    if (e.sex !== 'pooled') out.push("nMale/nFemale belong on a both-sexes ('pooled') row");
+    else if (!whole(e.nMale) || !whole(e.nFemale)) out.push('nMale and nFemale must both be given, each a whole number of at least 1');
+    else if (e.n !== undefined && e.nMale + e.nFemale !== e.n) out.push(`nMale + nFemale (${e.nMale + e.nFemale}) must equal n (${e.n})`);
   }
 
   const hasSdSource = e.sdSource !== undefined && e.sdSource !== null;

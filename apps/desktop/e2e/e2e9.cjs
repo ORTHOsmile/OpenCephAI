@@ -47,7 +47,7 @@ const seed = { settings: {}, ops: ['Dr A'], cases: { c1: { id: 'c1', path: '/Use
           case 'operators_add': { const n = a.name.trim(); if (!n) throw 'type a name';
             if (!db.ops.includes(n)) db.ops.push(n); db.settings.operator = n; store(db); return { current: n, names: db.ops }; }
           case 'operators_set_current': db.settings.operator = a.name; store(db); return null;
-          case 'settings_get': return db.settings[a.key] ?? null;
+          case 'settings_get': return a.key === 'betaNoticeSeen' ? '1' : (db.settings[a.key] ?? null);
           case 'settings_set': db.settings[a.key] = a.value; store(db); return null;
           default: return null;
         }

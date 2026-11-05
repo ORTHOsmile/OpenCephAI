@@ -32,15 +32,19 @@ const seed = { settings: {}, cases: {}, installs: {}, models: [
         switch (cmd) {
           case 'model_status': return { loaded: true, modelId: 'cwlachap-hrnet-w32', searched: [], error: null };
           case 'plugin:event|listen': return 1;
-          case 'library_list': if (localStorage.getItem('failOpen')) throw "Couldn't make a safety copy before upgrading. Your library hasn't been changed."; return [];
+          case 'library_list': if (localStorage.getItem('failOpen') === 'still') throw "The library upgrade to format 18 is still failing. Your library hasn't been changed (it is still at format 7). No new safety copy was made: the safety copy already made for this upgrade is in /Users/demo/Library/OpenCephAI/upgrade-backups/OpenCephAI backup before upgrade 7→18 2026-11-02 10-00-00. To go back to it, choose Library ▸ Restore… and pick that folder.";
+            if (localStorage.getItem('failOpen')) throw "Couldn't make a safety copy before upgrading, so your library hasn't been changed. OpenCephAI tries again only after you quit it and open it again."; return [];
           case 'library_upgrade_copy': if (db.upgradeShown || localStorage.getItem('failOpen')) return null; db.upgradeShown = true; store(db);
             return '/Users/demo/Library/OpenCephAI/upgrade-backups/OpenCephAI backup before upgrade 8→9 2026-10-13 10-00-00';
-          case 'settings_get': return db.settings[a.key] ?? null;
+          case 'settings_get': return a.key === 'betaNoticeSeen' ? '1' : (db.settings[a.key] ?? null);
           case 'settings_set': db.settings[a.key] = a.value; store(db); return null;
           case 'models_list': return db.models;
           case 'models_accept_licence': call(cmd, a); m(a.id).licenceAccepted = true; store(db); return null;
           case 'models_install': {
             call(cmd, a);
+            if (a.id === 'srpose-cldet23' && localStorage.getItem('slowFail')) {   // Task 7: a slow install that then fails
+              await new Promise((r) => setTimeout(r, 500)); Object.assign(m(a.id), { status: 'failed', error: 'Not enough disk space: 60 MB needed.' }); store(db); throw 'Not enough disk space: 60 MB needed.';
+            }
             if (a.id === 'gu2net-isbi19' && !db.installs[a.id]) {
               db.installs[a.id] = 1; Object.assign(m(a.id), { status: 'failed', error: 'DOWNLOAD_BLOCKED' }); store(db); throw 'DOWNLOAD_BLOCKED';
             }
@@ -48,7 +52,12 @@ const seed = { settings: {}, cases: {}, installs: {}, models: [
           }
           case 'models_add_file': call(cmd, a); Object.assign(m(a.id), { status: 'ready', error: null, msPerFilm: 300 }); store(db); return null;
           case 'models_set_main': call(cmd, a); db.models.forEach((r) => { r.main = r.id === a.id; }); store(db); return null;
-          case 'models_remove': call(cmd, a); Object.assign(m(a.id), { status: 'not-installed', main: false, msPerFilm: null }); store(db); return null;
+          case 'models_remove': call(cmd, a);
+            if (localStorage.getItem('refuseRemove')) throw 'SRPose is in use right now (a tracing or the weights check). Wait for it to finish, then press Remove again.';
+            Object.assign(m(a.id), { status: 'not-installed', main: false, msPerFilm: null }); store(db); return null;
+          case 'set_model_dir': call(cmd, a);   // Task 7 (owner ruling Q1): refused while a Models… model is Ready; nothing written
+            if (db.models.some((r) => r.status === 'ready')) throw "This folder isn't used while a model installed in Models… is ready. OpenCephAI uses the Models… model to trace. To use a folder instead, remove the installed models first.";
+            db.settings.model_dir = a.dir; store(db); return 'folder-model';
           case 'plugin:dialog|open': return '/Users/demo/SYNTHETIC-best.zip';
           case 'plugin:dialog|message': call(cmd, a); return 'Yes';      // ask() is a Yes/No message in plugin-dialog 2
           default: return null;
@@ -96,6 +105,7 @@ const seed = { settings: {}, cases: {}, installs: {}, models: [
   await page.screenshot({ path: `${__dirname}/out/models-3.png` });
   ok('3. a blocked GU2Net download offers "Download it yourself" with the Drive link',
     (await gu.locator('.model-link input').inputValue()).includes('drive.google.com') && (await gu.getByRole('button', { name: 'Add downloaded file…' }).count()) === 1);
+  ok('3. a blocked row also says Retry', (await gu.getByRole('button', { name: 'Retry' }).count()) === 1);
   await gu.getByRole('button', { name: 'Add downloaded file…' }).click();
   await page.waitForFunction(() => document.querySelector('section.model-row[data-id="gu2net-isbi19"]')?.textContent.includes('Ready'));
   const added = await calls('models_add_file');
@@ -109,6 +119,49 @@ const seed = { settings: {}, cases: {}, installs: {}, models: [
   await page.waitForFunction(() => JSON.parse(localStorage.getItem('calls') || '[]').some(([c]) => c === 'models_remove'));
   ok('5. Remove asks, then removes SRPose', (await calls('plugin:dialog|message')).length === 1 && (await calls('models_remove')).some(([, a]) => a.id === 'srpose-cldet23'));
 
+  // Task 7 (PR #14 minors): Install is busy after one click; a Failed row says Retry.
+  await page.evaluate(() => localStorage.setItem('slowFail', '1'));
+  const before = (await calls('models_install')).filter(([, a]) => a.id === 'srpose-cldet23').length;
+  const inst = srp.getByRole('button', { name: 'Install' });
+  await inst.dblclick();
+  ok('6. a double click on Install makes one models.install call', (await calls('models_install')).filter(([, a]) => a.id === 'srpose-cldet23').length === before + 1);
+  ok('6. the button is disabled and says Starting… while it works', (await srp.getByRole('button', { name: 'Starting…' }).isDisabled()));
+  await srp.getByRole('button', { name: 'Retry' }).waitFor({ timeout: 5000 }).catch(() => {});
+  await page.screenshot({ path: `${__dirname}/out/models-6.png` });
+  ok('6. after the install fails, the row says why and the button says Retry, enabled',
+    (await srp.getByText('Not enough disk space: 60 MB needed.').count()) === 1 && (await srp.getByRole('button', { name: 'Retry' }).isEnabled()));
+  await page.evaluate(() => localStorage.removeItem('slowFail'));
+  await srp.getByRole('button', { name: 'Retry' }).click();
+  await page.waitForFunction(() => document.querySelector('section.model-row[data-id="srpose-cldet23"]')?.textContent.includes('Ready'));
+  ok('6. Retry installs it (a second call)', (await calls('models_install')).filter(([, a]) => a.id === 'srpose-cldet23').length === before + 2);
+
+  // Final review I1: a refused Remove says why on the Models screen, and the model stays Ready.
+  await page.evaluate(() => localStorage.setItem('refuseRemove', '1'));
+  await srp.getByRole('button', { name: 'Remove' }).click();
+  await page.getByText('SRPose is in use right now (a tracing or the weights check). Wait for it to finish, then press Remove again.').waitFor({ timeout: 5000 }).catch(() => {});
+  ok('6b. a refused Remove shows the app\'s words on the Models screen and the row stays Ready',
+    (await page.locator('[role="dialog"][aria-label="Models"] p.error').allInnerTexts()).join(' ').includes('SRPose is in use right now') && (await srp.textContent()).includes('Ready'));
+  await page.evaluate(() => localStorage.removeItem('refuseRemove'));
+
+  // Task 7 (owner ruling Q1): with a Models… model Ready, "Use a model folder…" says why it is not used; nothing is stored.
+  await page.getByRole('button', { name: 'Use a model folder…' }).click();
+  await page.getByRole('status').filter({ hasText: "isn't used while a model installed in Models… is ready" }).waitFor({ timeout: 5000 }).catch(() => {});
+  await page.screenshot({ path: `${__dirname}/out/models-7.png` });
+  const note = (await page.locator('[role="dialog"][aria-label="Models"] [role="status"]').allInnerTexts()).join(' ');
+  ok('7. a Ready Models… model: the folder is refused, in plain words, with the reason',
+    note.includes("This folder isn't used while a model installed in Models… is ready. OpenCephAI uses the Models… model to trace.") && note.includes('remove the installed models first'), note);
+  ok('7. nothing was remembered', await page.evaluate(() => !JSON.parse(localStorage.getItem('fakeLib')).settings.model_dir));
+  // No Models… model Ready: the folder works as before (no message).
+  await page.keyboard.press('Escape');
+  await page.evaluate(() => { const db = JSON.parse(localStorage.getItem('fakeLib')); db.models.forEach((r) => { r.status = 'not-installed'; r.main = false; }); localStorage.setItem('fakeLib', JSON.stringify(db)); });
+  await page.reload(); await page.waitForSelector('.library');
+  await page.getByRole('button', { name: 'Models…' }).first().click();
+  await page.waitForSelector('[role="dialog"][aria-label="Models"] section.model-row');
+  await page.getByRole('button', { name: 'Use a model folder…' }).click();
+  await page.waitForFunction(() => JSON.parse(localStorage.getItem('fakeLib')).settings.model_dir);
+  ok('7. no Ready model: the folder is accepted as before, no message', (await page.getByRole('status').filter({ hasText: "isn't used" }).count()) === 0
+    && (await page.evaluate(() => JSON.parse(localStorage.getItem('fakeLib')).settings.model_dir)) === '/Users/demo/SYNTHETIC-best.zip');
+
   await page.keyboard.press('Escape');
   ok('Esc closes the dialog', (await page.locator('[role="dialog"][aria-label="Models"]').count()) === 0);
   ok('no page errors', errors.length === 0, errors.join(' | '));
@@ -118,7 +171,12 @@ const seed = { settings: {}, cases: {}, installs: {}, models: [
   await page.evaluate(() => localStorage.setItem('failOpen', '1')); await page.reload(); await page.waitForSelector('.library');
   await page.waitForSelector('.library .error', { timeout: 5000 }).catch(() => {});
   ok('0. a refused upgrade shows the message and no notice', ((await page.locator('.library .error').allInnerTexts()).join(' ')) ===
-    "Couldn't make a safety copy before upgrading. Your library hasn't been changed." && (await page.locator('.library [role="status"]', { hasText: 'safety copy' }).count()) === 0);
+    "Couldn't make a safety copy before upgrading, so your library hasn't been changed. OpenCephAI tries again only after you quit it and open it again." && (await page.locator('.library [role="status"]', { hasText: 'safety copy' }).count()) === 0);
+  // Ruling b (2 Nov): a later launch of a still-failing upgrade says so, names the safety copy already made for this upgrade, and shows no notice.
+  await page.evaluate(() => localStorage.setItem('failOpen', 'still')); await page.reload(); await page.waitForSelector('.library');
+  await page.waitForSelector('.library .error', { timeout: 5000 }).catch(() => {});
+  ok('0b. a still-failing upgrade shows the "still failing" words and no notice', ((await page.locator('.library .error').allInnerTexts()).join(' ')) ===
+    "The library upgrade to format 18 is still failing. Your library hasn't been changed (it is still at format 7). No new safety copy was made: the safety copy already made for this upgrade is in /Users/demo/Library/OpenCephAI/upgrade-backups/OpenCephAI backup before upgrade 7→18 2026-11-02 10-00-00. To go back to it, choose Library ▸ Restore… and pick that folder." && (await page.locator('.library [role="status"]', { hasText: 'safety copy' }).count()) === 0);
   console.log(results.join('\n'));
   await browser.close();
 })().catch((e) => { console.log(results.join('\n')); console.error(e); process.exit(1); });

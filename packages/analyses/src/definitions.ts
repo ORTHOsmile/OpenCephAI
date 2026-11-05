@@ -90,10 +90,9 @@ export function pointDefinition(id: LandmarkId): PointDefinition {
 /** Shown under a point's catalogue definition (`PointAbout`) when its meaning is still to be confirmed on
  *  films (owner, 7 Oct) — one place, so the screen never retypes it (global constraint). */
 export const STILL_TO_CONFIRM_TEXT = 'Still to be confirmed on films.';
-/** Owner, 7 Oct: the one-line warning a measurement carries when it uses an AI-placed, unverified point that
- *  is either not scored on any test set, whose definition is still to be confirmed, or whose placing model's
- *  status could not be determined (fail-safe, owner ruling T9-2) — one place, never retyped in the screen. */
-export const unconfirmedAiPointsLine = (ids: string[]): string => `uses unconfirmed AI points: ${ids.join(', ')}`;
+/** Owner, 19 Oct (addendum 2, M): the one-line warning a measurement carries when it uses an AI-placed point not yet
+ *  accepted — one place, never retyped in the screen. "Accepted" is the per-point word (P1). */
+export const unconfirmedAiPointsLine = (ids: string[]): string => `Uses AI points not yet accepted: ${ids.join(', ')}`;
 /** The plain words for which installed models find a point and how well (Part B's live `models_points` table)
  *  — one place, so `foundByLines` (apps/desktop/src/points/foundBy.ts) never retypes them. */
 export const FOUND_BY_WORDS = {

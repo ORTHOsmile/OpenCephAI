@@ -143,7 +143,7 @@ export function normFromWords(from: string, node: NodeId, sets: NormSet[]): stri
   const a = ALL_ANALYSES.find((x) => x.id === from);
   if (!a) return "Norm: your population's (no built-in analysis lists it)";
   return hasOwnNorm(a.id, node, sets) ? `Norm: your population's, else ${a.name}'s own`
-    : `Norm: your population's (${a.name} lists it but has no norm of its own for it)`;
+    : `Norm: your population's, else Auto (${a.name} lists it but has no norm of its own for it)`;
 }
 
 /** The line the Measurements and Chart tabs show when some of an analysis's measurements are no longer available. */

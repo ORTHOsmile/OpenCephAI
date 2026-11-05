@@ -65,3 +65,66 @@ fn keys(k: &[&str]) -> Vec<String> { k.iter().map(|s| s.to_string()).collect() }
     let sd = read_state_dict(&f, &keys(&["model_state_dict"]), &[]).unwrap();
     assert_eq!(sd["w"].shape, vec![2]);
 }
+
+#[test] fn a_tensor_whose_shape_overflows_is_refused_not_allocated() {
+    // Three dimensions of i32::MAX: their product does not fit in a usize (the pickle's shape numbers are 32-bit).
+    let d = tempfile::tempdir().unwrap(); let f = d.path().join("huge.pt");
+    let pkl = P::new().op(b'}').mark().s("w").tensor("0", 6, 0, &[i32::MAX, i32::MAX, i32::MAX], &[2, 1, 1]).op(b'u').stop();
+    write_pth(&f, &pkl, &[("0", vec![1., 2., 3., 4., 5., 6.])]);
+    let e = read_state_dict(&f, &keys(&[""]), &[]).unwrap_err();
+    assert!(matches!(e, PthError::Format(ref m) if m.contains("too large")), "{e}");
+}
+#[test] fn a_tensor_bigger_than_its_storage_is_refused_before_it_is_allocated() {
+    // 2^32 floats claimed against a 6-float storage: the byte count fits, but cannot be read.
+    let d = tempfile::tempdir().unwrap(); let f = d.path().join("big.pt");
+    let pkl = P::new().op(b'}').mark().s("w").tensor("0", 6, 0, &[i32::MAX, 2], &[2, 1]).op(b'u').stop();
+    write_pth(&f, &pkl, &[("0", vec![1., 2., 3., 4., 5., 6.])]);
+    let t = std::time::Instant::now();
+    let e = read_state_dict(&f, &keys(&[""]), &[]).unwrap_err();
+    assert!(matches!(e, PthError::Format(ref m) if m.contains("too large")), "{e}");
+    assert!(t.elapsed().as_secs() < 1);
+}
+#[test] fn a_legacy_storage_count_past_the_cap_is_refused_quickly() {
+    assert_eq!(ceph_model::pth::MAX_ENTRY_BYTES, 2 << 30);
+    let d = tempfile::tempdir().unwrap(); let f = d.path().join("legacy-huge.pt");
+    let pkl = P::new().op(b'}').mark().s("w").legacy_tensor("140", 6, 0, &[2, 3], &[3, 1]).op(b'u').stop();
+    write_legacy_pth(&f, &pkl, &[("140", vec![1., 2., 3., 4., 5., 6.])]);
+    // Overwrite the storage's int64 count (the 8 bytes before its data, at the end of the file) with 2^40.
+    let mut b = std::fs::read(&f).unwrap(); let at = b.len() - 6 * 4 - 8;
+    b[at..at + 8].copy_from_slice(&(1u64 << 40).to_le_bytes()); std::fs::write(&f, &b).unwrap();
+    let t = std::time::Instant::now();
+    let e = read_state_dict(&f, &keys(&[""]), &[]).unwrap_err();
+    assert!(matches!(e, PthError::Format(ref m) if m.contains("too large")), "{e}");
+    assert!(t.elapsed().as_secs() < 1);
+}
+#[test] fn a_legacy_storage_count_of_u64_max_is_refused_without_panic() {
+    let d = tempfile::tempdir().unwrap(); let f = d.path().join("legacy-max.pt");
+    let pkl = P::new().op(b'}').mark().s("w").legacy_tensor("140", 6, 0, &[2, 3], &[3, 1]).op(b'u').stop();
+    write_legacy_pth(&f, &pkl, &[("140", vec![1., 2., 3., 4., 5., 6.])]);
+    let mut b = std::fs::read(&f).unwrap(); let at = b.len() - 6 * 4 - 8;
+    b[at..at + 8].copy_from_slice(&u64::MAX.to_le_bytes()); std::fs::write(&f, &b).unwrap();
+    let e = read_state_dict(&f, &keys(&[""]), &[]).unwrap_err();
+    assert!(matches!(e, PthError::Format(ref m) if m.contains("too large")), "{e}");
+}
+#[test] fn an_empty_tensor_still_reads() {
+    let d = tempfile::tempdir().unwrap(); let f = d.path().join("empty.pt");
+    let pkl = P::new().op(b'}').mark().s("w").tensor("0", 0, 0, &[0, 3], &[3, 1]).op(b'u').stop();
+    write_pth(&f, &pkl, &[("0", vec![])]);
+    let sd = read_state_dict(&f, &keys(&[""]), &[]).unwrap();
+    assert_eq!((sd["w"].shape.clone(), sd["w"].data.len()), (vec![0, 3], 0));
+}
+#[test] fn an_expanded_stride_zero_view_still_reads_every_copy() {
+    // One float in storage, viewed as shape [4] with stride [0]: 16 bytes of tensor over a 4-byte storage, all reads inside it.
+    let d = tempfile::tempdir().unwrap(); let f = d.path().join("expand.pt");
+    let pkl = P::new().op(b'}').mark().s("w").tensor("0", 1, 0, &[4], &[0]).op(b'u').stop();
+    write_pth(&f, &pkl, &[("0", vec![2.5])]);
+    let sd = read_state_dict(&f, &keys(&[""]), &[]).unwrap();
+    assert_eq!((sd["w"].shape.clone(), f32s(&sd["w"].data)), (vec![4], vec![2.5; 4]));
+}
+#[test] fn a_view_whose_last_element_lies_past_the_storage_is_refused_in_constant_time() {
+    let d = tempfile::tempdir().unwrap(); let f = d.path().join("past.pt");
+    let pkl = P::new().op(b'}').mark().s("w").tensor("0", 1, 0, &[4], &[1]).op(b'u').stop();
+    write_pth(&f, &pkl, &[("0", vec![2.5])]);
+    let e = read_state_dict(&f, &keys(&[""]), &[]).unwrap_err();
+    assert!(matches!(e, PthError::Format(ref m) if m.contains("too large")), "{e}");
+}

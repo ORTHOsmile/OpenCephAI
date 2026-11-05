@@ -9,6 +9,13 @@ export type Nav = 'all' | 'recent' | 'review' | 'batch' | 'deleted';
 export interface LibraryFilter { query: string; status: 'all' | 'review' | 'ai' | 'verified'; nav: Nav; patient: string | null; batch: string[] }
 const RECENT_DAYS = 14;
 
+/** Owner P2 (19 Oct): every point accepted but the tracing not signed off. The status stays 'review' (filters unchanged). */
+export const READY_TO_SIGN_OFF = 'Ready to sign off';
+export function chipLabel(c: CaseSummary): string {
+  const st = caseStatus(c);
+  return st === 'review' && c.unverified === 0 ? READY_TO_SIGN_OFF : STATUS_CHIP[st];
+}
+
 export function caseStatus(c: CaseSummary): CaseStatus {
   if (c.verifiedAt) return 'verified';
   if (c.landmarks === 0) return 'none';

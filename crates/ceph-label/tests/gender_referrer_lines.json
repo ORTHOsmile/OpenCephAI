@@ -1,7 +1,9 @@
 {
-  "_note": "Owner Q6 (17 Oct): the one table of how a printed line reads as Gender and as Referring practitioner. Rust ceph_label::parse::{gender_in, referrer_in} and the screen's filmText.ts {genderIn, referrerIn} are each pinned to it. Made-up lines only.",
+  "_note": "Owner Q6 (17 Oct): the one table of how a printed line reads as Gender and as Referring practitioner. Rust ceph_label::parse::{gender_in, referrer_in} and the screen's filmText.ts {genderIn, referrerIn} are each pinned to it. Made-up lines only. Owner E (19 Oct): a lone F or M in brackets, or \"M.\" alone, reads; a second lone F or M refuses.",
   "gender": [["F", "F"], ["m", "M"], ["Female", "F"], ["MALE", "M"], ["Sex: F", "F"], ["Gender - M", "M"], ["M, Y26", "M"],
-             ["Mr Demo", null], ["Ms", null], ["Fem", null], ["M.D.", null], ["", null], ["Sex:", null]],
+             ["Mr Demo", null], ["Ms", null], ["Fem", null], ["M.D.", null], ["", null], ["Sex:", null],
+             ["(M)", "M"], ["[F]", "F"], ["(Male)", "M"], ["Sex: (F)", "F"], ["M.", "M"], ["( f )", "F"],
+             ["MF", null], ["M F", null], ["(X)", null], ["F (M)", null], ["M/F", null], ["M. Smith", null], ["(M", null]],
   "referrer": [["Ref: Dr Jane Demo", "Dr Jane Demo"], ["Referred by Dr A Demo,", "Dr A Demo"], ["Referring Dr: Demo Smile", "Demo Smile"],
                ["Ref. by Demo Ortho", "Demo Ortho"], ["Dr Demo", "Dr Demo"], ["Ref:", null], ["12345", null], ["", null]]
 }

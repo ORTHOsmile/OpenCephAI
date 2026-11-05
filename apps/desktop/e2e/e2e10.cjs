@@ -57,13 +57,20 @@ const seed = { settings: {}, ops: ['Dr A', 'Dr B'], userNorms: [], cases: { c1: 
           case 'library_save': { const c = db.cases[a.edit.id]; Object.assign(c, { landmarks: a.edit.landmarks, orientation: a.edit.orientation, display: a.edit.display }); store(db);
             return { updatedAt: c.updatedAt, verifiedAt: c.verifiedAt }; }
           case 'library_calibrate': { const c = db.cases[a.caseId]; c.spacingMm = a.mm / Math.hypot(a.p2[0] - a.p1[0], a.p2[1] - a.p1[1]); store(db); return c.spacingMm; }
-          case 'library_set_case_population': db.cases[a.caseId].population = a.population; store(db); return null;
+          // Mirrors the library (spec 2026-10-29 §4.8): a case the upgrade switched (`switchLogged`) offers the undo while
+          // on Auto; choosing "Clinic default" (null) withdraws it, Auto again offers it again.
+          case 'library_set_case_population': { const c = db.cases[a.caseId]; c.population = a.population;
+            c.switchedFromClinicDefault = !!c.switchLogged && a.population === 'auto'; store(db); return null; }
+          case 'library_set_patient_background': db.cases[a.caseId].background = a.background; store(db); return null;
           case 'library_set_patient_gender': db.cases[a.caseId].gender = a.gender; store(db); return null;
           case 'library_user_norms': return db.userNorms;
           case 'library_save_user_norm': db.userNorms = [...db.userNorms.filter((u) => !(u.setName === a.norm.setName && u.measurement === a.norm.measurement)), a.norm]; store(db); return null;
           case 'library_delete_user_norm': db.userNorms = db.userNorms.filter((u) => !(u.setName === a.setName && u.measurement === a.measurement)); store(db); return null;
           case 'settings_default_population_get': return db.settings.default_population ?? null;
           case 'settings_default_population_set': db.settings.default_population = a.population; store(db); return null;
+          // Spec 2026-10-29 §4.8: the upgrade's note — the seeded count until dismissed.
+          case 'settings_auto_switch_note': return db.switchNote ?? null;
+          case 'settings_auto_switch_note_dismiss': db.switchNote = null; store(db); return null;
           case 'models_points': return [
             { modelId: 'SYNTHETIC-main', title: 'Main', main: true, points: ORIGINAL_19.map((id) => ({ id, status: { kind: 'original' } })) },
             { modelId: 'SYNTHETIC-extra', title: 'Extra', main: false, points: [{ id: 'Pt', status: { kind: 'notScored' } },
@@ -73,7 +80,7 @@ const seed = { settings: {}, ops: ['Dr A', 'Dr B'], userNorms: [], cases: { c1: 
           case 'library_label_text': return { lines: [], suggestions: [] };
           case 'operators_list': return { current: db.settings.operator || 'Dr A', names: db.ops };
           case 'operators_set_current': db.settings.operator = a.name; store(db); return null;   // review I-3: a real switch
-          case 'settings_get': return db.settings[a.key] ?? null;
+          case 'settings_get': return a.key === 'betaNoticeSeen' ? '1' : (db.settings[a.key] ?? null);
           case 'settings_set': db.settings[a.key] = a.value; store(db); return null;
           default: return null;
         }
@@ -387,13 +394,38 @@ const seed = { settings: {}, ops: ['Dr A', 'Dr B'], userNorms: [], cases: { c1: 
   // until Task 11, so the clinic default is set in the fake library, the case reopened, and the default cleared again.
   const setDefault = (pop) => page.evaluate((pop) => { const db = JSON.parse(localStorage.getItem('fakeLib')); db.settings.default_population = pop;
     localStorage.setItem('fakeLib', JSON.stringify(db)); }, pop);
-  ok('2s. control: before, SNA has no "sexes averaged" badge (own norms)', (await row('SNA').locator('.norm-badge', { hasText: 'sexes averaged' }).count()) === 0);
+  // Owner C1 (19 Oct): Steiner's SNA under its own norm is an ideal value with a borrowed SD — the source line still says
+  // both (the report prints it), but neither shows as a tag on the row; hovering the source line explains both.
+  const snaTags = await row('SNA').locator('td.m-norm .norm-badge').allInnerTexts();
+  ok('C1. SNA (Steiner\'s own ideal, SD borrowed) shows no "ideal" or "SD borrowed" tag', !snaTags.includes('ideal') && !snaTags.includes('SD borrowed'), snaTags.join(', '));
+  const snaSrcC1 = await srcText('SNA');
+  ok('C1. its source line still says it', snaSrcC1.includes('ideal value (') && snaSrcC1.includes('SD borrowed from'), snaSrcC1);
+  const snaTip = (await sourceLineOf('SNA').locator('td').getAttribute('title')) ?? '';
+  ok('C1. hovering the source line explains both', snaTip.includes("The author's ideal value") && snaTip.includes('The paper printed no SD'), snaTip);
+  await row('SNA').locator('td.m-label').click();   // close the source line again, as the checks below expect
+
+  // Owner, addendum 2 J (19 Oct): the paper-scale tag "assumed scale" leaves the row; the hover says it is the PAPER's
+  // X-rays, never the film's. Ricketts 1960's E-line rows (no population) carry 'scale-assumed'.
+  await page.getByRole('button', { name: 'Analyses…' }).click();
+  await page.getByRole('dialog', { name: 'Choose analyses' }).getByRole('checkbox', { name: 'Show E-line' }).check();
+  await page.getByRole('dialog', { name: 'Choose analyses' }).getByRole('button', { name: 'Done' }).click();
+  const uleTags = await row('Upper lip to E-line').locator('td.m-norm .norm-badge').allInnerTexts();
+  ok('J. Upper lip to E-line shows no "assumed scale" tag', !uleTags.includes('assumed scale'), uleTags.join(', '));
+  await srcText('Upper lip to E-line');
+  const uleTip = (await sourceLineOf('Upper lip to E-line').locator('td').getAttribute('title')) ?? '';
+  ok('J. its hover says the paper did not state its X-ray enlargement', uleTip.includes('The paper did not say whether its X-rays were enlarged'), uleTip);
+  await row('Upper lip to E-line').locator('td.m-label').click();   // close the source line again
+  await page.getByRole('button', { name: 'Analyses…' }).click();
+  await page.getByRole('dialog', { name: 'Choose analyses' }).getByRole('checkbox', { name: 'Show E-line' }).uncheck();
+  await page.getByRole('dialog', { name: 'Choose analyses' }).getByRole('button', { name: 'Done' }).click();
+
+  ok('2s. control: before, SNA has no "average of male and female" badge (own norms)', (await row('SNA').locator('.norm-badge', { hasText: 'average of male and female' }).count()) === 0);
   await setDefault('swedish'); await reopen();
-  ok('2s. sex not recorded, Swedish: SNA reads "sexes averaged"', (await row('SNA').locator('.norm-badge', { hasText: 'sexes averaged' }).count()) === 1);
+  ok('2s. sex not recorded, Swedish: SNA reads "average of male and female"', (await row('SNA').locator('.norm-badge', { hasText: 'average of male and female' }).count()) === 1);
   ok('2s. and the one-line hint shows above the table', (await page.locator('.sex-hint').innerText()) === 'Sex not recorded — record it for the exact norm.');
   await page.getByRole('radio', { name: 'Female' }).click();
   await page.waitForFunction(() => !document.querySelector('.sex-hint'));
-  ok('2s. recording the sex removes the averaging and the hint (positive control)', (await row('SNA').locator('.norm-badge', { hasText: 'sexes averaged' }).count()) === 0);
+  ok('2s. recording the sex removes the averaging and the hint (positive control)', (await row('SNA').locator('.norm-badge', { hasText: 'average of male and female' }).count()) === 0);
   await page.getByRole('radio', { name: 'N/A' }).click();
   await page.locator('.sex-hint').waitFor();
   await setDefault(null); await reopen();
@@ -439,6 +471,9 @@ const seed = { settings: {}, ops: ['Dr A', 'Dr B'], userNorms: [], cases: { c1: 
   const clinicSelVal = await set.getByLabel('Clinic default population').inputValue();
   ok('10. T10-1: clinic default cleared: SNA no longer reads "user norm"', !snaNormAfterClear.includes('user norm'), snaNormAfterClear);
   ok('10. T10-1: the select itself reads blank', clinicSelVal === '', clinicSelVal);
+  // Owner decision 2 (29 Oct 2026): the unset default reads "Not set", and a hint says what Auto does with it.
+  ok('10. the unset clinic default reads "Not set"', (await set.getByLabel('Clinic default population').locator('option:checked').innerText()) === 'Not set');
+  ok('10. and the hint under it explains Auto', (await set.locator('p.hint', { hasText: "Auto uses: the patient's background, else this default, else for patients 18 and over (or with no age entered) a combined adult norm (every adult study, weighted by size, men and women separately) and for children the largest study for their sex and age." }).count()) === 1);
   ok('10. T10-1: and the store’s default_population is actually null', (await page.evaluate(() => JSON.parse(localStorage.getItem('fakeLib')).settings.default_population)) === null);
 
   // M9 (review): a failed settings write is shown on screen, not swallowed — forced via the stub's `forceFail`.
@@ -527,7 +562,10 @@ const seed = { settings: {}, ops: ['Dr A', 'Dr B'], userNorms: [], cases: { c1: 
 
   // DEC-1 (12 Oct, Task 10's control): the decimals setting changes the Inspector immediately — no reopen needed —
   // and only the display, never the colour or the underlying value; it is saved on this Mac and read back.
+  // Owner, addendum 2 I (19 Oct): the decimals setting is on the Norms page now — same setting, same stored value.
   await set.getByRole('tab', { name: 'Analyses' }).click();
+  ok('10. I: the Analyses page no longer has the decimals setting', (await set.getByLabel('Decimals shown').count()) === 0);
+  await set.getByRole('tab', { name: 'Norms' }).click();
   const decBefore = await row('SNA').locator('td.m-value').innerText();
   await set.getByLabel('Decimals shown').selectOption('0');
   const dec0 = await row('SNA').locator('td.m-value').innerText();
@@ -543,11 +581,14 @@ const seed = { settings: {}, ops: ['Dr A', 'Dr B'], userNorms: [], cases: { c1: 
   await set.getByRole('button', { name: 'Close' }).click();
   await reopen();
   ok('10. the decimals setting is saved and read back after reopening', (await row('SNA').locator('td.m-value').innerText()) === dec2);
+  ok('10. I: the stored value is the same setting as before (display_decimals = "2")',
+    await page.evaluate(() => JSON.parse(localStorage.getItem('fakeLib')).settings.display_decimals === '2'));
 
   // Smoke 6 (Part D task 9): the landmark list shows each point's definition, source and which models find it;
-  // measurements using an unconfirmed AI point are marked. The seed has Pt AI-placed, unverified; the models
-  // stub scores it "notScored" (via the Extra model), so Ricketts' facial axis (Pt to constructed gnathion)
-  // reads "uses unconfirmed AI points: Pt" once Ricketts is enabled.
+  // measurements using an AI point not yet accepted are marked (owner, 19 Oct, superseding the 7 Oct rule — see
+  // The seed has Pt AI-placed, unverified; the models stub scores it "notScored" (via the
+  // Extra model), so Ricketts' facial axis (Pt to constructed gnathion) reads "Uses AI points not yet accepted:
+  // Pt" once Ricketts is enabled.
   await page.getByRole('button', { name: 'Analyses…' }).click();
   await page.getByRole('dialog', { name: 'Choose analyses' }).getByRole('checkbox', { name: 'Show Ricketts' }).check();
   await page.getByRole('dialog', { name: 'Choose analyses' }).getByRole('button', { name: 'Done' }).click();
@@ -555,10 +596,13 @@ const seed = { settings: {}, ops: ['Dr A', 'Dr B'], userNorms: [], cases: { c1: 
   const fax = row('Facial axis, Ricketts');
   ok('6. Ricketts facial axis carries a small "AI" tag that names Pt on hover', (await fax.locator('.ai-tag').innerText()) === 'AI'
     && (await fax.locator('.ai-tag').getAttribute('title')).includes('Pt'), String(await fax.locator('.ai-tag').getAttribute('title')));
-  ok('6. F: no "uses unconfirmed AI points" line under the label', (await fax.locator('.unconfirmed').count()) === 0 && !(await fax.innerText()).includes('uses unconfirmed'));
+  ok('6. F: no "Uses AI points not yet accepted" line under the label', (await fax.locator('.unconfirmed').count()) === 0 && !(await fax.innerText()).includes('not yet accepted'));
   ok('6. F: the AI tag sits at the right of the row', (await fax.locator('td').last().locator('.ai-tag').count()) === 1);
   // Owner, 16 Oct: on the same line as the measurement, value and norm, so the row is no taller than a plain one.
-  const plainH = (await row('SNA').boundingBox()).height, faxH = (await fax.boundingBox()).height;
+  // Task 7 (C1): SNA itself carried 'ideal' and 'sd-borrowed' badges that wrapped its row before this plan — now
+  // hidden, SNA is genuinely one line, shorter than it was, so it is no longer a safe height reference. U1–SN (NUS)
+  // carries no badges either before or after Task 7 (a plain sample row, untouched), so it stays the fair comparator.
+  const plainH = (await row('U1–SN').boundingBox()).height, faxH = (await fax.boundingBox()).height;
   ok('6. F: a row with the AI tag is no taller than a plain row', faxH <= plainH + 1, `${faxH} vs ${plainH}`);
   // Review M-6: compared with a fresh .warn element and with plain text, so a tag that lost its colour fails.
   ok('6. F: the tag is red, like the other warning text (and not the plain text colour)', await fax.locator('.ai-tag').evaluate((el) => {
@@ -567,7 +611,7 @@ const seed = { settings: {}, ops: ['Dr A', 'Dr B'], userNorms: [], cases: { c1: 
     const ok = getComputedStyle(el).color === getComputedStyle(ref).color && getComputedStyle(el).color !== getComputedStyle(plain).color;
     ref.remove(); plain.remove(); return ok; }));
   await fax.locator('.ai-tag').click(); await page.waitForTimeout(150);
-  ok('6. F: clicking AI selects the unconfirmed point to check it (Pt), staying on Measurements', (await page.locator('.active-head b').innerText()) === 'Pt'
+  ok('6. F: clicking AI selects the point not yet accepted to check it (Pt), staying on Measurements', (await page.locator('.active-head b').innerText()) === 'Pt'
     && (await page.getByRole('tab', { name: 'Measurements' }).getAttribute('aria-selected')) === 'true');
   await page.getByRole('tab', { name: 'Landmarks' }).click();
   await page.locator('.lm-list button').filter({ has: page.locator('b', { hasText: /^S$/ }) }).click();
@@ -604,11 +648,13 @@ const seed = { settings: {}, ops: ['Dr A', 'Dr B'], userNorms: [], cases: { c1: 
   const snaChinese = await srcText('SNA');
   ok('11. choosing Chinese changes the source line to a Chinese set', /Chinese/.test(snaChinese), snaChinese.slice(0, 120));
 
-  // Edge case: the case population cleared back to the clinic default.
-  await pop.selectOption('');
-  await waitUntil(async () => (await pop.inputValue()) === '');
-  ok('11. cleared back to the clinic default: the select reads it again', (await pop.locator('option:checked').innerText()) === 'Clinic default (Chinese)');
-  ok('11. and the store’s case population is actually null', await page.evaluate(() => JSON.parse(localStorage.getItem('fakeLib')).cases.c1.population) === null);
+  // Owner decision 3 (29 Oct 2026; spec §4.4): once a population is chosen by hand, the old "Clinic default" entry is
+  // gone (it is offered only while a case holds it); the way back from a hand choice is Auto, first in the list.
+  ok('11. a hand-chosen case no longer offers the old "Clinic default" entry', !(await pop.locator('option').allInnerTexts()).some((l) => l.startsWith('Clinic default')));
+  await pop.selectOption('auto');
+  await waitUntil(async () => (await pop.inputValue()) === 'auto');
+  ok('11. back to Auto: the select reads it, saying it uses the clinic default (Chinese)', (await pop.locator('option:checked').innerText()) === 'Auto — Chinese (clinic default)');
+  ok('11. and the store’s case population is actually auto', await page.evaluate(() => JSON.parse(localStorage.getItem('fakeLib')).cases.c1.population) === 'auto');
 
   // Edge case: the read-only Superimposition page — the picker is disabled, so that page can never change the
   // case's population (by analogy with "calibrate to show", decision 5, and the Analyses/Norms Settings reached
@@ -646,6 +692,50 @@ const seed = { settings: {}, ops: ['Dr A', 'Dr B'], userNorms: [], cases: { c1: 
   ok('11. T11-4: and the resolver falls back too — SNA reads the clinic default\'s Chinese source, not "your norm"',
     /Chinese/.test(snaAfterDelete) && !snaAfterDelete.includes('your norm'), snaAfterDelete.slice(0, 120));
 
+  // Smoke 11b (owner decisions 1-3, 29 Oct 2026; spec 2026-10-29 §4.1, §4.4): the Background select and Auto first in
+  // the chooser. c1 is put on Auto here and restored afterwards; the clinic default is still Chinese.
+  const keep11b = await page.evaluate(() => { const c = JSON.parse(localStorage.getItem('fakeLib')).cases.c1; return { population: c.population, background: c.background ?? null }; });
+  const setC1 = (o) => page.evaluate((o) => { const db = JSON.parse(localStorage.getItem('fakeLib')); Object.assign(db.cases.c1, o); localStorage.setItem('fakeLib', JSON.stringify(db)); }, o);
+  await setC1({ population: 'auto', background: null, switchLogged: false, switchedFromClinicDefault: false }); await reopen();
+  const pop11 = page.getByLabel('Reference population'), bg11 = page.getByLabel("Patient's background", { exact: true });
+  const optLabels = async () => pop11.locator('option').allInnerTexts();
+  ok('11b. a case on Auto: Auto is first and selected, saying it chose the clinic default (Chinese)',
+    (await pop11.inputValue()) === 'auto' && (await optLabels())[0] === 'Auto — Chinese (clinic default)', (await optLabels()).slice(0, 2).join(' | '));
+  ok('11b. a case on Auto offers no "Clinic default" entry', !(await optLabels()).some((l) => l.startsWith('Clinic default')), (await optLabels()).slice(0, 3).join(' | '));
+  ok('11b. Background reads Not recorded, with Other or mixed last', (await bg11.locator('option:checked').innerText()) === 'Not recorded'
+    && (await bg11.locator('option').allInnerTexts()).slice(-1)[0] === 'Other or mixed');
+  await bg11.selectOption({ label: 'Malay' });
+  await waitUntil(async () => (await optLabels())[0] === "Auto — Malay (patient's background)");
+  ok("11b. choosing Background Malay: Auto follows it — \"Auto — Malay (patient's background)\"", (await optLabels())[0] === "Auto — Malay (patient's background)", (await optLabels())[0]);
+  ok('11b. and the store holds the background on the case\'s patient', await page.evaluate(() => JSON.parse(localStorage.getItem('fakeLib')).cases.c1.background) === 'malay');
+  await waitUntil(async () => /Malay/.test(await srcText('SNA')));
+  ok('11b. and SNA is graded against the Malay norm', /Malay/.test(await srcText('SNA')), (await srcText('SNA')).slice(0, 100));
+  await reopen();
+  ok('11b. closed and reopened: Background and Auto are kept', (await bg11.inputValue()) === 'malay' && (await pop11.inputValue()) === 'auto');
+  await page.getByRole('button', { name: 'Superimposition ›' }).click();
+  ok('11b. read-only (Superimposition): both selects are disabled', (await page.getByLabel("Patient's background", { exact: true }).isDisabled()) && (await page.getByLabel('Reference population').isDisabled()));
+  await page.getByRole('button', { name: '‹ Tracing' }).click();
+  // A case still on the old "Clinic default" (NULL): the entry is there and selected; after choosing Auto it is gone.
+  await setC1({ population: null, background: null }); await reopen();
+  ok('11b. a case on "Clinic default": Auto first, then "Clinic default (Chinese)", selected', (await optLabels())[1] === 'Clinic default (Chinese)'
+    && (await pop11.locator('option:checked').innerText()) === 'Clinic default (Chinese)', (await optLabels()).slice(0, 2).join(' | '));
+  await pop11.selectOption('auto');
+  await waitUntil(async () => (await pop11.inputValue()) === 'auto');
+  ok('11b. after choosing Auto, the old "Clinic default" entry is gone', !(await optLabels()).some((l) => l.startsWith('Clinic default')), (await optLabels()).slice(0, 3).join(' | '));
+  // Smoke 11c (owner NAP-Q3 (b), spec §4.8): a case the upgrade switched offers "Clinic default (as before the
+  // upgrade)" directly under Auto; choosing it puts the case back on "Clinic default (Chinese)"; Auto again offers the
+  // undo again.
+  await setC1({ population: 'auto', switchLogged: true, switchedFromClinicDefault: true }); await reopen();
+  ok('11c. a switched case: the undo is second, under Auto', (await optLabels())[1] === 'Clinic default (as before the upgrade)', (await optLabels()).slice(0, 2).join(' | '));
+  await pop11.selectOption({ label: 'Clinic default (as before the upgrade)' });
+  await waitUntil(async () => (await pop11.locator('option:checked').innerText()) === 'Clinic default (Chinese)');
+  ok('11c. choosing it puts the case back on "Clinic default (Chinese)"', (await pop11.locator('option:checked').innerText()) === 'Clinic default (Chinese)'
+    && await page.evaluate(() => JSON.parse(localStorage.getItem('fakeLib')).cases.c1.population) === null);
+  await pop11.selectOption('auto');
+  await waitUntil(async () => (await optLabels())[1] === 'Clinic default (as before the upgrade)');
+  ok('11c. Auto again: the undo is offered again', (await optLabels())[1] === 'Clinic default (as before the upgrade)', (await optLabels()).slice(0, 2).join(' | '));
+  await setC1({ population: keep11b.population, background: keep11b.background, switchLogged: false, switchedFromClinicDefault: false }); await reopen();
+
   // "Compare populations…" (master plan §9: 2–4 side by side). Edge case: 1 ticked asks for 2 to 4.
   await page.getByRole('button', { name: 'Compare populations…' }).click();
   const cmp = page.getByRole('dialog', { name: 'Compare populations' });
@@ -665,9 +755,10 @@ const seed = { settings: {}, ops: ['Dr A', 'Dr B'], userNorms: [], cases: { c1: 
   ok('11. still 4 side by side, not 5', (await cmp.locator('thead th.pop').count()) === 4);
   await cmp.getByRole('button', { name: 'Close' }).click();
 
-  // Edge case: a population with no norm for a row reads "No norm" (never the analysis's own fallback — Björk–
-  // Jarabak's "Cranial base to body" (m43_SNtoGoMe) has no norm anywhere, own or population, pinned by
-  // packages/analyses/src/norms/coverage.test.ts's PINNED_NOTHING).
+  // Edge case: a population with no norm for a row reads "—" (ruling AUTO-Q7 — the same mark as any other
+  // population with none of its own, never the analysis's own fallback) — Björk–Jarabak's "Cranial base to body"
+  // (m43_SNtoGoMe) has no norm anywhere, own or population, pinned by
+  // packages/analyses/src/norms/coverage.test.ts's PINNED_NOTHING.
   await page.getByRole('button', { name: 'Analyses…' }).click();
   await page.getByRole('dialog', { name: 'Choose analyses' }).getByRole('checkbox', { name: 'Show Björk–Jarabak' }).check();
   await page.getByRole('dialog', { name: 'Choose analyses' }).getByRole('button', { name: 'Done' }).click();
@@ -681,7 +772,7 @@ const seed = { settings: {}, ops: ['Dr A', 'Dr B'], userNorms: [], cases: { c1: 
   // out on this ~75-row table and the other found the row first try. Not claimed as a row-count threshold.
   const noNormRow = cmp.locator('.compare-table tbody tr').filter({ hasText: 'Cranial base to body' }).first();
   await noNormRow.waitFor();
-  ok('11. a population with no norm for a row reads "No norm"', (await noNormRow.locator('td.pop-value').first().innerText()) === 'No norm');
+  ok('11. AUTO-Q7: a population with no norm for a row reads "—"', (await noNormRow.locator('td.pop-value').first().innerText()) === '—');
   await cmp.getByRole('button', { name: 'Close' }).click();
 
   // Edge case (N5): a hidden mm value is never coloured in the comparison, and the patient column reads
@@ -703,47 +794,52 @@ const seed = { settings: {}, ops: ['Dr A', 'Dr B'], userNorms: [], cases: { c1: 
   // SNA needs sexes averaged (sexes-averaged, raising the sex-not-recorded hint) — both real, not planted.
   await page.getByRole('button', { name: 'Compare populations…' }).click();
   const snaCompareRow = cmp.locator('.compare-table tbody tr').filter({ hasText: 'SNA' }).first();
-  const saudiCell = snaCompareRow.locator('td.pop-value', { hasText: 'no Saudi norm' });
-  // Owner OWNFALL-1 (12 Oct): Steiner's own norm no longer stands in under the Saudi heading; the cell asks instead.
-  ok('11. T11-1/OWNFALL-1: a cell whose population has no entry says so, naming the population, and asks',
-    (await saudiCell.count()) === 1 && (await saudiCell.innerText()).trim() === 'no Saudi norm — choose one', await saudiCell.innerText());
-  ok('11. OWNFALL-1: it is uncoloured and shows no other source\'s value or badge',
-    !/norm-(amber|red)/.test(await saudiCell.getAttribute('class')) && (await saudiCell.locator('.norm-badge').count()) === 0);
+  // Ruling AUTO-Q7 (19 Oct): Saudi has no SNA of its own, so its column shows "—" — no value, no colour, no tag, no
+  // button (never another population's value under the Saudi heading, nor "choose one").
+  const heads11 = await cmp.locator('thead th').allInnerTexts();
+  const saudiCell = snaCompareRow.locator('td.pop-value').nth(heads11.findIndex((t) => t === 'Saudi') - 2);
+  ok('11. AUTO-Q7: a population with no SNA of its own shows "—"', heads11.includes('Saudi') && (await saudiCell.innerText()).trim() === '—', await saudiCell.innerText());
+  ok('11. AUTO-Q7: uncoloured, no tag, no button', !/norm-(amber|red)/.test(await saudiCell.getAttribute('class'))
+    && (await saudiCell.locator('.norm-badge').count()) === 0 && (await saudiCell.locator('button').count()) === 0);
   // `.filter({ hasText })`, not `{ has: … }` (M3: the same combinator that needed this change finding the
   // "Cranial base to body" row above).
-  const caucasianCell = snaCompareRow.locator('td.pop-value').filter({ hasText: 'sexes averaged' });
-  ok('11. T11-1: a different population\'s own badge (sexes averaged) shows too — not pooled across the row',
+  const caucasianCell = snaCompareRow.locator('td.pop-value').filter({ hasText: 'average of male and female' });
+  ok('11. T11-1: a different population\'s own badge (average of male and female) shows too — not pooled across the row',
     (await caucasianCell.count()) === 1);
   ok('11. T11-1: the row\'s sex-not-recorded hint shows in the dialog, the same wording as the Inspector',
     (await snaCompareRow.locator('xpath=following-sibling::tr[1]').innerText()).trim() === 'Sex not recorded — record it for the exact norm.');
   // Minor M2 (review): the dialog follows DEC-1 (Task 10's decimals setting, left at 2 by that task's own last
   // check) — the first ticked population (Chinese, no borrow/ideal path) shows two digits after the point.
   ok('11. M2: the dialog follows the decimals setting (DEC-1)', /\.\d{2}°$/.test(await snaCompareRow.locator('td.pop-value').first().innerText()));
-  // Final review I-2 (ruling): the compare window carries the "uses unconfirmed AI points" mark, as the Measurements
+  // Final review I-2 (ruling): the compare window carries the "Uses AI points not yet accepted" mark, as the Measurements
   // tab does (smoke 6: Ricketts' facial axis uses Pt, AI-placed and not confirmed).
   const axisCompareRow = cmp.locator('.compare-table tbody tr').filter({ hasText: 'Facial axis, Ricketts' }).first();
-  ok('11. I-2 / F: the compare window marks a measurement using an unconfirmed AI point with the same "AI" tag', (await axisCompareRow.locator('.ai-tag').innerText()) === 'AI'
+  ok('11. I-2 / F: the compare window marks a measurement using an AI point not yet accepted with the same "AI" tag', (await axisCompareRow.locator('.ai-tag').innerText()) === 'AI'
     && (await axisCompareRow.locator('.ai-tag').getAttribute('title')).includes('Pt') && (await axisCompareRow.locator('.unconfirmed').count()) === 0);
   await cmp.getByRole('button', { name: 'Close' }).click();
 
-  // Owner NORM-PICK-1 (12 Oct; also final review I-1 and Task 10 M7): a case whose population has no norm for a
-  // measurement says "no <population> norm — choose one", uncoloured, never a silent fallback; picking a source colours
-  // it and labels it "chosen by you"; the pick is saved on the case. Eastman has no own norm in the committed sets and
-  // Saudi has no SN–MxP (m26), so Eastman's SN–MxP under Saudi needs a choice (resolver before/after: none → choose).
+  // Owner N-A3 and AUTO-Q6 (19 Oct, Auto), with NORM-PICK-1 kept for overriding: a case whose population has no norm for
+  // a measurement is filled automatically — the analysis's own norm, else the best Caucasian sample, else the best study
+  // anywhere — and its norm opens
+  // the choice list; a pick is saved on the case and wins. Eastman's SN–MxP under Saudi: no Saudi paper has it; Eastman's
+  // own norm does (Alassiry 2022, 8 ± 3°, quoted second-hand).
   await page.getByRole('button', { name: 'Analyses…' }).click();
   await page.getByRole('dialog', { name: 'Choose analyses' }).getByRole('checkbox', { name: 'Show Eastman' }).check();
   await page.getByRole('dialog', { name: 'Choose analyses' }).getByRole('button', { name: 'Done' }).click();
   await page.getByLabel('Reference population').selectOption({ label: 'Saudi' });
-  await waitUntil(async () => (await row('SN–MxP').locator('td.m-norm').innerText()).includes('no Saudi norm'));
   const mxp = () => row('SN–MxP');
-  ok('12. NORM-PICK-1: the cell says "no Saudi norm — choose one"', (await mxp().locator('td.m-norm').innerText()).trim() === 'no Saudi norm — choose one', await mxp().locator('td.m-norm').innerText());
-  ok('12. and it is uncoloured', (await mxp().locator('td.m-value').getAttribute('data-band')) === '');
-  await mxp().getByRole('button', { name: 'no Saudi norm — choose one' }).click();
+  await waitUntil(async () => /±/.test(await mxp().locator('td.m-norm').innerText()));
+  ok('12. N-A3: SN–MxP under Saudi shows Eastman\'s own norm (Auto), not "choose one"',
+    /^8\.\d+ ± 3\.\d+°/.test((await mxp().locator('td.m-norm').innerText()).trim()) && !(await mxp().locator('td.m-norm').innerText()).includes('choose one'), await mxp().locator('td.m-norm').innerText());
+  ok('12. N-A3: and graded against it (it has an SD)', ['neutral', 'amber', 'red'].includes(await mxp().locator('td.m-value').getAttribute('data-band')));
+  ok('12. N-A5: no "Auto" tag on the row', (await mxp().locator('td.m-norm .norm-badge', { hasText: /^Auto$/ }).count()) === 0);
+  ok('12. N-A3: its source line names Auto and the population that had none', (await srcText('SN–MxP')).includes('Auto (no Saudi norm)'));
+  await mxp().locator('td.m-norm button.norm-choose').click();
   const chooser = page.locator('.inspector .norm-chooser');
-  const choiceCount = await chooser.locator('.norm-choice').count();
-  const firstChoice = await chooser.locator('.norm-choice').first().innerText();
-  ok('12. clicking lists the sources, each with its value, n and ages', choiceCount >= 1 && /n (=|not stated)/.test(firstChoice) && /y|ages not stated/.test(firstChoice), `${choiceCount}: ${firstChoice}`);
-  await chooser.locator('.norm-choice').first().getByRole('button').click();
+  const choiceTexts = await chooser.locator('.norm-choice').allInnerTexts();
+  ok('12. N-A2: clicking the norm lists Auto first, then every source, each with its value, n and ages',
+    choiceTexts.length >= 2 && choiceTexts[0].includes("Auto · Eastman's own norm (no Saudi norm)") && choiceTexts.every((t) => /n (=|not stated)/.test(t)), choiceTexts.join(' | '));
+  await chooser.locator('.norm-choice').nth(1).getByRole('button').click();
   await waitUntil(async () => (await mxp().locator('td.m-norm').innerText()).includes('chosen by you'));
   ok('12. the picked source is used, labelled "chosen by you"', (await mxp().locator('td.m-norm').innerText()).includes('chosen by you'), await mxp().locator('td.m-norm').innerText());
   ok('12. and coloured against it (it has an SD)', ['neutral', 'amber', 'red'].includes(await mxp().locator('td.m-value').getAttribute('data-band')));
@@ -753,26 +849,53 @@ const seed = { settings: {}, ops: ['Dr A', 'Dr B'], userNorms: [], cases: { c1: 
   await page.getByRole('button', { name: 'Compare populations…' }).click();
   const mxpCompare = cmp.locator('.compare-table tbody tr').filter({ hasText: 'SN–MxP' }).first();
   const saudiIdx = (await cmp.locator('thead th').allInnerTexts()).findIndex((t) => t === 'Saudi') - 2;
-  ok('12. the compare window\'s Saudi column uses the same pick', saudiIdx >= 0 && (await mxpCompare.locator('td.pop-value').nth(saudiIdx).innerText()).includes('chosen by you'));
+  ok('12. AUTO-Q7: the compare window\'s Saudi column shows "—" — the pick is used on the Measurements tab only',
+    saudiIdx >= 0 && (await mxpCompare.locator('td.pop-value').nth(saudiIdx).innerText()).trim() === '—');
   await cmp.getByRole('button', { name: 'Close' }).click();
-  // Owner OWNFALL-1: a cell where the analysis's own norm used to stand in (Steiner SNA under Saudi) asks too, and the
-  // analysis's own norm is one of the choices; picked, it reads "chosen by you".
-  await waitUntil(async () => (await row('SNA').locator('td.m-norm').innerText()).includes('no Saudi norm'));
-  ok('12. OWNFALL-1: Steiner SNA under Saudi asks, uncoloured (was Steiner\'s own norm, "analysis norm")',
-    (await row('SNA').locator('td.m-norm').innerText()).trim() === 'no Saudi norm — choose one' && (await row('SNA').locator('td.m-value').getAttribute('data-band')) === '');
-  await row('SNA').getByRole('button', { name: 'no Saudi norm — choose one' }).click();
-  await page.locator('.inspector .norm-chooser .norm-choice', { hasText: "Steiner's own norm" }).getByRole('button').click();
+  // N-A3: Steiner's SNA under Saudi (no Saudi SNA) → Steiner's own norm, Auto: graded, and on the Chart.
+  await waitUntil(async () => /±/.test(await row('SNA').locator('td.m-norm').innerText()));
+  const snaSrc12 = await srcText('SNA');
+  ok('12. N-A3: Steiner SNA under Saudi shows Steiner\'s own norm (Auto), graded',
+    snaSrc12.includes('Steiner 1953') && snaSrc12.includes('Auto (no Saudi norm)') && ['neutral', 'amber', 'red'].includes(await row('SNA').locator('td.m-value').getAttribute('data-band')), snaSrc12);
+  await page.getByRole('tab', { name: 'Chart' }).click();
+  ok('12. N-A3: the Auto row is on the Chart (it has a z)', ((await page.locator('.inspector .chart-overlay g.chart-row[data-node="m01_SNA"]').first().getAttribute('data-z')) ?? '') !== '');
+  await page.getByRole('tab', { name: 'Measurements' }).click();
+  // Owner N-A2 (19 Oct): the row's norm list shows Auto first, marked ◆ and in use; another source chosen is stored and
+  // wins ("chosen by you"); choosing Auto again removes the stored pick.
+  await row('SNA').locator('td.m-norm button.norm-choose').click();
+  const firstChoice = chooser.locator('.norm-choice').first();
+  ok('12. N-A2: Auto is first, marked ◆, and in use', (await firstChoice.innerText()).startsWith('◆')
+    && (await firstChoice.innerText()).includes("Auto · Steiner's own norm (no Saudi norm)") && (await firstChoice.getAttribute('aria-current')) === 'true', await firstChoice.innerText());
+  ok('12. N-A2: exactly one source is marked in use', (await chooser.locator('.norm-choice[aria-current="true"]').count()) === 1);
+  await chooser.locator('.norm-choice', { hasText: 'Chinese' }).first().getByRole('button').click();
   await waitUntil(async () => (await row('SNA').locator('td.m-norm').innerText()).includes('chosen by you'));
-  ok('12. OWNFALL-1: picking Steiner\'s own norm uses it, "chosen by you", coloured', (await row('SNA').locator('td.m-norm').innerText()).includes('chosen by you')
-    && (await srcText('SNA')).includes('Steiner 1953') && ['neutral', 'amber', 'red'].includes(await row('SNA').locator('td.m-value').getAttribute('data-band')));
+  const snaPick = () => page.evaluate(() => JSON.parse(JSON.parse(localStorage.getItem('fakeLib')).settings['norm_picks:c1'] ?? '{}').saudi?.m01_SNA ?? null);
+  ok('12. N-A2: another source chosen is stored and wins ("chosen by you")', (await row('SNA').locator('td.m-norm').innerText()).includes('chosen by you') && (await snaPick()) === 'chinese');
+  await row('SNA').locator('td.m-norm button.norm-choose').click();
+  ok('12. N-A2: the stored source is now in use; Auto still first', (await chooser.locator('.norm-choice[aria-current="true"]').innerText()).includes('Chinese')
+    && (await chooser.locator('.norm-choice').first().innerText()).startsWith('◆'));
+  await chooser.locator('.norm-choice').first().getByRole('button').click();
+  await waitUntil(async () => !(await row('SNA').locator('td.m-norm').innerText()).includes('chosen by you'));
+  ok('12. N-A2: choosing Auto removes the stored pick; Auto is used again', (await snaPick()) === null && (await srcText('SNA')).includes('Auto (no Saudi norm)'));
   await reopen();
-  ok('12. OWNFALL-1: closed and reopened, still "chosen by you"', (await row('SNA').locator('td.m-norm').innerText()).includes('chosen by you'));
-  // Edge case: the read-only Superimposition page offers no choosing (the population picker is disabled there too).
+  ok('12. N-A2: closed and reopened, Auto still in use (no pick came back)', (await snaPick()) === null && (await srcText('SNA')).includes('Auto (no Saudi norm)'));
+  // AUTO-Q6 step 4: neither Steiner's own norms nor any Caucasian paper has Pog to NB (only Chinese, Malay and
+  // African-American papers): Auto takes the best study anywhere — for this 16-year-old, Zheng 2026's 10–17 y row.
+  await waitUntil(async () => (await srcText('Pog to NB')).includes('Auto (no Saudi norm)'));
+  const pogSrc = await srcText('Pog to NB');
+  ok('12. AUTO-Q6: Pog to NB under Saudi takes the best study anywhere (Zheng 2026, Chinese), not "choose one"',
+    pogSrc.includes('Zheng 2026') && pogSrc.includes('Auto (no Saudi norm)') && !(await row('Pog to NB').locator('td.m-norm').innerText()).includes('choose one'), pogSrc);
+  await row('Pog to NB').locator('td.m-norm button.norm-choose').click();
+  ok('12. AUTO-Q6: its list names the population used, first', (await chooser.locator('.norm-choice').first().innerText()).includes('Auto · Chinese — Zheng 2026'));
+  await chooser.getByRole('button', { name: 'Cancel' }).click();
+  // Edge case: the read-only Superimposition page offers no choosing — Auto rows are plain text there.
   await page.getByLabel('Reference population').selectOption({ label: 'Japanese' });
-  await waitUntil(async () => (await row('SN–MxP').locator('td.m-norm').innerText()).includes('choose one'));
+  await waitUntil(async () => (await srcText('SNA')).includes('Auto (no Japanese norm)'));
   await page.getByRole('button', { name: 'Superimposition ›' }).click();
-  ok('12. the read-only Superimposition page shows the words but no choose button', (await row('SN–MxP').locator('td.m-norm button').count()) === 0
-    && (await row('SN–MxP').locator('td.m-norm').innerText()).includes('choose one'));
+  ok('12. read-only Superimposition: Auto rows (SNA, Pog to NB; Japanese) show their values, no button',
+    (await row('SNA').locator('td.m-norm button').count()) === 0 && (await row('Pog to NB').locator('td.m-norm button').count()) === 0
+    && /±/.test(await row('SNA').locator('td.m-norm').innerText())
+    && /±/.test(await row('Pog to NB').locator('td.m-norm').innerText()));
   await page.getByRole('button', { name: '‹ Tracing' }).click();
 
   // Owner FILMDATE-1 (12 Oct): the date of birth entered, the film date missing → "film date missing — adult norms
@@ -855,6 +978,23 @@ const seed = { settings: {}, ops: ['Dr A', 'Dr B'], userNorms: [], cases: { c1: 
   await page.getByRole('button', { name: 'Compare populations…' }).click();
   ok('5r. the compare choice is kept', (await page.getByRole('dialog', { name: 'Compare populations' }).locator('thead th.pop').count()) === 2);
   await page.getByRole('dialog', { name: 'Compare populations' }).getByRole('button', { name: 'Close' }).click();
+
+  // Smoke 12 (owner NAP-Q3 (b), spec 2026-10-29 §4.8): the one-time note after the format-18 upgrade. Nothing seeded
+  // so far: no note has shown during any check above.
+  const note = page.getByRole('dialog', { name: 'Auto norms' });
+  ok('12. no switched cases: no note', (await note.count()) === 0);
+  await page.evaluate(() => { const db = JSON.parse(localStorage.getItem('fakeLib')); db.switchNote = 37; db.settings.default_population = 'caucasian'; localStorage.setItem('fakeLib', JSON.stringify(db)); });
+  await page.reload(); await page.waitForSelector('.library');
+  await note.waitFor({ timeout: 5000 }).catch(() => {});
+  ok('12. 37 switched, clinic default Caucasian: the title', (await note.locator('h2').innerText().catch(() => '')) === 'Auto norms now choose the population for 37 older cases.');
+  ok('12. and the first paragraph, in the spec\'s words', (await note.locator('p').first().innerText().catch(() => '')) === 'These cases were on "Clinic default". Auto uses the patient\'s recorded background, else your clinic default (Caucasian), else for adults a combined norm from every adult study in the app and for children the largest study for their sex and age. No background is recorded yet, so for now they are graded against Caucasian exactly as before; the only change in their reports is the words "chosen automatically: clinic default". Recording a background later can change their grades.');
+  ok('12. it says saved PDFs are not changed, and how to go back for one case', (await note.locator('p').nth(1).innerText().catch(() => '')) === 'Reports you already saved as PDF are not changed.'
+    && (await note.locator('p').nth(2).innerText().catch(() => '')).includes('"Clinic default (as before the upgrade)"'));
+  await note.getByRole('button', { name: 'OK' }).click().catch(() => {});
+  await waitUntil(async () => (await note.count()) === 0);
+  ok('12. OK closes it, and the library is told', (await note.count()) === 0 && (await page.evaluate(() => JSON.parse(localStorage.getItem('fakeLib')).switchNote)) === null);
+  await page.reload(); await page.waitForSelector('.library'); await page.waitForTimeout(500);
+  ok('12. reopened: not shown again', (await note.count()) === 0);
 
   ok('no page errors', errors.length === 0, errors.join(' | '));
   console.log(results.join('\n'));

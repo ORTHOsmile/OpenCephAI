@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest';
-import { placeFromRuns, placeOnFilm } from './placement';
+import { placeFromRuns, placeOnFilm, ORIGINAL_19 } from './placement';
 const lm = (id: string, x: number) => ({ id, x, y: 1, confidence: 0.9, peak: 0.9 });
 const det = (modelId: string, ids: [string, number][]) => ({ modelId, landmarks: ids.map(([i, x]) => lm(i, x)) }) as any;
 const row = (modelId: string, main: boolean, pts: [string, any][]) => ({ modelId, title: modelId, main, points: pts.map(([id, status]) => ({ id, status })) });
@@ -128,5 +128,134 @@ describe('placeOnFilm reads the source table and survives losing it', () => {
     expect(bad.source.Go).toBe(AARIZ);
     expect(warn).toHaveBeenCalledTimes(1);
     warn.mockRestore();
+  });
+});
+
+describe('Part F: no switch made — every point placed exactly as before (untouched path)', () => {
+  const AZ = 'aariz-cepha29', SR = 'srpose-cldet23', CW = 'cwlachap-hrnet-w32';
+  const at = (base: number) => det(AZ, ORIGINAL_19.map((id, i) => [id, base + i] as [string, number]));
+  const main = at(0);
+  const extras = [{ ...at(100), modelId: CW }, { ...at(200), modelId: SR }];
+  const tbl = [AZ, CW, SR].map((m, i) => row(m, i === 0, ORIGINAL_19.map((id) => [id, O] as [string, any])));
+  const table = { ruleVersion: 'main-point-source/1', confirmationPending: true, points: { ...Object.fromEntries(ORIGINAL_19.map((id) => [id, AZ])), PNS: CW } };
+  it('PNS from cwlachap (the table), the other 18 from Aariz; an empty switch list changes nothing', () => {
+    const before = placeFromRuns(main, extras, tbl, table);
+    expect(before.landmarks.map((l) => [l.id, l.x])).toEqual(ORIGINAL_19.map((id, i) => [id, id === 'PNS' ? 100 + i : i]));
+    expect(placeFromRuns(main, extras, tbl, { ...table, ownerChoices: {} })).toEqual(before);
+  });
+});
+
+describe('Part F: your accepted switch places that point (rule item 8)', () => {
+  const AZ = 'aariz-cepha29', SR = 'srpose-cldet23', CW = 'cwlachap-hrnet-w32';
+  const t = [row(AZ, true, [['Go', O], ['S', O], ['U1A', OK]]), row(SR, false, [['Go', O], ['S', O], ['U1A', OK]]), row(CW, false, [['Go', O], ['S', O]])];
+  const src = (owner: Record<string, string>, points: Record<string, string> = { Go: AZ, S: AZ }) =>
+    ({ ruleVersion: 'main-point-source/1', confirmationPending: true, points, ownerChoices: owner });
+  it('Go switched to SRPose: SRPose places Go, Aariz the rest', () => {
+    const r = placeFromRuns(det(AZ, [['Go', 10], ['S', 20]]), [det(SR, [['Go', 11], ['S', 21]])], t, src({ Go: SR }));
+    expect([r.landmarks.find((l) => l.id === 'Go')!.x, r.source.Go, r.source.S, r.fallback]).toEqual([11, SR, AZ, []]);
+  });
+  it('the chosen model gave no Go on this film: Aariz places it, listed as a fallback', () => {
+    const r = placeFromRuns(det(AZ, [['Go', 10]]), [det(SR, [['S', 21]])], t, src({ Go: SR }));
+    expect([r.landmarks.find((l) => l.id === 'Go')!.x, r.source.Go, r.fallback]).toEqual([10, AZ, ['Go']]);
+  });
+  it('your switch wins over the built-in table', () => {
+    expect(placeFromRuns(det(AZ, [['Go', 10]]), [det(SR, [['Go', 11]]), det(CW, [['Go', 12]])], t, src({ Go: SR }, { Go: CW })).source.Go).toBe(SR);
+  });
+  it('ignored when Aariz is not the main model, and for a point outside the 19', () => {
+    expect(placeFromRuns(det(CW, [['Go', 12]]), [det(SR, [['Go', 11]])], [row(CW, true, [['Go', O]]), row(SR, false, [['Go', O]])], src({ Go: SR })).source.Go).toBe(CW);
+    expect(placeFromRuns(det(AZ, [['U1A', 10]]), [det(SR, [['U1A', 11]])], t, src({ U1A: SR })).source.U1A).toBe(AZ);
+  });
+});
+
+describe('Automatic best as the main model (spec §3; owner D1, Q1, Q4)', () => {
+  const AZ = 'aariz-cepha29', SR = 'srpose-cldet23', GU = 'gu2net-isbi19';
+  const t = [row(AZ, true, [['Go', O], ['S', O], ['B', O]]), row(SR, false, [['Go', O], ['S', O], ['B', O]]), row(GU, false, [['B', O]])];
+  const src = (on: boolean, uses: Record<string, string>) => ({ ruleVersion: 'x', confirmationPending: false, points: { Go: AZ, S: AZ, B: AZ },
+    ownerChoices: { B: GU }, autoBest: { available: true, on, base: AZ, uses, notes: {}, kept: {}, latest: [] } });
+  const az = det(AZ, [['Go', 10], ['S', 20], ['B', 30]]), sr = det(SR, [['Go', 11], ['S', 21], ['B', 31]]), gu = det(GU, [['B', 32]]);
+  it('on: the evidence picks the model per point; Part F switches are not read (Q1); the rest is Aariz (Q4)', () => {
+    const r = placeFromRuns(az, [sr, gu], t, src(true, { Go: SR }));
+    expect([r.source.Go, r.source.S, r.source.B]).toEqual([SR, AZ, AZ]);
+    expect(r.landmarks.find((l) => l.id === 'Go')!.x).toBe(11);
+    expect(r.via).toBe('auto-best');
+  });
+  it('off: as before — your Part F switch places B, the evidence is not used, nothing is marked', () => {
+    const r = placeFromRuns(az, [sr, gu], t, src(false, { Go: SR }));
+    expect([r.source.Go, r.source.B, r.via]).toEqual([AZ, GU, null]);
+  });
+  it('the favoured model gave no point: Aariz’s mark, a fallback, and the model it waited for', () => {
+    const r = placeFromRuns(az, [], t, src(true, { Go: SR }));
+    expect([r.source.Go, r.fallback, r.wanted]).toEqual([AZ, ['Go'], { Go: SR }]);
+  });
+  it('a main model other than Aariz never takes Automatic best’s choices; no table: nothing marked', () => {
+    expect(placeFromRuns(det(GU, [['Go', 5]]), [sr], t, src(true, { Go: SR })).via).toBeNull();
+    expect(placeFromRuns(az, [sr], t, null).via).toBeNull();
+  });
+});
+
+describe('the base model places (plan 2026-10-29 Task 5; spec §4)', () => {
+  const AZ = 'aariz-cepha29', SR = 'srpose-cldet23', GU = 'gu2net-isbi19', CW = 'cwlachap-hrnet-w32';
+  const t = [row(GU, true, [['Go', O], ['B', O], ['S', O]]), row(SR, false, [['Go', O], ['B', O], ['S', O]]), row(AZ, false, [['Go', O], ['B', O], ['S', O]]), row(CW, false, [['S', O]])];
+  const src = (base: string | undefined, on: boolean, uses: Record<string, string>) => ({ ruleVersion: 'x', confirmationPending: false, points: { Go: AZ, B: AZ, S: CW },
+    ownerChoices: { B: SR }, autoBest: { available: true, on, ...(base === undefined ? {} : { base }), uses, notes: {}, kept: {}, latest: [] } as any });
+  it('with GU2Net as the base, its run places the points without evidence and the evidence picks the rest', () => {
+    const gu = det(GU, [['Go', 10], ['B', 20], ['S', 30]]), sr = det(SR, [['Go', 11], ['B', 21], ['S', 31]]), cw = det(CW, [['S', 32]]);
+    const p = placeFromRuns(gu, [sr, cw], t, src(GU, true, { Go: SR }));
+    expect([p.source.Go, p.source.B, p.source.S]).toEqual([SR, GU, GU]);
+    expect(p.via).toBe('auto-best');
+  });
+  it('a main run that is not the base never takes Automatic best’s map', () => {
+    const az = det(AZ, [['Go', 10]]), sr = det(SR, [['Go', 11]]);
+    expect(placeFromRuns(az, [sr], t, src(GU, true, { Go: SR })).via).toBeNull();
+  });
+  // Final review C1 (ruling A, 2 Nov): Part F switches are judged against the base, so they apply when the main
+  // model IS the base, never in place of a model they were not judged against.
+  it('base GU2Net, main GU2Net, Automatic best off: your accepted switch places Go', () => {
+    const gu = det(GU, [['Go', 10], ['B', 20]]), sr = det(SR, [['Go', 11], ['B', 21]]);
+    const p = placeFromRuns(gu, [sr], t, { ...src(GU, false, {}), ownerChoices: { Go: SR } });
+    expect([p.source.Go, p.source.B, p.via]).toEqual([SR, GU, null]);
+  });
+  it('base GU2Net, main Aariz: a switch judged against GU2Net is not applied in place of Aariz', () => {
+    const az = det(AZ, [['Go', 10]]), sr = det(SR, [['Go', 11]]);
+    const p = placeFromRuns(az, [sr], t, { ...src(GU, false, {}), ownerChoices: { Go: SR } });
+    expect(p.source.Go).toBe(AZ);
+  });
+  it('control: base Aariz, main Aariz: the switch applies, as before', () => {
+    const az = det(AZ, [['Go', 10]]), sr = det(SR, [['Go', 11]]);
+    expect(placeFromRuns(az, [sr], t, { ...src(AZ, false, {}), ownerChoices: { Go: SR } }).source.Go).toBe(SR);
+  });
+  it('a map from an older back end (no base) reads as Aariz, as before', () => {
+    const az = det(AZ, [['Go', 10], ['S', 20]]), sr = det(SR, [['Go', 11]]), cw = det(CW, [['S', 32]]);
+    const p = placeFromRuns(az, [sr, cw], t, src(undefined, true, { Go: SR }));
+    expect([p.source.Go, p.source.S, p.via]).toEqual([SR, CW, 'auto-best']);
+    expect(placeFromRuns(det(GU, [['Go', 5]]), [sr], t, src(undefined, true, { Go: SR })).via).toBeNull();
+  });
+});
+
+describe('M4: Automatic best\'s choices could not be read (owner ruling, 2 Nov 2026)', () => {
+  const AZ = 'aariz-cepha29', SR = 'srpose-cldet23', CW = 'cwlachap-hrnet-w32', GU = 'gu2net-isbi19';
+  const t = [row(AZ, true, [['Go', O], ['S', O], ['Co', OK]]), row(SR, false, [['Go', O], ['S', O], ['Co', OK]]), row(CW, false, [['Go', O], ['S', O]]), row(GU, false, [['Go', O], ['S', O]])];
+  const src = (unreadable: boolean): any => ({ ruleVersion: 'x', confirmationPending: false, points: { Go: AZ, S: CW }, ownerChoices: { Go: SR }, autoBest: null, autoBestUnreadable: unreadable });
+  it('unreadable: every point the base finds is the base\'s: no Part F switch, no built-in switch, no label, no fallback', () => {
+    const p = placeFromRuns(det(AZ, [['Go', 10], ['S', 20]]), [det(SR, [['Go', 11]]), det(CW, [['S', 21]])], t, src(true));
+    expect([p.source.Go, p.source.S, p.via, p.fallback, p.wanted]).toEqual([AZ, AZ, null, [], {}]);
+  });
+  it('unreadable: a point the base lacks is still filled by another model under the 2 mm gate', () => {
+    const p = placeFromRuns(det(AZ, [['S', 20]]), [det(SR, [['Co', 30]])], t, src(true));
+    expect([p.source.S, p.source.Co]).toEqual([AZ, SR]);
+  });
+  it('unreadable with another base (GU2Net as the first run): that base places every point', () => {
+    const p = placeFromRuns(det(GU, [['Go', 5]]), [det(SR, [['Go', 11]])], t, src(true));
+    expect([p.source.Go, p.via]).toEqual([GU, null]);
+  });
+  it('unreadable and nothing found: an empty placement, not an error', () => {
+    expect(placeFromRuns(det(AZ, []), [], t, src(true))).toEqual({ landmarks: [], source: {}, fallback: [], via: null, wanted: {} });
+  });
+  it('control: readable (flag false or absent): today\'s switch and table still apply', () => {
+    const r = [det(AZ, [['Go', 10], ['S', 20]]), [det(SR, [['Go', 11]]), det(CW, [['S', 21]])]] as const;
+    const p = placeFromRuns(r[0], [...r[1]], t, src(false));
+    expect([p.source.Go, p.source.S]).toEqual([SR, CW]);
+    const { autoBestUnreadable, ...absent } = src(false);
+    expect(placeFromRuns(r[0], [...r[1]], t, absent).source).toEqual(p.source);
   });
 });

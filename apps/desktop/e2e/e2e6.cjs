@@ -57,7 +57,7 @@ const seed = { settings: {}, cases: {
           case 'library_set_stage': db.cases[a.caseId].stage = a.stage; store(db); return null;
           case 'library_set_in_series': if (db.failSet) throw 'SYNTHETIC write failed'; db.cases[a.caseId].inSeries = a.on; store(db); return null;
           case 'library_label_text': return { lines: [], suggestions: [] };
-          case 'settings_get': return db.settings[a.key] ?? null;
+          case 'settings_get': return a.key === 'betaNoticeSeen' ? '1' : (db.settings[a.key] ?? null);
           case 'settings_set': db.settings[a.key] = a.value; store(db); return null;
           default: return null;
         }
@@ -67,7 +67,10 @@ const seed = { settings: {}, cases: {
 
   const toLibrary = async () => { await page.getByRole('button', { name: '‹ Library' }).click(); await page.waitForSelector('.library'); };
   const openCase = async (tp) => { await page.locator('.cards .card .open', { hasText: tp }).first().click(); await page.waitForSelector('g.landmark[data-id="S"]'); };
-  const swatch = (label) => page.locator('.series-key li', { hasText: label }).locator('.swatch').evaluate((e) => getComputedStyle(e).borderTopColor);
+  // Task 9 (owner G1): the "not scaled" advice can name another film's timepoint inside ITS OWN li (e.g. "scale it
+  // to T1?"), so matching a whole <li>'s text by a bare timepoint is no longer unique — match the series-label itself.
+  const keyLine = (tp) => page.locator('.series-key li').filter({ has: page.locator('.series-label', { hasText: new RegExp('^' + tp + ' ') }) });
+  const swatch = (label) => keyLine(label).locator('.swatch').evaluate((e) => getComputedStyle(e).borderTopColor);
   const heads = async () => (await page.locator('.inspector table.measures thead th').allInnerTexts());
   const lastCol = async () => page.locator('.inspector table.measures tbody tr').evaluateAll((rs) => rs.map((r) => r.lastElementChild.textContent));
   // The Inspector shows the Change tab as soon as the comparison exists but switches to it in a useEffect, one render
@@ -86,7 +89,9 @@ const seed = { settings: {}, cases: {
   await openCase('T3');
   const secs = await page.locator('aside.sidebar section.panel-section').evaluateAll((s) => s.map((x) => x.getAttribute('aria-label')));
   ok('6. the tracing page has PATIENT, TEXT ON THE FILM, POINTS, ENHANCE, OVERLAYS sections in order', JSON.stringify(secs) === JSON.stringify(['Patient', 'Text on the film', 'Points', 'Enhance (display only)', 'Overlays']), secs.join(', '));
-  ok('8. Mark tracing verified sits in POINTS', (await page.locator('section[aria-label="Points"]').getByRole('button', { name: 'Mark tracing verified' }).count()) === 1);
+  ok('8. Mark tracing verified sits in the status row beside Accept position, not in POINTS (spec 2026-10-19 V1)',
+    (await page.locator('.inspector .status-row').getByRole('button', { name: 'Mark tracing verified' }).count()) === 1
+    && (await page.locator('section[aria-label="Points"]').getByRole('button', { name: 'Mark tracing verified' }).count()) === 0);
   const enh = page.locator('section[aria-label="Enhance (display only)"]');
   ok('7. Enhance is open by default', (await enh.getByText('Brightness').count()) === 1);
   await enh.locator('.section-head button.toggle').click();
@@ -127,7 +132,7 @@ const seed = { settings: {}, cases: {
   ok('1. the key lists T1, T2, T3 in date order', labels.length === 3 && labels[0].startsWith('T1 · 10/01/2022') && labels[1].startsWith('T2') && labels[2].startsWith('T3'), labels.join(' | '));
   const sw = [await swatch('T1'), await swatch('T2'), await swatch('T3')];
   ok('1. with ABO black, blue and red', JSON.stringify(sw) === JSON.stringify(['rgb(0, 0, 0)', 'rgb(0, 80, 179)', 'rgb(200, 16, 46)']), sw.join(' '));
-  ok('1. T3 shows "Auto (Final)"', (await page.locator('.series-key li', { hasText: 'T3' }).locator('select option').first().innerText()) === 'Auto (Final)');
+  ok('1. T3 shows "Auto (Final)"', (await keyLine('T3').locator('select option').first().innerText()) === 'Auto (Final)');
   const secs2 = await page.locator('aside.sidebar section.panel-section').evaluateAll((s) => s.map((x) => x.getAttribute('aria-label')));
   ok('6. the Superimposition page adds COMPARISON before OVERLAYS', JSON.stringify(secs2) === JSON.stringify(['Patient', 'Text on the film', 'Points', 'Enhance (display only)', 'Comparison', 'Overlays']), secs2.join(', '));
   const h = await heads();
@@ -153,7 +158,7 @@ const seed = { settings: {}, cases: {
     && (await page.getByRole('checkbox', { name: /Show T2/ }).isChecked()));
   await page.getByRole('checkbox', { name: /Show T2/ }).uncheck();
   await page.waitForFunction(() => document.querySelectorAll('.inspector table.measures thead th').length === 4);
-  await page.locator('.series-key li', { hasText: 'T3' }).locator('select').selectOption('retention');
+  await keyLine('T3').locator('select').selectOption('retention');
   await page.waitForFunction(() => getComputedStyle([...document.querySelectorAll('.series-key li')].find((l) => l.textContent.includes('T3')).querySelector('.swatch')).borderTopColor === 'rgb(26, 127, 55)');
   ok('5. setting T3 to Retention turns it green', (await swatch('T3')) === 'rgb(26, 127, 55)');
   await shot(page, '3-retention');
@@ -164,12 +169,12 @@ const seed = { settings: {}, cases: {
   await page.getByRole('button', { name: 'Superimposition ›' }).click();
   await page.waitForSelector('.series-key li');
   await page.waitForFunction(() => document.querySelectorAll('svg.overlay g.compare').length === 1);
-  ok('9. a film that fails to open says so and the others still draw', (await page.locator('.series-key li', { hasText: 'T2' }).innerText()).includes('open this film')
+  ok('9. a film that fails to open says so and the others still draw', (await keyLine('T2').innerText()).includes('open this film')
     && (await page.locator('svg.overlay g.compare[data-film="c3"]').count()) === 1);
   await changeShown();
   const h9 = await heads();
   ok('9. and it takes no column, stage or pair (owner, 30 Sep)', h9.length === 4 && h9[1].startsWith('T1') && h9[2].startsWith('T3')
-    && (await page.locator('.series-key li', { hasText: 'T3' }).locator('select option').first().innerText()) === 'Auto (Final)', h9.join(' | '));
+    && (await keyLine('T3').locator('select option').first().innerText()) === 'Auto (Final)', h9.join(' | '));
   // Final review, important 1: a tick that can't be saved says so in the left panel, and the box shows what was saved.
   await page.evaluate(() => { const db = JSON.parse(localStorage.getItem('fakeLib')); db.failOpen = []; db.failSet = true; localStorage.setItem('fakeLib', JSON.stringify(db)); });
   await page.getByRole('checkbox', { name: /Show T1/ }).click();
@@ -184,8 +189,8 @@ const seed = { settings: {}, cases: {
   await page.getByRole('button', { name: '‹ Tracing' }).click(); await toLibrary(); await openCase('T3');
   await page.getByRole('button', { name: 'Superimposition ›' }).click();
   await page.waitForSelector('.series-key li:nth-child(4)');
-  ok('12. a film that joined on name alone says "(no DOB)"', (await page.locator('.series-key li', { hasText: 'T4' }).innerText()).includes('(no DOB)')
-    && !(await page.locator('.series-key li', { hasText: 'T1' }).innerText()).includes('(no DOB)'));
+  ok('12. a film that joined on name alone says "(no DOB)"', (await keyLine('T4').innerText()).includes('(no DOB)')
+    && !(await keyLine('T1').innerText()).includes('(no DOB)'));
   // Another patient's film shows only its own series.
   await page.getByRole('button', { name: '‹ Tracing' }).click(); await toLibrary();
   await page.locator('.cards .card .open', { hasText: 'Demo Other' }).click(); await page.waitForSelector('g.landmark[data-id="S"]');
@@ -209,7 +214,7 @@ const seed = { settings: {}, cases: {
   await toLibrary(); await openCase('T3');
   await page.getByRole('button', { name: 'Superimposition ›' }).click();
   await page.waitForSelector('.series-key li');
-  ok('14. a film dated only by its import day says "imported"', (await page.locator('.series-key li', { hasText: 'T3' }).innerText()).includes('T3 · imported 30/09/2026'));
+  ok('14. a film dated only by its import day says "imported"', (await keyLine('T3').innerText()).includes('T3 · imported 30/09/2026'));
   ok('no page errors', errors.length === 0, errors.join(' | '));
   console.log(results.join('\n'));
   await browser.close();

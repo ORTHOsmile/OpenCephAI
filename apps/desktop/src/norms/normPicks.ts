@@ -1,4 +1,4 @@
-import type { NormPicks } from '@ceph/analyses';
+import { AUTO_CHOICE_ID, type NormPicks } from '@ceph/analyses';
 import type { settings } from '../ipc';
 
 // Owner NORM-PICK-1 (12 Oct): where the case's population (or a ticked compare population) has no norm for a
@@ -24,8 +24,15 @@ export function parsePicks(json: string | null): NormPicks {
   return out;
 }
 
+/** Stores the clinician's choice for one population and measurement. Owner N-A2 (19 Oct 2026): choosing Auto removes
+ *  it (and the population's entry when nothing is left), so Auto is never stored. */
 export function withPick(p: NormPicks, population: string, measurement: string, source: string): NormPicks {
-  return { ...p, [population]: { ...(p[population] ?? {}), [measurement]: source } };
+  if (source !== AUTO_CHOICE_ID) return { ...p, [population]: { ...(p[population] ?? {}), [measurement]: source } };
+  const rest = Object.fromEntries(Object.entries(p[population] ?? {}).filter(([m]) => m !== measurement));
+  const out: NormPicks = { ...p };
+  if (Object.keys(rest).length) out[population] = rest;
+  else delete out[population];
+  return out;
 }
 
 export async function readPicks(s: Pick<typeof settings, 'get'>, caseId: string): Promise<{ value: NormPicks; error: string | null }> {

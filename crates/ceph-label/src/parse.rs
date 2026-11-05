@@ -90,11 +90,29 @@ pub fn id_token(value: &str) -> Option<String> {
 
 /// Gender printed on the film (owner Q6, addendum 2026-10-17): F or M standing as its own word at the start of the
 /// line, after an optional "Sex" or "Gender" label ("M, Y34", "Sex: F", "female"). The screen's own `genderIn`
-/// (filmText.ts) is the reference; both are pinned to `tests/gender_referrer_lines.json`. Rust's `regex` crate has no
-/// lookahead, so the screen's `(?![\p{L}\p{N}.])` becomes the equivalent consuming group `(?:$|[^\p{L}\p{N}.])`.
-static GENDER: LazyLock<Regex> = LazyLock::new(|| Regex::new(r"(?i)^\s*(?:(?:sex|gender)\b\s*[:-]?\s*)?(female|male|f|m)(?:$|[^\p{L}\p{N}.])").unwrap());
+/// (filmText.ts) is the reference; both are pinned to `tests/gender_referrer_lines.json`. Owner E (19 Oct): also a
+/// lone F or M in brackets ("(M)", "Sex: [F]") and "M." alone; a line holding a second lone F or M ("M F", "F (M)")
+/// is refused. Rust's `regex` has no lookaround, so the screen's lookaheads are the checks after the match.
+static GENDER: LazyLock<Regex> = LazyLock::new(|| Regex::new(r"(?i)^\s*(?:(?:sex|gender)\b\s*[:-]?\s*)?([(\[]\s*)?(female|male|f|m)").unwrap());
 pub fn gender_in(line: &str) -> Option<&'static str> {
-    GENDER.captures(line).map(|c| if c[1].to_ascii_lowercase().starts_with('f') { "F" } else { "M" })
+    let c = GENDER.captures(line)?;
+    let word = c.get(2)?;
+    let after = &line[word.end()..];
+    let rest = if c.get(1).is_some() {
+        let a = after.trim_start();
+        let a = a.strip_prefix(')').or_else(|| a.strip_prefix(']'))?;
+        if a.chars().next().is_some_and(char::is_alphanumeric) { return None; }
+        a
+    } else if let Some(a) = after.strip_prefix('.') {
+        if !a.trim().is_empty() { return None; }
+        a
+    } else {
+        if after.chars().next().is_some_and(char::is_alphanumeric) { return None; }
+        after
+    };
+    let another = rest.split(|ch: char| !ch.is_alphanumeric()).any(|t| matches!(t.to_ascii_lowercase().as_str(), "f" | "m" | "female" | "male"));
+    if another { return None; }
+    Some(if word.as_str().to_ascii_lowercase().starts_with('f') { "F" } else { "M" })
 }
 
 /// The screen's `referrerIn` (filmText.ts): the line without a leading label ("Ref:", "Ref. by", "Referred by",

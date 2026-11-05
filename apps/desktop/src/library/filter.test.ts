@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { caseStatus, cardMeta, filterCases, patientIdOf, patientLabel, patientsOf, thumbTransform, type LibraryFilter } from './filter';
+import { caseStatus, cardMeta, chipLabel, filterCases, patientIdOf, patientLabel, patientsOf, thumbTransform, type LibraryFilter } from './filter';
 import type { CaseSummary } from '../ipc';
 
 // SYNTHETIC library rows only.
@@ -7,7 +7,7 @@ const c = (o: Partial<CaseSummary>): CaseSummary => ({
   id: 'x', patientName: 'Demo patient 01', timepoint: 'T1', takenOn: null, createdAt: '2026-09-01T10:00:00.000Z',
   updatedAt: '2026-09-20T10:00:00.000Z', thumbPath: '/t.jpg', landmarks: 19, unverified: 19, verifiedAt: null, deletedAt: null, orientation: null,
   patientKey: 'demo patient 01', dateOfBirth: null, identityChecked: true,
-  libraryId: null, formerLibraryIds: [], printedPatientId: null, ...o,
+  libraryId: null, formerLibraryIds: [], printedPatientId: null, gender: null, aiModelId: null, reportSavedAt: null, ...o,
 });
 const all: LibraryFilter = { query: '', status: 'all', nav: 'all', patient: null, batch: [] };
 const NOW = Date.parse('2026-09-28T12:00:00Z');
@@ -68,6 +68,21 @@ describe('library thumbnails show the case as it opens: flipped to face right an
     expect(thumbTransform({ mirror: true, rotDeg: 0 })).toBe('rotate(0deg) scaleX(-1) scale(1)');
     const t = thumbTransform({ mirror: false, rotDeg: 30 });
     expect(t).toBe(`rotate(30deg) scale(${(Math.cos(Math.PI / 6) + Math.sin(Math.PI / 6)).toFixed(4)})`);
+  });
+});
+
+describe('the Library card words (spec 2026-10-19, P2)', () => {
+  it('every point accepted but the tracing not signed off: "Ready to sign off"', () => {
+    expect(chipLabel(c({ unverified: 0 }))).toBe('Ready to sign off');
+  });
+  it('keeps "To review" while points are left, and every other word as it was', () => {
+    expect([chipLabel(c({ unverified: 3 })), chipLabel(c({})), chipLabel(c({ unverified: 0, verifiedAt: '2026-09-21T09:00:00.000Z' })), chipLabel(c({ landmarks: 0, unverified: 0 }))])
+      .toEqual(['To review', 'AI · unverified', 'Verified', 'Not traced']);
+  });
+  it('a ready film still counts as "to review" for the status filter and the Review queue', () => {
+    const ready = c({ id: 'r', unverified: 0 });
+    expect(filterCases([ready], { ...all, status: 'review' })).toEqual([ready]);
+    expect(filterCases([ready], { ...all, nav: 'review' })).toEqual([ready]);
   });
 });
 

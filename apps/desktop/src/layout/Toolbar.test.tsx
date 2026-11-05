@@ -7,9 +7,16 @@ import { Toolbar } from './Toolbar';
 // tooltip must say the model-disagreement flags are on hold because they could not catch enough errors, and that
 // they come back once the owner's own trained model passes the cross-check test — in short plain words, and never
 // the literal "⌘" (that character belongs to the keyboard-shortcut tooltips elsewhere on this toolbar, not here).
-const html = () => renderToStaticMarkup(
+// preflight-rulings Task 8, Minor: a default so the three existing tests keep calling html().
+const html = (canExport = true, rulerPending = false) => renderToStaticMarkup(
   <Toolbar state={initialTracing} dispatch={() => {}} canEdit={true} title="SYNTHETIC-001" page="tracing"
-    onLibrary={() => {}} onPage={() => {}} onCalibrate={() => {}} calibrating={false} />,
+    onLibrary={() => {}} onPage={() => {}} onCalibrate={() => {}} calibrating={false} onExport={() => {}} canExport={canExport} rulerPending={rulerPending} />,
+);
+// A tracing with one past snapshot, so the Undo button would otherwise be enabled.
+const withPast = { ...initialTracing, past: [{ points: {}, orientation: initialTracing.orientation, ruler: null }] };
+const htmlWithPast = (rulerPending: boolean) => renderToStaticMarkup(
+  <Toolbar state={withPast} dispatch={() => {}} canEdit={true} title="SYNTHETIC-001" page="tracing"
+    onLibrary={() => {}} onPage={() => {}} onCalibrate={() => {}} calibrating={false} onExport={() => {}} canExport={true} rulerPending={rulerPending} />,
 );
 
 describe('Toolbar ▸ Cross-check button tooltip (owner ruling BUTTON, 15 Oct 2026)', () => {
@@ -33,5 +40,24 @@ describe('Toolbar ▸ Cross-check button tooltip (owner ruling BUTTON, 15 Oct 20
     const out = html();
     expect(out).toContain('title="Arrives with the cross-check"');
     expect(out).toContain('>Model B</button>');
+  });
+});
+
+describe('Toolbar ▸ Undo (final review m-1)', () => {
+  it('is enabled with a past snapshot and no ruler store pending', () => {
+    expect(htmlWithPast(false)).toMatch(/<button type="button" class="tool" title="Undo \(⌘Z\)">Undo<\/button>/);
+  });
+  it('is disabled while a ruler store is pending, even with a past snapshot', () => {
+    expect(htmlWithPast(true)).toMatch(/<button type="button" class="tool" disabled="" title="Undo \(⌘Z\)">Undo<\/button>/);
+  });
+});
+
+describe('Toolbar ▸ Export › (spec 2026-10-17 report-exports)', () => {
+  it('opens the report when a film is open on the Tracing page', () => {
+    const out = html(true);
+    expect(out).toMatch(/<button type="button" class="primary" title="Report and CSV for this film">Export ›<\/button>/);
+  });
+  it('is greyed with a reason otherwise (no film, or the Superimposition page)', () => {
+    expect(html(false)).toMatch(/<button type="button" class="primary" disabled="" title="Open a film on the Tracing page to make its report">Export ›<\/button>/);
   });
 });

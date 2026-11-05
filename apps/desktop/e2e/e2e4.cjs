@@ -123,7 +123,7 @@ const FILM_LINES_TEXT = ['Demo Radiology Northside', 'DEMO, Synthetic', 'M, Y34'
           case 'library_set_patient_referrer': { const c = db.cases[a.caseId];
             for (const o of Object.values(db.cases)) if (o.patientKey === c.patientKey) o.referringPractitioner = a.referringPractitioner?.trim() || null;
             store(db); return null; }
-          case 'settings_get': return db.settings[a.key] ?? null;
+          case 'settings_get': return a.key === 'betaNoticeSeen' ? '1' : (db.settings[a.key] ?? null);
           case 'settings_set': db.settings[a.key] = a.value; store(db); return null;
           // Task 12: a batch import with a slow extra model. Only while window.__batchStub is set (the smoke's other
           // checks keep the old null answers): the extra model answers late and past its limit, as Rust does (15 s,
@@ -149,6 +149,9 @@ const FILM_LINES_TEXT = ['Demo Radiology Northside', 'DEMO, Synthetic', 'M, Y34'
     await page.waitForSelector('g.landmark[data-id="S"]');
   };
   const toLibrary = async () => { await page.getByRole('button', { name: '‹ Library' }).click(); await page.waitForSelector('.library'); };
+  // Fix round 1 (G Task 9): a bare timepoint is no longer unique text inside a whole <li> — a film's "not scaled"
+  // advice can name ANOTHER film's timepoint too ("…scale it to T1?") — so match the series-label itself.
+  const keyLine = (tp) => page.locator('.series-key li').filter({ has: page.locator('.series-label', { hasText: new RegExp('^' + tp + ' ') }) });
   // Film details Task 7 (C3): the label is matched EXACTLY on its title row, so "Patient" never also finds "Patient ID".
   const exact = (label) => new RegExp('^' + label.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '(Pick)?$');
   const field = (label) => page.locator('.case-panel label').filter({ has: page.locator(':scope > .label-row', { hasText: exact(label) }) }).locator('input, textarea');
@@ -309,6 +312,50 @@ const FILM_LINES_TEXT = ['Demo Radiology Northside', 'DEMO, Synthetic', 'M, Y34'
     && (await lastNote.innerText()).includes("Your edit — this line wasn't in the latest reading"));
   await lastRow.getByRole('button', { name: /Remove your edit for line/ }).click();
   ok('18. its ↺ removes the kept row instead of restoring text', (await ft.locator('tr.film-row').count()) === THIRD_READING.length);
+
+  // Leftovers T8: a note sits under its own row. Two "Your edit" rows, each with a note, survive a re-read with
+  // their notes; ↺ on the first removes it and the second's note moves up with its row (before the fix it stayed
+  // at the old index, one row too low, under the wrong row).
+  await ft.getByLabel('Line 2', { exact: true }).fill('SYNTHETIC edit A');
+  await ft.getByLabel('Line 3', { exact: true }).fill('SYNTHETIC edit B');
+  await ft.getByLabel('What line 2 is', { exact: true }).selectOption('dob');
+  await ft.getByLabel('What line 3 is', { exact: true }).selectOption('gender');
+  await page.waitForTimeout(200);
+  const FOURTH_READING = ['Demo Radiology Northside', 'PID 5566', 'Se: Feb 07, 2024 01:36 PM', 'Im: 1/1'];
+  await page.evaluate((lines) => { window.__secondReading = lines; }, FOURTH_READING);
+  await ft.getByRole('button', { name: 'Read the film again' }).click();
+  await page.waitForTimeout(300);
+  const under = (n) => ft.locator('tr.film-row').nth(n).locator('xpath=following-sibling::tr[1]');
+  ok('18b. a re-read keeps each "Your edit" row with its own note',
+    (await ft.locator('tr.film-row').count()) === FOURTH_READING.length + 2
+    && (await under(4).innerText()).includes("isn't a date") && (await under(5).innerText()).includes("isn't F or M"),
+    `${await under(4).innerText()} | ${await under(5).innerText()}`);
+  await ft.locator('tr.film-row').nth(4).getByRole('button', { name: /Remove your edit for line/ }).click();
+  await page.waitForTimeout(200);
+  ok('18b. ↺ on the first removes it and the second\'s note sits directly under its row',
+    (await ft.locator('tr.film-row').count()) === FOURTH_READING.length + 1
+    && (await ft.locator('tr.film-row').nth(4).locator('.film-line').inputValue()) === 'SYNTHETIC edit B'
+    && (await under(4).innerText()).includes("isn't F or M") && !(await ft.innerText()).includes("isn't a date"),
+    await ft.innerText());
+  // Leftovers T8 fix round 1: an edited row that stays in place keeps its note on a re-read (18d); ↺ on an edited row
+  // that is NOT kept leaves the row, drops only its own note, and leaves the others where they were (18c).
+  await ft.getByLabel('Line 1', { exact: true }).fill('SYNTHETIC edit C');
+  await ft.getByLabel('What line 1 is', { exact: true }).selectOption('dob');
+  await page.waitForTimeout(200);
+  await ft.getByRole('button', { name: 'Read the film again' }).click();
+  await page.waitForTimeout(300);
+  ok('18d. an edited row that stays in place keeps its note on a re-read',
+    (await ft.locator('tr.film-row').count()) === FOURTH_READING.length + 1
+    && (await ft.locator('tr.film-row').nth(0).locator('.film-line').inputValue()) === 'SYNTHETIC edit C'
+    && (await under(0).innerText()).includes("isn't a date") && (await under(4).innerText()).includes("isn't F or M"),
+    `${await under(0).innerText()} | ${await under(4).innerText()}`);
+  await ft.locator('tr.film-row').nth(0).getByRole('button', { name: "Use the film's text for line 1" }).click();
+  await page.waitForTimeout(200);
+  ok('18c. ↺ on an edited (not kept) row: the row stays, its note goes, the others are unchanged',
+    (await ft.locator('tr.film-row').count()) === FOURTH_READING.length + 1
+    && (await ft.locator('tr.film-row').nth(0).locator('.film-line').inputValue()) === FOURTH_READING[0]
+    && !(await ft.innerText()).includes("isn't a date") && (await under(4).innerText()).includes("isn't F or M"),
+    await ft.innerText());
   await page.evaluate(() => { window.__secondReading = undefined; });
 
   await toLibrary();
@@ -320,11 +367,30 @@ const FILM_LINES_TEXT = ['Demo Radiology Northside', 'DEMO, Synthetic', 'M, Y34'
   await page.waitForSelector('.identity-check', { state: 'detached' });
   ok('2. "Same patient" clears the prompt', (await page.locator('.identity-check').count()) === 0);
   await toLibrary();
-  const row = page.locator('.lib-nav button', { hasText: 'Demo Synthetic · 07/03/1990' });   // SYNTHETIC
-  ok('2. the Library shows one patient "Demo Synthetic · 07/03/1990" with 2 cases', (await row.count()) === 1 && (await row.locator('span').innerText()) === '2');   // SYNTHETIC
+  // Owner decision, 29 Oct 2026: the PATIENTS sidebar list is gone (Library ▸ Table replaces it) — the merge is
+  // checked through the search box instead, which still finds both of the merged patient's films by name or DOB.
+  await page.getByLabel('Search the library').fill('Demo Synthetic');
+  await page.waitForFunction(() => document.querySelectorAll('.cards .card').length === 2);
+  ok('2. the merge leaves one patient, "Demo Synthetic", with 2 cases', (await page.locator('.cards .card').count()) === 2);   // SYNTHETIC
+  await page.getByLabel('Search the library').fill('07/03/1990');
+  ok('2b. searching the DOB also finds both', (await page.locator('.cards .card').count()) === 2);   // SYNTHETIC
+  await page.getByLabel('Search the library').fill('');
+  // Review I2 (29 Oct): the merge must unify the PATIENT (name key and DOB, what the Library groups on), not only copy
+  // the DOB. Library ▸ Table ▸ Grouped shows one row per patient: after "Same patient" there is exactly one "Demo
+  // Synthetic" row, holding both films. (Before the merge the two films were two patients: different DOBs.)
+  await page.getByRole('radio', { name: 'Table' }).click();
+  await page.locator('table.lib-table').waitFor();
+  if ((await page.getByRole('radio', { name: 'Grouped' }).getAttribute('aria-checked')) !== 'true') await page.getByRole('radio', { name: 'Grouped' }).click();
+  const merged = await page.locator('table.lib-table tbody tr.lib-patient button.lib-toggle', { hasText: 'Demo Synthetic' }).evaluateAll((bs) => bs.map((b) => b.getAttribute('aria-label')));
+  ok('2c. the merge leaves ONE patient group, "Demo Synthetic", holding both films', merged.length === 1 && merged[0] === 'Demo Synthetic, 2 films', merged.join(' | '));   // SYNTHETIC
+  await page.getByRole('radio', { name: 'Pictures' }).click();
+  await page.locator('.cards').waitFor();
 
   await page.getByRole('radio', { name: 'MM/DD/YYYY' }).click();
-  ok('3. US dates: the patient row reads 03/07/1990', (await page.locator('.lib-nav button', { hasText: 'Demo Synthetic · 03/07/1990' }).count()) === 1);   // SYNTHETIC
+  await page.getByLabel('Search the library').fill('03/07/1990');
+  await page.waitForFunction(() => document.querySelectorAll('.cards .card').length === 2);
+  ok('3. US dates: searching "03/07/1990" finds both of the merged patient\'s films', (await page.locator('.cards .card').count()) === 2);   // SYNTHETIC
+  await page.getByLabel('Search the library').fill('');
   await page.locator('.cards .card .open').first().click(); await page.waitForSelector('g.landmark[data-id="S"]');
   ok('3. and the case panel shows 03/07/1990', (await field('Date of birth').inputValue()) === '03/07/1990');   // SYNTHETIC
   await toLibrary();
@@ -338,7 +404,7 @@ const FILM_LINES_TEXT = ['Demo Radiology Northside', 'DEMO, Synthetic', 'M, Y34'
   await toLibrary();
   await importFile('noattempt-label.png');
   const ftNone = page.locator('section[aria-label="Text on the film"]');
-  ok('19. a film whose label read failed entirely shows "Not read yet."', (await ftNone.locator('.identity-note').innerText()) === 'Not read yet.');
+  ok('19. a film whose label read failed entirely shows "Not read yet."', (await ftNone.locator('.film-text-unread').innerText()) === 'Not read yet.');
   await ftNone.getByRole('button', { name: 'Read the film' }).click();
   await page.waitForTimeout(300);
   ok('19. "Read the film" from Not-read-yet reads the text', (await ftNone.locator('.film-line').count()) === 7);
@@ -456,7 +522,7 @@ const FILM_LINES_TEXT = ['Demo Radiology Northside', 'DEMO, Synthetic', 'M, Y34'
   await page.getByRole('button', { name: 'Superimposition ›' }).click();
   await page.waitForSelector('.series-key li:nth-child(3)');
   await page.waitForFunction(() => [...document.querySelectorAll('.series-key li')].some((l) => l.textContent.includes('Place S and N')));
-  ok('7. a film without S says so in the key and is not drawn', (await page.locator('.series-key li', { hasText: 'T3' }).innerText()).includes('Place S and N to draw it')
+  ok('7. a film without S says so in the key and is not drawn', (await keyLine('T3').innerText()).includes('Place S and N to draw it')
     && (await page.locator('svg.overlay g.compare[data-film="c9"]').count()) === 0);
   await shot(page, '7-no-s');
   // Final review, important 3: a multi-film import shows progress and blocks a second batch while labels are read.
@@ -492,4 +558,4 @@ const FILM_LINES_TEXT = ['Demo Radiology Northside', 'DEMO, Synthetic', 'M, Y34'
   console.log(results.join('\n'));
   await browser.close();
   process.exit(results.some((r) => r.startsWith('FAIL')) ? 1 : 0);
-})().catch((e) => { console.error(e); process.exit(2); });
+})().catch((e) => { console.log(results.join('\n')); console.error(e); process.exit(2); });   // print the checks reached, so a crash still shows which failed

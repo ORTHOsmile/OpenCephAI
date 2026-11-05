@@ -1,4 +1,5 @@
 import { describe, it, expect } from 'vitest';
+import { AUTO_CHOICE_ID } from '@ceph/analyses';
 import { normPicksKey, parsePicks, readPicks, savePicks, withPick } from './normPicks';
 
 // Owner NORM-PICK-1 (12 Oct): the source the clinician chooses where the case's population has no norm is saved on the
@@ -34,5 +35,20 @@ describe('normPicks: the case\'s chosen sources', () => {
     expect(seen).toEqual([['norm_picks:c1', '{"chinese":{"m13_Wits":"caucasian"}}']]);
     expect(await savePicks({ set: async () => { throw new Error('SYNTHETIC full'); } }, 'c1', {}))
       .toBe('Your choice of norm could not be saved (SYNTHETIC full).');
+  });
+});
+
+// Owner N-A2 (19 Oct 2026): choosing "Auto" removes the case's pick for that measurement — Auto is never stored.
+describe('withPick: Auto removes the pick', () => {
+  it('the last pick for a population: the population goes too', () => {
+    expect(withPick({ saudi: { m01_SNA: 'chinese' } }, 'saudi', 'm01_SNA', AUTO_CHOICE_ID)).toEqual({});
+  });
+  it('other picks for that population and other populations stay', () => {
+    expect(withPick({ saudi: { m01_SNA: 'chinese', m26_SNMxP: 'swedish' }, malay: { m01_SNA: 'chinese' } }, 'saudi', 'm01_SNA', AUTO_CHOICE_ID))
+      .toEqual({ saudi: { m26_SNMxP: 'swedish' }, malay: { m01_SNA: 'chinese' } });
+  });
+  it('nothing stored: nothing changes; any other source is stored as before', () => {
+    expect(withPick({}, 'saudi', 'm01_SNA', AUTO_CHOICE_ID)).toEqual({});
+    expect(withPick({}, 'saudi', 'm01_SNA', 'chinese')).toEqual({ saudi: { m01_SNA: 'chinese' } });
   });
 });

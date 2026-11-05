@@ -13,13 +13,16 @@ describe('screen words for every resolver flag', () => {
   it('the owner\'s wording for an unstated film scale (M-2)', () => {
     expect(FLAG_WORDS['scale-assumed'].badge).toBe('assumed scale');   // owner, 16 Oct (B)
   });
+  it("owner, addendum 2 J (19 Oct 2026): the paper-scale hover says it is the PAPER's X-rays, never the film's", () => {
+    expect(FLAG_WORDS['scale-assumed'].tip).toBe('The paper did not say whether its X-rays were enlarged; its mm are taken as true size.');
+  });
   it('every flag the resolver can emit (NORM_FLAGS, the list NormFlag is derived from) has words here — no more, no fewer', () => {
     // Review M-1 (fix round 1): one runtime list in resolve.ts, the type derived from it, so this compares two real
     // lists with no source parsing. Induced failure: adding a member to NORM_FLAGS without words turns this red.
     expect(Object.keys(FLAG_WORDS).sort()).toEqual([...NORM_FLAGS].sort());
   });
   it('the owner\'s wording for averaged sexes (SEX-AVG-1) and the one-line hint', () => {
-    expect(FLAG_WORDS['sexes-averaged'].tip).toBe("Men's and women's norms averaged — record sex for the exact norm.");
+    expect(FLAG_WORDS['sexes-averaged'].tip).toBe('Average of the male and female norms (sex not recorded) — record sex for the exact norm.');
     expect(SEX_NOT_RECORDED_HINT).toBe('Sex not recorded — record it for the exact norm.');
   });
   it('AGE-UNK-1: the age-not-entered words, plus the hint to enter the age', () => {

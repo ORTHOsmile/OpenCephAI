@@ -55,7 +55,7 @@ fn ids(lib: &Library, case: &str) -> Vec<String> {
     let (t, src) = (tempfile::tempdir().unwrap(), tempfile::tempdir().unwrap());
     let mut lib = Library::open(t.path()).unwrap();
     let a = lib.import(&film(src.path(), "a.png", 0)).unwrap().case_id;
-    let s = ceph_store::LandmarkRow { id: "S".into(), x: 1.0, y: 2.0, source: "ai".into(), verified: true, ai_x: Some(1.0), ai_y: Some(2.0), confidence: Some(0.8), placed_by: None };
+    let s = ceph_store::LandmarkRow { id: "S".into(), x: 1.0, y: 2.0, source: "ai".into(), verified: true, ai_x: Some(1.0), ai_y: Some(2.0), confidence: Some(0.8), placed_by: None, accept_kind: None, placed_via: None };
     lib.save(&ceph_store::CaseEdit { id: a.clone(), facing: "right".into(), orientation: serde_json::json!({}), display: serde_json::json!({}), landmarks: vec![s] }, "op").unwrap();
     lib.set_verified(&a, true, "dr-a").unwrap();
     lib.set_stage(&a, Some("retention")).unwrap();

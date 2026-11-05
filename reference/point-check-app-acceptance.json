@@ -1,0 +1,18 @@
+{
+  "version": "stage-a-acceptance/1",
+  "rule": "point-check/2",
+  "spec": "docs/superpowers/specs/2026-11-02-stage-a-point-check-design.md §14.9b, §14.13 U6, U7",
+  "label": "a reproduction through the app's code (same 300 films, same folds and plants as FT-2b); not a fresh test",
+  "films": "Ceph-400 train 001-150 and test1 151-300, FT-2's caches; Test2 never opened",
+  "reuses": "reference/point-check-ft2b.json: seed 20261029, foldSeed 20261028, 5 folds, every mark and control",
+  "marks": {
+    "A1": "G1 pooled at 15 mm >= 90%, G1 each point but Gonion >= 80%, G2 <= 0.5%, G3 = 0 of 380 (FT-2b's own marks)",
+    "A2": "every count equals FT-2b's report exactly: G1 4274/4500, lowest Po 273/300, G2 0/3229, G3 0/380, nasion 10/10, unplanted 2/10, B 299/300, jaw 25/5700",
+    "A3": "the app's outcome equals the bench's flag_only outcome on every one of the 300 films' Aariz runs, 300 expert tracings, 17100 plants and every control (same flagged points, same order, tails equal to the bit)",
+    "A4": "the 10 control films mirrored (facing left): the same flags as unmirrored, through score_run",
+    "A5": "the 10 control films' outcomes written to a temporary library and read back after closing and reopening: equal"
+  },
+  "information": ["nasion 10 mm on the 10 control films and pooled over 300 (FT-2: 127/300); not a mark (ruling OQ-4)",
+                  "the 300-film starting-knowledge file's own rings (n = 300, not 240): G2 and G3 on it, reported"],
+  "verdicts": { "pass": "A1-A5 hold -> exit 0", "fail": "the controls hold but A1-A5 do not -> exit 3, back to the owner", "broken": "a control fails or a count is not its expected total -> exit 1" }
+}

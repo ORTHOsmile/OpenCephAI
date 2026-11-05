@@ -1,6 +1,6 @@
 // Every date in this file is SYNTHETIC (made up for the arithmetic; no patient).
 import { describe, it, expect } from 'vitest';
-import { ageAt } from './age';
+import { ageAt, calendarAge } from './age';
 
 describe('ageAt (decimal years at the film date)', () => {
   it('the day before the 12th birthday is just under 12', () => {
@@ -32,4 +32,22 @@ describe('ageAt (decimal years at the film date)', () => {
     expect(ageAt('2010-03-07', 'not a date')).toBeNull();
   });
   it('a film before birth gives null', () => expect(ageAt('2010-03-07', '2010-03-06')).toBeNull());
+});
+
+describe('calendarAge: whole years and months on the calendar (display only; owner AG1)', () => {
+  it('counts months on the same day-of-month, as ageAt counts birthdays', () => {
+    expect(calendarAge('2014-01-02', '2026-01-10')).toEqual({ years: 12, months: 0 });   // SYNTHETIC
+    expect(calendarAge('2013-07-15', '2026-01-15')).toEqual({ years: 12, months: 6 });   // SYNTHETIC
+    expect(calendarAge('2013-07-15', '2026-01-14')).toEqual({ years: 12, months: 5 });   // SYNTHETIC
+  });
+  it('a 29 February birthday, like ageAt: not yet a year on 28 February', () => {
+    expect(calendarAge('2012-02-29', '2013-02-28')).toEqual({ years: 0, months: 11 });   // SYNTHETIC
+    expect(ageAt('2012-02-29', '2013-02-28')! < 1).toBe(true);                           // SYNTHETIC
+  });
+  it('null as ageAt: a date missing or not real, or the film before the birth', () => {
+    expect(calendarAge(null, '2026-01-10')).toBeNull();
+    expect(calendarAge('2014-01-02', null)).toBeNull();                                   // SYNTHETIC
+    expect(calendarAge('2014-02-30', '2026-01-10')).toBeNull();                           // SYNTHETIC
+    expect(calendarAge('2014-01-02', '2013-12-31')).toBeNull();                           // SYNTHETIC
+  });
 });

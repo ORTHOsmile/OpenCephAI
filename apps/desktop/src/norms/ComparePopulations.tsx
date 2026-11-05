@@ -1,39 +1,42 @@
 import { useEffect, useRef, useState } from 'react';
-import { populationsOffered, type NormPicks } from '@ceph/analyses';
+import { populationsOffered } from '@ceph/analyses';
 import { settings, type CaseDoc } from '../ipc';
 import type { Decimals } from '../format';
 import type { MeasurementRow } from '../measurements';
+import { fitMark, type Scale } from '../tracing/spacing';
 import { COMPARE_KEY, compareCells, readCompare, ticksAfterRead } from './compare';
-import { queryFor, type NormContext } from './normCell';
-import { CompareTable, type OpenChoice } from './CompareTable';
-import { NormChooser } from './NormChooser';
+import type { NormContext } from './normCell';
+import { CompareTable } from './CompareTable';
 
 const REFUSAL = 'Compare 2 to 4 populations.';
+/** Request G (Task 10 ruling, "never silently"): with "Use the scale from the fit" on, the open film's mm here come from
+ *  the fit, so the window says so ("mm scaled to T1 on S–N (×1.042)."); none for a ruler or the assumed scale (whose
+ *  mm are hidden, N5). */
+export const scaleNoteOf = (s: Scale): string | null => (s.source === 'fit' ? `mm ${fitMark(s.fit)}.` : null);
 
 /** Sidebar/CasePanel › "Compare populations…" (master plan §9, ruling P26): the open case's measurements
  *  against 2–4 populations side by side. The tick-list is kept on this Mac (`COMPARE_KEY`), read once on open and
  *  written on every tick, so a close and reopen of the dialog (or the case) keeps the choice — the same pattern as
  *  the analyses picker and the decimals setting. Ticking a 5th is refused in words; it stays unticked.
  *  Final review M-10: a failed read of the stored ticks is shown, and a tick made before it returns is kept.
- *  Owner NORM-PICK-1: a population with no norm offers the choice in its cell (`onPick`, null when choosing is not
- *  allowed — no case loaded yet, or the read-only Superimposition page). Final review I-2: `unconfirmedFor` marks
- *  each measurement using an unconfirmed AI point, from the same per-row list the Inspector shows. */
-export function ComparePopulations({ rows, doc, ctx, decimals, picks, onPick, unconfirmedFor, onClose }: {
+ *  Ruling AUTO-Q7 (19 Oct 2026): each column is that population's own norm or '—'; choosing happens on the
+ *  Measurements tab. Final review I-2: `unconfirmedFor` marks each measurement using an AI point not yet accepted,
+ *  from the same per-row list the Inspector shows. */
+export function ComparePopulations({ rows, doc, ctx, decimals, unconfirmedFor, onClose, scaleNote = null }: {
   rows: MeasurementRow[];
   doc: Pick<CaseDoc, 'population' | 'gender' | 'dateOfBirth' | 'takenOn'>;
   ctx: NormContext;
   decimals: Decimals;
-  picks: NormPicks;
-  onPick: ((population: string, measurement: string, source: string) => void) | null;
   unconfirmedFor: (node: string) => string[];
   onClose: () => void;
+  /** Request G (Task 10): where the mm come from when a fit scales them (`scaleNoteOf`); null otherwise. */
+  scaleNote?: string | null;
 }) {
   const offered = populationsOffered(ctx.sets, ctx.userNorms);
   const offeredIds = offered.map((p) => p.id);
   const [ticked, setTicked] = useState<string[]>([]);
   const [refused, setRefused] = useState(false);
   const [readError, setReadError] = useState<string | null>(null);
-  const [open, setOpen] = useState<OpenChoice | null>(null);
   const touched = useRef(false);
   useEffect(() => {
     let gone = false;
@@ -59,7 +62,7 @@ export function ComparePopulations({ rows, doc, ctx, decimals, picks, onPick, un
     void settings.set(COMPARE_KEY, JSON.stringify(next));
   };
   const comparable = ticked.length >= 2 && ticked.length <= 4;
-  const compared = comparable ? compareCells(rows, ticked, doc, ctx, decimals, picks) : [];
+  const compared = comparable ? compareCells(rows, ticked, doc, ctx, decimals) : [];
   const labelOf = (id: string) => offered.find((p) => p.id === id)?.label ?? id;
   return (
     <div className="modal-backdrop">
@@ -75,15 +78,10 @@ export function ComparePopulations({ rows, doc, ctx, decimals, picks, onPick, un
         </div>
         {readError && <p className="hint warn" role="status">{readError}</p>}
         {refused && <p className="hint warn" role="alert">{REFUSAL}</p>}
+        {scaleNote && <p className="hint fit-note">{scaleNote}</p>}
         {!comparable
           ? <p className="hint">Tick 2 to 4 populations to compare.</p>
-          : <CompareTable compared={compared} ticked={ticked} labelOf={labelOf} unconfirmedFor={unconfirmedFor}
-              onChoose={onPick ? (row, population) => setOpen({ node: row.node, analysisId: row.analysisId, population }) : null}
-              open={onPick ? open : null}
-              renderChooser={(row, population) => (
-                <NormChooser q={{ ...queryFor(row.node, row.normAnalysisId, doc, ctx, picks), population }} decimals={decimals}
-                  onPick={(source) => { onPick?.(population, row.node, source); setOpen(null); }} onClose={() => setOpen(null)} />
-              )} />}
+          : <CompareTable compared={compared} ticked={ticked} labelOf={labelOf} unconfirmedFor={unconfirmedFor} />}
         <div className="row">
           <button type="button" className="primary" onClick={onClose}>Close</button>
         </div>

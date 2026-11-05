@@ -1,0 +1,17 @@
+{
+  "version": "chain-proof-s1/1",
+  "about": "Pre-registered before the run (chain spec §6 S1; Part F plan Task 14). Pass marks owner-approved 25 Oct (answer 16). Films: Ceph-400 train and test1 (Test2 held back, owner O7; question 8). 'Truth' read as the pretend clinician's own final point (question 4).",
+  "ruleVersion": "best-point/3",
+  "seed": 20261025,
+  "clinicians": 200,
+  "filmsPerTest": 60,
+  "plantedPoints": ["Go", "Po", "B"],
+  "plantedFraction": 0.5,
+  "satisfiedWithinMm": 0.5,
+  "offerShareMin": 0.9,
+  "falseOfferMax": 0.05,
+  "satisfiedFalseOfferMax": 0.05,
+  "controlOffsetMm": 3.0,
+  "floorPoints": ["B", "Go"],
+  "floorFractions": [0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]
+}

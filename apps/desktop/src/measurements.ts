@@ -1,5 +1,5 @@
 import type { AnalysisDef, Compiled, Unit, Value } from '@ceph/geometry';
-import { byId, LANDMARKS, neededLandmarks, normAnalysisOf, UNCONFIRMED_POINTS, type LandmarkId } from '@ceph/analyses';
+import { byId, LANDMARKS, neededLandmarks, normAnalysisOf, type LandmarkId } from '@ceph/analyses';
 import type { ModelPointRow, ModelPoints, PointStatus } from './ipc';
 import { fmtValue, type Decimals } from './format';
 import type { Scale } from './tracing/spacing';
@@ -89,6 +89,19 @@ export function placerOf(id: string, p: TracingPoint, placedBy: Record<string, s
   if (!p.ai) return null;
   return runs.find((r) => r.points.some((q) => q.landmarkId === id && q.x === p.ai!.x && q.y === p.ai!.y))?.modelId ?? null;
 }
+/** Part F final review I-2 (chain spec §5: the same label on screen, in the report and in the CSV): THE placer of a
+ *  film's points, for every place a point's model is shown — the screen's label and hover, the open film's report and
+ *  single-film CSV, and the Library's batch CSV. `placedBy` is the film's stored or just-detected record (`placedByOf`);
+ *  `runs` its latest run per model (`library.ghosts`). A hand-placed or missing point has no placer. */
+export function pointPlacer(points: Record<string, TracingPoint>, placedBy: Record<string, string> | null, runs: ModelPoints[]): (id: string) => string | null {
+  return (id) => { const p = points[id]; return !p || p.source === 'manual' ? null : placerOf(id, p, placedBy, runs); };
+}
+/** The stored placement record of a film (schema 10): point → the model that placed it. Empty before schema 10. */
+export const placedByOf = (doc: { landmarks: { id: string; placedBy?: string | null }[] }): Record<string, string> =>
+  Object.fromEntries(doc.landmarks.filter((l) => l.placedBy).map((l) => [l.id, l.placedBy!]));
+/** The stored record of which points Automatic best placed (format 15): point → 'auto-best'. Empty before format 15. */
+export const placedViaOf = (doc: { landmarks: { id: string; placedVia?: string | null }[] }): Record<string, string> =>
+  Object.fromEntries(doc.landmarks.filter((l) => l.placedVia).map((l) => [l.id, l.placedVia!]));
 /** That model's score for the point. With no record (placer null), the table order is the fallback: the first row
  *  (main model first) not over the gate — the rule placeFromRuns applies when every model ran. */
 export function placerStatus(id: string, placer: string | null, table: ModelPointRow[] | null): PointStatus['kind'] | null {
@@ -96,18 +109,11 @@ export function placerStatus(id: string, placer: string | null, table: ModelPoin
   for (const r of rows) { const q = r.points.find((x) => x.id === id); if (q && (placer || q.status.kind !== 'tooFar')) return q.status.kind; }
   return null;
 }
-/** Owner, 7 Oct: a measurement that uses an AI-placed, unverified point that is either not scored on any test set or
- *  whose definition is still to be confirmed on films ("uses unconfirmed AI points: Pt, Cm"). Fail-safe (owner
- *  ruling T9-2): when the placing model's status cannot be determined at all — no row for it in the table (e.g.
- *  the model was removed since placement) or the table itself could not be read — the point is marked too; this
- *  warning never clears itself just because the evidence for clearing it went missing. LANDMARKS order. */
-export function unconfirmedAiPoints(node: string, g: Compiled, points: Record<string, TracingPoint>, table: ModelPointRow[] | null, placer: (id: string) => string | null): LandmarkId[] {
+/** Owner, 19 Oct (spec 2026-10-19 addendum 2, M; supersedes the 7 Oct rule): a measurement carries the red AI bubble
+ *  when any point it depends on is AI-placed and not yet accepted. Which model placed it, its score, and whether its
+ *  definition is still "to confirm" no longer matter; accepting the point (one by one or in bulk) clears it.
+ *  LANDMARKS order. */
+export function unconfirmedAiPoints(node: string, g: Compiled, points: Record<string, TracingPoint>): LandmarkId[] {
   const req = g.requiredLandmarks(node);
-  return (Object.keys(LANDMARKS) as LandmarkId[]).filter((id) => {
-    const p = points[id];
-    if (!(req.has(id) && !!p && p.source === 'ai' && !p.verified)) return false;
-    if (UNCONFIRMED_POINTS.has(id)) return true;
-    const status = placerStatus(id, placer(id), table);
-    return status === null || status === 'notScored';
-  });
+  return (Object.keys(LANDMARKS) as LandmarkId[]).filter((id) => { const p = points[id]; return req.has(id) && !!p && p.source === 'ai' && !p.verified; });
 }

@@ -11,7 +11,14 @@ const PINNED_SHA256: &str = "98b13903d8ea77add3624a1c880e7917ed72d651598f26177dd
 
 #[derive(Clone, Debug, PartialEq, Serialize)]
 #[serde(rename_all = "camelCase")]
-pub struct MainPointSource { pub rule_version: String, pub confirmation_pending: bool, pub points: BTreeMap<String, String> }
+pub struct MainPointSource { pub rule_version: String, pub confirmation_pending: bool, pub points: BTreeMap<String, String>,
+    /// Part F: the owner's accepted switches, point → model, and each one's note (from the library; never in the embedded table).
+    pub owner_choices: BTreeMap<String, String>, pub owner_choice_notes: BTreeMap<String, ChoiceNote> }
+
+/// Part F: the acceptance behind a switch in force — its date and the films that decided, in words (owner E1).
+#[derive(Clone, Debug, PartialEq, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct ChoiceNote { pub since: String, pub basis: String }
 
 pub fn parse(json: &str) -> anyhow::Result<MainPointSource> {
     let v: serde_json::Value = serde_json::from_str(json)?;
@@ -22,7 +29,8 @@ pub fn parse(json: &str) -> anyhow::Result<MainPointSource> {
         anyhow::ensure!(["aariz-cepha29", "cwlachap-hrnet-w32"].contains(&chosen), "{id}: {chosen} is neither Aariz nor cwlachap");
         points.insert(id.clone(), chosen.to_string());
     }
-    Ok(MainPointSource { rule_version: v["ruleVersion"].as_str().unwrap_or("").to_string(), confirmation_pending: v["confirmation"] == "pending", points })
+    Ok(MainPointSource { rule_version: v["ruleVersion"].as_str().unwrap_or("").to_string(), confirmation_pending: v["confirmation"] == "pending", points,
+        owner_choices: BTreeMap::new(), owner_choice_notes: BTreeMap::new() })
 }
 
 /// The embedded table; the tests below prove it parses, covers the 19 and is the approved file.
@@ -48,6 +56,12 @@ mod tests {
         let mut want = crate::scores::ORIGINAL_19.to_vec();
         want.sort();
         assert_eq!(keys, want);
+    }
+    #[test] fn the_embedded_table_carries_no_owner_choices_and_serialises_them_as_owner_choices() {
+        let s = main_point_source();
+        assert!(s.owner_choices.is_empty() && s.owner_choice_notes.is_empty());
+        let j = serde_json::to_value(&s).unwrap();
+        assert!(j.get("ownerChoices").is_some() && j.get("ownerChoiceNotes").is_some());
     }
     /// Pinned like crosscheck.json: any edit to the committed file fails here until the owner approves it and this
     /// hash is updated in the same commit.

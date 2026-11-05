@@ -6,9 +6,9 @@ import indexHtml from '../index.html?raw';
 // "app.cephtrace.desktop" — the clinician's installed library and models live under it, and changing it
 // would empty their library — so these two must disagree, on purpose, forever.
 describe('app branding (apps/desktop/src-tauri/tauri.conf.json)', () => {
-  it('productName and the window title are OpenCephAI', () => {
+  it('productName stays OpenCephAI (one app bundle, not a second beside it); the window title says 1.1 Beta (owner, 2 Nov 2026; beta.test.tsx)', () => {
     expect(tauriConf.productName).toBe('OpenCephAI');
-    expect(tauriConf.app.windows[0].title).toBe('OpenCephAI');
+    expect(tauriConf.app.windows[0].title).toBe('OpenCephAI 1.1 Beta');
   });
   it('the bundle identifier is unchanged, so the installed library is not orphaned', () => {
     expect(tauriConf.identifier).toBe('app.cephtrace.desktop');
@@ -16,8 +16,8 @@ describe('app branding (apps/desktop/src-tauri/tauri.conf.json)', () => {
 });
 
 describe('apps/desktop/index.html', () => {
-  it('<title> reads OpenCephAI', () => {
-    expect(indexHtml).toMatch(/<title>OpenCephAI<\/title>/);
+  it('<title> reads OpenCephAI 1.1 Beta', () => {
+    expect(indexHtml).toMatch(/<title>OpenCephAI 1\.1 Beta<\/title>/);
   });
 });
 

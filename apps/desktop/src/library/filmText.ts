@@ -154,11 +154,19 @@ export function usesOf(line: string, f: DateFormat): LineUses {
   return { name: nameIn(line), date, id: date ? null : idIn(line) };
 }
 
-/** Gender printed on the film (spec 2026-10-04): F or M standing as its own word at the start of the line, after an
- *  optional "Sex" or "Gender" label ("M, Y34", "Sex: F", "female"). Anything else is null: blank beats wrong. */
+const G_LABEL = String.raw`(?:(?:sex|gender)\b\s*[:-]?\s*)?`, G_WORD = '(female|male|f|m)';
+const G_BRACKETED = new RegExp(String.raw`^\s*${G_LABEL}[(\[]\s*${G_WORD}\s*[)\]](?![\p{L}\p{N}])`, 'iu');   // "(M)", "Sex: [F]"
+const G_DOTTED = new RegExp(String.raw`^\s*${G_LABEL}${G_WORD}\.\s*$`, 'iu');                                // "M." alone
+const G_PLAIN = new RegExp(String.raw`^\s*${G_LABEL}${G_WORD}(?![\p{L}\p{N}.])`, 'iu');                       // "M, Y34", "Sex: F"
+const G_ANOTHER = /(?<![\p{L}\p{N}])(?:female|male|f|m)(?![\p{L}\p{N}])/iu;
+/** Gender printed on the film (spec 2026-10-04; owner E, 19 Oct): F or M (or Female, Male) at the start of the line,
+ *  after an optional "Sex" or "Gender" label, standing alone ("M, Y34", "Sex: F"), in brackets ("(M)", "Sex: [F]") or
+ *  with a full stop and nothing after ("M."). A line holding a second lone F or M ("M F", "F (M)") is refused, as is
+ *  anything else: blank beats wrong. Pinned with Rust's `gender_in` to `gender_referrer_lines.json`. */
 export function genderIn(line: string): Gender | null {
-  const m = /^\s*(?:(?:sex|gender)\b\s*[:-]?\s*)?(female|male|f|m)(?![\p{L}\p{N}.])/iu.exec(line);
-  return m ? (m[1][0].toUpperCase() as Gender) : null;
+  const m = G_BRACKETED.exec(line) ?? G_DOTTED.exec(line) ?? G_PLAIN.exec(line);
+  if (!m || G_ANOTHER.test(line.slice(m.index + m[0].length))) return null;
+  return m[1][0].toUpperCase() as Gender;
 }
 
 const REF_LABEL = /^\s*(?:referred\s+by\b\s*:?|ref\.?\s*by\b\s*:?|referr(?:ing|al)?(?:\s+(?:doctor|practitioner|physician|dr\.?))?\s*:|ref\b\.?\s*:?)\s*/i;

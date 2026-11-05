@@ -3,16 +3,16 @@ import type { Vec2 } from '@ceph/geometry';
 import type { Box } from '../ipc';
 import type { Dims } from './orientation';
 import type { ChooseApi } from '../library/useChoose';
-import { ALL_CHOOSE_FIELDS, CHOOSE_LABELS, selSpans, type ChooseField } from '../library/choose';
-import { CHOOSE_TO_DETAIL } from '../library/filmTable';
+import { CHOOSE_LABELS, selSpans } from '../library/choose';
+import { CHOOSE_TO_DETAIL, chooserChoices, type FilmDetail } from '../library/filmTable';
 import { conflictFieldName } from '../library/identity';
 import { FilmDetailsOff } from '../settings/filmDetails';
 
-/** A tint per kind of detail, so the words used for each stay distinguishable (owner, 30 Sep: M2). Task 5 (C4/C6)
- *  adds the four new details unconditionally, to keep `pnpm build` green now that ChooseField is wider; the CSS
- *  for 'f-film' is Task 7's (C6: Task 5 owns TINT, Task 7 owns only the new tints' CSS). */
-const TINT: Record<ChooseField, string> = { last: 'f-name', first: 'f-name', full: 'f-name', dob: 'f-dob', film_date: 'f-date', scan_id: 'f-id',
-  patient_id: 'f-id', xray_type: 'f-film', xray_size: 'f-film', practice: 'f-film' };
+/** A tint per kind of detail, so the words used for each stay distinguishable (owner, 30 Sep: M2). Keyed by
+ *  `FilmDetail` since Task 4: the chooser's drop-down saves the drop-down's own ids (Gender, Referring practitioner
+ *  included), not only the Choose-on-the-film fields. */
+const TINT: Record<FilmDetail, string> = { name: 'f-name', last: 'f-name', first: 'f-name', dob: 'f-dob', date: 'f-date', scan: 'f-id',
+  patientId: 'f-id', xrayType: 'f-film', xraySize: 'f-film', practice: 'f-film', gender: 'f-film', referrer: 'f-film', title: 'f-name', age: 'f-dob' };
 
 interface Props { api: ChooseApi; dims: Dims; S: (p: Vec2) => Vec2 }
 
@@ -47,7 +47,7 @@ export function ChooseLayer({ api, dims, S }: Props) {
   const selBox = selBoxes.length ? selBoxes[selBoxes.length - 1] : null;
   const onLabel = labels.map((l) => ({ l, c: corners(union(lines[l.sel.line].words.slice(l.sel.from, l.sel.to + 1).map((w) => w.bbox)), dims, S) }));
   const inSel = (i: number, j: number) => !!sel && selSpans(lines, sel).some((p) => p.line === i && j >= p.from && j <= p.to);
-  const fields: ChooseField[] = choose.target ? [choose.target] : ALL_CHOOSE_FIELDS.filter((f) => !off.has(CHOOSE_TO_DETAIL[f]));
+  const choices = chooserChoices(off, choose.target ? CHOOSE_TO_DETAIL[choose.target] : null);
   const tags = suggestions.filter((s) => lines[s.line]?.words.length > s.to).map((s) => ({
     s, c: corners(union(lines[s.line].words.slice(s.from, s.to + 1).map((w) => w.bbox)), dims, S) }));
   return (
@@ -62,12 +62,18 @@ export function ChooseLayer({ api, dims, S }: Props) {
       </svg>
       {tags.map(({ s, c }) => (
         <div key={`t${s.field}${s.line}${s.from}`} className="choose-suggested" style={above(c)}>
-          {s.isDefault ? 'Learned' : 'Suggested'}: {CHOOSE_LABELS[s.field as ChooseField] ?? s.field}</div>))}
+          {s.isDefault ? 'Learned' : 'Suggested'}: {CHOOSE_LABELS[s.field as keyof typeof CHOOSE_LABELS] ?? s.field}</div>))}
       {onLabel.map(({ l, c }) => <div key={`lt${l.field}`} className="choose-suggested choose-label-tag" style={below(c)}>On the label: {conflictFieldName(l.field)}</div>)}
       {selBox && <div className="chooser" role="group" aria-label="Use the selected words as" style={below(selBox)}
         onPointerDown={(e) => e.stopPropagation()}>
-        {fields.map((f) => <button key={f} type="button" onClick={() => void api.onLabel(f)}>{CHOOSE_LABELS[f]}</button>)}
-        <button type="button" onClick={api.clearSel}>Cancel</button>
+        {/* Owner E (19 Oct): one small drop-down with the panel's list, not a block of buttons. Choosing saves at once.
+            Esc here clears the selection, as ✕ does (R9); the app's own Esc (Choose mode off) never sees a select. */}
+        <select aria-label="Use the selected words as" value="" onChange={(e) => { if (e.target.value) void api.onChoice(e.target.value as FilmDetail); }}
+          onKeyDown={(e) => { if (e.key === 'Escape') { e.preventDefault(); e.stopPropagation(); api.clearSel(); } }}>
+          <option value="">Use as…</option>
+          {choices.map((c) => <option key={c.value} value={c.value}>{c.label}</option>)}
+        </select>
+        <button type="button" className="icon-btn" aria-label="Cancel" title="Cancel (Esc)" onClick={api.clearSel}>✕</button>
       </div>}
     </>
   );

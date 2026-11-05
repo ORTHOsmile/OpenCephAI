@@ -1,4 +1,4 @@
-import { useState, type ChangeEvent } from 'react';
+import { useState, type ChangeEvent, type ReactNode } from 'react';
 import { ask } from '@tauri-apps/plugin-dialog';
 import { ALL_ANALYSES, OWN_NORMS_LABEL, populationsOffered, type LandmarkId, type MyAnalysis, type UserNorm } from '@ceph/analyses';
 import { library } from '../ipc';
@@ -19,13 +19,16 @@ import { APP_VERSION, BUILD_DATE, versionLine } from '../version';
 type Norms = ReturnType<typeof useNorms>;
 const EMPTY_DRAFT: UserNormDraft = { setName: '', measurement: '', mean: '', sd: '', sourceNote: '' };
 
-/** Settings ▸ Analyses (read-only catalogue browser, DEC-1's decimals control) and Settings ▸ Norms (the clinic
- *  default population, N6, and the clinician's own norms, Task 4 schema 9). One dialog, reached from the library
+/** Settings ▸ Analyses (read-only catalogue browser) and Settings ▸ Norms (DEC-1's decimals control, owner addendum 2 I;
+ *  the clinic default population, N6, and the clinician's own norms, Task 4 schema 9). One dialog, reached from the library
  *  and from the Sidebar (owner, 7 Oct). Every write that can fail (a user-norm save/delete, the clinic default)
  *  is shown on screen on failure — `useNorms`'s own `loadError`/`settingsError` cover the reads; this component
  *  covers the writes it makes itself. */
-export function SettingsWindow({ tab: initialTab, found, norms, decimals, onDecimals, onClose, meanings, filmDetails, mine, onMineSaved, onMineDeleted, dateFormat }: {
-  tab: 'analyses' | 'norms' | 'meanings' | 'filmText'; found: ReadonlySet<LandmarkId> | null; norms: Norms;
+export type SettingsTab = 'analyses' | 'norms' | 'meanings' | 'filmText' | 'bestModel';
+export function SettingsWindow({ tab: initialTab, found, norms, decimals, onDecimals, onClose, meanings, filmDetails, mine, onMineSaved, onMineDeleted, dateFormat, bestModel = null }: {
+  tab: SettingsTab; found: ReadonlySet<LandmarkId> | null; norms: Norms;
+  /** Settings › Best model (spec 2026-10-29 §2): App's `BestModelSettings`, which holds the shared base state. */
+  bestModel?: ReactNode;
   /** Owner MEANING-PER-CLINICIAN (16 Oct) + NOCLIN-2 (17 Oct): the clinician Settings › Meanings edits (the
    *  top-bar choice, or the Mac login name) and their words, plus `referrerNote` when the open film is actually
    *  showing a different clinician's words (the referring practitioner's). */
@@ -39,7 +42,7 @@ export function SettingsWindow({ tab: initialTab, found, norms, decimals, onDeci
   /** The operator's date format, for the build day in the version line at the foot (owner, 19 Oct). */
   dateFormat: DateFormat;
 }) {
-  const [tab, setTab] = useState<'analyses' | 'norms' | 'meanings' | 'filmText'>(initialTab);
+  const [tab, setTab] = useState<SettingsTab>(initialTab);
   // Final review M-5 (Task 10 M10): one source for the norm sets — `norms.sets` — never a second `sets` prop.
   const sets = norms.sets;
   // P18: a fresh draft every time Settings opens — this component unmounts with the dialog, so a new instance
@@ -110,19 +113,13 @@ export function SettingsWindow({ tab: initialTab, found, norms, decimals, onDeci
           <button type="button" role="tab" aria-selected={tab === 'norms'} onClick={() => setTab('norms')}>Norms</button>
           <button type="button" role="tab" aria-selected={tab === 'meanings'} onClick={() => setTab('meanings')}>Meanings</button>
           <button type="button" role="tab" aria-selected={tab === 'filmText'} onClick={() => setTab('filmText')}>Text on the film</button>
+          <button type="button" role="tab" aria-selected={tab === 'bestModel'} onClick={() => setTab('bestModel')}>Best model</button>
         </div>
+        {tab === 'bestModel' && bestModel}
         {tab === 'meanings' && <MeaningsSettings clinician={meanings.clinician} overrides={meanings.overrides} referrerNote={meanings.referrerNote} onChanged={meanings.refresh} />}
         {tab === 'filmText' && <FilmDetailsSettings filmDetails={filmDetails} />}
         {tab === 'analyses' && (
           <div className="settings-analyses">
-            {/* DEC-1 (12 Oct, Task 4 fix round 2, control added here Task 10): display only — every calculation
-                (colour, z-score, comparisons) always uses the full figures; this changes only how numbers are
-                shown, and takes effect immediately (App.tsx's `decimals` state), without reopening the case. */}
-            <label className="dec-control">Decimals shown
-              <select value={decimals} onChange={(e) => onDecimals(Number(e.target.value) as Decimals)}>
-                {([0, 1, 2, 3] as const).map((d) => <option key={d} value={d}>{d}</option>)}
-              </select>
-            </label>
             <MyAnalysesSettings clinician={mine.clinician} list={mine.list} error={mine.error} sets={sets} onSaved={onMineSaved} onDeleted={onMineDeleted} />
             <h3>All analyses</h3>
             <AnalysisBrowser analyses={[...ALL_ANALYSES, ...mine.defs]} found={found} placed={null} sets={sets} />
@@ -132,12 +129,24 @@ export function SettingsWindow({ tab: initialTab, found, norms, decimals, onDeci
           <div className="settings-norms">
             {/* Final review M-5: both read failures, through the Inspector's own wording (never one hiding the other). */}
             {normsErrorMessage(norms.loadError, norms.settingsError) && <div className="error">{normsErrorMessage(norms.loadError, norms.settingsError)}</div>}
+            {/* DEC-1 (12 Oct); on the Norms page since owner addendum 2 I (19 Oct 2026) — the same setting and stored value: display only — every calculation
+                (colour, z-score, comparisons) always uses the full figures; this changes only how numbers are
+                shown, and takes effect immediately (App.tsx's `decimals` state), without reopening the case. */}
+            <label className="dec-control">Decimals shown
+              <select value={decimals} onChange={(e) => onDecimals(Number(e.target.value) as Decimals)}>
+                {([0, 1, 2, 3] as const).map((d) => <option key={d} value={d}>{d}</option>)}
+              </select>
+            </label>
             <label>Clinic default population
               <select value={norms.clinicDefault ?? ''} onChange={(e) => void onClinicDefault(e.target.value)}>
-                <option value="">{`Use ${OWN_NORMS_LABEL} (none set)`}</option>
+                <option value="">Not set</option>
                 {populations.map((p) => <option key={p.id} value={p.id}>{p.label}</option>)}
               </select>
             </label>
+            {/* Owner decision 2 (29 Oct 2026; spec 2026-10-29 §4.3): the default stays per library, as stored; only its words change. */}
+            {/* Owner R3 (3 Nov 2026; spec 2026-11-03 §8.3). */}
+            <p className="hint">Auto uses: the patient's background, else this default, else for patients 18 and over (or with no age entered) a combined adult norm (every adult study, weighted by size, men and women separately) and for children the largest study for their sex and age.
+              Cases switched to Auto at the upgrade follow this rule too. Only cases you put back on "Clinic default (as before the upgrade)" use {OWN_NORMS_LABEL} when this is not set.</p>
             <div className="user-norm-editor">
               <h3>Add a norm</h3>
               <label>Set name

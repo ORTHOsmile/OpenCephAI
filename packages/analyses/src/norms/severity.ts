@@ -15,3 +15,12 @@ export function severity(z: number | null): Severity | null {
   if (a >= 0.75) return { stars: '', word: 'tendency', side };
   return { stars: '', word: 'within normal range', side };
 }
+
+/** Stage A task 9 (spec §14.4, owner-approved): a measurement 4 SD or more from its norm (either side) carries this note.
+ *  It is a note on the MEASUREMENT only: it never moves or flags a point and is separate from the point check (§14.3). */
+export const EXTREME_NOTE = 'Extreme value for the norm';
+export const EXTREME_SD = 4;
+/** Same z as the colours and stars (`zScore`). Inclusive: exactly 4.0 or -4.0 is extreme. No z (no norm, no SD, NaN) is not. */
+export function extremeForNorm(z: number | null | undefined): boolean {
+  return z !== null && z !== undefined && Number.isFinite(z) && Math.abs(z) >= EXTREME_SD;
+}

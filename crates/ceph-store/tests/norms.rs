@@ -18,9 +18,78 @@ fn norm(set_name: &str, measurement: &str, mean: f64, sd: Option<f64>, source_no
     UserNorm { set_name: set_name.into(), measurement: measurement.into(), mean, sd, source_note: source_note.into() }
 }
 
-#[test] fn a_new_film_starts_with_no_population_meaning_the_clinic_default() {
+/// Owner decision 3 (29 Oct 2026; spec 2026-10-29 §4.4): a new film's case starts on Auto, and is not a switched case
+/// (was: no population, meaning the clinic default).
+#[test] fn a_new_film_starts_on_auto_and_is_not_logged_as_switched() {
     let (_t, _s, lib, ids) = films(1);
-    assert_eq!(lib.load(&ids[0]).unwrap().population, None);
+    let d = lib.load(&ids[0]).unwrap();
+    assert_eq!((d.population.as_deref(), d.switched_from_clinic_default, d.background.as_deref()), (Some("auto"), false, None));
+    assert_eq!(lib.auto_switch_note().unwrap(), None, "a library with no switched case has no note");
+}
+
+/// Spec §4.1 (owner NAP-Q2 (a)): the background is saved on the patient, read back on the film, and a blank clears it.
+#[test] fn the_patient_background_round_trips_and_clears() {
+    let (_t, _s, mut lib, ids) = films(1);
+    lib.set_patient_background(&ids[0], Some("chinese")).unwrap();
+    assert_eq!(lib.load(&ids[0]).unwrap().background.as_deref(), Some("chinese"));
+    lib.set_patient_background(&ids[0], Some("other")).unwrap();
+    assert_eq!(lib.load(&ids[0]).unwrap().background.as_deref(), Some("other"));
+    for blank in [Some("   "), Some(""), None] {
+        lib.set_patient_background(&ids[0], Some("chinese")).unwrap();
+        lib.set_patient_background(&ids[0], blank).unwrap();
+        assert_eq!(lib.load(&ids[0]).unwrap().background, None, "{blank:?} must clear it");
+    }
+}
+
+#[test] fn a_deleted_case_is_refused_a_background_and_keeps_its_own() {
+    let (_t, _s, mut lib, ids) = films(1);
+    lib.set_patient_background(&ids[0], Some("malay")).unwrap();
+    lib.delete(&ids[0]).unwrap();
+    assert!(lib.set_patient_background(&ids[0], Some("chinese")).unwrap_err().to_string().contains("Recently deleted"));
+    assert_eq!(lib.load(&ids[0]).unwrap().background.as_deref(), Some("malay"));
+}
+
+/// Stands in for a case the format-18 upgrade switched: on Auto, with its record (what the migration writes).
+fn switched(lib: &Library, case: &str) {
+    lib.conn_for_tests().execute_batch(&format!("UPDATE cases SET population = 'auto' WHERE id = '{case}';
+        INSERT INTO population_switches (case_id, previous_population, switched_at) VALUES ('{case}', NULL, '2026-10-29T00:00:00.000Z');")).unwrap();
+}
+fn undone_at(lib: &Library, case: &str) -> Option<String> {
+    lib.conn_for_tests().query_row("SELECT undone_at FROM population_switches WHERE case_id = ?1", [case], |r| r.get(0)).unwrap()
+}
+
+/// Spec §4.8 (owner NAP-Q3 (b)): the per-case undo puts a switched case back on "Clinic default" and stamps the record;
+/// Auto again clears the stamp, so the undo is offered again; a population chosen by hand leaves the record alone.
+#[test] fn a_switched_case_can_be_undone_and_redone() {
+    let (_t, _s, mut lib, ids) = films(1);
+    switched(&lib, &ids[0]);
+    assert!(lib.load(&ids[0]).unwrap().switched_from_clinic_default);
+    lib.set_case_population(&ids[0], None).unwrap();                                  // the undo
+    let d = lib.load(&ids[0]).unwrap();
+    assert_eq!((d.population, d.switched_from_clinic_default), (None, false));
+    let stamp = undone_at(&lib, &ids[0]).expect("the undo is stamped");
+    assert!(stamp.starts_with("20") && stamp.ends_with('Z'), "{stamp}");
+    lib.set_case_population(&ids[0], Some("auto")).unwrap();                          // Auto again: the undo is offered again
+    assert!(lib.load(&ids[0]).unwrap().switched_from_clinic_default);
+    assert_eq!(undone_at(&lib, &ids[0]), None);
+    lib.set_case_population(&ids[0], Some("japanese")).unwrap();                      // a hand-chosen population
+    let d = lib.load(&ids[0]).unwrap();
+    assert_eq!((d.population.as_deref(), d.switched_from_clinic_default), (Some("japanese"), false), "the undo is offered only while on Auto");
+    assert_eq!(undone_at(&lib, &ids[0]), None, "a hand choice is not an undo");
+}
+
+/// Spec §4.8: the one-time note counts the live switched cases, never one in Recently deleted, and is shown once.
+#[test] fn the_note_counts_live_switched_cases_and_shows_once() {
+    let (t, _s, mut lib, ids) = films(3);
+    for id in &ids { switched(&lib, id); }
+    lib.delete(&ids[2]).unwrap();
+    assert_eq!(lib.auto_switch_note().unwrap(), Some(2), "two live switched cases; the deleted one is not counted");
+    lib.set_case_population(&ids[1], None).unwrap();
+    assert_eq!(lib.auto_switch_note().unwrap(), Some(2), "an undone case was still switched: the note says what the upgrade did");
+    lib.dismiss_auto_switch_note().unwrap();
+    assert_eq!(lib.auto_switch_note().unwrap(), None);
+    drop(lib);
+    assert_eq!(Library::open(t.path()).unwrap().auto_switch_note().unwrap(), None, "not shown again after reopening");
 }
 
 #[test] fn a_cases_population_round_trips_and_can_be_cleared() {

@@ -7,6 +7,17 @@ export function zoomAt(v: Viewport, c: Vec2, factor: number): Viewport {
   const k = Math.min(K_MAX, Math.max(K_MIN, v.k * factor)), f = k / v.k;
   return { k, tx: c.x - f * (c.x - v.tx), ty: c.y - f * (c.y - v.ty) };
 }
+
+/** Spec 2026-10-19 addendum (G): how much one wheel event zooms. Pixels as the trackpad pinch always used,
+ *  e^(−Δy·0.002); a mouse that reports lines (deltaMode 1) or pages (2) is turned into pixels first. */
+export const WHEEL_LINE_PX = 16;
+export function wheelFactor(deltaY: number, deltaMode: number, pageH: number): number {
+  const px = deltaMode === 1 ? deltaY * WHEEL_LINE_PX : deltaMode === 2 ? deltaY * pageH : deltaY;
+  return Math.exp(-px * 0.002);
+}
+/** G: the point a zoom keeps still: the pointer when it is over the image, else the centre of the view. */
+export const zoomAnchor = (at: Vec2, onImage: boolean, view: { w: number; h: number }): Vec2 =>
+  (onImage ? at : { x: view.w / 2, y: view.h / 2 });
 export function fit(W: number, H: number, vw: number, vh: number, margin = 0.95): Viewport {
   const k = margin * Math.min(vw / W, vh / H);
   return { k, tx: (vw - k * W) / 2, ty: (vh - k * H) / 2 };
