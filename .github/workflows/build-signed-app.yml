@@ -1,0 +1,211 @@
+name: Build signed app
+# Builds OpenCephAI for macOS, signed with the Developer ID certificate (hardened runtime), notarised by Apple
+# and stapled (app and DMG), then runs Apple's own checks (codesign, spctl, stapler) and keeps the DMG as a
+# 7-day workflow artifact. Nothing is published. No secret value is ever printed.
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+env:
+  DMG_NAME: OpenCephAI-1.1-Beta.dmg
+jobs:
+  build:
+    runs-on: macos-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up pnpm (version from package.json packageManager)
+        uses: pnpm/action-setup@v4
+
+      - name: Set up Node 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Set up Rust stable
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Cache Rust build
+        uses: Swatinem/rust-cache@v2
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Import the certificate into a temporary keychain
+        env:
+          BUILD_CERTIFICATE_BASE64: ${{ secrets.BUILD_CERTIFICATE_BASE64 }}
+          P12_PASSWORD: ${{ secrets.P12_PASSWORD }}
+        run: |
+          set -euo pipefail
+          for v in BUILD_CERTIFICATE_BASE64 P12_PASSWORD; do
+            if [ -z "${!v}" ]; then echo "FAIL: secret $v is empty or missing"; exit 1; fi
+          done
+          KC="$RUNNER_TEMP/build.keychain-db"; KCPW="$(openssl rand -hex 24)"
+          echo "::add-mask::$KCPW"
+          echo "$BUILD_CERTIFICATE_BASE64" | base64 --decode > "$RUNNER_TEMP/cert.p12"
+          security create-keychain -p "$KCPW" "$KC"
+          security set-keychain-settings -lut 7200 "$KC"
+          security unlock-keychain -p "$KCPW" "$KC"
+          if ! security import "$RUNNER_TEMP/cert.p12" -P "$P12_PASSWORD" -A -t cert -f pkcs12 -k "$KC" >/dev/null 2>&1; then
+            rm -f "$RUNNER_TEMP/cert.p12"
+            echo "FAIL: the certificate could not be imported (wrong P12_PASSWORD, or the file is not a .p12)"; exit 1
+          fi
+          rm -f "$RUNNER_TEMP/cert.p12"
+          # Let codesign use the key without a UI prompt, and put the keychain on the search list.
+          security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k "$KCPW" "$KC" >/dev/null 2>&1
+          security list-keychains -d user -s "$KC" $(security list-keychains -d user | tr -d '"')
+          IDS="$(security find-identity -v -p codesigning "$KC")"
+          NAME="$(echo "$IDS" | sed -n 's/.*"\(Developer ID Application: .*\)"/\1/p' | head -1)"
+          if [ -z "$NAME" ]; then
+            echo "FAIL: no 'Developer ID Application' signing identity found. Identities found:"
+            echo "$IDS" | sed 's/^ *[0-9]*) [0-9A-F]* //'
+            exit 1
+          fi
+          echo "PASS: certificate imported; signing identity: $NAME"
+          echo "SIGN_ID=$NAME" >> "$GITHUB_ENV"
+          echo "BUILD_KC=$KC" >> "$GITHUB_ENV"
+
+      - name: Write the notarisation key
+        env:
+          APPLE_API_KEY: ${{ secrets.APPLE_API_KEY }}
+          APPLE_API_KEY_ID: ${{ secrets.APPLE_API_KEY_ID }}
+          APPLE_API_ISSUER: ${{ secrets.APPLE_API_ISSUER }}
+        run: |
+          set -euo pipefail
+          for v in APPLE_API_KEY APPLE_API_KEY_ID APPLE_API_ISSUER; do
+            if [ -z "${!v}" ]; then echo "FAIL: secret $v is empty or missing"; exit 1; fi
+          done
+          K="$RUNNER_TEMP/AuthKey_notary.p8"
+          if printf '%s' "$APPLE_API_KEY" | grep -q 'BEGIN PRIVATE KEY'; then
+            printf '%s\n' "$APPLE_API_KEY" > "$K"
+          else
+            printf '%s' "$APPLE_API_KEY" | base64 --decode > "$K" 2>/dev/null || true
+            grep -q 'BEGIN PRIVATE KEY' "$K" || { rm -f "$K"; echo "FAIL: APPLE_API_KEY is neither .p8 text nor base64 of a .p8"; exit 1; }
+          fi
+          chmod 600 "$K"
+          echo "PASS: notarisation key written to the runner's temp folder"
+          echo "NOTARY_KEY=$K" >> "$GITHUB_ENV"
+
+      - name: Build, sign (hardened runtime) and notarise the app with Tauri
+        working-directory: apps/desktop
+        env:
+          # Tauri 2 (tauri-cli 2.11.5) reads these. APPLE_SIGNING_IDENTITY overrides signingIdentity "-" in
+          # tauri.conf.json for this build only. Tauri's APPLE_API_KEY is the key ID (not the .p8 text).
+          APPLE_SIGNING_IDENTITY: ${{ env.SIGN_ID }}
+          APPLE_API_ISSUER: ${{ secrets.APPLE_API_ISSUER }}
+          APPLE_API_KEY: ${{ secrets.APPLE_API_KEY_ID }}
+          APPLE_API_KEY_PATH: ${{ env.NOTARY_KEY }}
+        run: |
+          set -euo pipefail
+          pnpm tauri build --bundles app,dmg 2>&1 | sed 's/[A-Za-z0-9+\/=]\{40,\}/<redacted>/g'
+
+      - name: Locate the app and DMG
+        run: |
+          set -euo pipefail
+          APP="$(find target/release/bundle/macos -maxdepth 1 -name '*.app' | head -1)"
+          DMG_SRC="$(find target/release/bundle/dmg -maxdepth 1 -name '*.dmg' | head -1)"
+          [ -n "$APP" ] || { echo "FAIL: no .app produced"; exit 1; }
+          [ -n "$DMG_SRC" ] || { echo "FAIL: no .dmg produced"; exit 1; }
+          mkdir -p "$RUNNER_TEMP/out"
+          cp "$DMG_SRC" "$RUNNER_TEMP/out/$DMG_NAME"
+          echo "PASS: app at $APP; DMG $(basename "$DMG_SRC") copied as $DMG_NAME"
+          echo "APP=$PWD/$APP" >> "$GITHUB_ENV"
+          echo "DMG=$RUNNER_TEMP/out/$DMG_NAME" >> "$GITHUB_ENV"
+
+      - name: Sign, notarise and staple the DMG; staple the app
+        env:
+          APPLE_API_KEY_ID: ${{ secrets.APPLE_API_KEY_ID }}
+          APPLE_API_ISSUER: ${{ secrets.APPLE_API_ISSUER }}
+        run: |
+          set -euo pipefail
+          R() { sed 's/[A-Za-z0-9+\/=]\{40,\}/<redacted>/g'; }
+          codesign --force --timestamp --sign "$SIGN_ID" "$DMG" 2>&1 | R
+          echo "PASS: DMG signed"
+          if ! xcrun notarytool submit "$DMG" --key "$NOTARY_KEY" --key-id "$APPLE_API_KEY_ID" --issuer "$APPLE_API_ISSUER" \
+               --wait --timeout 45m --output-format json > "$RUNNER_TEMP/n.json" 2> "$RUNNER_TEMP/n.err"; then
+            echo "FAIL: notarytool submit failed:"; R < "$RUNNER_TEMP/n.err" | head -20
+          fi
+          STATUS="$(plutil -extract status raw -o - "$RUNNER_TEMP/n.json" 2>/dev/null || echo unknown)"
+          SUBID="$(plutil -extract id raw -o - "$RUNNER_TEMP/n.json" 2>/dev/null || echo unknown)"
+          echo "Notarisation submission $SUBID: $STATUS"
+          if [ "$STATUS" != "Accepted" ]; then
+            echo "FAIL: DMG notarisation status is $STATUS. Apple's log:"
+            xcrun notarytool log "$SUBID" --key "$NOTARY_KEY" --key-id "$APPLE_API_KEY_ID" --issuer "$APPLE_API_ISSUER" 2>&1 | R | head -60 || true
+            exit 1
+          fi
+          echo "PASS: DMG notarised (Accepted)"
+          xcrun stapler staple "$DMG"
+          echo "PASS: DMG stapled"
+          # Tauri staples the app it notarised; staple again so this step proves it (no-op if already stapled).
+          xcrun stapler staple "$APP"
+          echo "PASS: app stapled"
+
+      - name: Make sure Gatekeeper assessments are on (so spctl really assesses)
+        run: |
+          spctl --status || true
+          if ! spctl --status 2>/dev/null | grep -q 'assessments enabled'; then
+            sudo spctl --global-enable 2>/dev/null || sudo spctl --master-enable 2>/dev/null || true
+            spctl --status || true
+          fi
+
+      - name: "Apple checks: the app"
+        run: |
+          set -uo pipefail
+          FAILS=0
+          ok() { echo "PASS: $1"; }; bad() { echo "FAIL: $1"; FAILS=$((FAILS+1)); }
+          if codesign --verify --deep --strict --verbose=2 "$APP" 2>&1; then ok "codesign --verify --deep --strict (app)"; else bad "codesign --verify --deep --strict (app)"; fi
+          D="$(codesign -dv --verbose=4 "$APP" 2>&1)"; echo "$D" | grep -E '^(Identifier|Format|CodeDirectory|Authority|Timestamp|TeamIdentifier|Runtime Version)='
+          echo "$D" | grep -q '^Authority=Developer ID Application: ' && ok "Authority is Developer ID Application" || bad "Authority is not Developer ID Application"
+          T="$(echo "$D" | sed -n 's/^TeamIdentifier=//p')"
+          [ -n "$T" ] && [ "$T" != "not set" ] && ok "TeamIdentifier present ($T)" || bad "TeamIdentifier missing"
+          echo "$D" | grep -qE '^CodeDirectory .*flags=0x[0-9a-f]*\([^)]*runtime[^)]*\)' && ok "hardened runtime flag set" || bad "hardened runtime flag not set"
+          echo "$D" | grep -q '^Timestamp=' && ok "secure timestamp present" || bad "secure timestamp missing"
+          S="$(spctl --assess --type execute -vvv "$APP" 2>&1)"; RC=$?; echo "$S"
+          if [ $RC -eq 0 ] && echo "$S" | grep -q 'accepted' && echo "$S" | grep -q 'source=Notarized Developer ID'; then ok "spctl execute: accepted, Notarized Developer ID"; else bad "spctl execute (app)"; fi
+          if xcrun stapler validate "$APP" 2>&1; then ok "stapler validate (app)"; else bad "stapler validate (app)"; fi
+          echo "App checks failed: $FAILS"; [ $FAILS -eq 0 ]
+
+      - name: "Apple checks: the DMG, and the app inside it"
+        run: |
+          set -uo pipefail
+          FAILS=0
+          ok() { echo "PASS: $1"; }; bad() { echo "FAIL: $1"; FAILS=$((FAILS+1)); }
+          D="$(codesign -dv --verbose=4 "$DMG" 2>&1)"; echo "$D" | grep -E '^(Identifier|Format|Authority|Timestamp|TeamIdentifier)='
+          echo "$D" | grep -q '^Authority=Developer ID Application: ' && ok "DMG signed by Developer ID Application" || bad "DMG not signed by Developer ID Application"
+          S="$(spctl --assess --type open --context context:primary-signature -vvv "$DMG" 2>&1)"; RC=$?; echo "$S"
+          if [ $RC -eq 0 ] && echo "$S" | grep -q 'accepted' && echo "$S" | grep -q 'source=Notarized Developer ID'; then ok "spctl open primary-signature (DMG): accepted, Notarized Developer ID"; else bad "spctl open primary-signature (DMG)"; fi
+          if xcrun stapler validate "$DMG" 2>&1; then ok "stapler validate (DMG)"; else bad "stapler validate (DMG)"; fi
+          M="$RUNNER_TEMP/dmgmnt"; mkdir -p "$M"
+          if hdiutil attach -nobrowse -readonly -mountpoint "$M" "$DMG" >/dev/null; then
+            ok "DMG mounted"
+            IN="$(find "$M" -maxdepth 1 -name '*.app' | head -1)"
+            if [ -z "$IN" ]; then bad "no .app inside the DMG"; else
+              echo "Inside the DMG: $(basename "$IN")"; ls -la "$M"
+              if codesign --verify --deep --strict --verbose=2 "$IN" 2>&1; then ok "codesign --verify --deep --strict (app in DMG)"; else bad "codesign --verify (app in DMG)"; fi
+              S="$(spctl --assess --type execute -vvv "$IN" 2>&1)"; RC=$?; echo "$S"
+              if [ $RC -eq 0 ] && echo "$S" | grep -q 'source=Notarized Developer ID'; then ok "spctl execute (app in DMG)"; else bad "spctl execute (app in DMG)"; fi
+              if xcrun stapler validate "$IN" 2>&1; then ok "stapler validate (app in DMG)"; else bad "stapler validate (app in DMG)"; fi
+            fi
+            hdiutil detach "$M" >/dev/null && ok "DMG unmounted" || bad "DMG unmount"
+          else
+            bad "DMG could not be mounted"
+          fi
+          echo "SHA-256: $(shasum -a 256 "$DMG" | cut -d' ' -f1)  $DMG_NAME"
+          echo "DMG checks failed: $FAILS"; [ $FAILS -eq 0 ]
+
+      - name: Keep the DMG as a workflow artifact (7 days)
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ env.DMG_NAME }}
+          path: ${{ env.DMG }}
+          retention-days: 7
+          if-no-files-found: error
+
+      - name: Delete the keychain and the key files
+        if: always()
+        run: |
+          if [ -n "${BUILD_KC:-}" ]; then security delete-keychain "$BUILD_KC" 2>/dev/null || true; fi
+          rm -f "$RUNNER_TEMP"/cert.p12 "$RUNNER_TEMP"/AuthKey_notary.p8 "$RUNNER_TEMP"/n.json "$RUNNER_TEMP"/n.err
+          echo "keychain and key files removed"
