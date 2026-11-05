@@ -10,6 +10,12 @@ licence; see `LICENSE`.
 
 Program and Design: Dr Linton Nash
 
+## Website, how-to guide and references
+
+- Website and step-by-step how-to guide, with the keyboard commands: https://orthosmile.github.io/OpenCephAI/
+- Download the signed Mac app: [Releases](https://github.com/ORTHOsmile/OpenCephAI/releases/latest)
+- Every research paper, dataset and AI model the app draws on: `REFERENCES.md`
+
 ## About
 
 OpenCephAI is a source-available app for tracing lateral cephalograms (side-on skull X-rays used in orthodontics) on a
@@ -36,6 +42,7 @@ education. It is not approved for diagnosis or treatment planning. Check every l
 - `docs` — methodology notes: how norms are added and checked, what the severity marks can and cannot tell you, the
   cross-check method, the analyses catalogue and two pre-registered rules.
 - `test-fixtures` — synthetic test cases shared by the Rust and TypeScript tests.
+- `REFERENCES.md` — the research papers, datasets, AI models and software the app draws on.
 
 All test data is synthetic. Test fixtures mark made-up patient details with the word SYNTHETIC. No patient data is
 in this repository, and none should ever be added.
@@ -95,11 +102,14 @@ are licensed for non-commercial use only; check that your use is allowed.
 
 ## Roadmap
 
-### Now (1.0)
+### Now (1.1 Beta)
 
 - AI tracing with several models. You verify every point.
-- Automatic best: for each point it picks the model that is closest on your own verified films.
-- Analyses and norms, with an automatic fallback when a norm is missing.
+- Automatic best: for each point it picks the model that is closest on your own verified films, with a choice of
+  base model.
+- Analyses and norms. The population is chosen automatically from the patient's details, with an automatic
+  fallback when a norm is missing.
+- A "far outside the usual position" warning on a point.
 - The profilogram.
 - Superimposition.
 - The PDF report and CSV export.
@@ -107,10 +117,9 @@ are licensed for non-commercial use only; check that your use is allowed.
 
 ### Next
 
-- Norms that choose the population automatically from the patient's details.
-- Choosing the base model for Automatic best.
-- A cross-check between two AI models.
-- A "far outside the usual position" warning.
+- A whole-film check (beta): does the tracing fit its film? It looks for a tracing on the wrong film, a mirrored
+  tracing, or one at the wrong size.
+- Report options: leave out the Points table, and the mm grid behind the profilogram.
 
 ### Later
 

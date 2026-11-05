@@ -8,11 +8,12 @@ import { fileURLToPath } from 'node:url';
 const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', '..');
 const readme = () => fs.readFileSync(path.join(repoRoot, 'README.md'), 'utf8');
 
-test('README.md has a Credits section with the exact credit and thanks lines', () => {
+test('README.md has a Credits section with the exact credit line, and no thanks line', () => {
   const text = readme();
   const section = /^## Credits\s*\n([\s\S]*?)(?=^## |\s*$(?![\s\S]))/m.exec(text)?.[1] ?? '';
   assert.match(section, /^Program and Design: Dr Linton Nash$/m);
-  assert.match(section, /^With thanks to Dr Linton Nash\.$/m);
+  // Owner, 5 Nov 2026: the thanks line was removed on GitHub; it must not come back.
+  assert.doesNotMatch(section, /With thanks to/);
 });
 
 test('README.md names no AI or tool', () => {
