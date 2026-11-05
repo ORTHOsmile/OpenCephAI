@@ -10,8 +10,6 @@ licence; see `LICENSE`.
 
 Program and Design: Dr Linton Nash
 
-With thanks to Dr Linton Nash.
-
 ## About
 
 OpenCephAI is a source-available app for tracing lateral cephalograms (side-on skull X-rays used in orthodontics) on a
