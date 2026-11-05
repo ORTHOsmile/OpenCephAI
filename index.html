@@ -1,0 +1,409 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>OpenCephAI 1.1 Beta – macOS lateral cephalogram tracing app with AI landmarks</title>
+  <meta name="description" content="OpenCephAI is a source-available macOS lateral cephalogram tracing app. AI-assisted orthodontic landmark detection, cephalometric analysis against published norms, superimposition, and PDF and CSV reports. For research and education.">
+  <meta name="keywords" content="macOS lateral cephalogram tracing app, AI-assisted orthodontic landmark detection, cephalometric analysis software Mac, digital cephalometric tracing tool, orthodontic X-ray analysis software">
+  <meta name="author" content="Dr Linton Nash">
+  <meta name="theme-color" content="#ffffff">
+  <link rel="icon" type="image/png" href="assets/icon.png">
+  <link rel="apple-touch-icon" href="assets/icon.png">
+
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="OpenCephAI 1.1 Beta – cephalometric tracing for Mac">
+  <meta property="og:description" content="Import a side-on skull X-ray, check AI-suggested landmarks, and export your cephalometric analysis. For research and education.">
+  <meta property="og:url" content="https://orthosmile.github.io/OpenCephAI/">
+  <meta property="og:image" content="https://orthosmile.github.io/OpenCephAI/assets/opencephai-tracing.png">
+  <link rel="canonical" href="https://orthosmile.github.io/OpenCephAI/">
+  <meta name="twitter:card" content="summary_large_image">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "OpenCephAI",
+    "softwareVersion": "1.1 Beta",
+    "operatingSystem": "macOS 13 or later",
+    "applicationCategory": "EducationalApplication",
+    "description": "A macOS lateral cephalogram tracing app with AI-assisted orthodontic landmark detection, cephalometric analysis against published norms, film superimposition, and PDF and CSV reports. For research and education only; not a medical device.",
+    "image": "https://orthosmile.github.io/OpenCephAI/assets/opencephai-tracing.png",
+    "url": "https://orthosmile.github.io/OpenCephAI/",
+    "downloadUrl": "https://github.com/ORTHOsmile/OpenCephAI/releases/latest",
+    "license": "https://polyformproject.org/licenses/noncommercial/1.0.0/",
+    "author": { "@type": "Person", "name": "Dr Linton Nash" },
+    "codeRepository": "https://github.com/ORTHOsmile/OpenCephAI"
+  }
+  </script>
+
+  <style>
+    :root {
+      --paper: #ffffff;
+      --mist: #f5f6f8;
+      --ink: #1d1d1f;
+      --graphite: #5f6368;
+      --line: #e4e6ea;
+      --blue: #0a66e8;
+      --blue-deep: #0753c2;
+      --violet: #8b4fe0;
+      --radius-lg: 18px;
+      --radius-md: 12px;
+      --font: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", system-ui, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      --font-display: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Inter", system-ui, "Segoe UI", Roboto, sans-serif;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; }
+
+    html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
+    @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+
+    body {
+      margin: 0;
+      font-family: var(--font);
+      font-size: 17px;
+      line-height: 1.55;
+      color: var(--ink);
+      background: var(--paper);
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+
+    img { max-width: 100%; height: auto; display: block; }
+    a { color: var(--blue); text-decoration: none; }
+    a:hover { text-decoration: underline; text-underline-offset: 3px; }
+    :focus-visible { outline: 3px solid rgba(10, 102, 232, .45); outline-offset: 3px; border-radius: 6px; }
+
+    .wrap { width: min(1080px, 100% - 48px); margin-inline: auto; }
+    .narrow { width: min(680px, 100% - 48px); margin-inline: auto; }
+
+    .skip {
+      position: absolute; left: 16px; top: -48px; padding: 8px 14px;
+      background: var(--ink); color: #fff; border-radius: 8px; z-index: 10;
+    }
+    .skip:focus { top: 12px; }
+
+    /* Top bar */
+    .topbar {
+      position: sticky; top: 0; z-index: 5;
+      background: rgba(255, 255, 255, .82);
+      -webkit-backdrop-filter: saturate(180%) blur(16px);
+      backdrop-filter: saturate(180%) blur(16px);
+      border-bottom: 1px solid rgba(228, 230, 234, .7);
+    }
+    .topbar .wrap { display: flex; align-items: center; justify-content: space-between; height: 56px; }
+    .brand { display: flex; align-items: center; gap: 10px; color: var(--ink); font-weight: 600; letter-spacing: -.01em; }
+    .brand:hover { text-decoration: none; }
+    .brand img { width: 28px; height: 28px; }
+    .topbar nav { display: flex; gap: 28px; font-size: 15px; }
+    .topbar nav a { color: var(--graphite); }
+    .topbar nav a:hover { color: var(--ink); text-decoration: none; }
+
+    /* Hero */
+    .hero { text-align: center; padding: 88px 0 0; }
+    .hero-icon {
+      width: 104px; height: 104px; margin: 0 auto 28px;
+      border-radius: 24px; background: #fff;
+      box-shadow: 0 1px 2px rgba(16, 24, 40, .08), 0 12px 32px -8px rgba(16, 24, 40, .18);
+      display: grid; place-items: center;
+    }
+    .hero-icon img { width: 84px; height: 84px; }
+    h1 {
+      font-family: var(--font-display);
+      font-size: clamp(44px, 7vw, 72px);
+      line-height: 1.04;
+      letter-spacing: -.035em;
+      font-weight: 700;
+      margin: 0;
+    }
+    h1 .version {
+      display: inline-block; vertical-align: middle;
+      margin-left: .25em; transform: translateY(-.12em);
+      font-size: .28em; letter-spacing: 0; font-weight: 600;
+      color: var(--blue); background: #eaf2ff;
+      padding: .35em .8em; border-radius: 999px;
+    }
+    .lede {
+      font-size: clamp(19px, 2.2vw, 22px);
+      line-height: 1.45;
+      color: var(--graphite);
+      max-width: 34em;
+      margin: 22px auto 0;
+    }
+    .cta-row { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 14px 22px; margin-top: 36px; }
+    .btn {
+      display: inline-flex; align-items: center; gap: 10px;
+      padding: 15px 28px; border-radius: 999px;
+      font-size: 17px; font-weight: 600; line-height: 1;
+      background: var(--blue); color: #fff;
+      box-shadow: 0 1px 1px rgba(7, 83, 194, .3), 0 8px 20px -6px rgba(10, 102, 232, .55);
+      transition: background-color .15s ease, transform .15s ease;
+    }
+    .btn:hover { background: var(--blue-deep); text-decoration: none; }
+    .btn:active { transform: translateY(1px); }
+    .btn svg { width: 18px; height: 18px; flex: none; }
+    .btn-quiet { font-size: 16px; font-weight: 500; }
+    .meta { margin: 16px 0 0; font-size: 14px; color: var(--graphite); }
+
+    .shot { margin: 64px auto 0; position: relative; }
+    /* The screenshot carries its own transparent rounded corners, so the shadow follows its shape */
+    .shot img {
+      width: 100%;
+      filter: drop-shadow(0 1px 1px rgba(16, 24, 40, .12)) drop-shadow(0 22px 40px rgba(16, 24, 40, .2)) drop-shadow(0 40px 60px rgba(10, 102, 232, .1));
+    }
+    .shot figcaption { margin-top: 18px; font-size: 14px; color: var(--graphite); }
+
+    /* Sections */
+    section { padding: 112px 0 0; }
+    h2 {
+      font-family: var(--font-display);
+      font-size: clamp(30px, 4vw, 42px);
+      line-height: 1.12;
+      letter-spacing: -.025em;
+      font-weight: 700;
+      margin: 0;
+    }
+    .section-head { text-align: center; max-width: 640px; margin: 0 auto 56px; }
+    .section-head p { color: var(--graphite); font-size: 19px; margin: 16px 0 0; }
+    h3 { font-size: 20px; line-height: 1.3; letter-spacing: -.012em; margin: 0 0 8px; font-weight: 650; }
+
+    /* Features: a 2×2 grid divided by hairlines */
+    .features {
+      display: grid; grid-template-columns: repeat(2, 1fr);
+      border: 1px solid var(--line); border-radius: var(--radius-lg);
+      overflow: hidden; background: var(--paper);
+    }
+    .feature { padding: 40px 40px 44px; }
+    .feature:nth-child(odd) { border-right: 1px solid var(--line); }
+    .feature:nth-child(-n+2) { border-bottom: 1px solid var(--line); }
+    .feature p { margin: 0; color: var(--graphite); }
+    .glyph {
+      width: 44px; height: 44px; border-radius: 12px; margin-bottom: 22px;
+      display: grid; place-items: center; background: var(--mist);
+    }
+    .glyph svg { width: 24px; height: 24px; }
+
+    /* Steps: a real sequence, joined by a line through the landmark rings */
+    .howto { background: var(--mist); margin-top: 112px; padding: 104px 0 112px; }
+    .howto .section-head { margin-bottom: 64px; }
+    .steps {
+      list-style: none; margin: 0; padding: 0;
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px;
+      position: relative; counter-reset: step;
+    }
+    .steps::before {
+      content: ""; position: absolute; top: 27px; left: 16.66%; right: 16.66%;
+      height: 2px; background: linear-gradient(90deg, var(--blue), var(--violet), var(--blue));
+      opacity: .35;
+    }
+    .step { text-align: center; position: relative; counter-increment: step; }
+    .ring {
+      width: 56px; height: 56px; margin: 0 auto 24px; border-radius: 50%;
+      background: var(--mist); border: 2px solid var(--blue);
+      display: grid; place-items: center; position: relative;
+      font-weight: 700; font-size: 20px; color: var(--blue);
+    }
+    .ring::before { content: counter(step); }
+    .step:nth-child(2) .ring { border-color: var(--violet); color: var(--violet); }
+    .step p { margin: 0 auto; color: var(--graphite); max-width: 19em; }
+    .step kbd {
+      font: inherit; font-size: .9em; font-weight: 600; color: var(--ink);
+      background: #fff; border: 1px solid var(--line); border-bottom-width: 2px;
+      border-radius: 6px; padding: 1px 7px; white-space: nowrap;
+    }
+
+    /* Models note */
+    .note {
+      display: grid; grid-template-columns: auto 1fr; gap: 20px; align-items: start;
+      padding: 28px 32px; border-radius: var(--radius-md);
+      border: 1px solid var(--line); background: var(--paper);
+      box-shadow: 0 1px 2px rgba(16, 24, 40, .04), 0 8px 24px -12px rgba(16, 24, 40, .12);
+    }
+    .note h2 { font-size: 20px; letter-spacing: -.012em; margin-bottom: 6px; }
+    .note p { margin: 0; color: var(--graphite); font-size: 16px; }
+    .note .glyph { margin: 0; background: #eaf2ff; }
+
+    /* Disclaimer and footer */
+    .disclaimer {
+      margin-top: 112px; padding: 24px 0; text-align: center;
+      border-top: 1px solid var(--line);
+      font-size: 14px; color: var(--graphite);
+    }
+    .disclaimer strong { color: var(--ink); }
+    footer { padding: 0 0 48px; font-size: 13px; color: #86868b; }
+    footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px 24px; border-top: 1px solid var(--line); padding-top: 22px; }
+    footer nav { display: flex; gap: 22px; }
+    footer a { color: var(--graphite); }
+
+    @media (max-width: 760px) {
+      body { font-size: 16px; }
+      .topbar nav a:not(.keep) { display: none; }
+      .hero { padding-top: 56px; }
+      .hero-icon { width: 84px; height: 84px; border-radius: 20px; }
+      .hero-icon img { width: 68px; height: 68px; }
+      h1 .version { display: block; width: max-content; margin: 14px auto 0; transform: none; font-size: 15px; }
+      .shot { margin-top: 44px; }
+      section { padding-top: 80px; }
+      .features { grid-template-columns: 1fr; }
+      .feature { padding: 30px 26px 32px; }
+      .feature:nth-child(odd) { border-right: 0; }
+      .feature:not(:last-child) { border-bottom: 1px solid var(--line); }
+      .howto { margin-top: 80px; padding: 72px 0 80px; }
+      .steps { grid-template-columns: 1fr; gap: 40px; }
+      .steps::before { display: none; }
+      .note { grid-template-columns: 1fr; padding: 24px; }
+      .disclaimer { margin-top: 80px; }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+
+  <header class="topbar">
+    <div class="wrap">
+      <a class="brand" href="#top" aria-label="OpenCephAI home">
+        <img src="assets/icon.png" alt="" width="28" height="28">
+        OpenCephAI
+      </a>
+      <nav aria-label="Main">
+        <a href="#features">Features</a>
+        <a href="#how-it-works">How it works</a>
+        <a class="keep" href="https://github.com/ORTHOsmile/OpenCephAI">GitHub</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <!-- Hero -->
+    <div class="hero" id="top">
+      <div class="wrap">
+        <div class="hero-icon"><img src="assets/icon.png" alt="OpenCephAI app icon" width="84" height="84"></div>
+        <h1>OpenCephAI <span class="version">1.1 Beta</span></h1>
+        <p class="lede">A friendly macOS lateral cephalogram tracing app. Import an X-ray, check the landmarks AI suggests, and get a clear cephalometric analysis.</p>
+
+        <div class="cta-row">
+          <a class="btn" href="https://github.com/ORTHOsmile/OpenCephAI/releases/latest">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11"/><path d="m7 10 5 5 5-5"/><path d="M5 20h14"/></svg>
+            Download for macOS (dmg)
+          </a>
+          <a class="btn-quiet" href="https://github.com/ORTHOsmile/OpenCephAI">View on GitHub</a>
+        </div>
+        <p class="meta">Free for research and teaching. Needs macOS 13 Ventura or later.</p>
+
+        <figure class="shot">
+          <img src="assets/opencephai-tracing.png" width="1440" height="900" fetchpriority="high"
+               alt="OpenCephAI on a Mac: a lateral cephalogram with AI-suggested landmarks, reference lines, a magnifier for fine placement, and the landmark checklist">
+          <figcaption>A film from a public research dataset, traced in OpenCephAI. Purple rings are AI suggestions; blue squares are points a person has accepted.</figcaption>
+        </figure>
+      </div>
+    </div>
+
+    <!-- Features -->
+    <section id="features" aria-labelledby="features-title">
+      <div class="wrap">
+        <div class="section-head">
+          <h2 id="features-title">Cephalometric analysis software for Mac, made simple</h2>
+          <p>Everything you need to trace a side-on skull X-ray, in one calm window.</p>
+        </div>
+
+        <div class="features">
+          <article class="feature">
+            <div class="glyph" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="#8b4fe0" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="7"/><circle cx="12" cy="12" r="1.6" fill="#8b4fe0" stroke="none"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg>
+            </div>
+            <h3>AI landmark detection</h3>
+            <p>AI-assisted orthodontic landmark detection places the points for you. You stay in charge: drag any point to move it, and accept each one when you are happy.</p>
+          </article>
+
+          <article class="feature">
+            <div class="glyph" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="#0a66e8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20 20 4"/><path d="M4 20h7"/><path d="M8.5 20a4.5 4.5 0 0 0-1.3-3.2"/><path d="M15 16h5M17.5 13.5v5"/></svg>
+            </div>
+            <h3>Measurements and norms</h3>
+            <p>See angles and distances from well-known analyses, such as Steiner, Downs, McNamara and Ricketts. Each value sits next to published norms, so you can see at a glance what stands out.</p>
+          </article>
+
+          <article class="feature">
+            <div class="glyph" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 18c2-6 5-10 10-12" stroke="#0a66e8"/><path d="M8 19c2-5 5-8 11-10" stroke="#8b4fe0"/></svg>
+            </div>
+            <h3>Film superimposition</h3>
+            <p>Lay films from different visits on top of each other. Watch how growth and treatment change the face over time, with a clear colour for each film.</p>
+          </article>
+
+          <article class="feature">
+            <div class="glyph" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="#0a66e8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><path d="M9 13h6M9 17h4"/></svg>
+            </div>
+            <h3>Reports you can share</h3>
+            <p>Save a tidy PDF report of the tracing and its measurements. Export the numbers as a CSV file to open in Excel, Numbers or your statistics software.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- How to -->
+    <div class="howto" id="how-it-works">
+      <section aria-labelledby="howto-title" style="padding-top:0">
+        <div class="wrap">
+          <div class="section-head">
+            <h2 id="howto-title">Your first tracing in three steps</h2>
+            <p>A digital cephalometric tracing tool that feels at home on your Mac. No set-up guide needed.</p>
+          </div>
+
+          <ol class="steps">
+            <li class="step">
+              <div class="ring" aria-hidden="true"></div>
+              <h3>Import a film</h3>
+              <p>Click <kbd>Import…</kbd> and choose a side-on skull X-ray. PNG, JPEG, TIFF and BMP files all work.</p>
+            </li>
+            <li class="step">
+              <div class="ring" aria-hidden="true"></div>
+              <h3>Check the AI landmarks</h3>
+              <p>Go through the points one by one. Move any that are off, then accept them. The magnifier helps with fine detail.</p>
+            </li>
+            <li class="step">
+              <div class="ring" aria-hidden="true"></div>
+              <h3>Export your analysis</h3>
+              <p>Open the measurements to compare with norms, then click <kbd>Export</kbd> to save a PDF report or a CSV file.</p>
+            </li>
+          </ol>
+        </div>
+      </section>
+    </div>
+
+    <!-- Models note -->
+    <section aria-labelledby="models-title">
+      <div class="narrow">
+        <div class="note">
+          <div class="glyph" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#0a66e8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10" width="16" height="11" rx="2.5"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/><circle cx="12" cy="15.5" r="1.4" fill="#0a66e8" stroke="none"/></svg>
+          </div>
+          <div>
+            <h2 id="models-title">About the AI models</h2>
+            <p>The AI models are made by research teams, not by OpenCephAI, so they are not inside the download. In the app, click <strong>Models…</strong> to get each one straight from its authors. You read and accept the authors' licence first. The app then sets up and checks each model on your own Mac.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <aside class="disclaimer" aria-label="Important notice">
+    <div class="wrap">
+      <p><strong>OpenCephAI is beta software for research and education only. It is not a medical device and must not be used for diagnosis or treatment decisions.</strong><br>
+      Every landmark and measurement must be checked by a qualified person.</p>
+    </div>
+  </aside>
+
+  <footer>
+    <div class="wrap">
+      <span>Copyright © 2026 Dr Linton Nash. Source available under the <a href="https://polyformproject.org/licenses/noncommercial/1.0.0/">PolyForm Noncommercial License 1.0.0</a>.</span>
+      <nav aria-label="Footer">
+        <a href="https://github.com/ORTHOsmile/OpenCephAI">GitHub</a>
+        <a href="https://github.com/ORTHOsmile/OpenCephAI/releases">Releases</a>
+        <a href="https://github.com/ORTHOsmile/OpenCephAI/issues">Report a problem</a>
+      </nav>
+    </div>
+  </footer>
+</body>
+</html>
