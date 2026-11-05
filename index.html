@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>OpenCephAI 1.1 Beta – macOS lateral cephalogram tracing app with AI landmarks</title>
+  <title>OpenCephAI 1.2 Beta – macOS lateral cephalogram tracing app with AI landmarks</title>
   <meta name="description" content="OpenCephAI is a source-available macOS lateral cephalogram tracing app. AI-assisted orthodontic landmark detection, cephalometric analysis against published norms, superimposition, and PDF and CSV reports. For research and education.">
   <meta name="keywords" content="macOS lateral cephalogram tracing app, AI-assisted orthodontic landmark detection, cephalometric analysis software Mac, digital cephalometric tracing tool, orthodontic X-ray analysis software">
   <meta name="author" content="Dr Linton Nash">
@@ -12,7 +12,7 @@
   <link rel="apple-touch-icon" href="assets/icon.png">
 
   <meta property="og:type" content="website">
-  <meta property="og:title" content="OpenCephAI 1.1 Beta – cephalometric tracing for Mac">
+  <meta property="og:title" content="OpenCephAI 1.2 Beta – cephalometric tracing for Mac">
   <meta property="og:description" content="Import a side-on skull X-ray, check AI-suggested landmarks, and export your cephalometric analysis. For research and education.">
   <meta property="og:url" content="https://orthosmile.github.io/OpenCephAI/">
   <meta property="og:image" content="https://orthosmile.github.io/OpenCephAI/assets/opencephai-tracing.png">
@@ -24,13 +24,13 @@
     "@context": "https://schema.org",
     "@type": "SoftwareApplication",
     "name": "OpenCephAI",
-    "softwareVersion": "1.1 Beta",
+    "softwareVersion": "1.2 Beta",
     "operatingSystem": "macOS 13 or later",
     "applicationCategory": "EducationalApplication",
     "description": "A macOS lateral cephalogram tracing app with AI-assisted orthodontic landmark detection, cephalometric analysis against published norms, film superimposition, and PDF and CSV reports. For research and education only; not a medical device.",
     "image": "https://orthosmile.github.io/OpenCephAI/assets/opencephai-tracing.png",
     "url": "https://orthosmile.github.io/OpenCephAI/",
-    "downloadUrl": "https://github.com/ORTHOsmile/OpenCephAI/releases/download/v1.1.0-beta/OpenCephAI-1.1-Beta.dmg",
+    "downloadUrl": "https://github.com/ORTHOsmile/OpenCephAI/releases/download/v1.2.0-beta/OpenCephAI-1.2-Beta.dmg",
     "license": "https://polyformproject.org/licenses/noncommercial/1.0.0/",
     "author": { "@type": "Person", "name": "Dr Linton Nash" },
     "codeRepository": "https://github.com/ORTHOsmile/OpenCephAI"
@@ -167,7 +167,7 @@
     .section-head p { color: var(--graphite); font-size: 19px; margin: 16px 0 0; }
     h3 { font-size: 20px; line-height: 1.3; letter-spacing: -.012em; margin: 0 0 8px; font-weight: 650; }
 
-    /* Features: a 2×2 grid divided by hairlines */
+    /* Features: a 2-column grid divided by hairlines; the last card may span both columns */
     .features {
       display: grid; grid-template-columns: repeat(2, 1fr);
       border: 1px solid var(--line); border-radius: var(--radius-lg);
@@ -175,7 +175,8 @@
     }
     .feature { padding: 40px 40px 44px; }
     .feature:nth-child(odd) { border-right: 1px solid var(--line); }
-    .feature:nth-child(-n+2) { border-bottom: 1px solid var(--line); }
+    .feature:nth-child(-n+4) { border-bottom: 1px solid var(--line); }
+    .feature-wide { grid-column: 1 / -1; border-right: 0 !important; }
     .feature p { margin: 0; color: var(--graphite); }
     .glyph {
       width: 44px; height: 44px; border-radius: 12px; margin-bottom: 22px;
@@ -334,11 +335,11 @@
     <div class="hero" id="top">
       <div class="wrap">
         <div class="hero-icon"><img src="assets/icon.png" alt="OpenCephAI app icon" width="84" height="84"></div>
-        <h1>OpenCephAI <span class="version">1.1 Beta</span></h1>
+        <h1>OpenCephAI <span class="version">1.2 Beta</span></h1>
         <p class="lede">A friendly macOS lateral cephalogram tracing app. Import an X-ray, check the landmarks AI suggests, and get a clear cephalometric analysis.</p>
 
         <div class="cta-row">
-          <a class="btn" href="https://github.com/ORTHOsmile/OpenCephAI/releases/download/v1.1.0-beta/OpenCephAI-1.1-Beta.dmg">
+          <a class="btn" href="https://github.com/ORTHOsmile/OpenCephAI/releases/download/v1.2.0-beta/OpenCephAI-1.2-Beta.dmg">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11"/><path d="m7 10 5 5 5-5"/><path d="M5 20h14"/></svg>
             Download for macOS (dmg)
           </a>
@@ -393,6 +394,14 @@
             </div>
             <h3>Reports you can share</h3>
             <p>Save a tidy PDF report of the tracing and its measurements. Export the numbers as a CSV file to open in Excel, Numbers or your statistics software.</p>
+          </article>
+
+          <article class="feature feature-wide">
+            <div class="glyph" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="#8b4fe0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11.5 11.5 14 16 9"/><path d="M12 3 4 6v5.5c0 4.4 3.1 8 8 9.5 4.9-1.5 8-5.1 8-9.5V6z"/></svg>
+            </div>
+            <h3>A whole-film check (beta)</h3>
+            <p>Does the tracing fit its film? The app looks for a tracing saved on the wrong film, a mirrored tracing, or one at the wrong size, and leaves a note for you to look at. Tested once on 102 films it had never seen, it caught 981 of 1,020 planted mistakes and raised no note on 102 correct tracings. A quiet check does not mean the tracing is right: you still check every point.</p>
           </article>
         </div>
       </div>
