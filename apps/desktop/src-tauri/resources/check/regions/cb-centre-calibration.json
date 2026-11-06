@@ -1,0 +1,16 @@
+{
+  "version": "cb-centre-calibration/1",
+  "rule": "sc1-cb-centre/1",
+  "detectorFingerprint": "17171e68f9f7072062e2a3a2cbd4851618056f5136bed998f1782c49d4897b80",
+  "median": [
+    -0.04571976425717506,
+    0.004802711884757825
+  ],
+  "line": 0.08,
+  "reportSha256": "111776c2bfb0e5932061f7ccb92e0d2eab1a049ba32c779309b29c070362e797",
+  "ruling": {
+    "rule": "whole-film/3",
+    "measuredLine": 0.06,
+    "recordSha256": "463ef936923682085f4a979e4aa0e394fa554b732dcd28a4aa09cb8d753300b5"
+  }
+}

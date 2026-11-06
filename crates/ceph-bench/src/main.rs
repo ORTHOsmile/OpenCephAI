@@ -147,6 +147,12 @@ struct Args {
     /// calibration.json becomes sc1-box-gate/4 (gate /3's kept as calibration-3.json) and cb-centre-calibration.json gets
     /// the ruled line 0.08 (the measured file kept as cb-centre-calibration-1.json). Reads no film. Runs alone. Exit 0, 1 refused.
     #[arg(long = "sc1-whole-film-3")] sc1_whole_film_3: bool,
+    /// Bundling the check inside the app (6 Nov 2026): make again, from the three pinned reports in this folder (box-gate-3.json,
+    /// cb-centre-calibration.json, size-calibration.json, each checked by its pinned SHA-256), the gate /3 calibration, the
+    /// measured centre calibration and the size calibration exactly as those runs wrote them, into <--out>/regions (a new
+    /// folder, never models/). Then `--sc1-whole-film-3 --out <the same folder>` gives whole-film/3's files. Reads no film.
+    /// Runs alone. Exit 0 written, 1 refused.
+    #[arg(long = "sc1-calibrations-from-reports")] sc1_calibrations_from_reports: Option<PathBuf>,
     /// whole-film/3's confirmation run (reference/sc1-1b-dev3.json, pre-registered): SC1-1a's films, folds, seeds and
     /// plants judged by whole-film/1 beside whole-film/3. Reads Ceph-400 test1 (--ceph400) and Aariz valid (--data); Test2,
     /// Aariz test and PKU refused. Runs alone; writes reports/sc1/sc1-1b-dev3.json. Exit 0 printed, 3 the stop tripped (to
@@ -345,6 +351,10 @@ fn model_id(manifest: &Path) -> anyhow::Result<String> {
 
 /// Checks made before any film is opened: the held-back test splits are refused (spec 2026-10-13 §7, owner O7), and
 /// `--scores-out` needs one of the three leakage words, checked here so a wrong word fails at once, not after the run.
+/// The models folder `--sc1-whole-film-3` sets up: `--out` when given (a new folder, for bundling the check inside the
+/// app), else `models`.
+fn wf3_models(a: &Args) -> PathBuf { a.out.clone().unwrap_or_else(|| PathBuf::from("models")) }
+
 fn preflight(a: &Args) -> anyhow::Result<()> {
     // Owner PARK-FLAGS (15 Oct 2026): Task 8 is cancelled and the test films stay closed. The single test run is refused
     // first, before the ledger or the data are looked at (final review m6). The opening code below stays for a future
@@ -471,18 +481,33 @@ fn preflight(a: &Args) -> anyhow::Result<()> {
         ceph_bench::sc1_gate2::refuse_reads_for(&ceph_bench::sc1_gate2::GATE3, &[(&a.data, "valid"), (&a.ceph400, "test1")])?;
         return Ok(());
     }
-    if a.sc1_whole_film_3 {
-        // whole-film/3's setup: before any file, it runs alone and reads no film (no --data, --ceph400, --split or --out).
+    if a.sc1_calibrations_from_reports.is_some() {
+        // Bundling the check (6 Nov 2026): before any file, it runs alone and reads no film (no --data, --ceph400 or --split).
         anyhow::ensure!(!(a.crosscheck_run || a.crosscheck_tune || a.decide_source || a.scale_check || a.orient || a.diag_facing
             || a.diag_flip_control || a.diag_reframe_control || a.diag_pad_control.is_some()
-            || a.chain_proof.is_some() || a.parity.is_some() || a.scores_out.is_some() || a.out.is_some() || a.cache.is_some()
+            || a.chain_proof.is_some() || a.parity.is_some() || a.scores_out.is_some() || a.cache.is_some()
+            || a.single_test_run || a.leakage.is_some() || a.shape_prior.is_some() || a.stage_a_acceptance || a.sc1_split.is_some()
+            || a.sc1_teaching_boxes.is_some() || a.sc1_faithfulness || a.sc1_box_gate || a.sc1_region_probe || a.sc1_box_gate_2 || a.sc1_box_gate_3
+            || a.sc1_size_calibrate || a.sc1_cb_calibrate || a.sc1_1a || a.sc1_1b_dev || a.sc1_1b_dev_decompose || a.sc1_1b_dev3 || a.sc1_whole_film_3 || a.pku_prepare.is_some()
+            || a.sc1_reference.is_some() || a.sc1_reference_lines.is_some() || a.split_explicit || a.data_explicit || a.ceph400_explicit
+            || a.posthoc_clinicians.is_some() || a.runs.is_some() || a.source_out.is_some() || a.check_bits.is_some() || a.split_file.is_some()
+            || a.boxes.is_some() || a.pytorch.is_some()),
+            "--sc1-calibrations-from-reports runs alone (no other mode, and no --data, --ceph400 or --split: it reads no film, only the three pinned reports)");
+        return Ok(());
+    }
+    if a.sc1_whole_film_3 {
+        // whole-film/3's setup: before any file, it runs alone and reads no film (no --data, --ceph400 or --split; --out
+        // names the models folder to set up, default models).
+        anyhow::ensure!(!(a.crosscheck_run || a.crosscheck_tune || a.decide_source || a.scale_check || a.orient || a.diag_facing
+            || a.diag_flip_control || a.diag_reframe_control || a.diag_pad_control.is_some()
+            || a.chain_proof.is_some() || a.parity.is_some() || a.scores_out.is_some() || a.cache.is_some() || a.sc1_calibrations_from_reports.is_some()
             || a.single_test_run || a.leakage.is_some() || a.shape_prior.is_some() || a.stage_a_acceptance || a.sc1_split.is_some()
             || a.sc1_teaching_boxes.is_some() || a.sc1_faithfulness || a.sc1_box_gate || a.sc1_region_probe || a.sc1_box_gate_2 || a.sc1_box_gate_3
             || a.sc1_size_calibrate || a.sc1_cb_calibrate || a.sc1_1a || a.sc1_1b_dev || a.sc1_1b_dev_decompose || a.sc1_1b_dev3 || a.pku_prepare.is_some()
             || a.sc1_reference.is_some() || a.sc1_reference_lines.is_some() || a.split_explicit || a.data_explicit || a.ceph400_explicit
             || a.posthoc_clinicians.is_some() || a.runs.is_some() || a.source_out.is_some() || a.check_bits.is_some() || a.split_file.is_some()
             || a.boxes.is_some() || a.pytorch.is_some()),
-            "--sc1-whole-film-3 runs alone (no other mode, and no --data, --ceph400, --split or --out: it reads no film and writes only under models/regions)");
+            "--sc1-whole-film-3 runs alone (no other mode, and no --data, --ceph400 or --split: it reads no film and writes only under <--out or models>/regions)");
         return Ok(());
     }
     if a.sc1_1b_dev_decompose {
@@ -762,8 +787,13 @@ fn main() -> anyhow::Result<()> {
         if code != 0 { std::process::exit(code); }
         return Ok(());
     }
+    if let Some(reports) = &a.sc1_calibrations_from_reports {
+        let code = ceph_bench::sc1_wf3::from_reports_cli(reports, a.out())?;
+        if code != 0 { std::process::exit(code); }
+        return Ok(());
+    }
     if a.sc1_whole_film_3 {
-        let code = ceph_bench::sc1_wf3::setup_cli(Path::new("models"))?;
+        let code = ceph_bench::sc1_wf3::setup_cli(&wf3_models(&a))?;
         if code != 0 { std::process::exit(code); }
         return Ok(());
     }
@@ -1352,10 +1382,29 @@ mod tests {
         let w = sc(&["--sc1-whole-film-3"]).unwrap();
         assert!(preflight(&w).is_ok(), "{:?}", preflight(&w).err());
         assert!(w.sc1_whole_film_3 && w.out.is_none());
-        for other in [&["--data", &az][..], &["--ceph400", &c4], &["--split", "valid"], &["--out", "/tmp/x"], &["--sc1-1b-dev3"], &["--sc1-cb-calibrate"]] {
+        for other in [&["--data", &az][..], &["--ceph400", &c4], &["--split", "valid"], &["--sc1-1b-dev3"], &["--sc1-cb-calibrate"], &["--sc1-calibrations-from-reports", "/tmp/r"]] {
             let e = preflight(&sc(&[&["--sc1-whole-film-3"][..], other].concat()).unwrap()).unwrap_err().to_string();
             eprintln!("--sc1-whole-film-3 with {other:?}: {e}");
             assert!(e.contains("runs alone"), "--sc1-whole-film-3 with {other:?}: {e}");
+        }
+        // Bundling the check (6 Nov 2026): --out names the models folder to set up (a new folder outside models/); default models.
+        let w = sc(&["--sc1-whole-film-3", "--out", "/tmp/check-files/models"]).unwrap();
+        assert!(preflight(&w).is_ok(), "{:?}", preflight(&w).err());
+        assert_eq!(wf3_models(&w), PathBuf::from("/tmp/check-files/models"));
+        assert_eq!(wf3_models(&sc(&["--sc1-whole-film-3"]).unwrap()), PathBuf::from("models"));
+    }
+    /// Bundling the check (6 Nov 2026): `--sc1-calibrations-from-reports <reports>` needs --out (the new models folder),
+    /// runs alone and reads no film (no --data, --ceph400 or --split). Fails if any check is removed.
+    #[test] fn sc1_calibrations_from_reports_runs_alone_with_out() {
+        let (_d, az, c4) = fixture();
+        let sc = |v: &[&str]| Args::parse_explicit([&["ceph-bench"][..], v].concat());
+        let ok = sc(&["--sc1-calibrations-from-reports", "/tmp/r", "--out", "/tmp/m"]).unwrap();
+        assert!(preflight(&ok).is_ok(), "{:?}", preflight(&ok).err());
+        assert!(sc(&["--sc1-calibrations-from-reports", "/tmp/r"]).is_err(), "clap requires --out");
+        for other in [&["--data", &az][..], &["--ceph400", &c4], &["--split", "valid"], &["--sc1-whole-film-3"], &["--sc1-size-calibrate"]] {
+            let e = preflight(&sc(&[&["--sc1-calibrations-from-reports", "/tmp/r", "--out", "/tmp/m"][..], other].concat()).unwrap()).unwrap_err().to_string();
+            eprintln!("--sc1-calibrations-from-reports with {other:?}: {e}");
+            assert!(e.contains("runs alone"), "with {other:?}: {e}");
         }
     }
     /// SC-1 Part 1b Task E information (owner, 5 Nov 2026): `--sc1-1b-dev-decompose` runs alone, takes no `--split` or

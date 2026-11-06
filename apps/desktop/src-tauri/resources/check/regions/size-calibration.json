@@ -1,0 +1,60 @@
+{
+  "version": "size-calibration/1",
+  "rule": "sc1-size/1",
+  "detectorFingerprint": "17171e68f9f7072062e2a3a2cbd4851618056f5136bed998f1782c49d4897b80",
+  "uses": [
+    "cranialBase",
+    "maxilla",
+    "mandible",
+    "incisors"
+  ],
+  "refs": [
+    {
+      "regions": [
+        "cranialBase",
+        "maxilla",
+        "mandible"
+      ],
+      "centre": 0.1504278994740374,
+      "line": 0.09
+    },
+    {
+      "regions": [
+        "cranialBase",
+        "maxilla",
+        "incisors"
+      ],
+      "centre": 0.0962240873860598,
+      "line": 0.11
+    },
+    {
+      "regions": [
+        "cranialBase",
+        "mandible",
+        "incisors"
+      ],
+      "centre": 0.10646072217483322,
+      "line": 0.08
+    },
+    {
+      "regions": [
+        "maxilla",
+        "mandible",
+        "incisors"
+      ],
+      "centre": 0.1375429940121235,
+      "line": 0.32
+    },
+    {
+      "regions": [
+        "cranialBase",
+        "maxilla",
+        "mandible",
+        "incisors"
+      ],
+      "centre": 0.12033835112107918,
+      "line": 0.09
+    }
+  ],
+  "reportSha256": "836b8c341127026f0f8b27f7abe54fabfaa9da96b05a21e60d8bd2e872a91cab"
+}

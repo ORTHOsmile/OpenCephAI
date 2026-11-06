@@ -48,6 +48,9 @@
       "icons/icon.icns",
       "icons/icon.ico"
     ],
+    "resources": [
+      "resources/check/**/*"
+    ],
     "category": "Medical",
     "copyright": "Copyright © 2026 Dr Linton Nash. OpenCephAI 1.2 Beta. Program and Design: Dr Linton Nash. Research tool — not a diagnostic device.",
     "shortDescription": "Cephalometric tracing (research use; not a medical device)",

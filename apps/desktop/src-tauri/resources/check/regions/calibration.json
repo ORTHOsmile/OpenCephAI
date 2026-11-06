@@ -1,0 +1,14 @@
+{
+  "version": "region-calibration/1",
+  "detectorFingerprint": "17171e68f9f7072062e2a3a2cbd4851618056f5136bed998f1782c49d4897b80",
+  "scoreLine": 0.5,
+  "tau": [
+    0.09,
+    0.02,
+    0.02,
+    0.01,
+    0.1
+  ],
+  "gateReportSha256": "ca3b3ecfa7a59c7cbfa23c4342b9a34ca1aa01d1625a0acf14f5f592be757cb6",
+  "rule": "sc1-box-gate/4"
+}

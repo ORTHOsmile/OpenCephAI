@@ -54,3 +54,8 @@ reference/norms/local/
 
 # Browser smoke output: the generated test image and screenshots (synthetic).
 apps/desktop/e2e/out/
+
+# The whole-film check's region finder inside the app (121 MB; owner, 6 Nov 2026): copied by scripts/fetch-check-model.sh,
+# downloaded from Zenodo by the signed build. Never committed. The calibrations and the shape reference beside it are.
+apps/desktop/src-tauri/resources/check/regions/model.onnx
+apps/desktop/src-tauri/resources/check/regions/manifest.json

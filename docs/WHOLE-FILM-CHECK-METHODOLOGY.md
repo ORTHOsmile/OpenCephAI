@@ -158,7 +158,7 @@ show" comes first, because it is what a quiet note does not rule out.
   same film.** No published box-accuracy figure on cephs to compare with.
 - **What would make it wrong.** A film unlike the teaching films (child, edentulous, poor contrast, a cropped film)
   where a box lands on a neighbouring structure. If fewer than 3 of the 5 regions are found, the note says "no skull
-  found" and no region, size or centre look runs. With no region finder installed, only the shape look runs.
+  found" and no region, size or centre look runs. If the region finder cannot be loaded, only the shape look runs.
 
 ### 2.2 Shape: "is this a human lateral face, the right way round?"
 
@@ -362,7 +362,9 @@ are not in the repository); their SHA-256 values let a reader confirm a copy.
 | SC1-1a, report | `sc1-1a.json` (author's copy) | `c08556b2…24b6` |
 | Box gate /2 (= gate /4's tolerances), report | `box-gate-2.json` (author's copy) | `db1a67a0…eae7` |
 | Box gate /4, record | in the repository: `reference/sc1-box-gate-4.json` | `ca3b3ecf…7cb6` |
-| Shape reference, 1,000 tracings (`whole-film-reference/1`) | `whole-film-reference-v1.shape` (not published: it holds other people's tracings) | `6f0f066a…81bd` |
+| Shape reference, 1,000 tracings (`whole-film-reference/1`) | in the repository and inside the app: `apps/desktop/src-tauri/resources/check/shape/whole-film-reference-v1.shape` (coordinates only, no images; Ceph-400 CC BY-NC 4.0 and Aariz CC BY 4.0, credited) | `6f0f066a…81bd` |
+| The three calibrations in force | in the repository and inside the app: `apps/desktop/src-tauri/resources/check/regions/` `calibration.json` (gate /4), `cb-centre-calibration.json` (ruled, line 0.08), `size-calibration.json` | `724e6b45…d20`, `704d97fb…654`, `d3973360…664` |
+| Region finder | inside the app (not in the repository: 121 MB); Zenodo doi:10.5281/zenodo.23965907 `model.onnx` | `17171e68…7b80` |
 | Size look | in the repository: `reference/sc1-size.json`; calibration `size-calibration.json` (author's copy) | `836b8c34…1cab` |
 | Cranial-base centre | in the repository: `reference/sc1-cb-centre.json`, ruling `reference/sc1-cb-centre-ruling.json`; calibration `cb-centre-calibration.json` (author's copy) | ruling `463ef936…00b5`; calibration `111776c2…e797` |
 | Development runs (tuning films) | `sc1-1b-dev.json` (`57dbbe39…1da4`), `sc1-1b-dev-decompose.json` (`45ea63ca…3b81`), `sc1-1b-dev3.json` (`9cbf2c4a…96c4`) (author's copies) | as listed |
@@ -440,3 +442,14 @@ tolerances); the centre calibration must carry the whole-film/3 ruling (line 0.0
 SHA-256 in section 7; the size calibration must be the pre-registered one (its report's SHA-256 in section 7, and the four
 regions it uses). A gate /1 to /3 file, the measured (line 0.06) centre file, another reference, or another size
 calibration gives no verdict for that look.
+
+**Where the files come from (6 Nov 2026).** From 1.2 Beta the five files come inside the app, so nothing needs
+installing: the region finder (the author's own, CC BY 4.0, Zenodo doi:10.5281/zenodo.23949953, version 2), the three
+calibrations and the shape reference. Picture two shelves: the user's own models folder, and a shelf inside the app. The
+app looks at the user's shelf first; a complete set there that passes every check above is used. A set there that fails
+any check (an older calibration, say) is passed over, and the app takes the whole set from its own shelf instead, never
+half from each. Because the checks admit only the one tested version of each file, which shelf it came from cannot
+change a verdict. A file inside the app that fails its check reads "not set up" for its look, like any other. The
+calibrations inside the app were made again from the run reports the PKU run pinned (each report's SHA-256 checked) and
+the shape reference was rebuilt byte for byte (SHA-256 `6f0f066a…81bd`), so they are the files the PKU run used, not
+copies of them.

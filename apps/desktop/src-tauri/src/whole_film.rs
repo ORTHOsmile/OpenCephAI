@@ -24,7 +24,9 @@ pub struct ShapeLoaded { pub scorer: WholeScorer, pub sha256: String, pub films:
 pub struct RegionLoaded { pub engine: RegionEngine, pub calibration: Option<RegionCalibration>,
     /// The size look's and the centre look's calibrations (whole-film/2), each only when made for this detector; else None
     /// and that look reads `not-set-up`.
-    pub size: Option<SizeCalibration>, pub cb: Option<CbCalibration> }
+    pub size: Option<SizeCalibration>, pub cb: Option<CbCalibration>,
+    /// The folder the finder and its calibrations were read from (`<models>/regions`): one folder, never a mix.
+    pub dir: PathBuf }
 
 /// The whole-film check's starting knowledge for this app run, loaded on first use (as Stage A's `PointCheckState`):
 /// while a part is empty, each use looks again; once loaded it is never searched again. A load that panics is caught.
@@ -102,31 +104,56 @@ fn caught<T>(what: &str, f: impl FnOnce() -> Option<T>) -> Option<T> {
 }
 
 /// The whole-film reference (`whole-film-reference-v1.shape`, SC-1 Part 1b, spec §17.4) from the first candidate folder
-/// holding one, as the shape scorer, its stored lines (the full 19 and each 18) seeded so none is fitted here; a set with
-/// fewer points is fitted on first use by the warm-up, outside the library's lock. Stage A's `ceph400-v1.shape` is never
-/// used in its place. None, logged, when missing or refused (the shape look then reads `not-set-up`).
+/// holding one that passes the pins, as the shape scorer, its stored lines (the full 19 and each 18) seeded so none is
+/// fitted here; a set with fewer points is fitted on first use by the warm-up, outside the library's lock. Stage A's
+/// `ceph400-v1.shape` is never used in its place. A file that is refused (unreadable, or not the pre-registered SHA-256)
+/// is logged and the next folder is looked in, so a stale file in the user's own folder falls back to the one inside the
+/// app (6 Nov 2026); the pins admit only the one pre-registered file, so the fallback cannot change a verdict. None,
+/// logged, when no folder holds one that passes (the shape look then reads `not-set-up`).
 pub fn load_shape_with(candidates: &[Option<PathBuf>], pins: &Pins) -> Option<Arc<ShapeLoaded>> {
-    let r = (|| -> anyhow::Result<ShapeLoaded> {
-        let path = crate::model_dir::find_whole_film_reference(candidates).ok_or_else(|| anyhow::anyhow!("no whole-film reference (shape/whole-film-reference-v1.shape) in the model folders"))?;
-        let bytes = std::fs::read(&path).map_err(|e| anyhow::anyhow!("{}: {e}", path.display()))?;
+    let one = |path: &std::path::Path| -> anyhow::Result<ShapeLoaded> {
+        let bytes = std::fs::read(path).map_err(|e| anyhow::anyhow!("{}: {e}", path.display()))?;
         let r = ceph_model::wholefilm::parse_reference(&bytes).map_err(|e| anyhow::anyhow!("{}: {e}", path.display()))?;
         pins.reference_ok(&r.sha256).map_err(|e| anyhow::anyhow!("{}: {e}", path.display()))?;
         let scorer = WholeScorer::from_reference(&r)?;
         Ok(ShapeLoaded { scorer, sha256: r.sha256, films: r.names.len() })
-    })();
-    match r {
-        Ok(s) => { eprintln!("whole-film check shape set up: {} tracings, file sha256 {}", s.films, s.sha256); Some(Arc::new(s)) }
-        Err(e) => { eprintln!("Whole-film check: shape not set up: {e:#}"); None }
+    };
+    let paths: Vec<PathBuf> = candidates.iter().flatten().map(|d| ceph_model::wholefilm::reference_path(d)).filter(|p| p.is_file()).collect();
+    if paths.is_empty() { eprintln!("Whole-film check: shape not set up: no whole-film reference (shape/whole-film-reference-v1.shape) in the model folders"); return None; }
+    for path in &paths {
+        match one(path) {
+            Ok(s) => { eprintln!("whole-film check shape set up: {} tracings, file sha256 {} ({})", s.films, s.sha256, path.display()); return Some(Arc::new(s)); }
+            Err(e) => eprintln!("Whole-film check: this shape reference is not used: {e:#}; looking in the next folder"),
+        }
     }
+    eprintln!("Whole-film check: shape not set up: no folder holds the pre-registered reference");
+    None
 }
 /// `load_shape_with` the shipped pins.
 pub fn load_shape(candidates: &[Option<PathBuf>]) -> Option<Arc<ShapeLoaded>> { load_shape_with(candidates, &Pins::shipped()) }
-/// `load_regions_with` the shipped pins.
-pub fn load_regions(candidates: &[Option<PathBuf>]) -> Option<Arc<RegionLoaded>> { load_regions_with(candidates, &Pins::shipped()) }
-/// The region finder from the first candidate folder holding `regions/manifest.json`, with `regions/calibration.json`
-/// beside it used only when made for this detector (its fingerprint). None, logged, when no model or a refused one.
+/// The region finder and its calibrations, all from ONE folder, never mixed (6 Nov 2026: the check's files also come
+/// inside the app, looked in last). Each candidate folder holding `regions/manifest.json` is loaded in order; the first
+/// whose finder and three calibrations all pass the pins is used, so a complete set in the user's own folder wins. A
+/// folder whose set is incomplete or refused (a stale calibration) is logged and passed over for a later complete one,
+/// so a wrong user file falls back to the set inside the app; the pins admit only the pre-registered files, so this
+/// cannot change a verdict. When no folder is complete, the first with the most looks set up is used (and its missing
+/// looks read `not-set-up`, as before). None when no folder holds a finder that loads.
 pub fn load_regions_with(candidates: &[Option<PathBuf>], pins: &Pins) -> Option<Arc<RegionLoaded>> {
-    let manifest = crate::model_dir::find_regions(candidates)?;
+    let set_up = |r: &RegionLoaded| [r.calibration.is_some(), r.size.is_some(), r.cb.is_some()].iter().filter(|x| **x).count();
+    let mut best: Option<(usize, Arc<RegionLoaded>)> = None;
+    for manifest in candidates.iter().flatten().map(|d| ceph_infer::regions::regions_manifest_path(d)).filter(|p| p.is_file()) {
+        let Some(r) = load_regions_at(&manifest, pins) else { continue };
+        let n = set_up(&r);
+        if n == 3 { return Some(r); }
+        eprintln!("Whole-film check: {} has {n} of 3 calibrations set up; looking in the next folder", r.dir.display());
+        if best.as_ref().is_none_or(|(b, _)| n > *b) { best = Some((n, r)); }
+    }
+    best.map(|(_, r)| r)
+}
+/// The region finder from this `regions/manifest.json`, with `regions/calibration.json`
+/// beside it used only when made for this detector (its fingerprint). None, logged, when refused.
+fn load_regions_at(manifest: &std::path::Path, pins: &Pins) -> Option<Arc<RegionLoaded>> {
+    let manifest = manifest.to_path_buf();
     let engine = match RegionEngine::load(&manifest) {
         Ok(e) => e,
         Err(e) => { eprintln!("Whole-film check: the region finder was refused: {e:#}"); return None; }
@@ -146,9 +173,9 @@ pub fn load_regions_with(candidates: &[Option<PathBuf>], pins: &Pins) -> Option<
     let beside = |name: &str| manifest.parent().map(|d| d.join(name));
     let size = optional_calibration("size", beside("size-calibration.json"), ceph_model::wholefilm::parse_size_calibration, |c: &SizeCalibration| pins.size_ok(c, &fp));
     let cb = optional_calibration("centre", beside("cb-centre-calibration.json"), ceph_model::wholefilm::parse_cb_calibration, |c: &CbCalibration| c.fits(&fp).and_then(|_| pins.centre_ok(c, &fp)));
-    eprintln!("whole-film check region finder loaded: {} ({fp}); calibration {}; size {}; centre {}", engine.spec().version,
+    eprintln!("whole-film check region finder loaded: {} ({fp}) from {}; calibration {}; size {}; centre {}", engine.spec().version, manifest.display(),
         if calibration.is_some() { "set up" } else { "not set up" }, if size.is_some() { "set up" } else { "not set up" }, if cb.is_some() { "set up" } else { "not set up" });
-    Some(Arc::new(RegionLoaded { engine, calibration, size, cb }))
+    Some(Arc::new(RegionLoaded { engine, calibration, size, cb, dir: manifest.parent().map(PathBuf::from).unwrap_or_default() }))
 }
 
 /// One optional calibration file: read, checked, and kept only when it names the installed detector. A missing file is
@@ -631,7 +658,7 @@ async fn loaded(app: &tauri::AppHandle) -> Arc<WholeFilmState> {
     let r = tauri::async_runtime::spawn_blocking(move || {
         use tauri::Manager;
         let st = app.state::<WholeFilmState>();
-        st.ensure_loaded(|| crate::candidates(&app));
+        st.ensure_loaded(|| crate::whole_film_candidates(&app));
         (st.shape(), st.regions())
     }).await;
     let (s, r) = r.unwrap_or_else(|e| { eprintln!("Whole-film check not set up: {e}"); (None, None) });
@@ -2167,4 +2194,172 @@ mod tests {
         assert!(!v.region_facing);
     }
 
+    // ---- The check's files inside the app (6 Nov 2026): resources/check, looked in after the user's own folders ----
+
+    /// The bundled folder as the source tree holds it: the app's resource folder is `src-tauri` here, so this is
+    /// `apps/desktop/src-tauri/resources/check` (the layout of a models folder: regions/ and shape/).
+    fn bundled() -> PathBuf { crate::model_dir::bundled_check_dir(std::path::Path::new(env!("CARGO_MANIFEST_DIR"))) }
+    /// The bundled region finder is git-ignored (121 MB; scripts/fetch-check-model.sh copies it, the signed build downloads
+    /// it). Missing: these tests FAIL, unless CEPHTRACE_NO_BUNDLED_FINDER=1 says this machine cannot have it (a CI test
+    /// job), and then only the finder's part is left out, with the reason printed.
+    fn finder_here() -> bool {
+        if regions_manifest_path(&bundled()).is_file() && bundled().join("regions").join("model.onnx").is_file() { return true; }
+        if std::env::var("CEPHTRACE_NO_BUNDLED_FINDER").as_deref() == Ok("1") {
+            eprintln!("SKIPPED (the finder's part): {} has no region finder and CEPHTRACE_NO_BUNDLED_FINDER=1", bundled().display());
+            return false;
+        }
+        panic!("{} has no region finder (model.onnx and manifest.json): run scripts/fetch-check-model.sh, or set CEPHTRACE_NO_BUNDLED_FINDER=1 where it cannot be fetched", bundled().display());
+    }
+    /// A copy of the bundled folder (the finder hard-linked, or copied when it cannot be).
+    fn bundled_copy() -> tempfile::TempDir {
+        let d = tempfile::tempdir().unwrap();
+        fn copy(from: &std::path::Path, to: &std::path::Path) {
+            std::fs::create_dir_all(to).unwrap();
+            for e in std::fs::read_dir(from).unwrap().flatten() {
+                let (f, t) = (e.path(), to.join(e.file_name()));
+                if f.is_dir() { copy(&f, &t) } else if std::fs::hard_link(&f, &t).is_err() { std::fs::copy(&f, &t).unwrap(); }
+            }
+        }
+        copy(&bundled(), d.path());
+        d
+    }
+    /// The folders a fresh app looks in: the user's own (all empty here), then the bundled one.
+    fn fresh(user: &std::path::Path, bundle: &std::path::Path) -> Vec<Option<PathBuf>> {
+        crate::model_dir::with_bundled(crate::model_dir::candidates(None, None, Some(user.to_path_buf()), None), Some(bundle.to_path_buf()))
+    }
+    /// Rewrites one file of a copied bundle (its text, changed by `f`), never the bundled original; panics if `f` changed nothing.
+    fn edit(dir: &std::path::Path, rel: &[&str], f: impl Fn(&str) -> String) {
+        let p = rel.iter().fold(dir.to_path_buf(), |p, r| p.join(r));
+        let old = std::fs::read_to_string(&p).unwrap();
+        let t = f(&old);
+        assert_ne!(t, old, "{}: the edit changed nothing", p.display());
+        std::fs::remove_file(&p).unwrap();                        // break a hard link first: the original stays as it was
+        std::fs::write(&p, t).unwrap();
+    }
+
+    /// The four small bundled files are the pre-registered ones: each passes the app's own pins (gate /4's record, the
+    /// ruled centre at 0.08, the size report's SHA-256 and regions, the reference's SHA-256 6f0f066a…81bd), for the pinned
+    /// detector. Runs without the finder. Fails if a bundled file is missing, or is any other calibration or reference.
+    #[test] fn the_bundled_check_files_pass_the_apps_pins() {
+        let pins = Pins::shipped();
+        let fp = ceph_model::wholefilm::records().unwrap().fingerprint;
+        let b = bundled();
+        let read = |p: PathBuf| std::fs::read(&p).unwrap_or_else(|e| panic!("{}: {e}", p.display()));
+        pins.region_ok(&ceph_model::wholefilm::parse_calibration(&read(ceph_model::wholefilm::calibration_path(&b))).unwrap(), &fp).unwrap();
+        pins.centre_ok(&ceph_model::wholefilm::parse_cb_calibration(&read(ceph_model::wholefilm::cb_calibration_path(&b))).unwrap(), &fp).unwrap();
+        pins.size_ok(&ceph_model::wholefilm::parse_size_calibration(&read(ceph_model::wholefilm::size_calibration_path(&b))).unwrap(), &fp).unwrap();
+        let empty = tempfile::tempdir().unwrap();
+        let sh = load_shape_with(&fresh(empty.path(), &b), &pins).expect("the bundled reference loads with the shipped pins");
+        println!("bundled reference: {} tracings, sha256 {}", sh.films, sh.sha256);
+        assert_eq!((sh.sha256.as_str(), sh.films), (ceph_model::wholefilm::REFERENCE_SHA256, 1000));
+        if finder_here() {
+            let m: serde_json::Value = serde_json::from_slice(&read(regions_manifest_path(&b))).unwrap();
+            assert_eq!(m["sha256"].as_str(), Some(fp.as_str()), "the bundled finder is the pinned detector");
+        }
+    }
+
+    /// THE KEY TEST. A fresh app whose own model folders are empty gives a whole-film verdict from the bundled files, with
+    /// the shipped pins: shape set up, regions ready, the size and centre looks set up, the finder run on a SYNTHETIC film,
+    /// and the check stored as whole-film/3 with the shape and region looks judged. Fails if the bundled folder is not
+    /// looked in, or a bundled file fails its pin.
+    #[test] fn a_fresh_app_with_empty_model_folders_gives_a_verdict_from_the_bundled_files() {
+        if !finder_here() { return; }
+        let user = tempfile::tempdir().unwrap();
+        let st = WholeFilmState::default();
+        st.ensure_loaded(|| fresh(user.path(), &bundled()));
+        println!("fresh app, empty folders: {}", serde_json::to_string(&status(&st)).unwrap());
+        assert_eq!(serde_json::to_string(&status(&st)).unwrap(), r#"{"shape":true,"regions":"ready"}"#);
+        let r = st.regions().unwrap();
+        assert!(r.size.is_some() && r.cb.is_some(), "the size and centre looks are set up");
+        assert_eq!(r.dir, bundled().join("regions"), "loaded from the bundled folder");
+        let (_t, mut l, a) = lib();
+        let t0 = std::time::Instant::now();
+        let wf = prepared(&l, &a, &st);
+        record(&mut l, &a, AZ, "right", &points(&face(), &[]), &wf);
+        let row = only(&l, &a);
+        println!("verdict: {:?}; reasons {:?}; finder runs {}; {} ms", looks(&row), reasons(&row), runs(&st), t0.elapsed().as_millis());
+        assert_eq!(runs(&st), 1, "the bundled finder ran on the film");
+        assert_eq!((row.record.shape_look.as_str(), row.record.region_look.as_str(), row.record.rule_version.as_str()), ("judged", "judged", "whole-film/3"));
+        assert!(row.record.outcome == "clean" || row.record.outcome == "flagged", "{}", row.record.outcome);
+    }
+
+    /// Induced failures on a copy of the bundle: each file changed in turn makes only its own look read not set up (the
+    /// region calibration: regions not-set-up; the size or centre file: that look None; the reference: shape not set up).
+    /// Fails if a changed file is still accepted.
+    #[test] fn a_changed_bundled_file_reads_not_set_up_for_its_look() {
+        let user = tempfile::tempdir().unwrap();
+        let c = bundled_copy();
+        edit(c.path(), &["shape", "whole-film-reference-v1.shape"], |t| t.replacen("95.9", "96.0", 1));
+        let st = WholeFilmState::default();
+        st.ensure_loaded(|| fresh(user.path(), c.path()));
+        println!("reference changed: shape {}", st.shape().is_some());
+        assert!(st.shape().is_none(), "a changed reference is refused");
+        if !finder_here() { return; }
+        let cases: [(&str, &[&str], fn(&RegionLoaded) -> bool); 3] = [
+            ("the region calibration", &["regions", "calibration.json"], |r| r.calibration.is_none() && r.size.is_some() && r.cb.is_some()),
+            ("the size calibration", &["regions", "size-calibration.json"], |r| r.calibration.is_some() && r.size.is_none() && r.cb.is_some()),
+            ("the centre calibration", &["regions", "cb-centre-calibration.json"], |r| r.calibration.is_some() && r.size.is_some() && r.cb.is_none()),
+        ];
+        for (what, rel, only_that) in cases {
+            let c = bundled_copy();
+            edit(c.path(), rel, |t| t.replacen("17171e68", "27171e68", 1));
+            let st = WholeFilmState::default();
+            st.ensure_loaded(|| fresh(user.path(), c.path()));
+            let r = st.regions().expect("the finder still loads");
+            println!("{what} changed: {} (calibration {}, size {}, centre {})", serde_json::to_string(&status(&st)).unwrap(), r.calibration.is_some(), r.size.is_some(), r.cb.is_some());
+            assert!(only_that(&r), "{what}: only its own look is not set up");
+        }
+    }
+
+    /// The user's own folder is looked in first and wins when its set passes the pins; a user set that does not (here a
+    /// region calibration with another τ) is passed over for the bundled set, logged, never mixed with it; and with no
+    /// bundled folder a wrong user set still reads not set up. The same for the shape reference. Fails if the bundled
+    /// folder is looked in first, a refused user file is used, or a user set is mixed with bundled files.
+    #[test] fn the_users_own_files_win_and_a_wrong_one_falls_back_to_the_bundled_set() {
+        let user = bundled_copy();
+        let other_user = bundled_copy();
+        edit(other_user.path(), &["shape", "whole-film-reference-v1.shape"], |t| t.replacen("95.9", "96.0", 1));
+        let st = WholeFilmState::default();
+        st.ensure_loaded(|| fresh(other_user.path(), &bundled()));
+        assert_eq!(st.shape().unwrap().sha256, ceph_model::wholefilm::REFERENCE_SHA256, "a refused user reference falls back to the bundled one");
+        let st = WholeFilmState::default();
+        st.ensure_loaded(|| vec![Some(other_user.path().to_path_buf())]);
+        assert!(st.shape().is_none(), "no bundled folder: the refused user reference reads not set up");
+        if !finder_here() { return; }
+        let st = WholeFilmState::default();
+        st.ensure_loaded(|| fresh(user.path(), &bundled()));
+        assert_eq!(st.regions().unwrap().dir, user.path().join("regions"), "a user set that passes the pins wins");
+        edit(user.path(), &["regions", "calibration.json"], |t| t.replacen("0.02", "0.03", 1));
+        let st = WholeFilmState::default();
+        st.ensure_loaded(|| fresh(user.path(), &bundled()));
+        let r = st.regions().unwrap();
+        println!("a wrong user calibration: loaded from {} ({})", r.dir.display(), serde_json::to_string(&status(&st)).unwrap());
+        assert_eq!(r.dir, bundled().join("regions"), "passed over for the bundled set");
+        assert!(r.calibration.is_some() && r.size.is_some() && r.cb.is_some());
+        let st = WholeFilmState::default();
+        st.ensure_loaded(|| vec![Some(user.path().to_path_buf())]);
+        assert_eq!(serde_json::to_string(&status(&st)).unwrap(), r#"{"shape":true,"regions":"not-set-up"}"#, "no bundled folder: the wrong user set reads not set up");
+    }
+
+    /// Smoke check of a BUILT app (run by hand, ignored otherwise): CEPHTRACE_BUILT_RESOURCES=<OpenCephAI.app/Contents/Resources>
+    /// is the resource folder the app resolves at run time; the same lookup the app makes finds the five files there and
+    /// gives a verdict. Fails if the built app's resources lack a file or the lookup path differs from where Tauri put them.
+    #[test] #[ignore] fn the_built_apps_resources_give_a_verdict() {
+        let res = PathBuf::from(std::env::var("CEPHTRACE_BUILT_RESOURCES").expect("set CEPHTRACE_BUILT_RESOURCES to <app>/Contents/Resources"));
+        let b = crate::model_dir::bundled_check_dir(&res);
+        let user = tempfile::tempdir().unwrap();
+        let st = WholeFilmState::default();
+        st.ensure_loaded(|| fresh(user.path(), &b));
+        println!("built app {}: {}", b.display(), serde_json::to_string(&status(&st)).unwrap());
+        assert_eq!(serde_json::to_string(&status(&st)).unwrap(), r#"{"shape":true,"regions":"ready"}"#);
+        let r = st.regions().unwrap();
+        assert!(r.size.is_some() && r.cb.is_some());
+        assert_eq!(r.dir, b.join("regions"));
+        let (_t, mut l, a) = lib();
+        let wf = prepared(&l, &a, &st);
+        record(&mut l, &a, AZ, "right", &points(&face(), &[]), &wf);
+        let row = only(&l, &a);
+        println!("built app verdict: {:?}", looks(&row));
+        assert_eq!((row.record.shape_look.as_str(), row.record.region_look.as_str()), ("judged", "judged"));
+    }
 }

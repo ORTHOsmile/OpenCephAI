@@ -35,6 +35,13 @@ fn candidates(app: &tauri::AppHandle) -> Vec<Option<PathBuf>> {
     )
 }
 
+/// The whole-film check's folders: the user's own (as `candidates`), then the check's files inside the app
+/// (`<resources>/resources/check`, through Tauri's resource API; owner, 6 Nov 2026). The landmark model's search is
+/// unchanged: the bundled folder is never offered to it.
+fn whole_film_candidates(app: &tauri::AppHandle) -> Vec<Option<PathBuf>> {
+    model_dir::with_bundled(candidates(app), app.path().resource_dir().ok().map(|d| model_dir::bundled_check_dir(&d)))
+}
+
 fn load(manifest: PathBuf) -> Result<Arc<Engine>, String> {
     Engine::load(&manifest).map(Arc::new).map_err(|e| format!("could not load {}: {e:#}", manifest.display()))
 }

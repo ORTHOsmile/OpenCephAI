@@ -33,6 +33,22 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Download the whole-film check's region finder (Zenodo record 23965907; SHA-256 pinned in the repository)
+        # The owner's own region finder (CC BY 4.0, doi:10.5281/zenodo.23949953, version 2) goes inside the app with the
+        # check's calibrations and shape reference (committed beside it). Its two files are too large for the repository,
+        # so they are fetched here and each must match apps/desktop/src-tauri/check-finder.sha256, else the build stops.
+        run: |
+          set -euo pipefail
+          D=apps/desktop/src-tauri/resources/check/regions
+          SUMS="$PWD/apps/desktop/src-tauri/check-finder.sha256"
+          T="$RUNNER_TEMP/check-finder"; rm -rf "$T"; mkdir -p "$T"
+          for f in model.onnx manifest.json; do
+            curl -fsSL --retry 3 --retry-delay 5 -o "$T/$f" "https://zenodo.org/api/records/23965907/files/$f/content"
+          done
+          if ! (cd "$T" && shasum -a 256 -c "$SUMS"); then echo "FAIL: a downloaded file does not match the pinned SHA-256"; exit 1; fi
+          mkdir -p "$D"; mv "$T/model.onnx" "$T/manifest.json" "$D/"
+          echo "PASS: region finder downloaded and checked: $(wc -l < "$SUMS" | tr -d ' ') files"
+
       - name: Import the certificate into a temporary keychain
         env:
           BUILD_CERTIFICATE_BASE64: ${{ secrets.BUILD_CERTIFICATE_BASE64 }}
@@ -104,6 +120,17 @@ jobs:
         run: |
           set -euo pipefail
           pnpm tauri build --bundles app,dmg 2>&1 | sed 's/[A-Za-z0-9+\/=]\{40,\}/<redacted>/g'
+
+      - name: The whole-film check's five files are inside the app
+        run: |
+          set -euo pipefail
+          APP="$(find target/release/bundle/macos -maxdepth 1 -name '*.app' | head -1)"
+          C="$APP/Contents/Resources/resources/check"
+          for f in regions/model.onnx regions/manifest.json regions/calibration.json regions/cb-centre-calibration.json regions/size-calibration.json shape/whole-film-reference-v1.shape; do
+            [ -f "$C/$f" ] || { echo "FAIL: $f is not inside the app"; exit 1; }
+          done
+          (cd "$C/regions" && shasum -a 256 -c "$GITHUB_WORKSPACE/apps/desktop/src-tauri/check-finder.sha256")
+          echo "PASS: the check's files are inside the app"
 
       - name: Locate the app and DMG
         run: |

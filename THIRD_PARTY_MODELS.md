@@ -4,9 +4,14 @@ OpenCephAI's own code is licensed under the PolyForm Noncommercial License 1.0.0
 (see `LICENSE`; the clinical-use permission was withdrawn by the owner on 5 Nov 2026). The landmark-detection
 models it can use are other people's work, under their own licences.
 
-**CephTrace never bundles or redistributes model weights.** Each person downloads them from the authors' own link in
-**Models…**, accepts the licence on their own Mac, and CephTrace converts and checks them there. Only each network's
-structure, with every weight removed, ships with the app.
+**CephTrace never bundles or redistributes other people's model weights.** Each person downloads them from the authors'
+own link in **Models…**, accepts the licence on their own Mac, and CephTrace converts and checks them there. Only each
+network's structure, with every weight removed, ships with the app.
+
+**One exception, the author's own model (owner, 6 Nov 2026):** the whole-film check's region finder, which the author
+taught and published under CC BY 4.0 (Zenodo, doi:10.5281/zenodo.23949953), comes inside the app, with the check's three
+calibration files and its shape reference (expert-tracing coordinates only; see the two entries below), so the check
+works with nothing to install.
 
 This is not legal advice. Check that your use is allowed, in particular before using a non-commercial model in a
 practice that charges fees.
@@ -129,8 +134,13 @@ Added 5 Nov 2026 for SC-1 Part 1b Task B (design
   test and PKU are never read. Stage A's `ceph400-v1.shape` is a separate file and is not changed.
 - **Licences:** Ceph-400 as above, **CC BY-NC 4.0** (the organisers' own terms not confirmed); Aariz **CC BY 4.0**
   (credit required). The file mixes both, so it carries the stricter terms: **non-commercial use only**, with both
-  credits. As with Stage A's file, it is **never redistributed by us**: built and kept only on this Mac, in the
-  git-ignored `models/` folder. Sharing it with other users is an open question.
+  credits.
+- **Shipped inside the app (owner, 6 Nov 2026):** the file comes inside OpenCephAI from 1.2 Beta, at
+  `apps/desktop/src-tauri/resources/check/shape/whole-film-reference-v1.shape`, and is committed there. What is shipped
+  is the coordinates and the 20 lines only: **no film, no image**. The app is for research and education only, which is
+  non-commercial, so the CC BY-NC 4.0 terms are met; the credits below go with it. It is made again, byte for byte, by
+  `ceph-bench --sc1-reference` (SHA-256 `6f0f066aeedde5eb329800595c29fb082b56ec6092f8782fc8653d0a1b4a81bd`, the
+  pre-registered one; the app refuses any other).
 - **Credit wherever the coordinates are used:** Lindner, C. et al., *Scientific Reports* 6, 33581 (2016); source
   <https://huggingface.co/datasets/YongchengYAO/Ceph-Biometrics-400>, CC BY-NC 4.0; the challenge itself: Wang, C.-W.
   et al., *Medical Image Analysis* 31, 63–76 (2016). And: Aariz Cephalometric Dataset (CEPHA29), Khalid et al.,
@@ -163,8 +173,11 @@ The run record below was filled from the teaching run's own logs on 4 Nov 2026. 
 ## The region finder taught here (`rfdetr-m-aariz-regions`)
 
 - **What it is:** RF-DETR Medium, taught to draw a box round each of five regions (cranial base, maxilla, mandible,
-  incisors, soft-tissue profile) on lateral cephalograms. Used by the whole-film check. In the app it lives in the
-  git-ignored `models/regions/`. Its master copy is in the owner's separate `OpenCephAI-models` repository (local).
+  incisors, soft-tissue profile) on lateral cephalograms. Used by the whole-film check. From 1.2 Beta it comes inside
+  the app (owner, 6 Nov 2026), in `resources/check/regions/` with the check's three calibration files; a copy a user
+  installs in their own models folder is looked in first. The ONNX file (121 MB) is not in the source repository: a local
+  build copies it from the owner's `OpenCephAI-models` repository (local), its master copy, and the signed build
+  downloads it from Zenodo version 2; both check its SHA-256 against `apps/desktop/src-tauri/check-finder.sha256`.
 - **Published openly (owner; version 1 on 5 Nov 2026, version 2 on 6 Nov 2026):** Zenodo, doi:10.5281/zenodo.23949953 (all
   versions; version 2 is doi:10.5281/zenodo.23965907, version 1 doi:10.5281/zenodo.23949954), CC BY 4.0, with RF-DETR's Apache-2.0
   licence and the Aariz credit. The record holds the ONNX file above, the PyTorch weights as safetensors, the film split

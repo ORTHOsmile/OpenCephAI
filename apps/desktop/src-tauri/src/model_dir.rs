@@ -6,7 +6,18 @@ pub fn candidates(env: Option<PathBuf>, remembered: Option<PathBuf>, app_models:
     vec![env, remembered, app_models, dev]
 }
 
-/// First candidate directory that holds a `manifest.json`. Model weights are never bundled with the app (decision 2):
+/// The whole-film check's own files that come inside the app (owner, 6 Nov 2026): `<resources>/resources/check`, laid out
+/// as a models folder (`regions/` and `shape/`). `resources` is the app's resource folder from Tauri's resource API
+/// (`app.path().resource_dir()`), never a fixed path (Windows-ready; joins only).
+pub fn bundled_check_dir(resources: &std::path::Path) -> PathBuf { resources.join("resources").join("check") }
+
+/// The whole-film check's folders: the user's own first (so a file the user installed still wins), then the bundled one.
+pub fn with_bundled(mut candidates: Vec<Option<PathBuf>>, bundled: Option<PathBuf>) -> Vec<Option<PathBuf>> {
+    candidates.push(bundled);
+    candidates
+}
+
+/// First candidate directory that holds a `manifest.json`. Landmark model weights are never bundled with the app (decision 2):
 /// the caller passes, in order, $CEPHTRACE_MODEL_DIR, the app data dir's `models/`, and (dev builds) the repo's `models/`.
 pub fn find_manifest(candidates: &[Option<PathBuf>]) -> Option<PathBuf> {
     candidates.iter().flatten().map(|d| d.join("manifest.json")).find(|m| m.is_file())
@@ -15,12 +26,6 @@ pub fn find_manifest(candidates: &[Option<PathBuf>]) -> Option<PathBuf> {
 /// First candidate directory that holds the point check's tracings file (`shape/ceph400-v1.shape`, joins only).
 pub fn find_shape_prior(candidates: &[Option<PathBuf>]) -> Option<PathBuf> {
     candidates.iter().flatten().map(|d| ceph_model::pointcheck::prior_path(d)).find(|p| p.is_file())
-}
-
-/// First candidate directory that holds the whole-film check's shape reference (`shape/whole-film-reference-v1.shape`,
-/// joins only). Stage A's `ceph400-v1.shape` is never taken in its place.
-pub fn find_whole_film_reference(candidates: &[Option<PathBuf>]) -> Option<PathBuf> {
-    candidates.iter().flatten().map(|d| ceph_model::wholefilm::reference_path(d)).find(|p| p.is_file())
 }
 
 /// First candidate directory that holds the region finder (`regions/manifest.json`, joins only).
@@ -73,6 +78,13 @@ mod tests {
         assert_eq!(find_regions(&[None, Some(a.clone()), Some(b.clone()), Some(c.clone())]), Some(ceph_infer::regions::regions_manifest_path(&b)));
         assert_eq!(find_regions(&[Some(a.clone())]), None);
         for d in [a, b, c] { std::fs::remove_dir_all(d).ok(); }
+    }
+    /// The check's bundled folder is looked in LAST, after every folder of the user's own (env, remembered, app data,
+    /// dev), and sits at <resources>/resources/check (joins only). Fails if it is put first, or the path is spelt with `/`.
+    #[test] fn the_bundled_check_folder_comes_after_the_users_own() {
+        let order = with_bundled(candidates(Some("e".into()), Some("r".into()), Some("a".into()), None), Some("b".into()));
+        assert_eq!(order, vec![Some(PathBuf::from("e")), Some("r".into()), Some("a".into()), None, Some("b".into())]);
+        assert_eq!(bundled_check_dir(std::path::Path::new("res")), PathBuf::from("res").join("resources").join("check"));
     }
     #[test] fn nothing_found_is_none() {
         let a = tmp("empty");

@@ -209,6 +209,17 @@ impl SizeReport {
     }
 }
 
+/// The size calibration file's text for a passed run (detector, the chosen regions and their centres and lines, the
+/// report's SHA-256), read back with the app's parser and compared before anything is written. `run_with` writes it on a
+/// pass; `sc1_wf3::from_reports` makes it again from the pinned report.
+pub fn calibration_text(fp: &str, uses: &[Region], refs: &[SizeRef], report_sha: &str) -> anyhow::Result<String> {
+    let c = SizeCalibration { version: SIZE_CALIBRATION_VERSION.into(), rule: SIZE_RULE.into(), detector_fingerprint: fp.into(),
+        uses: uses.to_vec(), refs: refs.to_vec(), report_sha256: report_sha.into() };
+    let t = serde_json::to_string_pretty(&c)? + "\n";
+    ensure!(parse_size_calibration(t.as_bytes())? == c, "the size calibration does not read back as written");
+    Ok(t)
+}
+
 /// The run on given folders, split, git state and pins: prints the summary; writes the report on a pass or a stop and,
 /// on a pass only, the size calibration (read back first). Exit 0 pass, 4 stop, 1 broken (nothing written).
 pub fn run_with(aariz: &Path, ceph400: &Path, models: &Path, out: &Path, split: &Split, git: &Git) -> anyhow::Result<i32> {
@@ -218,10 +229,7 @@ pub fn run_with(aariz: &Path, ceph400: &Path, models: &Path, out: &Path, split: 
     let text = serde_json::to_string_pretty(&rep)? + "\n";
     let sha = ft_common::sha256_hex(text.as_bytes());
     let cal = if rep.outcome.exit == 0 {
-        let c = SizeCalibration { version: SIZE_CALIBRATION_VERSION.into(), rule: SIZE_RULE.into(), detector_fingerprint: rep.detector_fingerprint.clone(),
-            uses: rep.outcome.uses.clone(), refs: rep.outcome.refs.clone(), report_sha256: sha.clone() };
-        let t = serde_json::to_string_pretty(&c)? + "\n";
-        match parse_size_calibration(t.as_bytes()) { Ok(back) if back == c => Some(t), Ok(_) => return broken(anyhow::anyhow!("the size calibration does not read back as written")), Err(e) => return broken(e) }
+        match calibration_text(&rep.detector_fingerprint, &rep.outcome.uses, &rep.outcome.refs, &sha) { Ok(t) => Some(t), Err(e) => return broken(e) }
     } else { None };
     std::fs::create_dir_all(out)?;
     let path = out.join("size-calibration.json");
