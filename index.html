@@ -282,6 +282,8 @@
     .models-list { margin: 12px 0 0; padding-left: 1.2em; color: var(--graphite); font-size: 15px; }
     .models-list li { margin: 0 0 4px; }
     .models-list strong { color: var(--ink); }
+    .models-list a { color: inherit; text-decoration: underline; text-underline-offset: 2px; }
+    .models-list a:hover strong { color: #0a66e8; }
 
     @media (max-width: 760px) {
       body { font-size: 16px; }
@@ -569,12 +571,13 @@
           </div>
           <div>
             <h2 id="models-title">About the AI models</h2>
-            <p>The AI models are made by research teams, not by OpenCephAI, so they are not inside the download. In the app, click <strong>Models…</strong> to get each one straight from its authors. You read and accept the authors' licence first. The app then sets up and checks each model on your own Mac. Nothing is uploaded, and the weights are not bundled with OpenCephAI.</p>
+            <p>The landmark models are made by research teams, not by OpenCephAI, so they are not inside the download. In the app, click <strong>Models…</strong> to get each one straight from its authors. You read and accept the authors' licence first. The app then sets up and checks each model on your own Mac. Nothing is uploaded. The whole-film check's region finder is the author's own model, published openly on Zenodo; it comes with the app.</p>
             <ul class="models-list">
-              <li><strong>HRNet-W32 (cwlachap).</strong> Non-commercial. Treated as CC BY-NC 4.0.</li>
-              <li><strong>GU2Net.</strong> Non-commercial. Treated as CC BY-NC 4.0.</li>
-              <li><strong>SRPose (CL-Detection 2023).</strong> Non-commercial. A converted copy is not for sharing.</li>
-              <li><strong>Aariz CEPHA29.</strong> CC BY 4.0. Credit the authors.</li>
+              <li><a href="https://huggingface.co/cwlachap/hrnet-cephalometric-landmark-detection"><strong>HRNet-W32 (cwlachap).</strong></a> Non-commercial. Treated as CC BY-NC 4.0.</li>
+              <li><a href="https://github.com/MIRACLE-Center/YOLO_Universal_Anatomical_Landmark_Detection"><strong>GU2Net.</strong></a> Non-commercial. Treated as CC BY-NC 4.0.</li>
+              <li><a href="https://github.com/5k5000/CLdetection2023"><strong>SRPose (CL-Detection 2023).</strong></a> Non-commercial. A converted copy is not for sharing.</li>
+              <li><a href="https://huggingface.co/MuhammadNabeelSh/cephalometry-landmarks"><strong>Aariz CEPHA29.</strong></a> CC BY 4.0. Credit the authors.</li>
+              <li><a href="https://doi.org/10.5281/zenodo.23949953"><strong>OpenCephAI region finder (whole-film check).</strong></a> By Dr Linton Nash. CC BY 4.0. Fine-tuned from RF-DETR (Apache-2.0) on the Aariz films.</li>
             </ul>
             <p class="models-links">Every paper, dataset, model and program the app draws on is listed in <a href="https://github.com/ORTHOsmile/OpenCephAI/blob/main/REFERENCES.md">REFERENCES.md</a>. Licence details are in <a href="https://github.com/ORTHOsmile/OpenCephAI/blob/main/THIRD_PARTY_MODELS.md">THIRD_PARTY_MODELS.md</a>.</p>
           </div>
