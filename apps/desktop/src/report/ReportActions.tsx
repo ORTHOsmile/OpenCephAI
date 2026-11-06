@@ -38,16 +38,20 @@ export function ReportActions({ paper, onPaper, withFilm, onWithFilm, options, o
   // review m1: an empty string (a broken `filmJpeg`) is also "no film" here — the same rule useReport.ts and
   // ReportPreview.tsx already apply, so the checkbox never disagrees with what the PDF actually contains.
   const noFilm = film === null || film === '';
-  const opt = (k: keyof ReportOptions) => <label className="report-ctrl-group"><input type="checkbox" checked={options[k]} onChange={(e) => onOptions({ ...options, [k]: e.target.checked })} /> {
-    k === 'profilogramPage' ? 'Profilogram page' : k === 'normSources' ? 'Norm sources' : 'Placed by'}</label>;
+  // Owner, 5 Nov 2026: the grid sits behind the profilogram page, so its box is greyed out (still showing its choice)
+  // while that page is off.
+  const opt = (k: keyof ReportOptions) => <label className="report-ctrl-group"><input type="checkbox" checked={options[k]} disabled={k === 'profilogramGrid' && !options.profilogramPage} onChange={(e) => onOptions({ ...options, [k]: e.target.checked })} /> {
+    k === 'profilogramPage' ? 'Profilogram page' : k === 'normSources' ? 'Norm sources' : k === 'placedBy' ? 'Placed by' : k === 'pointsTable' ? 'Points table' : 'Grid behind the profilogram'}</label>;
   return (
     <>
       <span className="report-ctrl-group segmented" role="radiogroup" aria-label="Paper">{(['a4', 'letter'] as const).map((p) => (
         <button key={p} type="button" role="radio" aria-checked={paper === p} onClick={() => onPaper(p)}>{p === 'a4' ? 'A4' : 'Letter'}</button>))}</span>
       <label className="report-ctrl-group"><input type="checkbox" checked={withFilm && !noFilm} disabled={noFilm} onChange={(e) => onWithFilm(e.target.checked)} /> Include the film</label>
       {opt('profilogramPage')}
+      {opt('profilogramGrid')}
       {opt('normSources')}
       {opt('placedBy')}
+      {opt('pointsTable')}
       <button type="button" className="primary report-ctrl-group" disabled={busy || waiting} title={waiting ? 'Preparing the film image…' : undefined} onClick={() => void act('pdf')}>Save PDF…</button>
       <span className="sep" />
       <CsvOptions value={csv} onChange={setCsv} />

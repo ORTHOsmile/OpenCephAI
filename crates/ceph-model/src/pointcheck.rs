@@ -130,9 +130,10 @@ pub const PRIOR_SOURCE: &str = "Ceph-400 expert tracings, Train 001-150 and Test
 /// `<models>/shape/ceph400-v1.shape`, built with joins only (Windows-ready).
 pub fn prior_path(models_dir: &Path) -> PathBuf { models_dir.join("shape").join("ceph400-v1.shape") }
 
-/// The loaded file: its SHA-256 (of the file's bytes), the film count, and each tracing's 19 points in `ORDER`.
+/// The loaded file: its SHA-256 (of the file's bytes), the film count, each tracing's film number (`names`, in file
+/// order) and each tracing's 19 points in `ORDER`.
 #[derive(Clone, Debug, PartialEq)]
-pub struct Prior { pub sha256: String, pub films: usize, pub tracings: Vec<Vec<Pt>> }
+pub struct Prior { pub sha256: String, pub films: usize, pub names: Vec<String>, pub tracings: Vec<Vec<Pt>> }
 
 #[derive(Serialize)]
 struct PriorFile { version: String, source: String, order: Vec<String>, films: usize, tracings: Vec<PriorTracing> }
@@ -205,7 +206,7 @@ pub fn parse_prior(bytes: &[u8]) -> anyhow::Result<Prior> {
         .map(|(k, p)| Ok((num(&t.film, k, &p[0])?, num(&t.film, k, &p[1])?))).collect::<anyhow::Result<Vec<Pt>>>())
         .collect::<anyhow::Result<_>>()?;
     check_films(f.tracings.iter().zip(&tracings).map(|(t, p)| (t.film.as_str(), p.as_slice())))?;
-    Ok(Prior { sha256: crate::install::sha256_bytes(bytes), films: f.films, tracings })
+    Ok(Prior { sha256: crate::install::sha256_bytes(bytes), films: f.films, names: f.tracings.iter().map(|t| t.film.clone()).collect(), tracings })
 }
 
 /// Reads and checks the file at `path` (an error names the path; a missing file is an error).

@@ -1,4 +1,4 @@
-# OpenCephAI 1.1 Beta
+# OpenCephAI 1.2 Beta
 
 **Beta:** OpenCephAI is beta research software, not a diagnostic device. Every point must be checked by a clinician.
 See the legal disclaimer below: research and education only, not a medical device.
@@ -102,7 +102,7 @@ are licensed for non-commercial use only; check that your use is allowed.
 
 ## Roadmap
 
-### Now (1.1 Beta)
+### Now (1.2 Beta)
 
 - AI tracing with several models. You verify every point.
 - Automatic best: for each point it picks the model that is closest on your own verified films, with a choice of
@@ -114,12 +114,14 @@ are licensed for non-commercial use only; check that your use is allowed.
 - Superimposition.
 - The PDF report and CSV export.
 - The Library table.
-
-### Next
-
 - A whole-film check (beta): does the tracing fit its film? It looks for a tracing on the wrong film, a mirrored
   tracing, or one at the wrong size.
 - Report options: leave out the Points table, and the mm grid behind the profilogram.
+
+### Next
+
+- An automatic second look: when the check finds a region out of place, the AI looks again at that region before you
+  see it.
 
 ### Later
 

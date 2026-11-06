@@ -1,9 +1,9 @@
 import { Fragment, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import type { AnalysisDef, Compiled, Expr, NodeId, Value } from '@ceph/geometry';
-import { EXTREME_NOTE, extremeForNorm, DEFAULT_MEANINGS, DEFINITION_TO_COME, guidedSteps, isMine, meaningPhrase, neededLandmarks, nextStep, pointDefinition, stepDone, unavailableLine, unconfirmedAiPointsLine, LANDMARKS, type LandmarkId, type NormQuery } from '@ceph/analyses';
+import { EXTREME_NOTE, extremeForNorm, DEFAULT_MEANINGS, DEFINITION_TO_COME, guidedSteps, isMine, meaningPhrase, neededLandmarks, pointDefinition, unavailableLine, unconfirmedAiPointsLine, LANDMARKS, type LandmarkId, type NormQuery } from '@ceph/analyses';
 import type { ModelPointRow } from '../ipc';
 import type { Action, TracingState } from '../tracing/state';
-import { remaining, verifiedSet } from '../tracing/state';
+import { remaining } from '../tracing/state';
 import type { SignOff } from '../tracing/signOff';
 import { StatusRow } from './StatusRow';
 import { listClick, listDoubleClick } from '../tracing/pointGestures';
@@ -86,6 +86,8 @@ interface Props { bitmap: ImageBitmap | null; state: TracingState; dispatch: (a:
   machine?: MachineRef | null;
   /** Spec 2026-10-20 (MS6): makes the open film's own ruler the whole machine's scale. */
   onUseForMachine?: () => void;
+  /** Owner, 6 Nov 2026: Settings' "Move to the next point automatically" (on by default). Off: the magnifier stays on the point just placed. */
+  autoAdvance?: boolean;
 }
 export interface SeriesChange {
   heads: string[]; ids: string[]; rows: SeriesRow[]; pair: { from: string; to: string }; labels: Record<string, string>;
@@ -97,8 +99,8 @@ export interface SeriesChange {
 /** The hover label of a point in the Landmarks list, with its source line when there is one. */
 const withPlaced = (title: string, line: string | null) => (line ? `${title} — ${line}` : title);
 
-export function Inspector({ bitmap, state, dispatch, defs, registry, compiled, values, scale, change, otherPointsOpen, onOtherPoints, decimals, normFor, normsError, onCalibrate, readOnly, found, pointTable, unconfirmedFor, normQueryFor, onPickNorm, placedLineFor, placedWhyFor, ruler = null, meaningWords, advice, filmTimepoint = '', signOff = null, fineTune = null, dateFormat, machine = null, onUseForMachine }: Props) {
-  const [tab, setTab] = useState<'steps' | 'landmarks' | 'measures' | 'chart' | 'change'>('landmarks');
+export function Inspector({ bitmap, state, dispatch, defs, registry, compiled, values, scale, change, otherPointsOpen, onOtherPoints, decimals, normFor, normsError, onCalibrate, readOnly, found, pointTable, unconfirmedFor, normQueryFor, onPickNorm, placedLineFor, placedWhyFor, ruler = null, meaningWords, advice, filmTimepoint = '', signOff = null, fineTune = null, dateFormat, machine = null, onUseForMachine, autoAdvance = true }: Props) {
+  const [tab, setTab] = useState<'landmarks' | 'measures' | 'chart' | 'change'>('landmarks');
   // Owner CHART-TAB-1 (16 Oct): the Chart tab is the Measurements table with the chart drawn over its Result and
   // Mean ± SD cells, so its rows are the same rows.
   const table = tab === 'measures' || tab === 'chart', tableBox = useRef<HTMLDivElement>(null);
@@ -109,9 +111,11 @@ export function Inspector({ bitmap, state, dispatch, defs, registry, compiled, v
   useEffect(() => { setOpenSrc(new Set()); }, [bitmap]);   // review M-5: another film opens with every source line closed
   const toggleSrc = (k: string) => setOpenSrc((o) => { const n = new Set(o); if (n.has(k)) n.delete(k); else n.add(k); return n; });
   useEffect(() => { if (change) setTab('change'); else setTab((t) => (t === 'change' ? 'landmarks' : t)); }, [!!change]);   // eslint-disable-line react-hooks/exhaustive-deps
-  const id = state.active, p = id ? state.points[id] : null, verified = verifiedSet(state);
+  const id = state.active, p = id ? state.points[id] : null;
   const steps = useMemo(() => guidedSteps(defs, registry, found), [defs, registry, found]);
-  const shown = useStepAdvance(state, steps, dispatch), next = nextStep(steps, shown);   // highlight moves with the magnifier, after a pause
+  // Owner, 5 Nov 2026: the Steps tab is gone, but the pause-then-move-on of the magnifier (owner, 28 Sep) stays: after a
+  // point is released the magnifier waits, then moves to the next point of the guided order.
+  useStepAdvance(state, steps, dispatch, autoAdvance);
   // Part A task 9: "Not placed" lists only the points some enabled analysis of `defs` actually
   // needs, not every catalogue point (~59) — e.g. Co (McNamara) and U1A (Steiner) show, a
   // Holdaway-only point like SPogS does not, until Holdaway is enabled too.
@@ -143,17 +147,13 @@ export function Inspector({ bitmap, state, dispatch, defs, registry, compiled, v
       {/* Re-review M-3: while calibrating there is no landmark to accept. */}
       {!ruler && <StatusRow state={state} dispatch={dispatch} signOff={signOff} readOnly={readOnly} outside={outside} />}
       <div role="tablist" className="tabs">
-        {(['steps', 'landmarks', 'measures', 'chart'] as const).map((t) => (
-          <button key={t} role="tab" aria-selected={tab === t} onClick={() => setTab(t)}>{t === 'steps' ? 'Steps' : t === 'landmarks' ? 'Landmarks' : t === 'measures' ? 'Measurements' : 'Chart'}</button>
+        {(['landmarks', 'measures', 'chart'] as const).map((t) => (
+          <button key={t} role="tab" aria-selected={tab === t} onClick={() => setTab(t)}>{t === 'landmarks' ? 'Landmarks' : t === 'measures' ? 'Measurements' : 'Chart'}</button>
         ))}
         {change && <button role="tab" aria-selected={tab === 'change'} onClick={() => setTab('change')}>Change</button>}
       </div>
       {/* Owner, 16 Oct: the name, magnifier, Accept and tabs stay put; only what is under the tabs scrolls. */}
       <div className="inspector-scroll">
-      {tab === 'steps' && <ol className="steps">{steps.map((s) => (
-        <li key={s.node + s.kind} className={stepDone(s, shown) ? 'done' : s === next ? 'next' : ''}>
-          <button type="button" onClick={() => { const l = s.landmarks.find((x) => !verified.has(x)) ?? s.landmarks[0]; if (l) dispatch({ type: 'select', id: l }); }}>{s.label}</button>
-        </li>))}</ol>}
       {tab === 'landmarks' && <ul className="lm-list">
         {Object.entries(state.points).map(([k, q]) => (
           <li key={k}><button type="button" aria-current={k === id} data-picked={state.picked.includes(k) ? 'true' : undefined}
@@ -177,9 +177,9 @@ export function Inspector({ bitmap, state, dispatch, defs, registry, compiled, v
       {table && gone.map((t) => <p key={t} className="hint warn unavailable">{t}</p>)}
       {/* Fix round 1 (Minor 3): by analogy with "calibrate to show" (decision 5), the read-only Superimposition
          page still NAMES what is missing but never offers the placing shortcut there — readOnly means no editing,
-         and "Place them" switches to Steps and selects a point to edit. */}
+         and "Place them" switches to Landmarks and selects the first of them to place. */}
       {table && miss.points.length > 0 && <p className="hint warn missing-points">{missingText(miss)}
-        {!readOnly && <>{' '}<button type="button" className="link" onClick={() => { setTab('steps'); dispatch({ type: 'select', id: miss.points[0] }); }}>Place them</button></>}</p>}
+        {!readOnly && <>{' '}<button type="button" className="link" onClick={() => { setTab('landmarks'); dispatch({ type: 'select', id: miss.points[0] }); }}>Place them</button></>}</p>}
       {table && advice}
       {table && <div className="measures-box" ref={tableBox}>
       <table className={tab === 'chart' ? 'measures chart' : 'measures'}>

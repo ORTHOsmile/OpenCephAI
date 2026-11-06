@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
+import { GRID_STYLE } from './gridStyle';
 import type { Expr, NodeId, Vec2 } from '@ceph/geometry';
 import type { PointCheckFlag, RulerMarks } from '../ipc';
 import type { TracingState } from '../tracing/state';
@@ -115,10 +116,10 @@ export function Overlay({ state, dims, registry, S, mmPerPx, assumedScale, calib
   return (
     <svg ref={svgRef} className="overlay" aria-hidden="true">
       {grid && <g fill="none">
-        <path d={segs(grid.minor)} stroke="var(--grid-minor)" strokeWidth={0.5} />
-        <path d={segs(grid.mid)} stroke="var(--grid-mid)" strokeWidth={0.8} />
-        <path d={segs(grid.major)} stroke="var(--grid-major)" strokeWidth={1.1} />
-        <path d={segs(grid.axes)} stroke="var(--grid-axis)" strokeWidth={1.6} />
+        <path d={segs(grid.minor)} stroke={`var(--${GRID_STYLE.minor.token})`} strokeWidth={GRID_STYLE.minor.px} strokeOpacity={GRID_STYLE.minor.opacity} />
+        <path d={segs(grid.mid)} stroke={`var(--${GRID_STYLE.mid.token})`} strokeWidth={GRID_STYLE.mid.px} strokeOpacity={GRID_STYLE.mid.opacity} />
+        <path d={segs(grid.major)} stroke={`var(--${GRID_STYLE.major.token})`} strokeWidth={GRID_STYLE.major.px} strokeOpacity={GRID_STYLE.major.opacity} />
+        <path d={segs(grid.axes)} stroke={`var(--${GRID_STYLE.axis.token})`} strokeWidth={GRID_STYLE.axis.px} strokeOpacity={GRID_STYLE.axis.opacity} />
       </g>}
       {calib && calib.length > 0 && <g stroke="var(--calibrate)" fill="none" strokeWidth={1.6}>
         {calib.length === 2 && <line x1={S(calib[0]).x} y1={S(calib[0]).y} x2={S(calib[1]).x} y2={S(calib[1]).y} strokeDasharray="4 3" />}

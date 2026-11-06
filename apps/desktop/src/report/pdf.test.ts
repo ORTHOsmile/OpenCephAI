@@ -5,6 +5,7 @@ import { sha256Bytes } from '../export/sha256';
 import { NOW, SYNTH_POINTS, synthCells, synthDoc, synthFitModel, synthModel } from './fixtures';
 import { CONTEXT_LINE, DEFAULT_REPORT_OPTIONS, headerLines, type ReportModel, type ReportOptions } from './model';
 import { figure, figureFit, profilogramShapes } from './shapes';
+import { profilogramPageShapes } from './profilogramPage';
 import { pageOneBoxes, profilogramBox, type Paper } from './page';
 import { buildPdf } from './pdf';
 import { cmapCoverage, pdfSafe } from './pdfText';
@@ -301,7 +302,7 @@ describe('m1: a wrapped header value pushes the rows after it down, not over the
 
 describe('Part F: the Points table (chain spec §5)', () => {
   it('printed when the report carries points; a report without points prints the same bytes as before', () => {
-    const pts = [{ id: 'S', name: 'Sella', label: 'Aariz', model: 'aariz-cepha29', modelFile: null, acceptKind: null, pointCheck: '' as const }];
+    const pts = [{ id: 'S', name: 'Sella', label: 'Aariz', model: 'aariz-cepha29', modelFile: null, acceptKind: null, pointCheck: '' as const, wholeFilmCheck: '', wholeFilmRegion: '' }];
     const withPts = pdf(synthModel({ points: pts })), without = pdf(synthModel());
     expect(sha256Bytes(withPts)).not.toBe(sha256Bytes(without));
     expect(sha256Bytes(pdf(synthModel({ points: [] })))).toBe(sha256Bytes(without));
@@ -309,23 +310,80 @@ describe('Part F: the Points table (chain spec §5)', () => {
   // Stage A task 8: the PDF is the same report as the preview, so the Points table carries the same last column.
   it('Stage A: the PDF Points table has a "Point check" column with flagged / film-unusual', async () => {
     const base = { name: 'x', label: 'Aariz', model: 'aariz-cepha29', modelFile: null, acceptKind: null };
-    const t = flat((await readPdf(pdf(synthModel({ points: [{ ...base, id: 'N', name: 'Nasion', pointCheck: 'flagged' as const }, { ...base, id: 'S', name: 'Sella', pointCheck: 'film-unusual' as const }] })))).pages);
+    const t = flat((await readPdf(pdf(synthModel({ points: [{ ...base, id: 'N', name: 'Nasion', pointCheck: 'flagged' as const, wholeFilmCheck: '', wholeFilmRegion: '' }, { ...base, id: 'S', name: 'Sella', pointCheck: 'film-unusual' as const, wholeFilmCheck: '', wholeFilmRegion: '' }] })))).pages);
     expect(t).toContain('Point check');
     expect(t).toContain('flagged');
     expect(t).toContain('film-unusual');
-    const none = flat((await readPdf(pdf(synthModel({ points: [{ ...base, id: 'N', name: 'Nasion', pointCheck: '' as const }] })))).pages);
+    const none = flat((await readPdf(pdf(synthModel({ points: [{ ...base, id: 'N', name: 'Nasion', pointCheck: '' as const, wholeFilmCheck: '', wholeFilmRegion: '' }] })))).pages);
     expect(none).toContain('Point check');
     expect(none).not.toContain('flagged');
   });
+  // Research switch off (owner, 6 Nov 2026). Fails if the PDF still prints the header or any whole-film value when the points carry none (null).
+  it('switch off: the PDF Points table has no Whole-film column and prints no whole-film value, with or without Placed by', async () => {
+    const base = { name: 'x', label: 'Aariz', model: 'aariz-cepha29', modelFile: null, acceptKind: null, pointCheck: '' as const };
+    for (const placedBy of [false, true]) {
+      const t = flat((await readPdf(pdf(synthModel({ points: [{ ...base, id: 'N', name: 'Nasion', wholeFilmCheck: null, wholeFilmRegion: null }] }), 'a4', NOW, fonts, { ...DEFAULT_REPORT_OPTIONS, placedBy }))).pages);
+      expect(t).toContain('Point check');
+      expect(t).not.toContain('Whole-film');
+      expect(t).not.toContain('flagged:');
+    }
+  });
+  // Research switch on (owner ruling 6 Nov 2026): the PDF states each look and each landmark's region result. Fails if either is missing.
+  it('switch on: the PDF Points table has a Region column and a line for each look', async () => {
+    const looks = { shape: 'judged', regions: 'judged', size: 'not checked (not set up)', centre: 'judged', mirrored: 'judged', facing: 'judged' };
+    const base = { name: 'x', label: 'Aariz', model: 'aariz-cepha29', modelFile: null, acceptKind: null, pointCheck: '' as const, wholeFilmCheck: 'clean', wholeFilmLooks: looks };
+    const t = flat((await readPdf(pdf(synthModel({ points: [{ ...base, id: 'N', name: 'Nasion', wholeFilmRegion: 'region flagged' }, { ...base, id: 'S', name: 'Sella', wholeFilmRegion: 'fine' }] })))).pages);
+    expect(t).toContain('Region');
+    expect(t).toContain('region flagged');
+    expect(t).toContain('size not checked (not set up)');
+    expect(t).toContain('shape judged');
+  });
+  // SC-1 Part 1 task 9. Fails if the PDF's Points table drops the whole-film column or prints a blank / another value.
+  it('Task 9: the PDF Points table has a "Whole-film check" column carrying the film\'s value; with no record the header stays and no value prints', async () => {
+    const base = { name: 'x', label: 'Aariz', model: 'aariz-cepha29', modelFile: null, acceptKind: null, pointCheck: '' as const };
+    const text = async (cell: string, opts = DEFAULT_REPORT_OPTIONS) => flat((await readPdf(pdf(synthModel({ points: [{ ...base, id: 'N', name: 'Nasion', wholeFilmCheck: cell, wholeFilmRegion: '' }, { ...base, id: 'S', name: 'Sella', wholeFilmCheck: cell, wholeFilmRegion: '' }] }), 'a4', NOW, fonts, opts))).pages);
+    const flagged = await text('flagged:region-mandible');
+    expect(flagged).toContain('Whole-film check');
+    expect(flagged).toContain('Point check');
+    expect(flagged.split('flagged:region-mandible').length - 1).toBe(2);            // once per point row
+    const clean = await text('clean');
+    expect(clean).toContain('clean');
+    const none = await text('');
+    expect(none).toContain('Whole-film check');
+    expect(none).not.toContain('flagged:');
+    expect(none).not.toContain('checked:');
+    expect(await text('checked:corrected-tracing', { ...DEFAULT_REPORT_OPTIONS, placedBy: true })).toContain('checked:corrected-tracing');   // with the Placed-by column too
+  });
   // Owner, 29 Oct 2026 (item 4): who placed each point is OFF by default.
   it('"Placed by" (who placed the point) is absent by default; the option prints it', async () => {
-    const pts = [{ id: 'S', name: 'Sella', label: 'SYNTHETIC Aariz', model: 'aariz-cepha29', modelFile: null, acceptKind: null, pointCheck: '' as const }];
+    const pts = [{ id: 'S', name: 'Sella', label: 'SYNTHETIC Aariz', model: 'aariz-cepha29', modelFile: null, acceptKind: null, pointCheck: '' as const, wholeFilmCheck: '', wholeFilmRegion: '' }];
     const m = synthModel({ points: pts });
     const off = flat((await readPdf(pdf(m))).pages);
     expect(off).not.toContain('SYNTHETIC Aariz');
     expect(off).toContain('Sella');
     const on = flat((await readPdf(pdf(m, 'a4', NOW, fonts, { ...DEFAULT_REPORT_OPTIONS, placedBy: true }))).pages);
     expect(on).toContain('SYNTHETIC Aariz');
+  });
+});
+
+// Owner, 5 Nov 2026: "Points table" off removes the whole Points section from the PDF.
+describe('owner, 5 Nov 2026: the Points table option in the PDF', () => {
+  const pt = { id: 'S', name: 'Sella', label: 'Aariz', model: 'aariz-cepha29', modelFile: null, acceptKind: null, pointCheck: '' as const, wholeFilmCheck: '', wholeFilmRegion: '' };
+  const off: ReportOptions = { ...DEFAULT_REPORT_OPTIONS, pointsTable: false };
+  it('on (default): the Points heading and name print; off: neither, and the bytes equal a report with no points', async () => {
+    const m = synthModel({ points: [pt] });
+    expect(flat((await readPdf(pdf(m))).pages)).toContain('Sella');
+    const t = flat((await readPdf(pdf(m, 'a4', NOW, fonts, off))).pages);
+    expect(t).not.toContain('Points');
+    expect(t).not.toContain('Sella');
+    expect(sha256Bytes(pdf(m, 'a4', NOW, fonts, off))).toBe(sha256Bytes(pdf(synthModel())));
+  });
+  it('off: a CJK point name does not bring the system CJK font into the file; on, it does', async () => {
+    const cjkTtf = await cjkTestFont({ '李': 'L' });
+    const withCjk: PdfFonts = { ...fonts, cjk: { ttf: cjkTtf, name: 'SYNTHETIC CJK', has: cmapCoverage(cjkTtf) } };
+    const m = synthModel({ points: [{ ...pt, name: '李 SYNTHETIC' }] });
+    expect(new TextDecoder('latin1').decode(pdf(m, 'a4', NOW, withCjk))).toContain('SystemCJK');
+    expect(new TextDecoder('latin1').decode(pdf(m, 'a4', NOW, withCjk, off))).not.toContain('SystemCJK');
   });
 });
 
@@ -345,6 +403,26 @@ describe('the profilogram page (owner, 29 Oct 2026, items 1-2)', () => {
   it('readable on Letter too: the profilogram page stays within the page, one extra page', async () => {
     const r = await readPdf(pdf(synthModel(), 'letter', NOW, fonts, { ...DEFAULT_REPORT_OPTIONS, profilogramPage: true }, profilogramFor('letter')));
     expect(r.pages[r.pages.length - 1]).toContain('Profilogram');
+  });
+  // Owner, 5 Nov 2026: the mm grid behind the profilogram, in the file.
+  it('the grid option adds line work to the profilogram page and no page: same page count, a bigger file, the grid note on that page only', async () => {
+    const f = { points: pts, registry, overlays: initialTracing.overlays, orientation, dims, scale: { mmPerPx: 0.1, source: 'calibration' as const, steps: 0 } };
+    const withGrid: ReportOptions = { ...DEFAULT_REPORT_OPTIONS, profilogramPage: true }, noGrid: ReportOptions = { ...withGrid, profilogramGrid: false };
+    const a = pdf(synthModel(), 'a4', NOW, fonts, withGrid, profilogramPageShapes(f, 'a4', withGrid));
+    const b = pdf(synthModel(), 'a4', NOW, fonts, noGrid, profilogramPageShapes(f, 'a4', noGrid));
+    const ra = await readPdf(a), rb = await readPdf(b);
+    expect(ra.pages.length).toBe(rb.pages.length);
+    expect(sha256Bytes(a)).not.toBe(sha256Bytes(b));
+    expect(a.length).toBeGreaterThan(b.length);
+    expect(ra.pages[ra.pages.length - 1]).toContain('patient millimetres');
+    expect(rb.pages[rb.pages.length - 1]).not.toContain('patient millimetres');
+    expect(ra.pages[0]).not.toContain('patient millimetres');
+  });
+  it('uncalibrated film: the profilogram page prints without the grid, byte for byte the same as with the grid option off', () => {
+    const f = { points: pts, registry, overlays: initialTracing.overlays, orientation, dims, scale: { mmPerPx: 0.1, source: 'assumed' as const } };
+    const withGrid: ReportOptions = { ...DEFAULT_REPORT_OPTIONS, profilogramPage: true }, noGrid: ReportOptions = { ...withGrid, profilogramGrid: false };
+    expect(sha256Bytes(pdf(synthModel(), 'a4', NOW, fonts, withGrid, profilogramPageShapes(f, 'a4', withGrid))))
+      .toBe(sha256Bytes(pdf(synthModel(), 'a4', NOW, fonts, noGrid, profilogramPageShapes(f, 'a4', noGrid))));
   });
   it('positive control: an empty profilogram (no shapes — e.g. the points needed are not placed) adds no page, even with the option on', async () => {
     const r = await readPdf(pdf(synthModel(), 'a4', NOW, fonts, { ...DEFAULT_REPORT_OPTIONS, profilogramPage: true }, []));

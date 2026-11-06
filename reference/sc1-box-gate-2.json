@@ -1,0 +1,35 @@
+{
+  "version": "sc1-box-gate/2",
+  "rule": "whole-film/1",
+  "supersedes": "sc1-box-gate/1 (reference/sc1-box-gate.json), for tau only. The gate, the score-line rule, C5, C7 and C9 are /1's, copied verbatim below",
+  "ruling": "Owner, 5 Nov 2026, multiple choice after sc1-region-probe/1 stopped (Ceph-400 Train flagged 16 of 150, limit 3: soft tissue 13, maxilla 2, mandible 1): 'Set from both sets'. Keep the same tau rule, but compute each region's tau over the union of the 70 Aariz-train hold-out films and Ceph-400 Train films 001-150, with their traced expert points and the app's detected boxes. Neither set is an SC1-1a film; SC1-1a stays the independent test",
+  "spec": "docs/superpowers/specs/2026-11-03-sc1-whole-film-check-design.md §3.3, §4.2, §9.1; owner ruling RV-1 (3 Nov 2026); owner ruling 5 Nov 2026 above",
+  "films": {
+    "gate": "the Aariz-train hold-out of reference/sc1-aariz-split.json (never taught on)",
+    "ceph400Train": "Ceph-400 split 'train' of splits.json: films 001-150, 150 films, with their expert tracings (the 19 points). Every id must be three digits in 001-150, 150 different ids, else refused before any film is read. Never taught to the region finder. Not an SC1-1a film. Used for tau only, never for the gate, the score line or C9",
+    "refused": "Ceph-400 test1, Ceph-400 test2, Aariz valid and Aariz test (and 'all'), before any file is read. No information table is made on SC1-1a's films"
+  },
+  "detector": "models/regions (manifest kind regions, ONNX Runtime CPU fp32), fingerprint 17171e68f9f7072062e2a3a2cbd4851618056f5136bed998f1782c49d4897b80, else broken; requires reports/sc1/faithfulness/faithfulness.json passed for the same fingerprint",
+  "expertBox": "ceph_model::wholefilm::teaching_boxes on the film's expert points (margin 0.10 of the longer side, clipped to the film). Aariz's extra points are included. Used for the gate on the hold-out only",
+  "scoreLine": "min(0.50, max(0.01, the largest multiple of 0.01 at or below the lowest best-box score any hold-out film gives any region)); so every hold-out film finds all five regions",
+  "quality": "per region: IoU of the detected box with the expert box (a region not found counts 0) and the centre error (mm when every film has a scale, else a fraction of the expert box's longer side); median and 90th percentile (nearest rank)",
+  "gate": { "minMedianIoU": 0.5, "stop": "any region's median IoU on the hold-out below 0.5: exit 4; no verdict; SC1-1a does not run; to the owner" },
+  "tau": "per region r: the largest outside-ratio of region r's traced expert points over the union of the Aariz-train hold-out (70) and Ceph-400 Train 001-150 (150), rounded up to the next 0.01 and at least 0.01. Outside-ratio: distance outside the detected box / its longer side, 0 inside. Detected boxes at the score line above; a film that does not find region r adds nothing to region r. No film of either set then flags region r",
+  "tauCeiling": { "max": 0.15, "stop": "any region's tau above 0.15: exit 4; no calibration written; to the owner" },
+  "reportedPerRegion": "tau under /1 and /2; the largest outside-ratio in each set before rounding; the films that found the region in each set; which set set tau (the one with the larger worst point, or the 0.01 floor when both are at most 0.01)",
+  "controls": {
+    "C5": "Ceph-400 test2 and Aariz test refused before any file is read",
+    "C7": "the hold-out count equals the split file's; every region's film count equals the hold-out count; a count other than its total stops the run (exit 1)",
+    "C7ceph400Train": "the Ceph-400 Train count equals 150, and every region's film count there (found + not found) equals 150; a count other than its total stops the run (exit 1)",
+    "C9": "the hold-out's detected boxes inflated 2x about their centres (area x4): median IoU below 0.5 on every region, so the gate trips; a gate that passes them is broken (exit 1)",
+    "committed": "this file committed as built (git show HEAD), from a clean tree; else broken (exit 1)"
+  },
+  "statedLimits": [
+    "The probe's films now set tau, so sc1-region-probe/1 cannot be re-run as independent evidence: by construction no Ceph-400 Train film flags a region. The false-alarm rate that counts is SC1-1a's.",
+    "About 220 films cannot confirm 1 in 1,000 per region: tau is a floor, not a proof.",
+    "A larger tau catches fewer small shifts: a traced point must sit further outside its box before it flags."
+  ],
+  "calibration": "models/regions/calibration.json (region-calibration/1, field rule = 'sc1-box-gate/2'), only on a pass, with this run's report SHA-256; read back with ceph_model::wholefilm::parse_calibration before it is written. The /1 calibration found there is kept beside it as models/regions/calibration-1.json, for the record",
+  "writes": ["reports/sc1/box-gate-2.json", "models/regions/calibration.json (only on a pass)", "models/regions/calibration-1.json (the /1 file, kept, only on a pass)"],
+  "verdicts": { "pass": "every region's median IoU >= 0.5, every tau at most 0.15 and the controls hold -> exit 0", "stop": "the controls hold and a region's median IoU < 0.5, or a tau above 0.15 -> exit 4", "broken": "a control fails or a count is off -> exit 1" }
+}

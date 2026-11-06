@@ -94,9 +94,71 @@ pub fn spearman(a: &[f64], b: &[f64]) -> Option<f64> {
     if va == 0.0 || vb == 0.0 { None } else { Some(cov / (va * vb).sqrt()) }
 }
 
+/// The exact (Clopper-Pearson) 95% interval for k successes in n trials (SC-1 Part 1b, M18): the lower end is the p at
+/// which P(X >= k) = 0.025 (0 when k = 0), the upper end the p at which P(X <= k) = 0.025 (1 when k = n); each found by
+/// bisection on the binomial tail, summed in logs. n = 0 or k > n is an error, never a NaN or a panic.
+pub fn clopper_pearson(k: usize, n: usize) -> anyhow::Result<(f64, f64)> {
+    anyhow::ensure!(n > 0, "an interval needs at least one trial (n = 0)");
+    anyhow::ensure!(k <= n, "{k} successes in {n} trials: k is more than n");
+    const TAIL: f64 = 0.025;
+    // P(X <= j) under p, for 0 < p < 1, summed in logs: ln C(n, i) built up one i at a time.
+    let cdf = |j: usize, p: f64| -> f64 {
+        let (lp, lq) = (p.ln(), (1.0 - p).ln());
+        let mut lc = 0.0;
+        let mut s = 0.0;
+        for i in 0..=j {
+            if i > 0 { lc += ((n - i + 1) as f64).ln() - (i as f64).ln(); }
+            s += (lc + i as f64 * lp + (n - i) as f64 * lq).exp();
+        }
+        s.min(1.0)
+    };
+    // Bisection on a tail that falls as p rises: the p in (0, 1) where `tail(p)` crosses TAIL.
+    let solve = |tail: &dyn Fn(f64) -> f64| -> f64 {
+        let (mut a, mut b) = (0.0f64, 1.0f64);
+        for _ in 0..200 { let m = 0.5 * (a + b); if tail(m) > TAIL { a = m } else { b = m } }
+        0.5 * (a + b)
+    };
+    // Lower end: P(X >= k) = TAIL, i.e. P(X <= k - 1) = 1 - TAIL; P(X <= k - 1) falls as p rises, so shift it by
+    // (1 - TAIL) - TAIL to cross TAIL at that same p.
+    let lo = if k == 0 { 0.0 } else { solve(&|p| cdf(k - 1, p) - (1.0 - TAIL) + TAIL) };
+    let hi = if k == n { 1.0 } else { solve(&|p| cdf(k, p)) };
+    anyhow::ensure!(lo.is_finite() && hi.is_finite() && lo <= hi, "the interval for {k} of {n} came out ({lo}, {hi})");
+    Ok((lo, hi))
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
+    /// (0, 102): the upper end is 1 - 0.025^(1/102) exactly (fails if: the tail is P(X < k), or the 2.5% is 5%).
+    #[test] fn clopper_pearson_at_zero_of_102() {
+        let (lo, hi) = clopper_pearson(0, 102).unwrap();
+        eprintln!("0 of 102: ({lo}, {hi}); 1 - 0.025^(1/102) = {}", 1.0 - 0.025f64.powf(1.0 / 102.0));
+        assert_eq!(lo, 0.0);
+        assert!((hi - 0.035519).abs() < 1e-5 && (hi - (1.0 - 0.025f64.powf(1.0 / 102.0))).abs() < 1e-9, "{hi}");
+    }
+    /// Known values to 4 decimals: (2, 102) (0.0024, 0.0690); (11, 300) (0.0184, 0.0647) (fails if: the two tails swap).
+    #[test] fn clopper_pearson_known_values() {
+        for (k, n, want) in [(2usize, 102usize, (0.0024, 0.0690)), (11, 300, (0.0184, 0.0647))] {
+            let (lo, hi) = clopper_pearson(k, n).unwrap();
+            eprintln!("{k} of {n}: ({lo:.5}, {hi:.5})");
+            assert!((lo - want.0).abs() < 5e-5 && (hi - want.1).abs() < 5e-5, "{k} of {n}: ({lo}, {hi}) not {want:?}");
+        }
+    }
+    /// k = n: the upper end is 1 and the lower is 0.025^(1/n); n = 0 and k > n are errors (fails if: n = 0 returns NaN).
+    #[test] fn clopper_pearson_edges() {
+        let (lo, hi) = clopper_pearson(102, 102).unwrap();
+        eprintln!("102 of 102: ({lo}, {hi})");
+        assert_eq!(hi, 1.0);
+        assert!((lo - 0.025f64.powf(1.0 / 102.0)).abs() < 1e-9, "{lo}");
+        let (lo, hi) = clopper_pearson(2289, 2740).unwrap();
+        eprintln!("2289 of 2740: ({lo:.4}, {hi:.4})");
+        assert!(lo < 2289.0 / 2740.0 && hi > 2289.0 / 2740.0 && lo > 0.8 && hi < 0.86, "({lo}, {hi})");
+        for (k, n) in [(0usize, 0usize), (3, 2)] {
+            let e = clopper_pearson(k, n).unwrap_err().to_string();
+            eprintln!("({k}, {n}): {e}");
+            assert!(e.contains("trial") || e.contains("more than"), "{e}");
+        }
+    }
     #[test] fn splitmix64_matches_the_reference_first_output_for_seed_0() {
         // Vigna's reference splitmix64.c, state 0: the first output is 0xE220A8397B1DCDAF.
         assert_eq!(SplitMix64::new(0).next_u64(), 0xE220_A839_7B1D_CDAF);

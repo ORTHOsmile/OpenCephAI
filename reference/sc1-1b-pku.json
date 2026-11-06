@@ -1,0 +1,124 @@
+{
+  "version": "sc1-1b-pku/1",
+  "rule": "whole-film/3",
+  "spec": "docs/superpowers/specs/2026-11-03-sc1-whole-film-check-design.md §17.9-17.10 and §17.15 (owner rulings R1b-1 to R1b-6; whole-film/3, owner ruling of 5 Nov 2026)",
+  "disclosure": [
+    "whole-film/3 is the THIRD tuning on the development films (Ceph-400 Test1 151-300 and Aariz valid): gate /3, then the size and centre lines, then the owner's whole-film/3 ruling (maxilla and mandible tolerances back to 0.02; centre line 0.08), chosen after seeing those films. Its development numbers, 2,643 of 2,740 caught and 5 of 300 untouched flagged (reference/sc1-1b-dev3.json, run once at eb6af34), are in-sample. This run on PKU is the first and only test of whole-film/3 on films it has never seen.",
+    "The false-alarm mark is close to a coin toss. The development false-alarm rate, 5 of 300 (about 1.7%), predicts about 1.7 false alarms on 102 films, against a limit of 2. If the true rate were exactly 1.7%, the mark would be met about 76 times in 100; at 2%, about 67 in 100; at 3%, about 41 in 100. Because the development rate is in-sample, and so optimistic, the true rate on new films is more likely above it than below.",
+    "The cranial-base centre look's median up-down offset differs by source: about +0.019 of the box side on Aariz films and about -0.006 on Ceph-400 films (reports/sc1/cb-centre-calibration.json, per set). PKU is a third source and may sit at its own offset. The owner set the centre line at 0.08 (measured 0.06) for this margin; a PKU offset near 0.08 from the median would raise false alarms by the centre look alone. The run prints PKU's own median centre offset beside the four calibration sets, as information.",
+    "PKU's truth is the mean of its two doctors (pku-truth/1). The doctors are far apart on some points (95th percentile 4.3 mm; 65 of 1,938 points more than 5 mm apart, at 0.125 mm/px), so the untouched line is also printed with doctor1 alone and doctor2 alone, as information.",
+    "PKU's scale, 0.125 mm per pixel, is from a secondary source (Self-CephaloNet, arXiv 2501.10984: 'about 0.125'); the dataset's readme gives none. It is used only to plant P4's 10-20 mm moves and the information shifts; the check never reads it. C12 checks it is plausible (median S-N within 15% of Ceph-400 Train's)."
+  ],
+  "films": {
+    "pku": "the 102 PKU films (data/pku, split test, sealed until this run; ids pku001-pku102)",
+    "truth": "pku-truth/1: the mean of doctor1 and doctor2, point by point (data/pku/gt.csv)",
+    "prepareRule": "pku-prepare/2",
+    "provenanceSha256": "1491289b83e125be934b0848117a18fe134d56102f4e8d3256f314214ecba191",
+    "mmPerPx": 0.125,
+    "mmSource": "pku-prepare/2 (owner P1 ruling, 5 Nov 2026): Self-CephaloNet, arXiv 2501.10984 (2025), PKU at about 0.125 mm per pixel; replaces 0.096 (Wang et al., arXiv 2409.15834, Table I), at which C12 read 0.8063",
+    "spacing": "data/pku/spacing.csv gives 0.125 for every film, else broken",
+    "refused": "Ceph-400 test2 and Aariz test, before anything is read; Ceph-400 is read for C12 only (train's gt.csv)",
+    "finder": "the region finder runs once per film on the film as stored (cached by its fingerprint under reports/sc1/boxes, keyed pku-test); C4's 10 films again flipped"
+  },
+  "shape": {
+    "reference": "models/shape/whole-film-reference-v1.shape (whole-film-reference/1, 1,000 tracings: Ceph-400 Train and Test1 and all 700 Aariz train)",
+    "referenceSha256": "6f0f066aeedde5eb329800595c29fb082b56ec6092f8782fc8653d0a1b4a81bd",
+    "line19": 95.9,
+    "line19Rule": "the stored full-19 line (nearest-rank 99.5th percentile of the leave-one-out D2, rounded up to 0.1), read from the file and equal to this value, else broken",
+    "folds": "none: no PKU film is in the reference (C6); every PKU film is judged by all 1,000 tracings"
+  },
+  "regions": {
+    "detectorFingerprint": "17171e68f9f7072062e2a3a2cbd4851618056f5136bed998f1782c49d4897b80",
+    "calibrationRule": "sc1-box-gate/4",
+    "gate4RecordSha256": "ca3b3ecfa7a59c7cbfa23c4342b9a34ca1aa01d1625a0acf14f5f592be757cb6",
+    "tau": { "cranialBase": 0.09, "maxilla": 0.02, "mandible": 0.02, "incisors": 0.01, "softTissue": 0.1 },
+    "scoreLine": 0.5,
+    "inForce": "models/regions/calibration.json with rule sc1-box-gate/4, gateReportSha256 = gate4RecordSha256, these tau, this detector and score line (sc1_wf3::check_gate4), else broken",
+    "gateReport": "gate /4 is an owner ruling and has no report of its own; its tau are gate /2's exactly (reference/sc1-box-gate-4.json 'sameAs'), so the gate report in force is reports/sc1/box-gate-2.json",
+    "gate2ReportSha256": "db1a67a0a1761ad5463ba64ff338be00423a3ae73f097009b7ab091919f9eae7",
+    "gateStop": "box-gate-2.json's verdict stop -> exit 4, nothing judged; otherwise its SHA-256, verdict pass, C9 tripped, detector, score line and tau checked as SC1-1a checks them (sc1_1a::check_gate)"
+  },
+  "size": {
+    "rule": "sc1-size/1",
+    "reportSha256": "836b8c341127026f0f8b27f7abe54fabfaa9da96b05a21e60d8bd2e872a91cab",
+    "uses": ["cranialBase", "maxilla", "mandible", "incisors"],
+    "usesNote": "four regions, without the soft-tissue profile (chosen line 0.09, centre about +0.1203)",
+    "refs": "every region set's centre and line in models/regions/size-calibration.json equal, number for number, the outcome in reports/sc1/size-calibration.json (SHA-256 above); its uses equal the list above; its detector this one",
+    "points": "judged only on complete 19-point tracings (SIZE_POINTS); fewer: not judged, counted"
+  },
+  "cbCentre": {
+    "rule": "sc1-cb-centre/1, with the owner's ruled line (whole-film/3)",
+    "measuredReportSha256": "111776c2bfb0e5932061f7ccb92e0d2eab1a049ba32c779309b29c070362e797",
+    "rulingRecordSha256": "463ef936923682085f4a979e4aa0e394fa554b732dcd28a4aa09cb8d753300b5",
+    "median": "(-0.0457, +0.0048) as measured: the calibration's median equals the measured report's outcome median number for number",
+    "line": 0.08,
+    "measuredLine": 0.06,
+    "inForce": "models/regions/cb-centre-calibration.json with the ruling (whole-film/3, measured line 0.06, rulingRecordSha256), line 0.08, report measuredReportSha256 (sc1_wf3::check_ruled_centre), else broken",
+    "points": "judged only with all five of S, N, Po, Ar, Or; fewer: not judged, counted"
+  },
+  "plants": {
+    "seed": 20261108,
+    "rng": "ft_common::case_rng(20261108, [type, film index, part]); P2: chainproof::Rng(20261108 ^ 102), Sattolo",
+    "filmIndex": "PKU ids sorted are film indices 0-101",
+    "P1a": "mirrored with the film: x -> width - 1 - x, the facing unchanged; 102",
+    "P1b": "mirrored in place about the tracing's centroid; 102",
+    "P2": "another PKU film's tracing, coordinates as they are, a seeded single-cycle derangement over the ids sorted; 102",
+    "P3": "x0.5 and x2 about the tracing's centroid; 204",
+    "P4": "each of the 5 regions in turn, its traced points moved d = 10 + 10u mm at 0.125 mm/px in direction 2*pi*v (sc1_1a::p4_draw_seeded(20261108, film index, region)); 510",
+    "N": "the truth tracing untouched; 102",
+    "shifts": "information: the whole tracing moved 10 and 20 mm (sc1_1a::shift_draw_seeded(20261108, film index, mm)); 102 each, not counted"
+  },
+  "marks": {
+    "planted": 1020, "needed": 969, "neededRule": "ceil(19 x 1020 / 20) in integers: (19 x 1020 + 19) / 20 (sc1_1a::needed_of)",
+    "normal": 102, "falseAlarmMax": 2, "falseAlarmRule": "floor(2 x 102 / 100) in integers (sc1_1a::false_max_of)",
+    "caught": "a planted tracing whose check is flagged for any reason",
+    "falseAlarm": "an untouched tracing whose check is flagged for any reason",
+    "pooled": "each kind printed on its own line, no per-kind floor (OQ-5)",
+    "interval": "exact Clopper-Pearson 95% for the false-alarm rate and the catch rate, printed beside the marks",
+    "line": "marks: catch <met|missed> (<caught>/1020, needed 969); false alarms <met|missed> (<flagged>/102, at most 2)"
+  },
+  "information": [
+    "N with doctor1 alone and with doctor2 alone",
+    "which look caught each plant (mirrored, shape, region, size, centre, facing, no-ceph-found), and how many the size and centre looks did not judge",
+    "whether Stage A (point-check/2, a scorer of the same 1,000 reference tracings) also flagged it",
+    "the whole tracing moved 10 and 20 mm",
+    "the box-quality table on PKU (expert boxes from the 19 points only; centre error in mm at 0.125)",
+    "PKU's median cranial-base centre offset (untouched tracings, nearest rank per axis) beside the four calibration sets'"
+  ],
+  "controls": {
+    "C1": "50 SYNTHETIC faces mirrored, judged by 300 SYNTHETIC faces: 50 of 50 mirrored",
+    "C2": "the 10 control films' tracings x2: 10 of 10 flagged by region or size; unscaled: not all 10",
+    "C3": "the 10 films' mandible moved 40 mm forward (+x, 320 px at 0.125): 10 of 10 mandible region; unmoved: not all 10",
+    "C4": "the 10 films flipped: the finder's facing flips on 10 of 10",
+    "C5": "Ceph-400 test2 and Aariz test refused; the PKU folder refused without the seal's key (both gates)",
+    "C6": "a reference naming a PKU tracing (pku:<id>) is refused; a scorer holding a judged film's own tracing under pku:<id> is refused as homework; no pku: name and no PKU id in the reference file",
+    "C7": "1,020 planted, 102 untouched, 10 kinds of 102 each, as stated; a mark that counted nothing is an error",
+    "C8": "the 10 films' coordinates x1000: 10 of 10 region, every point off the film",
+    "C9": "carried from the gate report in force (box-gate-2.json): its 2x control tripped",
+    "C10": "the 10 films' tracings x0.5: 10 of 10 size; unscaled: not all 10",
+    "C11": "the 10 films' cranial base moved 20 mm forward (+x, 160 px at 0.125): 10 of 10 cranial-base region; unmoved: not all 10",
+    "C12": "recomputed at the run: the median S-N of gt.csv x spacing.csv (0.125) over Ceph-400 Train's gt.csv x 0.1, within 1 +- 0.15; and provenance.json's SHA-256 equal to provenanceSha256",
+    "controlFilms": "PKU ids sorted, shuffled with ft_common::case_rng(20261108, [9]), the first 10"
+  },
+  "seal": "only ledger::open_seal makes the key, and only when this file at HEAD is the program's byte for byte, the tree is clean, and reports/sc1/sc1-1b-pku.json is absent; every other mode refuses data/pku",
+  "order": "this file committed alone (sc1-1b-pku/1 first committed at 2cd3d1f, then amended once, alone, by the owner's ruling of 6 Nov 2026 on the switch's default, before the driver was committed and before PKU was opened); the driver built and committed; a hold point; a pre-run review by a fresh reviewer; the coordinator's GO; one run",
+  "verdicts": {
+    "pass": "caught >= 969 of 1020 and untouched flagged <= 2 of 102, controls hold -> exit 0",
+    "fail": "controls hold, a mark missed -> exit 3, the report naming which mark or marks were missed, to the owner, no re-run with new marks",
+    "ships": {
+      "ruling": "owner ruling of 6 Nov 2026, given before PKU is opened; it replaces the 5 Nov rule for the switch's default (on unless the false-alarm mark is missed). The marks and the PASS verdict are unchanged. 1.2 Beta is published in every band",
+      "pass": "PASS (caught >= 969 of 1020 AND untouched flagged <= 2 of 102, controls hold): the Whole-film check (beta) switch ships ON, and the result is called a pass",
+      "onBelowMarks": "not PASS, but caught >= 918 of 1020 (90%; ceil(9 x 1020 / 10) in integers) AND untouched flagged <= 5 of 102 (the owner's number), controls hold: the switch ships ON; the result is stated openly as missing the pre-registered marks, with the exact shortfall (how many catches short of 969, how many false alarms over 2)",
+      "off": "anything else (below 918 caught, or more than 5 of 102 flagged), controls holding: the switch ships OFF, and its line 'Not yet tested on new films.' is replaced by the stated result",
+      "noVerdict": "broken (exit 1) or gate stop (exit 4): no band; the switch stays off with 'Not yet tested on new films.' (ruling of 5 Nov) until a run gives a verdict",
+      "line": "ships: <on, a pass | on, below the pre-registered marks (<k> catches short of 969; <j> false alarms over 2) | off> (bands: pass; >= 918 caught and <= 5 flagged; else)",
+      "reason": "The owner's reason, in plain words: the whole-film check is a re-check made before the user approves the points, and the user still checks every point, so a slightly lower bar is acceptable for shipping it switched on.",
+      "noRetuning": "no re-tuning in any band: whatever the band, no rule, line, tolerance or mark is changed after this run"
+    },
+    "laterIntent": "Stated intent for a later part, not this run (owner, 6 Nov 2026): two tiers. (1) An internal re-check that runs more often, at a lower bar, and points the model at a region to look at again. (2) A user-facing note shown only when the check is more sure (about 95%). Neither is built, measured or judged here.",
+    "broken": "a control fails, a count or pin is off -> exit 1, nothing concluded",
+    "brokenRerun": "spec §17.9, quoted: 'Broken means nothing concluded; it may be re-run only if no verdict line was printed, and the coordinator records why.' Here: a broken run that stopped before judging (a pin, a count or a refusal) prints no verdict line and writes no report, so the seal opens again; it may be re-run once the cause is fixed and recorded by the coordinator. A run that printed a verdict line (pass, fail, or broken by a control) has written reports/sc1/sc1-1b-pku.json, and the seal then refuses every further run.",
+    "gateStop": "the gate report in force is a stop -> exit 4, nothing judged, no report"
+  },
+  "writes": "reports/sc1/sc1-1b-pku.json (git-ignored) last; the box cache under reports/sc1/boxes; nothing under models or data"
+}

@@ -470,9 +470,9 @@ const FILM_LINES_TEXT = ['Demo Radiology Northside', 'DEMO, Synthetic', 'M, Y34'
   await page.getByRole('button', { name: 'Superimposition ›' }).click();
   await page.waitForSelector('svg.overlay g.compare');
   await changeShown();
-  // Review M-4 (16 Oct): with the Change tab there are five tabs; they still fit on one line.
+  // Review M-4 (16 Oct): with the Change tab there are four tabs (five before the Steps tab went, owner 5 Nov 2026); they still fit on one line.
   const tabTops5 = await page.locator('.inspector .tabs [role="tab"]').evaluateAll((els) => els.map((e) => Math.round(e.getBoundingClientRect().top)));
-  ok('M4. all five tabs (with Change) fit on one line', tabTops5.length === 5 && new Set(tabTops5).size === 1, JSON.stringify(tabTops5));
+  ok('M4. all four tabs (with Change) fit on one line', tabTops5.length === 4 && new Set(tabTops5).size === 1, JSON.stringify(tabTops5));
   const keyLines = await page.locator('.series-key .series-label').allInnerTexts();
   ok('6. the comparison key lists the same patient\'s T1 first ("T1 · 10/01/2024")', keyLines[0] === 'T1 · 10/01/2024', keyLines.join(' | '));
   ok('6. it draws the comparison and a Change tab with rows', (await page.getByRole('tab', { name: 'Change' }).count()) === 1

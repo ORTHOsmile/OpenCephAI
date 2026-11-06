@@ -7,7 +7,7 @@ on:
 permissions:
   contents: read
 env:
-  DMG_NAME: OpenCephAI-1.1-Beta.dmg
+  DMG_NAME: OpenCephAI-1.2-Beta.dmg
 jobs:
   build:
     runs-on: macos-latest
@@ -97,6 +97,10 @@ jobs:
           APPLE_API_ISSUER: ${{ secrets.APPLE_API_ISSUER }}
           APPLE_API_KEY: ${{ secrets.APPLE_API_KEY_ID }}
           APPLE_API_KEY_PATH: ${{ env.NOTARY_KEY }}
+          # GitHub sets CI=true, and Tauri then tells its DMG script to skip the Finder step that saves the installer window's background
+          # and icon positions (`--skip-jenkins`). This is Tauri's own switch to ignore CI for that decision (tauri-cli 2.11.5). If the runner
+          # refuses Finder, the build now fails loudly instead of shipping a plain window; the DMG check below also fails without `.DS_Store`.
+          TAURI_BUNDLER_DMG_IGNORE_CI: "true"
         run: |
           set -euo pipefail
           pnpm tauri build --bundles app,dmg 2>&1 | sed 's/[A-Za-z0-9+\/=]\{40,\}/<redacted>/g'
@@ -183,6 +187,7 @@ jobs:
             IN="$(find "$M" -maxdepth 1 -name '*.app' | head -1)"
             if [ -z "$IN" ]; then bad "no .app inside the DMG"; else
               echo "Inside the DMG: $(basename "$IN")"; ls -la "$M"
+              if [ -f "$M/.DS_Store" ] && [ -f "$M/.background/background.png" ]; then ok "DMG window layout saved (.DS_Store beside .background/background.png)"; else bad "DMG has no saved window layout: .DS_Store beside .background/background.png is missing (Tauri skipped Finder styling)"; fi
               if codesign --verify --deep --strict --verbose=2 "$IN" 2>&1; then ok "codesign --verify --deep --strict (app in DMG)"; else bad "codesign --verify (app in DMG)"; fi
               S="$(spctl --assess --type execute -vvv "$IN" 2>&1)"; RC=$?; echo "$S"
               if [ $RC -eq 0 ] && echo "$S" | grep -q 'source=Notarized Developer ID'; then ok "spctl execute (app in DMG)"; else bad "spctl execute (app in DMG)"; fi

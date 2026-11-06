@@ -6,3 +6,4 @@ pub mod preprocess;
 pub mod spec;
 pub mod spread;
 pub mod transform;
+pub mod regions;

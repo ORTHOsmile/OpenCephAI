@@ -1,0 +1,80 @@
+{
+  "version": "sc1-1a/1",
+  "rule": "whole-film/1",
+  "spec": "docs/superpowers/specs/2026-11-03-sc1-whole-film-check-design.md §9.1 (rulings R6, OQ-5, OQ-8, RV-1)",
+  "films": { "ceph400": "test1 151-300 (150)", "aariz": "valid (150)", "refused": "Ceph-400 test2 and Aariz test, before anything is read", "truth": "the experts' tracings (gt.csv)" },
+  "shape": {
+    "reference": "models/shape/ceph400-v1.shape (shape-prior/2, the 300 tracings Stage A uses)",
+    "folds": "Test1 ids sorted, shuffled with splitmix64 seed 20261103; fold i = positions 30i..30i+29 (5 folds); a Test1 film is judged by the 150 Train tracings plus the other four folds (270); Aariz valid films by all 300",
+    "line": "nearest-rank 99.5th percentile of the reference set's leave-one-out D2, rounded up to 0.1, for the points present"
+  },
+  "regions": {
+    "detectorFingerprint": "17171e68f9f7072062e2a3a2cbd4851618056f5136bed998f1782c49d4897b80",
+    "gateReportSha256": "db1a67a0a1761ad5463ba64ff338be00423a3ae73f097009b7ab091919f9eae7",
+    "gate": { "minMedianIoU": 0.5, "control": "C9: the hold-out's boxes inflated 2x trip the gate" },
+    "scoreLine": 0.5,
+    "tau": { "cranialBase": 0.09, "maxilla": 0.02, "mandible": 0.02, "incisors": 0.01, "softTissue": 0.1 },
+    "rule": "a point is outside when it is off the film, or its region's box was found and distance-outside / longer side > tau_r; fewer than 3 of 5 regions found: no-ceph-found",
+    "calibrationRule": "sc1-box-gate/2",
+    "gateReport": "reports/sc1/box-gate-2.json, version sc1-box-gate/2, verdict pass, controlTripped true, its detectorFingerprint, scoreLine and tau equal to the values above",
+    "refusedV1": "the sc1-box-gate/1 pair is refused before any SC1-1a film is read: reports/sc1/box-gate.json is never read, models/regions/calibration-1.json is never read, and a calibration.json with rule sc1-box-gate/1 (or no rule), another tau, score line, fingerprint or gate report SHA-256 stops the run (exit 1)"
+  },
+  "plants": {
+    "seed": 20261104,
+    "rng": "ft_common::case_rng(20261104, [type, film index, part]); P2's derangement: chainproof::Rng(20261104 ^ dataset salt)",
+    "P1a": "mirrored with the film: x -> width - 1 - x, the film's facing unchanged; 300",
+    "P1b": "mirrored in place about the tracing's centroid; 300",
+    "P2": "another film's tracing, coordinates as they are: a seeded single-cycle derangement within the same Test1 fold (so the planted tracing is never in the judged film's reference set) and within Aariz valid; 300",
+    "P3": "x0.5 and x2 about the tracing's centroid; 600",
+    "P4": "each of the 5 regions in turn, all its traced points moved d = 10 + 10u mm in direction 2*pi*v (u, v from the case rng); films with a recorded scale only: Ceph-400 test1 at 0.1 mm/px (150) and Aariz valid under aariz-scale/1 (98); 1,240",
+    "N": "the expert tracing untouched; 300"
+  },
+  "marks": {
+    "planted": 2740, "needed": 2603, "neededRule": "ceil(19 x 2740 / 20) in integers",
+    "normal": 300, "falseAlarmMax": 6, "falseAlarmRule": "floor(2 x 300 / 100) in integers",
+    "caught": "a planted tracing whose check is flagged for any reason", "falseAlarm": "an untouched tracing whose check is flagged for any reason",
+    "pooled": "OQ-5: pooled; each type printed on its own line as information, no per-type floor"
+  },
+  "printed": ["P1a", "P1b", "P2", "P3 x0.5", "P3 x2", "P4 by region (5 lines)", "N by dataset"],
+  "information": [
+    "the whole tracing shifted 10 and 20 mm (seeded direction; scaled films only): flag rates",
+    "which look caught each plant (shape / region / facing / no-ceph-found)",
+    "whether Stage A (point-check/2, the same reference sets) flagged the plant too",
+    "the box-quality table on these 300 normal films (Ceph-400's expert boxes use only the 19 points)",
+    "each installed model's real runs from the caches given with --cache: flag rate, split by whether any point is more than 10 mm off; otherwise the line says no cache was given"
+  ],
+  "notSeen": "a wrong mm-per-pixel number with the points untouched (Part 1 never reads the scale, OQ-8): not planted, not counted",
+  "controls": {
+    "C1": "50 SYNTHETIC faces mirrored about their centre, judged by a scorer of 300 SYNTHETIC faces: 50 of 50 mirrored",
+    "C2": "10 control films' tracings x2: 10 of 10 region; the same unscaled: not all 10 flagged",
+    "C3": "the same 10 films' mandible region moved 40 mm forward: 10 of 10 region (mandible); unshifted: not all 10",
+    "C4": "the same 10 films flipped horizontally: the detector's facing flips on 10 of 10",
+    "C5": "test2 and Aariz test paths refused",
+    "C6": "the homework guard: a judged film planted into its own reference set is refused, nothing reported",
+    "C7": "every count equals its expected total; a mark that counted nothing is an error",
+    "C8": "the same 10 films' coordinates x1000: 10 of 10 region, every point off the film",
+    "C9": "carried from the gate report: control tripped",
+    "controlFilms": "10 Test1 films: Test1 ids sorted, shuffled with ft_common::case_rng(20261104, [9]), the first 10"
+  },
+  "definitions": {
+    "facing": "every film's stored facing is right (facing_left false), as in the gate and the region probe; the check is called exactly as the app calls it",
+    "filmIndex": "Test1 ids sorted are film indices 0-149; Aariz valid ids sorted are 150-299",
+    "types": "case-rng type numbers: P4 5 (part = region index in the canonical order cranial base, maxilla, mandible, incisors, soft-tissue profile), the information shift 6 (part = 10 or 20, the shift in mm), the control films 9",
+    "draws": "P4: u = (next >> 11) / 2^53 from the case rng, then the direction from ft_common::direction on the same stream (one number: angle 2*pi*v); the information shift: the direction only",
+    "centroid": "the mean of the 19 traced points; P1b: x -> 2 cx - x; P3 and C2: p -> c + k (p - c); C8: each coordinate x1000 (about the film's origin)",
+    "mm": "a shift of d mm is d / mm-per-px pixels: 0.1 mm/px on Ceph-400, the aariz-scale/1 value on an Aariz valid film; the check never reads it",
+    "salts": "P2's dataset salt: 400 + fold index (0-4) for a Ceph-400 Test1 fold (one derangement per fold, over the fold's ids in fold order); 1 for Aariz valid (over its ids sorted). Sattolo: for i from n-1 down to 1, swap i with Rng.below(i)",
+    "boxes": "the region finder runs once per film on the film as stored (cached by detector fingerprint, reports/sc1/boxes); every plant of a film is judged against that film's boxes at the score line; C4's 10 films are run again flipped, and their facing read in the flipped film",
+    "C1": "reference: ceph_model synthetic faces(300, seed 20261103); judged: faces(50, seed 20261104) on a 2000 x 2400 SYNTHETIC film, mirrored x -> 1999 - x; shape look only (no region model); 'mirrored' = the reason mirrored",
+    "C3": "forward = +x (the films face right); 40 mm = 400 px at Ceph-400's 0.1 mm/px",
+    "stageA": "point-check/2 score_run with a ShapeScorer of the same reference tracings (fold-held-out on Test1); flagged = Flagged or FilmUnusual; information only",
+    "caught": "flagged = the whole-film check's result is Flagged (any reason); Clean and NotRun are not flagged"
+  },
+  "disclosure": [
+    "SC1-1a's normal films were passed through the region finder once, by sc1-box-gate/1's information table (box agreement only, no flags computed); no threshold was set from them.",
+    "tau and the calibration come from sc1-box-gate/2 (owner ruling 5 Nov 2026, 'Set from both sets'): the Aariz-train hold-out and Ceph-400 Train 001-150, neither an SC1-1a film; the region probe sc1-region-probe/1 is therefore not independent evidence, and these 300 normal films are the only false-alarm measure that counts.",
+    "the Test1 films are in the shipped shape reference (300 tracings); the folds above keep each judged Test1 film out of its own reference set"
+  ],
+  "requires": "reports/sc1/box-gate-2.json (sc1-box-gate/2) with verdict pass, its SHA-256 and fingerprint as pinned above; models/regions/calibration.json with rule sc1-box-gate/2, equal to scoreLine and tau above",
+  "verdicts": { "pass": "caught >= 2603 of 2740 and false alarms <= 6 of 300, controls hold -> exit 0, Part 1 may ship", "fail": "controls hold, a mark missed -> exit 3, back to the owner, no re-run with new marks", "broken": "a control fails, a count is off, or the gate report is missing or broken -> exit 1, nothing concluded", "gateStop": "the gate report's verdict is stop -> exit 4, no verdict, SC1-1a not failed, to the owner" }
+}

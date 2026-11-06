@@ -114,3 +114,71 @@ dataset's expert tracings with the app? This was a licence check only. Nothing w
   4.0 asks for credit and the licence): Lindner, C. et al., *Scientific Reports* 6, 33581 (2016); source
   <https://huggingface.co/datasets/YongchengYAO/Ceph-Biometrics-400>, CC BY-NC 4.0. The challenge itself: Wang, C.-W.
   et al., *Medical Image Analysis* 31, 63–76 (2016).
+
+## Ceph-400 and Aariz train expert tracings (the whole-film check's shape reference)
+
+Added 5 Nov 2026 for SC-1 Part 1b Task B (design
+§17.4, owner ruling R1b-4 "Ceph-400 + all Aariz train").
+
+- **What the file holds:** `models/shape/whole-film-reference-v1.shape` (`whole-film-reference/1`), written by
+  `ceph-bench --sc1-reference`. It holds the 19 point coordinates of 1,000 expert tracings, in film pixels, facing
+  right: Ceph-400 Train 001–150 and Test1 151–300 (the senior doctor's tracings, named `ceph400:NNN`; the same 300 as
+  Stage A's file above), and all 700 Aariz train tracings (the mean of Aariz's senior and junior orthodontists, as
+  `tools/dataset/prepare_aariz.py` makes them; named `aariz:<id>`). It also holds 20 numbers: the shape look's line for
+  the full 19 points and for each set of 18. No film, no image, no patient detail. Ceph-400 Test2, Aariz valid, Aariz
+  test and PKU are never read. Stage A's `ceph400-v1.shape` is a separate file and is not changed.
+- **Licences:** Ceph-400 as above, **CC BY-NC 4.0** (the organisers' own terms not confirmed); Aariz **CC BY 4.0**
+  (credit required). The file mixes both, so it carries the stricter terms: **non-commercial use only**, with both
+  credits. As with Stage A's file, it is **never redistributed by us**: built and kept only on this Mac, in the
+  git-ignored `models/` folder. Sharing it with other users is an open question.
+- **Credit wherever the coordinates are used:** Lindner, C. et al., *Scientific Reports* 6, 33581 (2016); source
+  <https://huggingface.co/datasets/YongchengYAO/Ceph-Biometrics-400>, CC BY-NC 4.0; the challenge itself: Wang, C.-W.
+  et al., *Medical Image Analysis* 31, 63–76 (2016). And: Aariz Cephalometric Dataset (CEPHA29), Khalid et al.,
+  *Scientific Data* 2025, doi:10.1038/s41597-025-05542-3; Figshare doi:10.6084/m9.figshare.27986417, CC BY 4.0.
+
+# The region finder (SC-1 Part 1, whole-film check)
+
+The run record below was filled from the teaching run's own logs on 4 Nov 2026. The weights are never committed, bundled or uploaded.
+
+## RF-DETR (Roboflow)
+
+- **What it is used for:** only to start the teaching of the region finder: the network and its COCO-trained Medium
+  base weights are the starting point; CephTrace's region finder is what is taught from there (next entry).
+- **Package:** `rfdetr` 1.11.2 (PyPI), run in a separate Python environment outside the repository (versions in `tools/sc1/requirements.txt`).
+  Nothing of it is bundled with the app; the app runs the exported ONNX file on ONNX Runtime CPU at full precision.
+- **Code licence:** Apache License 2.0. Read on 3 Nov 2026 from the installed package's own files:
+  `rfdetr-1.11.2.dist-info/METADATA` line 6 (`License: Apache License 2.0`) and line 135 ("The open-source `rfdetr`
+  package and Apache-designated models are released under Apache 2.0, while Plus components ... are licensed under
+  PML 1.0"); `rfdetr-1.11.2.dist-info/licenses/LICENSE` (the Apache License, Version 2.0, January 2004, full text);
+  the README size table in the same METADATA, line 329: `| M | RFDETRMedium | rfdetr-medium | 73.6 | 54.7 | 4.4 | 33.7 |
+  576x576 | Apache 2.0 |`. Only Apache-licensed sizes are used (Medium); the PML 1.0 sizes are not.
+- **Base weights (Medium):** file `rf-detr-medium.pth`, 404,992,918 bytes, SHA-256
+  `749ff6071828aaffac63e204c4f4135ed3d6cdae4d702e086c360edc3b5768c8` (MD5 `7223f764a87b863f02eb8d52bf0ce2ee`, the value
+  `rfdetr` itself checks). Source URL in the package (`rfdetr/assets/model_weights.py`, `RF_DETR_MEDIUM`):
+  <https://storage.googleapis.com/rfdetr/medium_coco/checkpoint_best_regular.pth>. Licence: Apache 2.0, as the README
+  table states for the Medium size. Where the file was obtained and when: rfdetr's own download (from the URL above, into `~/.roboflow/models/` on the main Mac), 2 Nov 2026.
+- **Notice:** RF-DETR, Copyright (c) 2025 Roboflow, licensed under the Apache License, Version 2.0
+  (<https://github.com/roboflow/rf-detr>).
+
+## The region finder taught here (`rfdetr-m-aariz-regions`)
+
+- **What it is:** RF-DETR Medium, taught to draw a box round each of five regions (cranial base, maxilla, mandible,
+  incisors, soft-tissue profile) on lateral cephalograms. Used by the whole-film check. In the app it lives in the
+  git-ignored `models/regions/`. Its master copy is in the owner's separate `OpenCephAI-models` repository (local).
+- **Published openly (owner; version 1 on 5 Nov 2026, version 2 on 6 Nov 2026):** Zenodo, doi:10.5281/zenodo.23949953 (all
+  versions; version 2 is doi:10.5281/zenodo.23965907, version 1 doi:10.5281/zenodo.23949954), CC BY 4.0, with RF-DETR's Apache-2.0
+  licence and the Aariz credit. The record holds the ONNX file above, the PyTorch weights as safetensors, the film split
+  and a model card. It does not hold the films.
+- **Taught on the Aariz dataset, Khalid et al., Sci Data 2025, doi:10.1038/s41597-025-05542-3, CC BY 4.0 (credit
+  required).** Design, to be confirmed by the run record below: only Aariz **train** films, the 80% teaching slice of
+  `reference/sc1-aariz-split.json` (seeded 80/10/10 split), each with a mirror image; the 10% hold-out chooses the
+  checkpoint; the tuning slice and Aariz valid are not used in teaching; Aariz test is never opened. Attribution to
+  carry with it: "Region finder taught on the Aariz Cephalometric Dataset (CEPHA29), Khalid et al., Sci Data 2025,
+  Figshare doi:10.6084/m9.figshare.27986417, CC BY 4.0. Started from RF-DETR Medium (Roboflow, Apache 2.0)."
+- **Run record (from the run's own logs, 4 Nov 2026):**
+  - epochs: 110 (`Trainer.fit` stopped: `max_epochs=110` reached; 0 error or traceback lines in `sc1-run1.log`, SHA-256 `5025f16d8e2c73939369b65ab42375fefc157c442330a74ed19ef8fb0894c619`). Images: 1,120 teaching (560 films plus mirror copies), 140 hold-out (70 plus mirror copies).
+  - hours and device: 22,572 s (6.27 h), 205 s per epoch, on `mps` on a peer Mac (Apple M2 Max, 32 GB, macOS 15.7.4), rfdetr 1.11.2. The teaching ran on a second Mac because the 16 GB main Mac ran out of memory (one pass ran 5 h 13 min with 7.1 of 8 GB swap used and never finished, so it was stopped).
+  - best checkpoint file and its SHA-256: `checkpoint_best_total.pth` (rfdetr's best on the hold-out, from EMA), SHA-256 `7b480b751f3180b8c5738d941712707dbab3538ce710f1074cdda29f12459434`.
+  - ONNX SHA-256 and manifest fingerprint (the same value; `models/regions/manifest.json`): `17171e68f9f7072062e2a3a2cbd4851618056f5136bed998f1782c49d4897b80`. Version `rfdetr-m-aariz-regions/1 (2026-11-04)`, input 576, 6 classes.
+  - ONNX Runtime CPU against PyTorch on the hold-out, worst corner difference in px: 0.340 px (rule 0.5 px), over 70 of 70 films and 350 of 350 box pairs; region labels agree 70 of 70; largest score difference 1.11e-3; verdict pass.
+- **Format:** ONNX opset 17, full precision (fp32), run on ONNX Runtime CPU (owner ruling OQ-1).

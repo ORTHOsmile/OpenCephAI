@@ -1,0 +1,52 @@
+{
+  "version": "sc1-region-probe/1",
+  "rule": "whole-film/1",
+  "purpose": "Before SC1-1a: measure the region false-alarm risk of the pinned score line and tau on films that are neither taught on nor SC1-1a films (owner ruling 5 Nov 2026, 'Check first'; Task 10 review, Risks A and B). Information plus one decision rule; it changes no threshold.",
+  "spec": "docs/superpowers/specs/2026-11-03-sc1-whole-film-check-design.md §3.3, §4.2, §9.1; reference/sc1-box-gate.json (sc1-box-gate/1)",
+  "films": {
+    "ceph400Train": "Ceph-400 split 'train' of splits.json: films 001-150 (tools/dataset/prepare_ceph400.py: n <= 150), 150 films, at 0.1 mm/px, with their expert tracings (the 19 points). Every id must be three digits in 001-150, else refused before any film is read. Never taught to the region finder (spec §4.2: no Ceph-400 film is used; --sc1-teaching-boxes reads Aariz train only). Not an SC1-1a film (SC1-1a's normal films are Ceph-400 test1 151-300 and Aariz valid). These tracings are in the shape reference set, so the shape look is not run here.",
+    "holdout": "The 70 Aariz-train hold-out films of reference/sc1-aariz-split.json (never taught on), with their traced 19 points only (the extra teaching points are never checked). Information: it shows how far inside tau the clean films sit.",
+    "refused": "Ceph-400 test2, Aariz test, Ceph-400 test1 and Aariz valid (and 'all'), before any file is read. The probe never reads SC1-1a's films and never prints a flag rate for them."
+  },
+  "detector": "models/regions (manifest kind regions, ONNX Runtime CPU fp32), fingerprint 17171e68f9f7072062e2a3a2cbd4851618056f5136bed998f1782c49d4897b80; else broken",
+  "calibration": {
+    "file": "models/regions/calibration.json exactly as Task 10 wrote it (region-calibration/1), read with ceph_model::wholefilm::parse_calibration",
+    "gateReportSha256": "b11ad41da0760a2a7832c5d87fa372fc91b3c3a1dd5b549d94f4e7164c123eb2",
+    "requires": "the calibration's detector fingerprint is the one above and its gateReportSha256 is the value above; reports/sc1/box-gate.json exists, its SHA-256 is that value and its verdict is pass; else broken",
+    "scoreLine": 0.5,
+    "tau": { "cranialBase": 0.09, "maxilla": 0.01, "mandible": 0.01, "incisors": 0.01, "softTissue": 0.01 },
+    "unchanged": "the calibration file must hold exactly this score line and these tau; the probe changes neither"
+  },
+  "measured": {
+    "path": "the app's own region path: the detector's best box per region (sc1_boxes::boxes_for, cached per fingerprint), Regions::from_scored at the calibration's score line, then ceph_model::wholefilm::check_film with no shape scorer (shape not set up), the film's recorded facing (right: Ceph-400's tracings are checked to face right when the dataset is prepared; the Aariz films are taken as stored, facing right), the film's width and height, and the calibration's tau",
+    "perFilm": [
+      "regions found (0-5)",
+      "per region: the largest outside-ratio of its traced points (distance outside the detected box / the box's longer side; 0 inside), null when the region is not found",
+      "per region: the largest signed edge-ratio of its traced points (outside: +outside-ratio; inside: -(distance to the nearest edge) / the box's longer side), null when not found; information, it shows how far inside the edge the worst point sits",
+      "per region: whether any traced point's outside-ratio is above tau_r",
+      "per region: whether check_film gives a region flag for it (a point above tau_r, or a point off the film)",
+      "no-ceph-found (fewer than 3 of 5 regions found; check_film's MIN_REGIONS_FOUND)",
+      "facing: whether check_film gives a facing flag (the detector's facing from the soft-tissue and cranial-base boxes, against the recorded facing)",
+      "flagged by the region rules: check_film flags the film for any reason (region, no-ceph-found or facing; no shape look is run)"
+    ]
+  },
+  "reported": {
+    "perSetAndRegion": "films, not found, films with a point above tau_r, films with a region flag, and the outside-ratio and signed edge-ratio median, p90, p99 and max over the films that found the region (nearest rank: the ceil(q n)-th smallest value); null when no film found the region",
+    "perSet": "films; regions-found counts (5, 4, 3, fewer than 3); no-ceph-found; facing flags; films flagged by the region rules, as a count and as a percentage of the set",
+    "printed": "aggregates only; no film id",
+    "writes": "reports/sc1/region-probe.json (git-ignored)"
+  },
+  "decision": {
+    "set": "ceph400Train",
+    "threshold": 3,
+    "rule": "Ceph-400 Train: films flagged by the region rules <= 3 of 150 (<= 2%, the SC1-1a normal-film rate of 6 of 300) -> keep tau as is and proceed to SC1-1a. More than 3 -> stop; to the owner with options; tau unchanged by this probe.",
+    "holdout": "information only; it never changes the decision"
+  },
+  "controls": {
+    "positive": "the same 150 Ceph-400 Train films with the mandible's five traced points (Go, Me, Pog, B, Gn) moved 40 mm (400 px at 0.1 mm/px) forward, +x (spec §9.1 C3), judged against the same boxes: flagged by the region rules on at least 140 of 150, else the probe is blind (exit 1)",
+    "counts": "each set's film count equals its total (150 and 70) and every region's count (found + not found) equals it; else broken (exit 1)",
+    "refusals": "the refused sets above are refused before any file is read; a test plants each and watches the refusal",
+    "committed": "this file committed as built (git show HEAD), from a clean tree; else broken (exit 1)"
+  },
+  "exits": { "0": "Ceph-400 Train flagged <= 3 of 150 and the controls hold: keep tau, proceed to SC1-1a", "3": "flagged > 3 of 150 and the controls hold: stop, to the owner", "1": "broken: a control fails, a count is off, a refused set was asked for, or the detector, calibration or gate report is not the pinned one; nothing concluded" }
+}

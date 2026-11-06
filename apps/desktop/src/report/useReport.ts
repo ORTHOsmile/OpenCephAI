@@ -1,7 +1,7 @@
 import type { PopulationChoice } from '@ceph/analyses';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import type { AnalysisDef } from '@ceph/geometry';
-import type { CaseDoc, PointCheckView } from '../ipc';
+import type { CaseDoc, PointCheckView, WholeFilmView } from '../ipc';
 import { settings } from '../ipc';
 import type { MeasurementRow } from '../measurements';
 import type { NormCell } from '../norms/normCell';
@@ -18,8 +18,9 @@ import { isCjk, cachedCjkSearch, type SysFont } from './systemFont';
 import { loadFonts, type PdfFonts } from './fonts';
 import { filmJpeg } from './filmImage';
 import { chooseAndSave } from './save';
-import { figure, figureFit, profilogramShapes, type FigureInput } from './shapes';
-import { pageOneBoxes, profilogramBox, type Paper } from './page';
+import { figure, type FigureInput } from './shapes';
+import { pageOneBoxes, type Paper } from './page';
+import { profilogramPageShapes } from './profilogramPage';
 import { csvBytes } from '../export/csv';
 import { measurementsCsv, readSalt } from '../export/measurementsCsv';
 import type { ReportWords } from './words';
@@ -47,6 +48,14 @@ export interface UseReportInput {
   /** Why the report must not be exported yet: the film's point check is unread or its read failed (blank cells would read as
    *  "nothing flagged"). null/absent: fine. */
   pointCheckProblem?: string | null;
+  /** SC-1 Part 1 task 9: the open film's stored whole-film view (what the note shows), for the Points table's `whole_film_check`; absent or null reads as blank. */
+  wholeFilm?: WholeFilmView | null;
+  /** Why the report must not be exported yet: the whole-film view is unread or its read failed (a blank would read as "no record"). */
+  wholeFilmProblem?: string | null;
+  /** Research switch (Settings › Checks, 6 Nov 2026): put the whole-film check in the PDF and CSV. Off/absent: it is in neither. */
+  wholeFilmInReports?: boolean;
+  /** The export options as ticked now (App.tsx), so the CJK font search ignores text that will not print; absent reads as the defaults. */
+  options?: ReportOptions;
 }
 /** The open film's report: the Measurements tab's own rows and norm cells (R3: the analyses switched on), the
  *  clinician's words (MEANING-PER-CLINICIAN) and this film's changed words (R2) — plus (Task 9) the film image for
@@ -56,11 +65,11 @@ export function useReport(i: UseReportInput) {
   const make = (edits: ReportWords, now: Date): ReportModel => {
     const normFor = i.normFor!, cells = i.rows.map((r) => normFor(r));
     const models = modelsUsed(Object.entries(i.points).map(([id, p]) => ({ source: p.source, placer: i.placer(id) })), i.titleOf);
-    const points = reportPoints(i.points, i.placer, i.titleOf, i.pointFiles ?? {}, i.via, i.pointCheck ?? null);
+    const points = reportPoints(i.points, i.placer, i.titleOf, i.pointFiles ?? {}, i.via, i.pointCheck ?? null, i.wholeFilm ?? null, !!i.wholeFilmInReports);
     return buildReport({ doc: i.doc!, rows: i.rows, cells, defs: i.defs, words: i.words, edits, scale: i.scale, models, dateFormat: i.dateFormat, now, points, populationChoice: i.populationChoice ?? null });
   };
   const model = useMemo<ReportModel | null>(() => (i.open && i.doc && i.normFor ? make(words.words, new Date()) : null),
-    [i.open, i.doc, i.rows, i.normFor, i.defs, i.words, i.points, i.placer, i.titleOf, i.scale.mmPerPx, i.scale.source, i.dateFormat, words.words, i.pointFiles, i.via, i.populationChoice, i.pointCheck]);   // eslint-disable-line react-hooks/exhaustive-deps
+    [i.open, i.doc, i.rows, i.normFor, i.defs, i.words, i.points, i.placer, i.titleOf, i.scale.mmPerPx, i.scale.source, i.dateFormat, words.words, i.pointFiles, i.via, i.populationChoice, i.pointCheck, i.wholeFilm, i.wholeFilmInReports]);   // eslint-disable-line react-hooks/exhaustive-deps
   const problem = !i.open || model ? null : i.normsError ? `Norms couldn't be loaded, so the report can't be made: ${i.normsError}` : 'Open a film to make its report.';
 
   // The film for the PDF, made when the preview opens (and again if the view of the film changes).
@@ -83,7 +92,7 @@ export function useReport(i: UseReportInput) {
   // FONT-2 (preflight-rulings Task 9 wiring): the CJK code points this report actually needs — computed ONCE PER
   // REPORT MODEL (carry-over (b): not recomputed on every render or every save) — then searched for on this
   // computer, at most once per distinct set for the life of the session (`cachedCjkSearch`, its own test file).
-  const need = useMemo(() => (model ? [...new Set(reportTexts(model).flatMap((t) => [...t]).map((c) => c.codePointAt(0)!).filter(isCjk))] : []), [model]);
+  const need = useMemo(() => (model ? [...new Set(reportTexts(model, i.options ?? DEFAULT_REPORT_OPTIONS).flatMap((t) => [...t]).map((c) => c.codePointAt(0)!).filter(isCjk))] : []), [model, i.options?.pointsTable]);
   const cjkCache = useRef(new Map<string, Promise<SysFont>>());
   const [cjk, setCjk] = useState<SysFont>(null), [searching, setSearching] = useState(false);
   useEffect(() => {
@@ -97,6 +106,7 @@ export function useReport(i: UseReportInput) {
   const savePdf = async (paper: Paper, withFilm: boolean, options: ReportOptions = DEFAULT_REPORT_OPTIONS): Promise<boolean> => {
     if (!i.figureInput || !i.doc || !i.normFor) return false;
     if (i.pointCheckProblem) throw new Error(i.pointCheckProblem);
+    if (i.wholeFilmProblem) throw new Error(i.wholeFilmProblem);
     if (!fonts) throw new Error(fontError ?? 'the PDF font is still loading; try again in a moment');
     if (searching) throw new Error("Still looking for this computer's font for Chinese, Japanese or Korean letters; try again in a moment.");
     const now = new Date();   // preflight-rulings Task 9 Minor: one `now` for make() AND buildPdf, so they never straddle midnight.
@@ -109,9 +119,7 @@ export function useReport(i: UseReportInput) {
     // Owner, 29 Oct 2026 (item 1): the profilogram, on its own page, never over the film — built only when the
     // tick-box is on, so a report with it off never pays for the extra work and prints the same bytes as before
     // this feature existed.
-    const profilogram = options.profilogramPage
-      ? profilogramShapes(i.figureInput.points, i.figureInput.orientation, i.figureInput.dims, figureFit(i.figureInput.orientation, i.figureInput.dims, profilogramBox(paper)), { registry: i.figureInput.registry, overlays: i.figureInput.overlays })
-      : null;
+    const profilogram = options.profilogramPage ? profilogramPageShapes(i.figureInput, paper, options) : null;
     const { buildPdf } = await import('./pdf');
     const bytes = buildPdf({ model: m, paper, decimals: i.decimals, fonts: { ...fonts, cjk }, options,
       figure: { shapes: fig.shapes, film: onFilm ? { jpeg: film as string, ...fig.img } : null }, profilogram }, now);
@@ -120,10 +128,11 @@ export function useReport(i: UseReportInput) {
   const saveCsv = async (c: CsvChoice): Promise<boolean> => {
     if (!i.doc || !i.normFor) return false;
     if (i.pointCheckProblem) throw new Error(i.pointCheckProblem);
+    if (i.wholeFilmProblem) throw new Error(i.wholeFilmProblem);
     const now = new Date();
     const m = make(await words.flush(), now), at = now.toISOString();
     const salt = c.anonymise ? await readSalt(settings) : '';
-    const csv = measurementsCsv([m], { ...c, salt, exportedAt: at, decimals: i.decimals });
+    const csv = measurementsCsv([m], { ...c, salt, exportedAt: at, decimals: i.decimals, wholeFilm: !!i.wholeFilmInReports });
     return chooseAndSave('csv', c.anonymise ? `OpenCephAI measurements ${at.slice(0, 10)}` : `OpenCephAI measurements ${m.header.patient} ${m.film.timepoint}`, csvBytes(csv));
   };
   return {

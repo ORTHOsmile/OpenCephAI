@@ -1,6 +1,6 @@
 import type { AnalysisDef, Compiled } from '@ceph/geometry';
 import type { NormPicks } from '@ceph/analyses';
-import type { CaseDoc, ModelPoints, PointCheckView } from '../ipc';
+import type { CaseDoc, ModelPoints, PointCheckView, WholeFilmView } from '../ipc';
 import { hydrateAction } from '../library/persist';
 import { placedByOf, placedViaOf, pointPlacer } from '../measurements';
 import type { Decimals } from '../format';
@@ -32,6 +32,11 @@ export interface BatchDeps {
    *  `point_check` column. A failed read fails the film (left out and counted, like a failed open): a blank cell would read as
    *  "nothing flagged". null = read, never checked (blank); absent dep (other callers): blank. */
   pointChecks?: (id: string) => Promise<PointCheckView | null>;
+  /** SC-1 Part 1 task 9: the film's stored whole-film view (`library.wholeFilmCheck`, the read the note uses), for the points CSV's
+   *  `whole_film_check` column. Same rule as `pointChecks`: a failed read fails the film; null = no record (blank); absent dep: blank. */
+  wholeFilms?: (id: string) => Promise<WholeFilmView | null>;
+  /** Research switch (6 Nov 2026): put the whole-film columns in the points CSV. Off/absent: the view is not even read. */
+  wholeFilmInReports?: boolean;
 }
 
 /** Whose meaning words: `explicit` is the raw `operator` setting (non-empty only when the top bar chose someone),
@@ -81,7 +86,8 @@ export async function filmModels(ids: string[], d: BatchDeps): Promise<{ models:
       const files = d.points && d.pointFiles ? await d.pointFiles(id).catch(() => ({} as Record<string, string>)) : {};
       const via = placedViaOf(doc);
       const check = d.points && d.pointChecks ? await d.pointChecks(id) : null;
-      const points = d.points ? reportPoints(pts, placer, d.titleOf, files, (id2) => via[id2] ?? null, check) : [];
+      const whole = d.points && d.wholeFilms && d.wholeFilmInReports ? await d.wholeFilms(id) : null;
+      const points = d.points ? reportPoints(pts, placer, d.titleOf, files, (id2) => via[id2] ?? null, check, whole, !!d.wholeFilmInReports) : [];
       models.push(buildReport({ doc, rows, cells, defs: d.defs, words, edits, scale, models: used, dateFormat: d.dateFormat, now: d.now, points,
         populationChoice: casePopulationChoice(doc, d.norms) }));
     } catch {
@@ -107,7 +113,7 @@ export async function exportFilmsCsv(ids: string[], c: CsvChoice, d: ExportDeps)
   const { models, failed } = await filmModels(ids, { ...d, points: c.layout === 'points' });
   if (!models.length) throw new Error(`none of the ${ids.length} chosen films could be read`);
   const at = d.now.toISOString(), salt = c.anonymise ? await d.salt() : '';
-  const csv = measurementsCsv(models, { ...c, salt, exportedAt: at, decimals: d.decimals });
+  const csv = measurementsCsv(models, { ...c, salt, exportedAt: at, decimals: d.decimals, wholeFilm: !!d.wholeFilmInReports });
   if (!(await d.save(`OpenCephAI measurements ${at.slice(0, 10)}`, csvBytes(csv)))) return null;
   const n = models.length, f = failed.length;
   return `${n} ${n === 1 ? 'film' : 'films'} exported${f ? `; ${f} could not be read and ${f === 1 ? 'was' : 'were'} left out` : ''}.`;

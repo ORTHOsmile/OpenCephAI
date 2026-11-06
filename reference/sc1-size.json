@@ -1,0 +1,21 @@
+{
+  "version": "sc1-size/1",
+  "rule": "whole-film/2 size look",
+  "spec": "docs/superpowers/specs/2026-11-03-sc1-whole-film-check-design.md §17.3 (owner rulings R1b-3, R1b-5)",
+  "films": {
+    "holdout": "Aariz-train hold-out, 70 (reference/sc1-aariz-split.json)",
+    "ceph400Train": "Ceph-400 Train 001-150",
+    "development": "Ceph-400 Test1 151-300 and Aariz valid 150: SC1-1a's spent films, tuned on by the owner's ruling R1b-5",
+    "never": "the 560 teaching films, the 70 tuning-slice films, PKU, Ceph-400 Test2, Aariz test"
+  },
+  "boxes": "the region finder 17171e68f9f7072062e2a3a2cbd4851618056f5136bed998f1782c49d4897b80 at score line 0.50, from the box cache",
+  "tau": "the region calibration in force: rule sc1-box-gate/3, gate report reports/sc1/box-gate-3.json SHA-256 f639b5bc41b12388ab430e9e86fda78143bb2984ae483d83cd65e3916d1ff0d5",
+  "measure": "for each region found with at least one traced point: c_r = mean of its traced points, b_r = box centre (film px as stored); S_t, S_b = root-mean-square distance of the c_r, b_r from their means over the same regions; q = ln(S_t / S_b); at least 3 regions",
+  "centre": "for each set S of 3, 4 or 5 regions: the nearest-rank median (500 per mille) of q over the calibration films that found all of S",
+  "line": "for each S: the largest |q - centre_S| over those films, rounded up to the next 0.01, never below 0.05",
+  "choice": "computed with all five regions and without the soft-tissue profile; the smaller full-set line wins; a tie keeps five; chosen once here",
+  "stop": "the chosen full-set line above 0.35 -> exit 4, to the owner",
+  "controls": { "half": "every calibration film's tracing x0.5 about its centroid: flagged size on at least 95% (integer: 20 x flagged >= 19 x films)", "double": "the same at x2", "counts": "C7: 70 + 150 + 150 + 150 = 520 films, each set's count as stated" },
+  "writes": "models/regions/size-calibration.json (git-ignored) with the report's SHA-256; reports/sc1/size-calibration.json",
+  "verdicts": { "pass": "controls hold, line at most 0.35 -> exit 0", "stop": "line above 0.35 or a control under 95% -> exit 4, to the owner", "broken": "a count off, a refusal failed, a pin differs -> exit 1" }
+}

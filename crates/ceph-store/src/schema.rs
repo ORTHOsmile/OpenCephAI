@@ -7,7 +7,9 @@ use rusqlite::{params, Connection, Transaction};
 /// 015, Automatic best (`placed_via`, its change record), appended 27 Oct; 016, the Library's Report column
 /// (`cases.report_saved_at`), appended 29 Oct; 017, held for Tier 3 Stage A and changing nothing, and 018, the norms Auto
 /// population (`patients.background`, `population_switches`, old "Clinic default" cases switched to Auto), appended 2 Nov;
-/// 019, Stage A′'s point check (`point_check_runs`, `point_checks`, `point_check_resolutions`; flag-only), appended 2 Nov)
+/// 019, Stage A′'s point check (`point_check_runs`, `point_checks`, `point_check_resolutions`; flag-only), appended 2 Nov;
+/// 020, SC-1 Part 1's whole-film check (`film_regions`, `film_region_boxes`, `whole_film_checks`, `whole_film_check_reasons`,
+/// `whole_film_check_resolutions`; a note only, append-only by trigger), appended 3 Nov)
 pub const MIGRATIONS: &[&str] = &[include_str!("../migrations/001_init.sql"), include_str!("../migrations/002_patient_identity.sql"),
     include_str!("../migrations/003_blank_unread_names.sql"), include_str!("../migrations/004_film_layouts.sql"),
     include_str!("../migrations/005_timepoints_by_film_date.sql"),
@@ -17,7 +19,8 @@ pub const MIGRATIONS: &[&str] = &[include_str!("../migrations/001_init.sql"), in
     include_str!("../migrations/012_film_fits.sql"), include_str!("../migrations/013_title_and_film_age.sql"),
     include_str!("../migrations/014_part_f.sql"), include_str!("../migrations/015_auto_best.sql"),
     include_str!("../migrations/016_report_saved.sql"), include_str!("../migrations/017_reserved_tier3_stage_a.sql"),
-    include_str!("../migrations/018_norms_auto_population.sql"), include_str!("../migrations/019_point_check.sql")];
+    include_str!("../migrations/018_norms_auto_population.sql"), include_str!("../migrations/019_point_check.sql"),
+    include_str!("../migrations/020_whole_film_check.sql")];
 pub const CURRENT: i64 = MIGRATIONS.len() as i64;
 
 /// Shown, and the library not opened or changed, when it was written by any withdrawn format 11 (addendum D2, L7 A;
@@ -203,10 +206,10 @@ mod tests {
         migrate(&mut c).unwrap();
         assert_eq!(version(&c).unwrap(), CURRENT);
         migrate(&mut c).unwrap();                                            // second run is a no-op
-        assert_eq!(tables(&c), ["ai_points", "ai_runs", "applied_migrations", "auto_best_events", "calibrations", "case_compare", "cases", "film_fits",
+        assert_eq!(tables(&c), ["ai_points", "ai_runs", "applied_migrations", "auto_best_events", "calibrations", "case_compare", "cases", "film_fits", "film_region_boxes", "film_regions",
             "id_link_answers", "images", "landmark_events", "landmarks", "layout_anchors", "layout_candidates", "layout_machines", "layout_places", "layout_votes",
             "learning_record", "library_numbers", "model_licences", "operators", "patients", "personal_model_events", "personal_models", "point_check_resolutions", "point_check_runs", "point_checks", "point_choices", "population_switches",
-            "settings", "user_norms", "weights_check", "weights_check_films", "xray_joins"]);
+            "settings", "user_norms", "weights_check", "weights_check_films", "whole_film_check_reasons", "whole_film_check_resolutions", "whole_film_checks", "xray_joins"]);
     }
     /// Every row of every table, as "table|values…", ordered: format 12 must change none of them.
     fn all_rows(c: &Connection) -> Vec<String> {
@@ -1222,7 +1225,7 @@ mod tests {
         assert_eq!(ensure_known(18, 16).unwrap_err().to_string(), "this library was written by a newer OpenCephAI (schema 18, this app knows 16); update the app");
         assert_eq!(ensure_known(18, 17).unwrap_err().to_string(), "this library was written by a newer OpenCephAI (schema 18, this app knows 17); update the app");
         ensure_known(18, 18).unwrap();
-        assert_eq!(CURRENT, 19);
+        assert_eq!(CURRENT, 20);
     }
 
     // ---- Format 19 (Stage A′, the point check; spec 2026-11-02 §14.13 U1): three new tables, every old row unchanged. ----
@@ -1366,6 +1369,334 @@ mod tests {
         assert_eq!(ensure_known(19, 18).unwrap_err().to_string(), "this library was written by a newer OpenCephAI (schema 19, this app knows 18); update the app");
         ensure_known(18, 19).unwrap();
         ensure_known(19, 19).unwrap();
-        assert_eq!(CURRENT, 19);
+        assert_eq!(CURRENT, 20);
+    }
+
+    // ---- Format 20 (SC-1 Part 1, the whole-film check; spec 2026-11-03 §8): five append-only tables, every old row
+    // unchanged. ----
+    /// The real 020 file, read here too so a private copy can be changed for a positive control (never the real file).
+    const SQL_020: &str = include_str!("../migrations/020_whole_film_check.sql");
+    /// A format-19 database holding the format-16 rows and a Stage A row set: three model runs, a check run with a point
+    /// flag and a film flag, and a resolution.
+    fn format_19_rows(c: &Connection) {
+        format_16_rows(c);
+        c.execute_batch("INSERT INTO ai_runs (id, case_id, model_id, execution_provider, facing, total_ms, ran_at) VALUES
+              (1, 'c1', 'aariz-cepha29', 'cpu', 'right', 1.0, 'x'), (2, 'c1', 'srpose-cldet23', 'cpu', 'right', 1.0, 'y'),
+              (3, 'c1', 'gu2net-isbi19', 'cpu', 'right', 1.0, 'z');
+            INSERT INTO point_check_runs (run_id, case_id, rule_version, prior_sha256, prior_films, outcome, not_run_reason, present, checked_at)
+              VALUES (1, 'c1', 'point-check/2', 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa', 300, 'film-unusual', NULL, 19, '2026-11-02T00:00:00.000Z');
+            INSERT INTO point_checks (run_id, landmark_id, action, points, tail, off_px) VALUES (1, 'N', 'flagged', NULL, 0.0001, 150.0),
+              (1, NULL, 'film-unusual', 'N,S,Po,Ar', NULL, NULL);
+            INSERT INTO point_check_resolutions (check_id, how, operator, resolved_at) VALUES (1, 'accepted', 'Dr A', '2026-11-02T00:00:00.000Z');").unwrap();
+    }
+    /// A database at format 20 with `format_19_rows`: through this app's own `migrate_to` (`None`), or, for a positive
+    /// control, through a private copy of 020 (`Some(sql)`) run as format 20 would be.
+    fn at_20(sql: Option<&str>) -> Connection {
+        let mut c = Connection::open_in_memory().unwrap();
+        migrate_to(&mut c, 19).unwrap();
+        format_19_rows(&c);
+        match sql {
+            None => migrate_to(&mut c, 20).unwrap(),
+            Some(sql) => { c.execute_batch(sql).unwrap(); c.pragma_update(None, "user_version", 20).unwrap(); }
+        }
+        c.pragma_update(None, "foreign_keys", "ON").unwrap();
+        c
+    }
+    /// The private copy: `sql` with `from` replaced by `to`, insisting the text was there (a mutation that changes
+    /// nothing would make its control pass for the wrong reason).
+    fn changed(sql: &str, from: &str, to: &str) -> String {
+        assert_eq!(sql.matches(from).count(), 1, "the control's change must find exactly one `{from}`");
+        sql.replacen(from, to, 1)
+    }
+    /// 19→20, as the instrument for test 1: (rows of the old tables changed, by "table|values"; what 020 added to
+    /// `sqlite_master`, by "type name"; how many old rows were compared). `sql` None = this app's 020 through
+    /// `migrate_to`; Some = a private copy.
+    fn upgrade_19_to_20(sql: Option<&str>) -> (Vec<String>, Vec<String>, usize) {
+        let mut c = Connection::open_in_memory().unwrap();
+        migrate_to(&mut c, 19).unwrap();
+        format_19_rows(&c);
+        let sh = shape(&c);
+        let not_applied = |v: Vec<String>| -> Vec<String> { v.into_iter().filter(|r| !r.starts_with("applied_migrations|")).collect() };
+        let master = |c: &Connection| -> Vec<String> { c.prepare("SELECT type || ' ' || name FROM sqlite_master WHERE name NOT LIKE 'sqlite_%' ORDER BY type, name").unwrap()
+            .query_map([], |r| r.get(0)).unwrap().collect::<Result<_, _>>().unwrap() };
+        let (before, objects) = (not_applied(rows_in(&c, &sh)), master(&c));
+        match sql {
+            None => migrate_to(&mut c, 20).unwrap(),
+            Some(sql) => { let tx = c.transaction().unwrap(); tx.execute_batch(sql).unwrap(); tx.pragma_update(None, "user_version", 20).unwrap(); tx.commit().unwrap(); }
+        }
+        assert_eq!(version(&c).unwrap(), 20);
+        let after = not_applied(rows_in(&c, &sh));
+        let moved: Vec<String> = before.iter().filter(|r| !after.contains(r)).chain(after.iter().filter(|r| !before.contains(r))).cloned().collect();
+        let added = master(&c).into_iter().filter(|o| !objects.contains(o)).collect();
+        (moved, added, before.len())
+    }
+    /// Test 1: format 20 adds five tables, the two indexes on `whole_film_checks`, the reasons' unique index and the ten
+    /// triggers, all empty, and changes no old row; its only other write is its own line in `applied_migrations`. Fails
+    /// if 020 is not in `MIGRATIONS` (migrate_to(20) refuses), if 020 touches an old row, or adds or misses an object.
+    #[test] fn format_20_adds_five_tables_and_changes_no_row() {
+        assert_eq!(MIGRATIONS.get(19).copied(), Some(SQL_020), "020 is the 20th upgrade");
+        let (moved, added, compared) = upgrade_19_to_20(None);
+        println!("19→20: compared {compared} old rows; changed {moved:?}");
+        assert!(compared >= 15, "the instrument compares rows: {compared}");
+        assert!(moved.is_empty(), "every old table's rows unchanged: {moved:#?}");
+        assert_eq!(added, ["index whole_film_check_reasons_once", "index whole_film_checks_by_case", "index whole_film_checks_one_per_run",
+            "table film_region_boxes", "table film_regions", "table whole_film_check_reasons", "table whole_film_check_resolutions", "table whole_film_checks",
+            "trigger film_region_boxes_kept_with_the_film", "trigger film_region_boxes_never_changed", "trigger film_regions_kept_with_the_film",
+            "trigger film_regions_never_changed", "trigger whole_film_check_reasons_kept_with_the_film", "trigger whole_film_check_reasons_never_changed",
+            "trigger whole_film_check_resolutions_kept_with_the_film", "trigger whole_film_check_resolutions_never_changed",
+            "trigger whole_film_checks_kept_with_the_film", "trigger whole_film_checks_never_changed"]);
+        let c = at_20(None);
+        for t in ["film_regions", "film_region_boxes", "whole_film_checks", "whole_film_check_reasons", "whole_film_check_resolutions"] {
+            assert_eq!(c.query_row(&format!("SELECT COUNT(*) FROM {t}"), [], |r| r.get::<_, i64>(0)).unwrap(), 0, "{t} starts empty");
+        }
+        let applied: Vec<(i64, String)> = c.prepare("SELECT version, sha256 FROM applied_migrations ORDER BY version").unwrap()
+            .query_map([], |r| Ok((r.get(0)?, r.get(1)?))).unwrap().collect::<Result<_, _>>().unwrap();
+        assert_eq!(applied, (17..=20).map(|v| (v, migration_sha(v))).collect::<Vec<_>>(), "17, 18 and 19 as they were, and 20 recorded");
+    }
+    /// Test 1's positive control: a private 020 that also moves every landmark is seen by the same instrument. Fails if
+    /// the instrument stops comparing rows (e.g. compares only counts, or only the new tables).
+    #[test] fn format_20_control_a_020_that_moves_a_landmark_is_seen() {
+        let sql = format!("{SQL_020}\nUPDATE landmarks SET x = x + 1;");
+        let (moved, _, compared) = upgrade_19_to_20(Some(&sql));
+        println!("control 19→20 with a landmark edit: compared {compared}; changed {moved:?}");
+        assert_eq!(moved.len(), 2, "the one landmark, before and after: {moved:#?}");
+        assert!(moved[0].starts_with("landmarks|Text(\"c1\")|Text(\"S\")|Real(11.0)|") && moved[1].starts_with("landmarks|Text(\"c1\")|Text(\"S\")|Real(12.0)|"), "{moved:#?}");
+    }
+
+    /// One row as (column, value) pairs, with `change` put over `base`; inserted into `table`.
+    fn insert_row(c: &Connection, table: &str, base: &[(&str, rusqlite::types::Value)], change: &[(&str, rusqlite::types::Value)]) -> rusqlite::Result<usize> {
+        // A change naming a column the base does not hold used to be dropped silently, so a bad row for a new column was
+        // the good row and "lets through" was the honest answer for the wrong reason. Now it is a loud error (Task D2).
+        for (k, _) in change { assert!(base.iter().any(|(n, _)| n == k), "the change names `{k}`, which the base row of `{table}` does not hold"); }
+        let cols: Vec<(&str, rusqlite::types::Value)> = base.iter().map(|(k, v)| (*k, change.iter().find(|(n, _)| n == k).map(|(_, x)| x.clone()).unwrap_or_else(|| v.clone()))).collect();
+        let names = cols.iter().map(|(k, _)| *k).collect::<Vec<_>>().join(", ");
+        let marks = (1..=cols.len()).map(|i| format!("?{i}")).collect::<Vec<_>>().join(", ");
+        c.execute(&format!("INSERT INTO {table} ({names}) VALUES ({marks})"), rusqlite::params_from_iter(cols.into_iter().map(|(_, v)| v)))
+    }
+    /// The good rows of each of 020's tables (the base each bad row changes one thing of).
+    struct Good { region_run: Vec<(&'static str, rusqlite::types::Value)>, region_box: Vec<(&'static str, rusqlite::types::Value)>,
+        check: Vec<(&'static str, rusqlite::types::Value)>, reason: Vec<(&'static str, rusqlite::types::Value)>, resolution: Vec<(&'static str, rusqlite::types::Value)> }
+    fn good() -> Good {
+        use rusqlite::types::Value::{Integer, Null, Real, Text};
+        let t = |s: &str| Text(s.into());
+        let at = t("2026-11-03T00:00:00.000Z");
+        Good {
+            region_run: vec![("case_id", t("c1")), ("model_fingerprint", t(&"e".repeat(64))), ("model_version", t("rf-detr-m/1")), ("facing", t("right")), ("found_at", at.clone())],
+            region_box: vec![("run_id", Integer(1)), ("region", t("mandible")), ("found", Integer(1)), ("x0", Real(10.0)), ("y0", Real(20.0)), ("x1", Real(30.0)), ("y1", Real(40.0)), ("score", Real(0.9))],
+            check: vec![("case_id", t("c1")), ("subject", t("run")), ("run_id", Integer(2)), ("rule_version", t("whole-film/1")), ("prior_sha256", t(&"a".repeat(64))),
+                ("prior_films", Integer(300)), ("region_run_id", Integer(1)), ("tau_cranial_base", Real(0.1)), ("tau_maxilla", Real(0.2)), ("tau_mandible", Real(0.3)),
+                ("tau_incisors", Real(0.4)), ("tau_soft_tissue", Real(0.5)), ("outcome", t("flagged")), ("shape_look", t("judged")), ("region_look", t("judged")),
+                ("present", Integer(19)), ("d2", Real(12.0)), ("d2_mirror", Real(80.0)), ("line", Real(30.0)),
+                ("size_look", t("not-set-up")), ("size_q", Null), ("size_centre", Null), ("size_line", Null), ("cb_distance", Null), ("cb_line", Null), ("cb_look", t("not-set-up")), ("cb_present", Integer(0)), ("checked_at", at.clone())],
+            reason: vec![("check_id", Integer(1)), ("reason", t("region")), ("region", t("mandible")), ("detail", t("Me=0.214,Gn=0.198,Pog=off-film"))],
+            resolution: vec![("check_id", Integer(2)), ("how", t("checked")), ("reason", t("tracing-right")), ("operator", t("Dr A")), ("resolved_at", at)],
+        }
+    }
+    /// Test 2's battery, run on `c` (a format-20 database with `format_19_rows`): the good rows go in first (each must be
+    /// accepted), then every bad row, each with exactly one thing wrong, inside a savepoint that is always rolled back.
+    /// Returns the bad rows that were ACCEPTED (empty = every refusal held).
+    fn what_020_lets_through(c: &Connection) -> Vec<&'static str> {
+        use rusqlite::types::Value::{Integer, Null, Real, Text};
+        let t = |s: &str| Text(s.into());
+        let g = good();
+        // The good rows: region run 1 (fingerprint f…), its found maxilla box and a not-found incisors box; check 1 (run 1,
+        // flagged) with a `mirrored` reason; check 2 (final, clean, no region model) with a resolution.
+        insert_row(c, "film_regions", &g.region_run, &[("model_fingerprint", t(&"f".repeat(64)))]).expect("the good region run");
+        insert_row(c, "film_region_boxes", &g.region_box, &[("region", t("maxilla"))]).expect("the good found box");
+        insert_row(c, "film_region_boxes", &g.region_box, &[("region", t("incisors")), ("found", Integer(0)), ("x0", Null), ("y0", Null), ("x1", Null), ("y1", Null), ("score", Real(0.1))]).expect("the good not-found box");
+        insert_row(c, "whole_film_checks", &g.check, &[("run_id", Integer(1))]).expect("the good run check");
+        insert_row(c, "whole_film_checks", &g.check, &[("subject", t("final")), ("run_id", Null), ("outcome", t("clean")), ("region_look", t("no-region-model")),
+            ("region_run_id", Null), ("tau_cranial_base", Null), ("tau_maxilla", Null), ("tau_mandible", Null), ("tau_incisors", Null), ("tau_soft_tissue", Null)]).expect("the good final check");
+        insert_row(c, "whole_film_check_reasons", &g.reason, &[("reason", t("mirrored")), ("region", Null), ("detail", Null)]).expect("the good mirrored reason");
+        insert_row(c, "whole_film_check_resolutions", &g.resolution, &[("check_id", Integer(1))]).expect("the good resolution");
+        insert_row(c, "whole_film_check_reasons", &g.reason, &[("reason", t("size")), ("region", Null), ("detail", t("factor=0.500"))]).expect("the good size reason");
+        insert_row(c, "whole_film_checks", &g.check, &[("run_id", Integer(3)), ("size_look", t("judged")), ("size_q", Real(-0.69)), ("size_centre", Real(0.12)), ("size_line", Real(0.09)),
+            ("cb_distance", Real(0.11)), ("cb_line", Real(0.06)), ("cb_look", t("judged")), ("cb_present", Integer(5))]).expect("the good check with both new looks");
+        let no_tau = |mut v: Vec<(&'static str, rusqlite::types::Value)>| { for k in ["tau_cranial_base", "tau_maxilla", "tau_mandible", "tau_incisors", "tau_soft_tissue"] { v.push((k, Null)); } v };
+        let bad: Vec<(&'static str, &str, &Vec<(&'static str, rusqlite::types::Value)>, Vec<(&'static str, rusqlite::types::Value)>)> = vec![
+            // film_regions
+            ("region run: a 63-character fingerprint", "film_regions", &g.region_run, vec![("model_fingerprint", t(&"e".repeat(63)))]),
+            ("region run: an empty model version", "film_regions", &g.region_run, vec![("model_version", t(""))]),
+            ("region run: a 101-character model version", "film_regions", &g.region_run, vec![("model_version", t(&"v".repeat(101)))]),
+            ("region run: facing `up`", "film_regions", &g.region_run, vec![("facing", t("up"))]),
+            ("region run: an empty time", "film_regions", &g.region_run, vec![("found_at", t(""))]),
+            ("region run: a 41-character time", "film_regions", &g.region_run, vec![("found_at", t(&"2".repeat(41)))]),
+            ("region run: a second run for one film and fingerprint", "film_regions", &g.region_run, vec![("model_fingerprint", t(&"f".repeat(64)))]),
+            // film_region_boxes
+            ("box: region `cervical-spine`", "film_region_boxes", &g.region_box, vec![("region", t("cervical-spine"))]),
+            ("box: found 2", "film_region_boxes", &g.region_box, vec![("found", Integer(2)), ("x0", Null), ("y0", Null), ("x1", Null), ("y1", Null)]),
+            ("box: a score 1.5", "film_region_boxes", &g.region_box, vec![("score", Real(1.5))]),
+            ("box: a score below 0", "film_region_boxes", &g.region_box, vec![("score", Real(-0.1))]),
+            ("box: found with a NULL corner", "film_region_boxes", &g.region_box, vec![("y1", Null)]),
+            ("box: not found with its corners", "film_region_boxes", &g.region_box, vec![("found", Integer(0))]),
+            ("box: x0 >= x1", "film_region_boxes", &g.region_box, vec![("x0", Real(30.0))]),
+            ("box: y0 >= y1", "film_region_boxes", &g.region_box, vec![("y0", Real(41.0))]),
+            ("box: one region twice in a run", "film_region_boxes", &g.region_box, vec![("region", t("maxilla"))]),
+            // whole_film_checks
+            ("check: a subject `model`", "whole_film_checks", &g.check, vec![("subject", t("model")), ("run_id", Null)]),
+            ("check: a `run` subject without a run", "whole_film_checks", &g.check, vec![("run_id", Null)]),
+            ("check: a `final` with a run", "whole_film_checks", &g.check, vec![("subject", t("final"))]),
+            ("check: a rule that is not whole-film/…", "whole_film_checks", &g.check, vec![("rule_version", t("point-check/2"))]),
+            ("check: a 21-character rule", "whole_film_checks", &g.check, vec![("rule_version", t(&format!("whole-film/{}", "9".repeat(10))))]),
+            ("check: a 63-character SHA", "whole_film_checks", &g.check, vec![("prior_sha256", t(&"a".repeat(63)))]),
+            ("check: a knowledge of 0 films", "whole_film_checks", &g.check, vec![("prior_films", Integer(0))]),
+            ("check: an outcome `moved`", "whole_film_checks", &g.check, vec![("outcome", t("moved"))]),
+            ("check: a shape look `guessed`", "whole_film_checks", &g.check, vec![("shape_look", t("guessed")), ("d2", Null), ("d2_mirror", Null), ("line", Null)]),
+            ("check: a region look `guessed`", "whole_film_checks", &g.check, no_tau(vec![("region_look", t("guessed")), ("region_run_id", Null)])),
+            ("check: 20 points present", "whole_film_checks", &g.check, vec![("present", Integer(20))]),
+            ("check: -1 points present", "whole_film_checks", &g.check, vec![("present", Integer(-1))]),
+            ("check: an empty time", "whole_film_checks", &g.check, vec![("checked_at", t(""))]),
+            ("check: a 41-character time", "whole_film_checks", &g.check, vec![("checked_at", t(&"2".repeat(41)))]),
+            ("check: a judged shape without d2", "whole_film_checks", &g.check, vec![("d2", Null)]),
+            ("check: `not-set-up` with a SHA", "whole_film_checks", &g.check, vec![("shape_look", t("not-set-up")), ("d2", Null), ("d2_mirror", Null), ("line", Null)]),
+            ("check: a SHA with no film count", "whole_film_checks", &g.check, vec![("prior_films", Null)]),
+            ("check: a judged region without its run", "whole_film_checks", &g.check, no_tau(vec![("region_run_id", Null)])),
+            ("check: one τ missing", "whole_film_checks", &g.check, vec![("tau_soft_tissue", Null)]),
+            ("check: a negative τ", "whole_film_checks", &g.check, vec![("tau_incisors", Real(-0.1))]),
+            ("check: `not-run` with a judged shape", "whole_film_checks", &g.check, no_tau(vec![("outcome", t("not-run")), ("region_look", t("no-region-model")), ("region_run_id", Null)])),
+            ("check: a second check for one run", "whole_film_checks", &g.check, vec![("run_id", Integer(1))]),
+            // Task D2's amendment: the size look and the cranial-base centre's two numbers
+            ("check: a size look `guessed`", "whole_film_checks", &g.check, vec![("size_look", t("guessed"))]),
+            ("check: a judged size with no numbers", "whole_film_checks", &g.check, vec![("size_look", t("judged"))]),
+            ("check: a judged size with only its q", "whole_film_checks", &g.check, vec![("size_look", t("judged")), ("size_q", Real(0.1))]),
+            ("check: a `too-few` size with its numbers", "whole_film_checks", &g.check, vec![("size_look", t("too-few")), ("size_q", Real(0.1)), ("size_centre", Real(0.1)), ("size_line", Real(0.09))]),
+            ("check: a cranial-base distance with no line", "whole_film_checks", &g.check, vec![("cb_distance", Real(0.1))]),
+            ("check: a cranial-base line with no distance", "whole_film_checks", &g.check, vec![("cb_line", Real(0.06))]),
+            // fix round 1: the centre look's status, and the regions-judged tie (review M5)
+            ("check: a centre look `guessed`", "whole_film_checks", &g.check, vec![("cb_look", t("guessed"))]),
+            ("check: a judged centre with no pair", "whole_film_checks", &g.check, vec![("cb_look", t("judged")), ("cb_present", Integer(5))]),
+            ("check: a `too-few` centre with its pair", "whole_film_checks", &g.check, vec![("cb_look", t("too-few")), ("cb_distance", Real(0.1)), ("cb_line", Real(0.06))]),
+            ("check: a pair with the centre look `not-set-up`", "whole_film_checks", &g.check, vec![("cb_distance", Real(0.1)), ("cb_line", Real(0.06))]),
+            ("check: a judged size with the regions not judged", "whole_film_checks", &g.check, no_tau(vec![("region_look", t("no-region-model")), ("region_run_id", Null), ("size_look", t("judged")),
+                ("size_q", Real(0.1)), ("size_centre", Real(0.1)), ("size_line", Real(0.09))])),
+            ("check: 6 cranial-base points present", "whole_film_checks", &g.check, vec![("cb_present", Integer(6))]),
+            ("check: -1 cranial-base points present", "whole_film_checks", &g.check, vec![("cb_present", Integer(-1))]),
+            ("check: a judged centre with 4 points present", "whole_film_checks", &g.check, vec![("cb_look", t("judged")), ("cb_distance", Real(0.1)), ("cb_line", Real(0.06)), ("cb_present", Integer(4))]),
+            ("check: a judged centre with the regions not judged", "whole_film_checks", &g.check, no_tau(vec![("region_look", t("no-region-model")), ("region_run_id", Null), ("cb_look", t("judged")),
+                ("cb_distance", Real(0.1)), ("cb_line", Real(0.06)), ("cb_present", Integer(5))])),
+            // whole_film_check_reasons
+            ("reason: `upside-down`", "whole_film_check_reasons", &g.reason, vec![("reason", t("upside-down")), ("region", Null), ("detail", Null)]),
+            ("reason: `sizes` (not `size`)", "whole_film_check_reasons", &g.reason, vec![("reason", t("sizes")), ("region", Null), ("detail", Null)]),
+            ("reason: region `cervical-spine`", "whole_film_check_reasons", &g.reason, vec![("region", t("cervical-spine"))]),
+            ("reason: an empty detail", "whole_film_check_reasons", &g.reason, vec![("detail", t(""))]),
+            ("reason: a 401-character detail", "whole_film_check_reasons", &g.reason, vec![("detail", t(&"d".repeat(401)))]),
+            ("reason: `region` without a region", "whole_film_check_reasons", &g.reason, vec![("region", Null)]),
+            ("reason: `mirrored` with a region", "whole_film_check_reasons", &g.reason, vec![("reason", t("mirrored")), ("detail", Null)]),
+            ("reason: `region` with no detail", "whole_film_check_reasons", &g.reason, vec![("detail", Null)]),
+            ("reason: a second `mirrored` for one check", "whole_film_check_reasons", &g.reason, vec![("reason", t("mirrored")), ("region", Null), ("detail", Null)]),
+            // whole_film_check_resolutions
+            ("resolution: how `film-checked`", "whole_film_check_resolutions", &g.resolution, vec![("how", t("film-checked"))]),
+            ("resolution: a reason `looked-fine`", "whole_film_check_resolutions", &g.resolution, vec![("reason", t("looked-fine"))]),
+            ("resolution: an empty operator", "whole_film_check_resolutions", &g.resolution, vec![("operator", t(""))]),
+            ("resolution: an 81-character operator", "whole_film_check_resolutions", &g.resolution, vec![("operator", t(&"D".repeat(81)))]),
+            ("resolution: an empty time", "whole_film_check_resolutions", &g.resolution, vec![("resolved_at", t(""))]),
+            ("resolution: a 41-character time", "whole_film_check_resolutions", &g.resolution, vec![("resolved_at", t(&"2".repeat(41)))]),
+            ("resolution: a second resolution of one check", "whole_film_check_resolutions", &g.resolution, vec![("check_id", Integer(1))]),
+        ];
+        let mut through = vec![];
+        for (why, table, base, change) in &bad {
+            c.execute_batch("SAVEPOINT bad").unwrap();
+            let e = insert_row(c, table, base, change);
+            c.execute_batch("ROLLBACK TO bad; RELEASE bad").unwrap();
+            if e.is_ok() { through.push(*why); }
+        }
+        // Each good row's twin, after the battery: still accepted (the battery rolled every bad row back).
+        insert_row(c, "film_regions", &g.region_run, &[]).expect("a second fingerprint on the film");
+        insert_row(c, "film_region_boxes", &g.region_box, &[]).expect("the mandible box");
+        insert_row(c, "whole_film_checks", &g.check, &[]).expect("a check of run 2");
+        insert_row(c, "whole_film_check_reasons", &g.reason, &[]).expect("a region reason");
+        insert_row(c, "whole_film_check_resolutions", &g.resolution, &[]).expect("a resolution of check 2");
+        through
+    }
+    /// Test 2: each CHECK, UNIQUE, primary key and unique index of 020 refuses one bad row (exactly one thing wrong in
+    /// each), and the good rows are accepted. Fails if any of them is weakened: `format_20_control_each_check_weakened`
+    /// proves each weakening is seen.
+    #[test] fn format_20_refuses_what_a_check_can_never_be() {
+        let c = at_20(None);
+        let through = what_020_lets_through(&c);
+        println!("020 lets through: {through:?}");
+        assert!(through.is_empty(), "{through:#?}");
+    }
+    /// Test 2's positive control, and step 5's: each of 020's 43 CHECKs replaced in turn by `CHECK (1)` (a private
+    /// copy), and each UNIQUE, primary key and unique index removed in turn, lets at least one bad row through. Fails if
+    /// a CHECK is not exercised by the battery, or the battery cannot see a weakening.
+    #[test] fn format_20_control_each_check_weakened_lets_a_bad_row_through() {
+        let starts: Vec<usize> = SQL_020.match_indices("CHECK (").map(|(i, _)| i).collect();
+        // 35 + Task D2's three (the `size_look` list, the size triple, the cranial-base pair; the `size` reason joined an existing CHECK)
+        // + fix round 1's three (the `cb_look` list, `cb_look` tied to its pair, a judged size or centre needs the regions judged) = 41, + fix round 2's two (`cb_present` 0 to 5, a judged centre needs all 5) = 43.
+        assert_eq!(starts.len(), 43, "020 has 43 CHECKs");
+        let mut mutants: Vec<(String, String)> = starts.iter().map(|&i| {
+            let (mut depth, mut end) = (0, 0);
+            for (j, ch) in SQL_020[i + 6..].char_indices() {
+                match ch { '(' => depth += 1, ')' => { depth -= 1; if depth == 0 { end = i + 6 + j + 1; break; } } _ => {} }
+            }
+            (SQL_020[i..end].to_string(), format!("{}CHECK (1){}", &SQL_020[..i], &SQL_020[end..]))
+        }).collect();
+        for (from, to) in [("UNIQUE (case_id, model_fingerprint)", "CHECK (1)"), ("PRIMARY KEY (run_id, region)", "CHECK (1)"),
+                           ("CREATE UNIQUE INDEX whole_film_checks_one_per_run", "CREATE INDEX whole_film_checks_one_per_run"),
+                           ("CREATE UNIQUE INDEX whole_film_check_reasons_once", "CREATE INDEX whole_film_check_reasons_once"),
+                           ("check_id    INTEGER PRIMARY KEY REFERENCES", "check_id    INTEGER REFERENCES")] {
+            mutants.push((from.to_string(), changed(SQL_020, from, to)));
+        }
+        let mut blind = vec![];
+        for (what, sql) in &mutants {
+            let through = what_020_lets_through(&at_20(Some(sql)));
+            println!("weakened {what}: lets through {through:?}");
+            if through.is_empty() { blind.push(what.clone()); }
+        }
+        assert_eq!(mutants.len(), 48, "43 CHECKs and the 5 uniqueness weakenings");
+        assert!(blind.is_empty(), "weakenings the battery cannot see: {blind:#?}");
+    }
+    /// Test 3 (RV-2): the reason on `Checked` is one of three, or nothing is stored. Run on `c`: (a `looked-fine` reason
+    /// accepted, a NULL reason accepted, how `film-checked` accepted); each of the three reasons must be accepted.
+    fn reason_check_lets_through(c: &Connection) -> (bool, bool, bool) {
+        use rusqlite::types::Value::{Integer, Null, Text};
+        let g = good();
+        let t = |s: &str| Text(s.into());
+        let mut ids = vec![];
+        for _ in 0..4 {
+            insert_row(c, "whole_film_checks", &g.check, &[("subject", t("final")), ("run_id", Null)]).unwrap();
+            ids.push(c.last_insert_rowid());
+        }
+        let try_reason = |id: i64, ch: &[(&str, rusqlite::types::Value)]| {
+            c.execute_batch("SAVEPOINT r").unwrap();
+            let mut all = vec![("check_id", Integer(id))]; all.extend(ch.iter().cloned());
+            let e = insert_row(c, "whole_film_check_resolutions", &g.resolution, &all);
+            c.execute_batch("ROLLBACK TO r; RELEASE r").unwrap();
+            e
+        };
+        let looked_fine = try_reason(ids[0], &[("reason", t("looked-fine"))]);
+        let null = try_reason(ids[0], &[("reason", Null)]);
+        let film_checked = try_reason(ids[0], &[("how", t("film-checked"))]);
+        println!("reason `looked-fine`: {:?}; NULL: {:?}; how `film-checked`: {:?}", looked_fine.as_ref().map_err(|e| e.to_string()),
+            null.as_ref().map_err(|e| e.to_string()), film_checked.as_ref().map_err(|e| e.to_string()));
+        for (id, r) in ids.iter().zip(["tracing-right", "expected-variant", "corrected-tracing"]) {
+            insert_row(c, "whole_film_check_resolutions", &g.resolution, &[("check_id", Integer(*id)), ("reason", t(r))]).unwrap_or_else(|e| panic!("{r}: {e}"));
+        }
+        (looked_fine.is_ok(), null.is_ok(), film_checked.is_ok())
+    }
+    /// Test 3: a resolution with reason `looked-fine` or NULL, or how `film-checked`, is refused; each of the three
+    /// reasons is accepted. Fails if the reason CHECK, its NOT NULL or the `how` CHECK is weakened.
+    #[test] fn format_20_a_resolution_needs_one_of_three_reasons() {
+        let c = at_20(None);
+        // The battery's region run is not in this database; g.check names region run 1.
+        c.execute_batch("INSERT INTO film_regions (case_id, model_fingerprint, model_version, facing, found_at) VALUES ('c1', 'ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff', 'rf-detr-m/1', NULL, 'x');").unwrap();
+        assert_eq!(reason_check_lets_through(&c), (false, false, false));
+    }
+    /// Test 3's positive control: with the reason CHECK replaced by `CHECK (1)` and its NOT NULL removed (a private
+    /// copy), `looked-fine` and NULL are accepted, so the test above would fail.
+    #[test] fn format_20_control_without_the_reason_check_any_reason_is_taken() {
+        let sql = changed(SQL_020, "reason      TEXT NOT NULL CHECK (reason IN ('tracing-right', 'expected-variant', 'corrected-tracing')),", "reason      TEXT CHECK (1),");
+        let c = at_20(Some(&sql));
+        c.execute_batch("INSERT INTO film_regions (case_id, model_fingerprint, model_version, facing, found_at) VALUES ('c1', 'ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff', 'rf-detr-m/1', NULL, 'x');").unwrap();
+        assert_eq!(reason_check_lets_through(&c), (true, true, false));
+    }
+    /// Owner rule for every format: an app that knows 19 refuses a format-20 library. Positive control: make
+    /// `ensure_known` return Ok always → this fails; leave 020 out of `MIGRATIONS` → `CURRENT == 20` fails.
+    #[test] fn an_app_that_knows_19_refuses_a_format_20_library() {
+        assert_eq!(ensure_known(20, 19).unwrap_err().to_string(), "this library was written by a newer OpenCephAI (schema 20, this app knows 19); update the app");
+        ensure_known(19, 20).unwrap();
+        ensure_known(20, 20).unwrap();
+        assert_eq!(CURRENT, 20);
     }
 }

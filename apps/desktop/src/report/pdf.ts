@@ -4,6 +4,7 @@ import type { TextOptionsLight } from 'jspdf';
 import type { Decimals } from '../format';
 import { sha256Hex } from '../export/sha256';
 import { diamond } from './diamond';
+import { looksLine } from '../points/wholeFilm';
 import { allChartRows, DEFAULT_REPORT_OPTIONS, headerLines, reportTexts, visibleChartRows, type ReportModel, type ReportOptions } from './model';
 import { chartShapes, layoutChart, type Box, type Shape } from './shapes';
 import { chartContinuationBox, HEADER_STEP, HEADER_TOP, MARGIN, PAGE, pageOneBoxes, type Paper } from './page';
@@ -74,7 +75,7 @@ export function buildPdf({ model, paper, decimals, fonts, options = DEFAULT_REPO
   // Owner FONT-2: register the system CJK font ONLY when some text in this report actually resolves to it — a
   // report with no CJK letters must produce the SAME bytes with or without `fonts.cjk` supplied, and this is what
   // makes that true (nothing about the file changes when the font is never embedded into it).
-  const needsSystemCjk = !!fonts.cjk && reportTexts(model).some((t) => printPlan(t, printFonts).font === 'SystemCJK');
+  const needsSystemCjk = !!fonts.cjk && reportTexts(model, options).some((t) => printPlan(t, printFonts).font === 'SystemCJK');
   if (needsSystemCjk) {
     doc.addFileToVFS('SystemCJK.ttf', toBase64(fonts.cjk!.ttf));
     doc.addFont('SystemCJK.ttf', 'SystemCJK', 'normal');
@@ -240,7 +241,8 @@ export function buildPdf({ model, paper, decimals, fonts, options = DEFAULT_REPO
   }
   // Chain spec §5 (Part F Task 13): the Points table — each point and its label as it stood when it was placed. Only
   // when the model carries points, so a report made without them prints the same bytes as before.
-  if (model.points.length) {
+  if (options.pointsTable && model.points.length) {
+    const whole = model.points.some((p) => p.wholeFilmCheck !== null);
     if (room() < NEW_BLOCK_MIN) { doc.addPage(paper); y = MARGIN; }
     doc.setFontSize(12); doc.setTextColor('#000000');
     put('Points', MARGIN, y + 5, undefined, 'bold');
@@ -248,12 +250,23 @@ export function buildPdf({ model, paper, decimals, fonts, options = DEFAULT_REPO
     // and Name columns always show.
     autoTable(doc, {
       startY: y + 8, margin: { left: MARGIN, right: MARGIN, bottom: FOOT + 12 }, theme: 'grid',
-      head: [options.placedBy ? ['Point', 'Name', 'Placed by', 'Point check'] : ['Point', 'Name', 'Point check']],
-      body: model.points.map((p) => (options.placedBy ? [p.id, p.name, p.label, p.pointCheck] : [p.id, p.name, p.pointCheck]).map(planCell)),
+      // Research switch (6 Nov 2026): the whole-film column only when the switch is on (the points then carry a result, even if blank).
+      head: [['Point', 'Name', ...(options.placedBy ? ['Placed by'] : []), 'Point check', ...(whole ? ['Whole-film check', 'Region'] : [])]],
+      body: model.points.map((p) => [p.id, p.name, ...(options.placedBy ? [p.label] : []), p.pointCheck, ...(whole ? [p.wholeFilmCheck ?? '', p.wholeFilmRegion ?? ''] : [])].map(planCell)),
       styles: { font: 'NotoSans', fontSize: 9, cellPadding: 1.5, textColor: 20 },
       headStyles: { fillColor: [235, 235, 235], textColor: 20, fontStyle: 'bold' },
       columnStyles: { 0: { cellWidth: 20 }, 1: { cellWidth: 75 } },
     });
+    // Research switch on (6 Nov 2026): the status of each look, once, under the table (it is the same for every point).
+    const looks = whole ? model.points.find((p) => p.wholeFilmLooks)?.wholeFilmLooks : null;
+    if (looks) {
+      y = (doc as unknown as { lastAutoTable: { finalY: number } }).lastAutoTable.finalY;
+      doc.setFontSize(9); doc.setTextColor('#000000'); doc.setFont('NotoSans', 'normal');
+      const ls = doc.splitTextToSize(`Whole-film check, each look: ${looksLine(looks)}.`, W) as string[];
+      if (room() < ls.length * 4 + 2) { doc.addPage(paper); y = MARGIN; }
+      ls.forEach((line, i) => put(line, MARGIN, y + 5 + i * 4, undefined, 'normal'));
+      y += 5 + ls.length * 4;
+    }
   }
   // Owner, 29 Oct 2026 (item 1): the profilogram, on its own page, never over the film — only when the
   // "Profilogram page" tick-box is on AND there is something to draw (the caller already gates this: `profilogram`

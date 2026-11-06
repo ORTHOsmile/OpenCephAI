@@ -6,7 +6,7 @@ import type { MeasurementRow } from '../measurements';
 import type { NormCell } from '../norms/normCell';
 import type { Scale } from '../tracing/spacing';
 import { NOW, cell, synthCells, synthDoc, synthInput, synthModel, synthRows } from './fixtures';
-import { APP, CONTEXT_LINE, FOOTER, ageRowWords, allChartRows, autoFootnote, buildReport, chartRows, headerLines, isBlankChartRow, modelsUsed, normSourceSummary, reportTexts, unstatedScaleNote, visibleChartRows, type ChartRow } from './model';
+import { APP, CONTEXT_LINE, FOOTER, ageRowWords, allChartRows, autoFootnote, buildReport, chartRows, headerLines, isBlankChartRow, modelsUsed, normSourceSummary, reportTexts, DEFAULT_REPORT_OPTIONS, REPORT_OPTION_KEYS, unstatedScaleNote, visibleChartRows, type ChartRow } from './model';
 import tauriConf from '../../src-tauri/tauri.conf.json';
 
 describe('CONTEXT-LINE (owner, 16 Oct 2026): the owner\'s words, in the report only', () => {
@@ -145,7 +145,7 @@ describe('the report header', () => {
     const h = synthModel({ doc: synthDoc({ patientName: ' ', dateOfBirth: null, takenOn: null, timepoint: '', verifiedAt: '2024-02-08T10:00:00Z', verifiedBy: null }),
       scale: { mmPerPx: 0.1, source: 'assumed' }, models: [], dateFormat: 'US' }).header;
     expect([h.patient, h.dob, h.age, h.filmDate, h.timepoint, h.verified, h.models]).toEqual(
-      ['Name needed', 'not recorded', null, 'not recorded', '—', 'Verified by unknown on 02/08/2024', 'none: every point placed by hand']);
+      ['Name needed', 'not recorded', null, 'not recorded', '—', 'All points approved by unknown on 02/08/2024', 'none: every point placed by hand']);
     expect(h.scale).toBe('assumed (0.1 mm per pixel): not calibrated, so mm values are not shown');
     expect(headerLines(h)[2]).toEqual(['Date of birth', 'not recorded']);
   });
@@ -556,5 +556,36 @@ describe('the patient and age lines (owner T1, AG1; ruling R12, R15)', () => {
     expect(l.slice(0, 3)).toEqual(headerLinesBefore.slice(0, 3));
     expect(l[3]).toEqual(['', 'The film says 9 y; DOB gives 13 y 11 m at the scan date.']);
     expect(l.slice(4)).toEqual(headerLinesBefore.slice(3));
+  });
+});
+
+// Owner, 5 Nov 2026: an option to hide the whole Points section. ON by default so today's reports are unchanged.
+describe('owner, 5 Nov 2026: the "Points table" option', () => {
+  const pt = { id: 'LI', name: '李明 SYNTHETIC point', label: 'Aariz', model: 'aariz-cepha29', modelFile: null, acceptKind: null, pointCheck: '' as const, wholeFilmCheck: '', wholeFilmRegion: '' };
+  it('is ON by default and remembered under report_points_table', () => {
+    expect(DEFAULT_REPORT_OPTIONS.pointsTable).toBe(true);
+    expect(REPORT_OPTION_KEYS.pointsTable).toBe('report_points_table');
+  });
+  it('reportTexts carries the Points heading and names by default, and neither when the option is off (no CJK font need from them)', () => {
+    const m = synthModel({ points: [pt] });
+    expect(reportTexts(m)).toContain('Points');
+    expect(reportTexts(m)).toContain('李明 SYNTHETIC point');
+    const off = reportTexts(m, { ...DEFAULT_REPORT_OPTIONS, pointsTable: false });
+    expect(off).not.toContain('Points');
+    expect(off).not.toContain('李明 SYNTHETIC point');
+  });
+  it('with no points at all and the option on, there is no Points text (as before)', () => {
+    expect(reportTexts(synthModel())).not.toContain('Points');
+  });
+});
+
+describe('owner, 5 Nov 2026: the "Grid behind the profilogram" option', () => {
+  it('is ON by default and remembered under report_profilogram_grid', () => {
+    expect(DEFAULT_REPORT_OPTIONS.profilogramGrid).toBe(true);
+    expect(REPORT_OPTION_KEYS.profilogramGrid).toBe('report_profilogram_grid');
+  });
+  it('every option has its own settings key (none shared, none missing)', () => {
+    expect(new Set(Object.values(REPORT_OPTION_KEYS)).size).toBe(Object.keys(DEFAULT_REPORT_OPTIONS).length);
+    expect(Object.keys(REPORT_OPTION_KEYS).sort()).toEqual(Object.keys(DEFAULT_REPORT_OPTIONS).sort());
   });
 });

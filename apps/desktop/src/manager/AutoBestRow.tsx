@@ -14,7 +14,7 @@ export function AutoBestRow({ state, error, titleOf, onMain, rows, baseSelect = 
   /** Models…'s rows (to tell "no model installed" from "the base is not installed"); absent: not known. */
   rows?: ModelRow[]; baseSelect?: ReactNode; onOpenSettings?: () => void;
 }) {
-  const head = <div className="model-head"><b>{AUTO_BEST_TITLE}</b><span className="chip">Made from your verified films</span></div>;
+  const head = <div className="model-head"><b>{AUTO_BEST_TITLE}</b><span className="chip neutral">Made from your verified films</span></div>;
   if (error) return <section className="auto-best-row" aria-label={AUTO_BEST_TITLE}>{head}<p className="error">{error}</p></section>;
   if (!state) return null;
   // Points without evidence use the base, as the main model and as a ghost beside a fixed one (owner answer 2, 29 Oct).

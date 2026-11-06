@@ -88,3 +88,21 @@ describe('a failed write (review m4): the message is not doubled', () => {
     expect(saveErrorText('SYNTHETIC string thrown')).toBe("Couldn't save: SYNTHETIC string thrown");
   });
 });
+
+describe('owner, 5 Nov 2026: the "Points table" tick box', () => {
+  it('is shown, ticked by default, and unticks when the option is off', () => {
+    expect(html()).toMatch(/<input type="checkbox" checked="" ?\/> Points table/);
+    expect(html({ options: { ...DEFAULT_REPORT_OPTIONS, pointsTable: false } })).toMatch(/<input type="checkbox"\/> Points table/);
+  });
+});
+
+describe('owner, 5 Nov 2026: the "Grid behind the profilogram" tick box', () => {
+  it('is shown, ticked by default, but greyed out while "Profilogram page" is off (it has nothing to sit behind)', () => {
+    expect(html()).toMatch(/<input type="checkbox" disabled="" checked=""\/> Grid behind the profilogram/);
+  });
+  it('with "Profilogram page" ticked it is live', () => {
+    const h = html({ options: { ...DEFAULT_REPORT_OPTIONS, profilogramPage: true } });
+    expect(h).toMatch(/<input type="checkbox" checked=""\/> Grid behind the profilogram/);
+    expect(html({ options: { ...DEFAULT_REPORT_OPTIONS, profilogramPage: true, profilogramGrid: false } })).toMatch(/<input type="checkbox"\/> Grid behind the profilogram/);
+  });
+});

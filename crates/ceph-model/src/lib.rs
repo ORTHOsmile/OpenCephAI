@@ -12,4 +12,5 @@ pub mod scores;
 pub mod shape;
 pub mod source;
 pub mod upgrade;
+pub mod wholefilm;
 #[doc(hidden)] pub mod testing;

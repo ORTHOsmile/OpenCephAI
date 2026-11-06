@@ -9,10 +9,10 @@ import { APP_VERSION, BUILD_DATE, versionLine } from './version';
 const cargoVersion = () => /^\[package\][^[]*?^version\s*=\s*"([^"]+)"/m.exec(cargoToml)?.[1];
 
 describe('one version number', () => {
-  it('is 1.1.0 (owner, 2 Nov 2026: Stage A, the point check, and library format 19; a new feature, so the middle digit moves)', () => {
-    expect(pkg.version).toBe('1.1.0');
-    expect(tauriConf.version).toBe('1.1.0');
-    expect(cargoVersion()).toBe('1.1.0');
+  it('is 1.2.0 (owner, 6 Nov 2026: the whole-film check and library format 20; a new feature, so the middle digit moves)', () => {
+    expect(pkg.version).toBe('1.2.0');
+    expect(tauriConf.version).toBe('1.2.0');
+    expect(cargoVersion()).toBe('1.2.0');
   });
   it('package.json, tauri.conf.json and Cargo.toml carry the same version', () => {
     expect(pkg.version).toMatch(/^\d+\.\d+\.\d+$/);
@@ -43,7 +43,7 @@ describe('the version line at the foot of Settings', () => {
 describe('About and Finder’s Get Info carry the credit and the research statement', () => {
   const copyright = (tauriConf.bundle as Record<string, unknown>).copyright;
   it('bundle.copyright is the owner’s copyright line, then his credit, then the research statement', () => {
-    expect(copyright).toBe('Copyright © 2026 Dr Linton Nash. OpenCephAI 1.1 Beta. Program and Design: Dr Linton Nash. Research tool — not a diagnostic device.');
+    expect(copyright).toBe('Copyright © 2026 Dr Linton Nash. OpenCephAI 1.2 Beta. Program and Design: Dr Linton Nash. Research tool — not a diagnostic device.');
   });
   it('the credit words are exact and no other name or tool is mentioned', () => {
     expect(copyright).toContain('Program and Design: Dr Linton Nash');

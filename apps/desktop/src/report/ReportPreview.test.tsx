@@ -3,7 +3,7 @@ import { renderToStaticMarkup } from 'react-dom/server';
 import { ALL_ANALYSES, buildRegistry, type MyAnalysisDef } from '@ceph/analyses';
 import { initialTracing } from '../tracing/state';
 import { SYNTH_POINTS, synthCells, synthDoc, synthFitModel, synthModel, NOW } from './fixtures';
-import { buildReport, CONTEXT_LINE, FOOTER, type ReportModel } from './model';
+import { buildReport, CONTEXT_LINE, DEFAULT_REPORT_OPTIONS, FOOTER, type ReportModel } from './model';
 import { latin1, type PrintFonts } from './pdfText';
 import { ReportPreview } from './ReportPreview';
 
@@ -188,31 +188,43 @@ describe('owner, 29 Oct 2026: export options and the Close button', () => {
   it('item 3: the long per-row norm-source paragraph is absent by default; the option prints it', () => {
     const off = html();
     expect(off).not.toContain('Steiner 1953 (SYNTHETIC source line)');
-    const on = html(synthModel(), { options: { profilogramPage: false, normSources: true, placedBy: false } });
+    const on = html(synthModel(), { options: { ...DEFAULT_REPORT_OPTIONS, profilogramPage: false, normSources: true, placedBy: false } });
     expect(on).toContain('Steiner 1953 (SYNTHETIC source line)');
   });
   it('item 4: "Placed by" is absent by default; the option adds the column and its value', () => {
-    const m = synthModel({ points: [{ id: 'S', name: 'Sella', label: 'SYNTHETIC Aariz', model: 'aariz-cepha29', modelFile: null, acceptKind: null, pointCheck: '' }] });
+    const m = synthModel({ points: [{ id: 'S', name: 'Sella', label: 'SYNTHETIC Aariz', model: 'aariz-cepha29', modelFile: null, acceptKind: null, pointCheck: '', wholeFilmCheck: '', wholeFilmRegion: '' }] });
     const off = html(m);
     expect(off).not.toContain('SYNTHETIC Aariz');
-    expect(off).toContain('<th>Point</th><th>Name</th><th>Point check</th></tr>');
-    const on = html(m, { options: { profilogramPage: false, normSources: false, placedBy: true } });
+    expect(off).toContain('<th>Point</th><th>Name</th><th>Point check</th><th>Whole-film check</th><th>Region</th></tr>');
+    const on = html(m, { options: { ...DEFAULT_REPORT_OPTIONS, profilogramPage: false, normSources: false, placedBy: true } });
     expect(on).toContain('SYNTHETIC Aariz');
-    expect(on).toContain('<th>Point</th><th>Name</th><th>Placed by</th><th>Point check</th></tr>');
+    expect(on).toContain('<th>Point</th><th>Name</th><th>Placed by</th><th>Point check</th><th>Whole-film check</th><th>Region</th></tr>');
   });
   // Stage A task 8: the Points table's last column. Fails if the cell is dropped, moved, or shows anything but the value.
-  it('Stage A: the last column of the Points table is "Point check": flagged, film-unusual, blank; never "wrong"', () => {
+  it('Stage A: the Points table has "Point check" (flagged, film-unusual, blank; never "wrong"), then Task 9\'s "Whole-film check"', () => {
     const base = { name: 'x', label: 'SYNTHETIC Aariz', model: 'aariz-cepha29', modelFile: null, acceptKind: null };
-    const m = synthModel({ points: [{ ...base, id: 'N', name: 'Nasion', pointCheck: 'flagged' }, { ...base, id: 'S', name: 'Sella', pointCheck: 'film-unusual' }, { ...base, id: 'B', name: 'B point', pointCheck: '' }] });
+    const m = synthModel({ points: [{ ...base, id: 'N', name: 'Nasion', pointCheck: 'flagged', wholeFilmCheck: '', wholeFilmRegion: '' }, { ...base, id: 'S', name: 'Sella', pointCheck: 'film-unusual', wholeFilmCheck: '', wholeFilmRegion: '' }, { ...base, id: 'B', name: 'B point', pointCheck: '', wholeFilmCheck: '', wholeFilmRegion: '' }] });
     for (const placedBy of [false, true]) {
-      const h = html(m, { options: { profilogramPage: false, normSources: false, placedBy } });
+      const h = html(m, { options: { ...DEFAULT_REPORT_OPTIONS, profilogramPage: false, normSources: false, placedBy } });
       const row = (id: string) => h.slice(h.indexOf(`data-point="${id}"`)).split('</tr>')[0];
-      expect(row('N').endsWith('<td>flagged</td>'), row('N')).toBe(true);
-      expect(row('S').endsWith('<td>film-unusual</td>'), row('S')).toBe(true);
-      expect(row('B').endsWith('<td></td>'), row('B')).toBe(true);
-      expect(h.match(/<th>Point check<\/th><\/tr>/g)?.length).toBe(1);
+      expect(row('N').endsWith('<td>flagged</td><td></td><td class="whole-region"></td>'), row('N')).toBe(true);
+      expect(row('S').endsWith('<td>film-unusual</td><td></td><td class="whole-region"></td>'), row('S')).toBe(true);
+      expect(row('B').endsWith('<td></td><td></td><td class="whole-region"></td>'), row('B')).toBe(true);
+      expect(h.match(/<th>Point check<\/th><th>Whole-film check<\/th><th>Region<\/th><\/tr>/g)?.length).toBe(1);
     }
     expect(html(m)).not.toMatch(/wrong points/i);
+    // Task 9: the film's value, on every row, in the last cell. Fails if the preview's cell is dropped or reads another field.
+    const w = synthModel({ points: m.points.map((p) => ({ ...p, wholeFilmCheck: 'flagged:region-mandible+facing' })) });
+    const hw = html(w), rowW = (id: string) => hw.slice(hw.indexOf(`data-point="${id}"`)).split('</tr>')[0];
+    expect(['N', 'S', 'B'].map((id) => rowW(id).endsWith('<td>flagged:region-mandible+facing</td><td class="whole-region"></td>'))).toEqual([true, true, true]);
+  });
+  // Research switch off (owner, 6 Nov 2026). Fails if the preview still shows the column or a value when the points carry null.
+  it('switch off: the preview Points table has no Whole-film column or value', () => {
+    const m = synthModel({ points: [{ id: 'N', name: 'Nasion', label: 'SYNTHETIC Aariz', model: 'aariz-cepha29', modelFile: null, acceptKind: null, pointCheck: 'flagged', wholeFilmCheck: null, wholeFilmRegion: null }] });
+    const h = html(m);
+    expect(h).toContain('<th>Point check</th></tr>');
+    expect(h).not.toContain('Whole-film');
+    expect(h.slice(h.indexOf('data-point="N"')).split('</tr>')[0].endsWith('<td>flagged</td>')).toBe(true);
   });
   it('item 5: the chart sits beside the figure (both inside report-page-one-figure), not under each block\'s table', () => {
     const h = html();
@@ -225,7 +237,7 @@ describe('owner, 29 Oct 2026: export options and the Close button', () => {
   });
   it('items 1-2: no profilogram page by default; one appears, after the tables, only with the option on', () => {
     expect(html()).not.toContain('report-profilogram-page');
-    const on = html(synthModel(), { options: { profilogramPage: true, normSources: false, placedBy: false } });
+    const on = html(synthModel(), { options: { ...DEFAULT_REPORT_OPTIONS, profilogramPage: true, normSources: false, placedBy: false } });
     expect(on).toContain('report-profilogram-page');
     expect(on).toContain('<h2>Profilogram</h2>');
     expect(on.indexOf('report-profilogram-page')).toBeGreaterThan(on.indexOf('report-footer'));
@@ -247,5 +259,51 @@ describe('owner, 29 Oct 2026: export options and the Close button', () => {
   });
   it('positive control: a short report (the default fixture) needs no continuation page — proves the check above is not vacuously true for any report', () => {
     expect(html()).not.toContain('report-chart-continued');
+  });
+});
+
+// Owner, 5 Nov 2026: "Points table" off hides the whole Points section (heading and table) in the preview.
+describe('owner, 5 Nov 2026: Points table option in the preview', () => {
+  const m = synthModel({ points: [{ id: 'S', name: 'Sella', label: 'SYNTHETIC Aariz', model: 'aariz-cepha29', modelFile: null, acceptKind: null, pointCheck: '', wholeFilmCheck: '', wholeFilmRegion: '' }] });
+  it('on (the default): the Points heading and the row are there', () => {
+    const h = html(m);
+    expect(h).toContain('<h3>Points</h3>');
+    expect(h).toContain('data-point="S"');
+  });
+  it('off: no Points heading, no table, no point rows', () => {
+    const h = html(m, { options: { ...DEFAULT_REPORT_OPTIONS, pointsTable: false } });
+    expect(h).not.toContain('<h3>Points</h3>');
+    expect(h).not.toContain('report-points');
+    expect(h).not.toContain('data-point=');
+  });
+  it('on but no points at all: no table (as before)', () => {
+    expect(html(synthModel())).not.toContain('report-points');
+  });
+  it('off hides the CJK warning that only a point name would have raised', () => {
+    const cjk = synthModel({ points: [{ id: 'S', name: '李 SYNTHETIC', label: 'Aariz', model: 'aariz-cepha29', modelFile: null, acceptKind: null, pointCheck: '', wholeFilmCheck: '', wholeFilmRegion: '' }] });
+    expect(html(cjk)).toContain('no font the PDF can use');
+    expect(html(cjk, { options: { ...DEFAULT_REPORT_OPTIONS, pointsTable: false } })).not.toContain('no font the PDF can use');
+  });
+});
+
+// Owner, 5 Nov 2026: the mm grid behind the profilogram page, in the preview.
+describe('owner, 5 Nov 2026: the grid behind the profilogram in the preview', () => {
+  const page = (h: string) => h.slice(h.indexOf('report-profilogram-page'));
+  const on = { ...DEFAULT_REPORT_OPTIONS, profilogramPage: true };
+  it('calibrated, page ticked, grid on (the default): the profilogram page holds grid lines', () => {
+    const h = page(html(synthModel(), { options: on }));
+    expect(h).toContain('class="grid-minor"');
+    expect(h).toContain('class="grid-major"');
+  });
+  it('grid unticked: none; page unticked: no page and no grid anywhere', () => {
+    expect(html(synthModel(), { options: { ...on, profilogramGrid: false } })).not.toContain('grid-minor');
+    const none = html(synthModel(), { options: { ...DEFAULT_REPORT_OPTIONS, profilogramPage: false } });
+    expect(none).not.toContain('report-profilogram-page');
+    expect(none).not.toContain('grid-minor');
+  });
+  it('uncalibrated film: the page still shows the profilogram, with no grid', () => {
+    const h = html(synthModel(), { options: on, figureInput: { ...fi, scale: { mmPerPx: 0.1, source: 'assumed' as const } } });
+    expect(h).toContain('report-profilogram-page');
+    expect(h).not.toContain('grid-minor');
   });
 });

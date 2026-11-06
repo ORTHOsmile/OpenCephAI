@@ -64,7 +64,7 @@ const seen = vi.hoisted(() => ({ csvEdits: [] as unknown[], pdfEdits: [] as unkn
 vi.mock('./model', () => ({
   buildReport: (x: { edits: unknown }) => ({ header: { patient: 'SYNTHETIC' }, film: { timepoint: 'T1', takenOn: null }, edits: x.edits }),
   modelsUsed: () => [], headerLines: () => [], reportTexts: () => [],
-  DEFAULT_REPORT_OPTIONS: { profilogramPage: false, normSources: false, placedBy: false },
+  DEFAULT_REPORT_OPTIONS: { profilogramPage: false, normSources: false, placedBy: false, pointsTable: true },
 }));
 vi.mock('../export/measurementsCsv', () => ({
   measurementsCsv: (ms: Array<{ edits: unknown }>) => { seen.csvEdits.push(ms[0].edits); return 'csv'; },

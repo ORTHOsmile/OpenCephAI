@@ -1,0 +1,110 @@
+{
+  "version": "sc1-1b-dev/1",
+  "rule": "information: SC1-1a's exact films, folds, seeds and plants judged by whole-film/2, printed beside whole-film/1 (SC1-1a's own rule). Not a test.",
+  "spec": "docs/superpowers/specs/2026-11-03-sc1-whole-film-check-design.md §17.6 (owner ruling R1b-5); plan Task E",
+  "header": "development films, tuned on (R1b-5); not a test",
+  "disclosure": [
+    "These are SC1-1a's spent films (Ceph-400 Test1 151-300 and Aariz valid). They are development films, tuned on by the owner's ruling R1b-5: every number below is in-sample for the looks whose lines they helped set.",
+    "Gate /3's region tolerances were set over these films among others, so by construction no untouched film here is flagged by the region edges (gate /3 pre-registration, a stated limit).",
+    "The size look's line and the cranial-base centre's line were set on these films among the 520 calibration films, so by construction their false alarms here are zero; their catches are in-sample.",
+    "The shape look's 1,000-tracing reference holds the Ceph-400 Test1 tracings (as ceph400:NNN); each Test1 film is judged with its whole fold's names left out. Aariz valid films are not in the reference and use it whole.",
+    "Only SC1-1b-PKU (Task F) measures the improved check on films it has never seen. This run cannot replace it."
+  ],
+  "films": {
+    "ceph400": "test1 151-300 (150)",
+    "aariz": "valid (150), 98 of them with a scale under aariz-scale/1",
+    "refused": "Ceph-400 test2, Aariz test and PKU (sealed), before anything is read",
+    "truth": "the experts' tracings (gt.csv)"
+  },
+  "folds": "Test1 ids sorted, shuffled with splitmix64 seed 20261103; fold i = positions 30i..30i+29 (5 folds); a Test1 film is judged by the 150 Train tracings plus the other four folds (270); Aariz valid films by all 300",
+  "seeds": {
+    "folds": 20261103,
+    "plants": 20261104,
+    "note": "SC1-1a's seeds; plants made by sc1_1a::plants and sc1_1a::info_shifts unchanged (p4_draw = p4_draw_seeded(20261104, ...))"
+  },
+  "plants": {
+    "seed": 20261104,
+    "rng": "ft_common::case_rng(20261104, [type, film index, part]); P2's derangement: chainproof::Rng(20261104 ^ dataset salt)",
+    "P1a": "mirrored with the film: x -> width - 1 - x, the film's facing unchanged; 300",
+    "P1b": "mirrored in place about the tracing's centroid; 300",
+    "P2": "another film's tracing, coordinates as they are: a seeded single-cycle derangement within the same Test1 fold (so the planted tracing is never in the judged film's reference set) and within Aariz valid; 300",
+    "P3": "x0.5 and x2 about the tracing's centroid; 600",
+    "P4": "each of the 5 regions in turn, all its traced points moved d = 10 + 10u mm in direction 2*pi*v (u, v from the case rng); films with a recorded scale only: Ceph-400 test1 at 0.1 mm/px (150) and Aariz valid under aariz-scale/1 (98); 1,240",
+    "N": "the expert tracing untouched; 300"
+  },
+  "plantNote": "verbatim SC1-1a's (reference/sc1-1a.json plants and definitions). P4's direction is already random: a uniform angle 2*pi*v per film and region from the case rng; nothing in the plants is changed",
+  "definitions": {
+    "facing": "every film's stored facing is right (facing_left false), as in the gate and the region probe; the check is called exactly as the app calls it",
+    "filmIndex": "Test1 ids sorted are film indices 0-149; Aariz valid ids sorted are 150-299",
+    "types": "case-rng type numbers: P4 5 (part = region index in the canonical order cranial base, maxilla, mandible, incisors, soft-tissue profile), the information shift 6 (part = 10 or 20, the shift in mm), the control films 9",
+    "draws": "P4: u = (next >> 11) / 2^53 from the case rng, then the direction from ft_common::direction on the same stream (one number: angle 2*pi*v); the information shift: the direction only",
+    "centroid": "the mean of the 19 traced points; P1b: x -> 2 cx - x; P3 and C2: p -> c + k (p - c); C8: each coordinate x1000 (about the film's origin)",
+    "mm": "a shift of d mm is d / mm-per-px pixels: 0.1 mm/px on Ceph-400, the aariz-scale/1 value on an Aariz valid film; the check never reads it",
+    "salts": "P2's dataset salt: 400 + fold index (0-4) for a Ceph-400 Test1 fold (one derangement per fold, over the fold's ids in fold order); 1 for Aariz valid (over its ids sorted). Sattolo: for i from n-1 down to 1, swap i with Rng.below(i)",
+    "boxes": "the region finder runs once per film on the film as stored (cached by detector fingerprint, reports/sc1/boxes); every plant of a film is judged against that film's boxes at the score line; C4's 10 films are run again flipped, and their facing read in the flipped film",
+    "C1": "reference: ceph_model synthetic faces(300, seed 20261103); judged: faces(50, seed 20261104) on a 2000 x 2400 SYNTHETIC film, mirrored x -> 1999 - x; shape look only (no region model); 'mirrored' = the reason mirrored",
+    "C3": "forward = +x (the films face right); 40 mm = 400 px at Ceph-400's 0.1 mm/px",
+    "stageA": "point-check/2 score_run with a ShapeScorer of the same reference tracings (fold-held-out on Test1); flagged = Flagged or FilmUnusual; information only",
+    "caught": "flagged = the whole-film check's result is Flagged (any reason); Clean and NotRun are not flagged"
+  },
+  "columns": {
+    "v1": {
+      "name": "whole-film/1 (SC1-1a's rule exactly)",
+      "shape": "models/shape/ceph400-v1.shape (300 tracings), each Test1 film judged by the 270 outside its fold (sc1_1a::Refs), Aariz valid by all 300",
+      "tau": "gate /2: models/regions/calibration-2.json (kept byte for byte by gate /3), checked by sc1_1a::check_calibration against SC1-1a's pins (rule sc1-box-gate/2, cranial base 0.09, maxilla 0.02, mandible 0.02, incisors 0.01, soft tissue 0.10, gate report db1a67a0...eae7, score line 0.50)",
+      "looks": "shape, regions, facing; no size, no centre",
+      "judged": "sc1_1a::judge_all (Stage A for information, as SC1-1a)"
+    },
+    "v2": {
+      "name": "whole-film/2",
+      "shape": "models/shape/whole-film-reference-v1.shape (whole-film-reference/1, 1,000 tracings): WholeScorer::from_reference, less the judged fold's ceph400:NNN names for a Test1 film (its lines then fitted on first use, the time printed); whole for an Aariz valid film",
+      "tau": "gate /3: models/regions/calibration.json, rule sc1-box-gate/3, checked against reports/sc1/box-gate-3.json (pinned below)",
+      "size": "models/regions/size-calibration.json (sc1-size/1), its report SHA-256 pinned below; judged on complete 19-point tracings only",
+      "centre": "models/regions/cb-centre-calibration.json (sc1-cb-centre/1), its report SHA-256 pinned below; judged with all five of S, N, Po, Ar, Or",
+      "judged": "sc1_1a::check_with(film, tracing, scorer, FilmCal { tau /3, size, centre })"
+    },
+    "refuse": "the /1 column refuses a calibration that is not gate /2's; the /2 column refuses one that is not gate /3's"
+  },
+  "pins": {
+    "detectorFingerprint": "17171e68f9f7072062e2a3a2cbd4851618056f5136bed998f1782c49d4897b80",
+    "gate3ReportSha256": "f639b5bc41b12388ab430e9e86fda78143bb2984ae483d83cd65e3916d1ff0d5",
+    "sizeReportSha256": "836b8c341127026f0f8b27f7abe54fabfaa9da96b05a21e60d8bd2e872a91cab",
+    "cbReportSha256": "111776c2bfb0e5932061f7ccb92e0d2eab1a049ba32c779309b29c070362e797",
+    "referenceSha256": "6f0f066aeedde5eb329800595c29fb082b56ec6092f8782fc8653d0a1b4a81bd",
+    "priorSha256": "106a45e3d2ea6f8a5eea9ea59d45555ffb427f37b14b7914ac843c12e97ccb66",
+    "sc1aReportSha256": "c08556b2a5ec860c1f4571f5fa782e2f76fa2e836aae310cab24c50dd7d324b6",
+    "sc1aPins": "reference/sc1-1a.json regions (the /1 column's calibration and gate report)"
+  },
+  "printed": [
+    "the header line, with the words 'development films, tuned on (R1b-5); not a test'",
+    "per planted kind (P1a, P1b, P2, P3 x0.5, P3 x2, P4 by region): /1 caught beside /2 caught, of N, and the change",
+    "per kind and column, which look flagged (a case may have several): mirrored, shape, region (a point past its edge), size, centre (the cranial-base centre), facing, no-ceph-found; and, for /2, how many were flagged ONLY by the size or centre look",
+    "untouched (N) by dataset, /1 beside /2, with the same per-look counts",
+    "POOLED: caught of 2,740 and untouched flagged of 300, each with its exact (Clopper-Pearson) 95% interval, for both columns",
+    "information: the whole tracing moved 10 and 20 mm (films with a scale), /1 beside /2"
+  ],
+  "information": {
+    "centreLineSensitivity": "the /2 pooled catch and untouched-flag counts re-judged with the centre line at 0.06 (as calibrated), 0.08 and 0.10, in memory only; every other number fixed; no stored calibration changed. Information for an owner decision before Task F; the stop below reads only the calibrated line",
+    "centreMedians": "per-set median centre offsets (nearest rank per axis): Ceph-400 Test1 and Aariz valid from this run's untouched tracings, and all four calibration sets (hold-out, Ceph-400 Train, Ceph-400 Test1, Aariz valid) from reports/sc1/cb-centre-calibration.json (its SHA-256 pinned above)"
+  },
+  "controls": {
+    "P0": "the /1 column's counts (every line and both totals) equal SC1-1a's report reports/sc1/sc1-1a.json (SHA-256 pinned above) field for field: 2,289 of 2,740 caught, 11 of 300 untouched flagged. If not, the instrument is not SC1-1a's: broken (exit 1), report still written and printed",
+    "C7": "every count equals its expected total in both columns (sc1_1a::count with SC1-1a's marks)",
+    "homework": "a Test1 film judged by a reference holding its own tracing under either name (151 or ceph400:151) is refused",
+    "centreAtCalibratedLine": "the sensitivity re-judging at the calibrated line gives the main /2 counts exactly"
+  },
+  "stop": "whole-film/2 below 2,603 of 2,740 caught, or above 6 of 300 untouched flagged -> exit 3, to the owner before PKU is pre-registered",
+  "marks": {
+    "planted": 2740,
+    "needed": 2603,
+    "normal": 300,
+    "falseAlarmMax": 6,
+    "rule": "SC1-1a's, in integers (sc1_1a::Marks::real)"
+  },
+  "verdicts": {
+    "printed": "controls hold and the stop not tripped -> exit 0",
+    "stop": "controls hold and the stop tripped -> exit 3",
+    "broken": "a pin, a refusal, a count or a control fails -> exit 1"
+  },
+  "writes": "reports/sc1/sc1-1b-dev.json (git-ignored); nothing under models"
+}

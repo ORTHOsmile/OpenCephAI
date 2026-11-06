@@ -4,16 +4,17 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-// Owner, 1 Nov 2026: "Program and Design: Dr Linton Nash" in the README, with a thanks to him. Repo root is two up.
+// Owner, 1 Nov 2026: "Program and Design: Dr Linton Nash" in the README (his 5 Nov edit dropped the thanks line). Repo root is two up.
 const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', '..');
 const readme = () => fs.readFileSync(path.join(repoRoot, 'README.md'), 'utf8');
 
-test('README.md has a Credits section with the exact credit line, and no thanks line', () => {
+// Owner, 5 Nov 2026: he removed the thanks line on GitHub, keeping only the credit line. The line must stay ABSENT.
+test('README.md has a Credits section with the exact credit line and no thanks line', () => {
   const text = readme();
   const section = /^## Credits\s*\n([\s\S]*?)(?=^## |\s*$(?![\s\S]))/m.exec(text)?.[1] ?? '';
   assert.match(section, /^Program and Design: Dr Linton Nash$/m);
-  // Owner, 5 Nov 2026: the thanks line was removed on GitHub; it must not come back.
-  assert.doesNotMatch(section, /With thanks to/);
+  assert.doesNotMatch(section, /With thanks to Dr Linton Nash/);
+  assert.doesNotMatch(text, /With thanks to Dr Linton Nash/);
 });
 
 test('README.md names no AI or tool', () => {
@@ -35,6 +36,6 @@ test('README.md has a Roadmap with Now, Next and Later, and no dates or internal
 // Owner, 2 Nov 2026: the whole program is Beta; the README says so at the very top.
 test('README.md opens with the Beta name and the Beta line, before anything else', () => {
   const lines = readme().split('\n').filter((l) => l.trim() !== '');
-  assert.equal(lines[0], '# OpenCephAI 1.1 Beta');
+  assert.equal(lines[0], '# OpenCephAI 1.2 Beta');
   assert.match(lines[1], /^\*\*Beta:\*\* OpenCephAI is beta research software, not a diagnostic device\./);
 });

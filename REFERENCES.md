@@ -6,7 +6,7 @@ Built only from what the repository itself states. Entries marked [citation inco
 
 Licences are given for models and data. They are as recorded in `THIRD_PARTY_MODELS.md` and the model catalogue. This is not legal advice.
 
-Contents: Analyses and norms (53); Methods and validation (3); Datasets (4); AI models (7); Software (11).
+Contents: Analyses and norms (53); Methods and validation (4); Datasets (5); AI models (8); Software (11).
 
 ## Analyses and norms (53)
 
@@ -66,16 +66,18 @@ Norm sets are listed once per paper. "Second-hand" means the app uses the number
 - Yen PK (1973). The facial configuration in a sample of Chinese boys. *Angle Orthod* 43(3):301–4. (Values taken second-hand via Moate & Darendeliler 2002, Table II.)
 - Zheng HW, Meng CD, Chen HH, Song GY, Lai Y, Han B, Xu TM (2026). Cephalometric Norms for Chinese Individuals Based on Expert Consensus Evaluation of Lateral Cephalometric Radiographs. *Chinese Journal of Dental Research* 29(2):151-161. doi:10.3290/j.cjdr.b7044059
 
-## Methods and validation (3)
+## Methods and validation (4)
 
 - Björk & Skieller (1983). Named in the superimposition method note as the basis of superimposing serial films on structures that stop changing early (the anterior wall of sella turcica, the cribriform plate, the inner contours of the anterior cranial base). [citation incomplete in source] (Missing: initials, title, journal and pages not given)
 - Ghodasra & Brizuela. Orthodontics, Cephalometric Analysis. *StatPearls*. NBK594272. Read to check the direction of ten measurement meanings. [citation incomplete in source] (Missing: year and DOI not given)
+- Self-CephaloNet (2025). arXiv 2501.10984. The source of the pixel size used for the PKU films (2089 x 1937 px, about 0.125 mm per pixel; used only to plant the test moves, never by the check itself). [citation incomplete in source] (Missing: title and authors not given; a secondary source for the pixel size, the dataset's own figure is unconfirmed)
 - Wang C-W, et al. (2016). A benchmark for comparison of dental radiography analysis algorithms. *Medical Image Analysis* 31:63–76. doi:10.1016/j.media.2016.02.004. The ISBI 2015 challenge paper; the source of the 2 mm "successful detection rate" pass line.
 
-## Datasets (4)
+## Datasets (5)
 
 - Aariz Cephalometric Dataset (CEPHA29). Khalid et al. (2025). Aariz dataset. *Scientific Data*. doi:10.1038/s41597-025-05542-3. Data: Figshare, doi:10.6084/m9.figshare.27986417. Licence: CC BY 4.0. [citation incomplete in source] (Missing: full author list and title not given)
 - Ceph-Biometrics-400 (the ISBI 2015 films and their expert tracings, as a modified copy). Hugging Face, `YongchengYAO/Ceph-Biometrics-400`. https://huggingface.co/datasets/YongchengYAO/Ceph-Biometrics-400. Original data paper: Lindner C, et al. (2016). Fully Automatic System for Accurate Localisation and Analysis of Cephalometric Landmarks in Lateral Cephalograms. *Scientific Reports* 6:33581. doi:10.1038/srep33581. Licence: CC BY-NC 4.0 (dataset card). The original organisers' own terms could not be read (HTTP 403) and are not confirmed.
+- PKU cephalogram dataset (102 films, each annotated by two senior doctors). Zeng et al. (2021). *Medical Image Analysis* 101904. Data: Figshare 13265471 v6 (`dental-cepha-dataset.zip`). Licence: CC BY-NC-SA, the stricter of the two the record lists; used for testing only, nothing derived is shipped. Used once, for the whole-film check test in OpenCephAI 1.2 Beta. [citation incomplete in source] (Missing: full author list and title not given)
 - CL-Detection 2023 (MICCAI challenge data). Wu et al., arXiv:2309.17143. Licence: CC BY-NC-ND 4.0 (stated for the SRPose weights, which were trained on this data). [citation incomplete in source] (Missing: title and full author list not given)
 - ISBI 2015 challenge cephalometric films (organisers' collection). Challenge paper: Wang C-W, et al. (2016), listed under Methods and validation. Licence: the organisers published none; the app treats the films as CC BY-NC 4.0 (unconfirmed), non-commercial use only.
 
@@ -85,7 +87,7 @@ Norm sets are listed once per paper. "Second-hand" means the app uses the number
 - CephaloHRNet. Training code behind the Aariz CEPHA29 model. Licence: MIT. [citation incomplete in source] (Missing: authors, year and URL not given; credited only from the model card)
 - cwlachap (2025). hrnet-cephalometric-landmark-detection (HRNet-W32). Hugging Face. https://huggingface.co/cwlachap/hrnet-cephalometric-landmark-detection. Licence: code MIT; weights trained on the ISBI 2015 films, treated as CC BY-NC 4.0 (unconfirmed), non-commercial use only.
 - HRNet-W32 ImageNet weights `hrnet_w32.ms_in1k`. Backbone of the Aariz CEPHA29 model. Licence: Apache-2.0. [citation incomplete in source] (Missing: authors, year and URL not given; credited only from the model card)
-- Nash L (2026). OpenCephAI region finder for lateral cephalograms (rfdetr-m-aariz-regions v1). Zenodo. doi:10.5281/zenodo.23949954. Licence: CC BY 4.0. Fine-tuned from RF-DETR Medium on the Aariz training films; used by the whole-film check in OpenCephAI 1.2 Beta (not in 1.1).
+- Nash L (2026). OpenCephAI region finder for lateral cephalograms (rfdetr-m-aariz-regions v1). Zenodo. doi:10.5281/zenodo.23949953 (all versions; version 2: doi:10.5281/zenodo.23965907). Licence: CC BY 4.0. Fine-tuned from RF-DETR Medium on the Aariz training films; used by the whole-film check in OpenCephAI 1.2 Beta (not in 1.1).
 - Roboflow. RF-DETR (Medium). https://github.com/roboflow/rf-detr. Licence: Apache-2.0. Base model of the region finder above. [citation incomplete in source] (Missing: authors and year; credited as on the Zenodo record)
 - SRPose, CL-Detection 2023. Wu et al., arXiv:2309.17143 (MICCAI CL-Detection 2023). Code: https://github.com/5k5000/CLdetection2023. Licence: code Apache-2.0; weights CC BY-NC-ND 4.0, non-commercial only, and a converted copy must not be shared. [citation incomplete in source] (Missing: title and full author list not given)
 - Zhu et al. (2021). You Only Learn Once: Universal Anatomical Landmark Detection (GU2Net). MICCAI 2021. https://github.com/MIRACLE-Center/YOLO_Universal_Anatomical_Landmark_Detection. Licence: code MIT; weights trained on the ISBI 2015 films, treated as CC BY-NC 4.0 (unconfirmed), non-commercial only.

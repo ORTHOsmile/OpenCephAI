@@ -10,6 +10,7 @@ mod models;
 mod point_check;
 mod system_font;
 mod weights_check;
+mod whole_film;
 mod window_chrome;
 
 use ceph_infer::engine::{load_gray, mean_peak, AutoDetection, Engine};
@@ -122,6 +123,10 @@ fn quit(app: &tauri::AppHandle) {
 #[tauri::command]
 fn quit_now(app: tauri::AppHandle) { quit(&app); }
 
+/// Quit on the upgrade notice (owner, 6 Nov 2026): no library has been opened, so there is nothing to save and nothing is touched.
+#[tauri::command]
+fn library_upgrade_quit(app: tauri::AppHandle) { quit(&app); }
+
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     let check = window_chrome::check_mode(std::env::args());
@@ -133,6 +138,7 @@ pub fn run() {
         .manage(models::ModelsState::default())
         .manage(weights_check::Running::default())
         .manage(point_check::PointCheckState::default())
+        .manage(whole_film::WholeFilmState::default())
         .setup(move |app| {
             // --check-window-chrome: never near a real library. Say where app data would go and refuse a real home,
             // before any window exists; the check's window shows a blank page and nothing below it runs.
@@ -165,6 +171,7 @@ pub fn run() {
             library::library_set_meta, library::library_set_patient_gender, library::library_set_patient_background, library::library_set_patient_referrer, library::library_set_patient_id, library::library_set_film_detail, library::library_set_patient_title, library::library_set_film_age, library::library_not_same_patient, library::library_accept_learned, library::library_read_label, library::library_label_text, library::library_read_area, library::library_learn_selection, library::library_learn_value, library::library_machines, library::library_rename_machine, library::library_reset_machine, library::library_delete_machine, library::library_machine_scale_from_film, library::library_machine_scale_change, library::library_set_machine_scale, library::library_machine_delete_change, library::library_confirm_identity, library::library_confirm_film_date, library::library_series, library::library_set_stage, library::library_set_in_series, library::library_save_fit, library::library_clear_fit, library::library_set_fit_own,
             library::library_set_verified, library::library_calibrate, library::library_delete,
             library::library_restore, library::library_backup, library::library_restore_backup, library::library_upgrade_copy,
+            library::library_upgrade_pending, library::library_upgrade_confirm, library_upgrade_quit,
             library::settings_get, library::settings_set, library::library_ghosts,
             library::library_ruler,
             library::library_recalibrate,
@@ -180,6 +187,7 @@ pub fn run() {
             weights_check::models_weights_check_run,
             export::export_write,
             point_check::point_checks_for_case, point_check::point_check_film_checked, point_check::point_check_counts,
+            whole_film::whole_film_check, whole_film::whole_film_check_resolve, whole_film::whole_film_status, whole_film::whole_film_switch, whole_film::whole_film_switch_set,
             system_font::system_font_list, system_font::system_font_read,
         ])
         .build(tauri::generate_context!())

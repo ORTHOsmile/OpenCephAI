@@ -1,0 +1,21 @@
+{
+  "version": "sc1-box-gate/4",
+  "wholeFilmRule": "whole-film/3",
+  "kind": "an owner ruling (5 Nov 2026, 'Fix A'), not a calibration run: the five tolerances are set by the owner, not by the worst-point rule over films",
+  "tau": {
+    "cranialBase": 0.09,
+    "maxilla": 0.02,
+    "mandible": 0.02,
+    "incisors": 0.01,
+    "softTissue": 0.1
+  },
+  "sameAs": "sc1-box-gate/2's tolerances exactly (reports/sc1/box-gate-2.json, SHA-256 db1a67a0a1761ad5463ba64ff338be00423a3ae73f097009b7ab091919f9eae7)",
+  "replaces": "sc1-box-gate/3 (reports/sc1/box-gate-3.json, SHA-256 f639b5bc41b12388ab430e9e86fda78143bb2984ae483d83cd65e3916d1ff0d5): its maxilla 0.07 and mandible 0.10, each set by a single Ceph-400 Test1 film, go back to 0.02; cranial base, incisors and soft tissue are the same in /3 and /4",
+  "fromGate3ReportSha256": "f639b5bc41b12388ab430e9e86fda78143bb2984ae483d83cd65e3916d1ff0d5",
+  "detectorFingerprint": "17171e68f9f7072062e2a3a2cbd4851618056f5136bed998f1782c49d4897b80",
+  "scoreLine": 0.5,
+  "evidence": "reports/sc1/sc1-1b-dev-decompose.json (SHA-256 45ea63ca5bdcb557701c1d082af7d9e28b36213f9e9adfa01995b11b8a4f3b81), row 2: gate /2's tolerances with the 1,000-tracing reference caught 2,650 of 2,740 planted and flagged 5 of 300 untouched on the development films; gate /3's caught 2,600 and flagged 2",
+  "inSample": "the third tuning on the same development films (Ceph-400 Test1 151-300 and Aariz valid): gate /3, the size and centre lines, and now this ruling were all chosen with them, so every number on them is in-sample; only SC1-1b-PKU measures whole-film/3 on unseen films",
+  "writes": "models/regions/calibration.json with rule sc1-box-gate/4, these tolerances, score line 0.50, this detector, and gateReportSha256 = this file's SHA-256; the gate /3 file kept byte for byte as models/regions/calibration-3.json. Reads no film",
+  "spec": "docs/superpowers/specs/2026-11-03-sc1-whole-film-check-design.md §17.15"
+}

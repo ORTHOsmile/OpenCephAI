@@ -59,14 +59,25 @@ pub fn check_out(out: &Path) -> anyhow::Result<()> {
 /// films 001-400 (19 points each, synthetic faces in film px) and `splits.json` (`train` 001-150, `test1` 151-300,
 /// `test2` 301-400). Test2's faces are shifted by 5,000 px so any of their numbers in a file would stand out.
 #[doc(hidden)]
-pub fn write_synthetic_ceph400(root: &Path) -> anyhow::Result<std::path::PathBuf> {
+pub fn write_synthetic_ceph400(root: &Path) -> anyhow::Result<std::path::PathBuf> { write_synthetic_ceph400_scaled(root, 1.0) }
+
+/// SYNTHETIC only, for tests: `write_synthetic_ceph400` with every coordinate scaled by `k` about its own face's
+/// centroid (before Test2's shift), so the faces are `k` times the size and sit where they sat. `k = 1.0` writes the
+/// same bytes as `write_synthetic_ceph400` (SC-1 Part 1b Task A, the C12 control).
+#[doc(hidden)]
+pub fn write_synthetic_ceph400_scaled(root: &Path, k: f64) -> anyhow::Result<std::path::PathBuf> {
     let data = root.join("data").join("ceph400");
     std::fs::create_dir_all(&data)?;
     let faces = ceph_model::shape::synthetic_faces(400, 2026_11_02);
     let mut gt = String::from("image_id,landmark,x,y\n");
     for (i, f) in faces.iter().enumerate() {
         let shift = if i >= 300 { 5000.0 } else { 0.0 };
-        for (name, p) in ceph_model::pointcheck::ORDER.iter().zip(f) { gt += &format!("{:03},{name},{},{}\n", i + 1, p.0 + shift, p.1 + shift); }
+        let c = (f.iter().map(|p| p.0).sum::<f64>() / f.len() as f64, f.iter().map(|p| p.1).sum::<f64>() / f.len() as f64);
+        // p·k + c·(1 − k): exactly p when k = 1, so the unscaled folder keeps its bytes.
+        for (name, p) in ceph_model::pointcheck::ORDER.iter().zip(f) {
+            let (x, y) = (p.0 * k + c.0 * (1.0 - k), p.1 * k + c.1 * (1.0 - k));
+            gt += &format!("{:03},{name},{},{}\n", i + 1, x + shift, y + shift);
+        }
     }
     std::fs::write(data.join("gt.csv"), gt)?;
     let ids = |a: usize, b: usize| (a..=b).map(|n| format!("{n:03}")).collect::<Vec<_>>();
@@ -142,6 +153,24 @@ mod tests {
         assert_eq!(ORDER.len(), 19);
     }
     fn ceph_bench_points(data: &Path) -> crate::dataset::Points { crate::dataset::load_points(&data.join("gt.csv")).unwrap() }
+    /// SC-1 Part 1b Task A. Fails if k = 1 changes a byte, or if k does not scale each face's S–N by k (about its centroid,
+    /// so the centroid stays).
+    #[test] fn the_scaled_synthetic_ceph400_is_k_times_the_size_and_k_1_is_unchanged() {
+        let (a, b) = (tempfile::tempdir().unwrap(), tempfile::tempdir().unwrap());
+        let plain = write_synthetic_ceph400(a.path()).unwrap();
+        let one = write_synthetic_ceph400_scaled(b.path(), 1.0).unwrap();
+        for f in ["gt.csv", "splits.json"] { assert_eq!(std::fs::read(plain.join(f)).unwrap(), std::fs::read(one.join(f)).unwrap(), "{f}"); }
+        let c = tempfile::tempdir().unwrap();
+        let big = write_synthetic_ceph400_scaled(c.path(), 1.3).unwrap();
+        let (p, q) = (ceph_bench_points(&plain), ceph_bench_points(&big));
+        let sn = |r: &Vec<(String, f64, f64)>| { let g = |n: &str| r.iter().find(|x| x.0 == n).map(|x| (x.1, x.2)).unwrap(); let (s, n) = (g("S"), g("N")); ((s.0 - n.0).powi(2) + (s.1 - n.1).powi(2)).sqrt() };
+        let cen = |r: &Vec<(String, f64, f64)>| (r.iter().map(|x| x.1).sum::<f64>() / 19.0, r.iter().map(|x| x.2).sum::<f64>() / 19.0);
+        for id in ["001", "150", "333"] {
+            assert!((sn(&q[id]) / sn(&p[id]) - 1.3).abs() < 1e-9, "{id}");
+            let (c0, c1) = (cen(&p[id]), cen(&q[id]));
+            assert!((c0.0 - c1.0).abs() < 1e-6 && (c0.1 - c1.1).abs() < 1e-6, "{id}: the centroid stays");
+        }
+    }
     /// Fails if `--shape-prior` accepted an output outside a folder named `models`.
     #[test] fn the_output_must_be_under_a_folder_named_models() {
         assert!(check_out(Path::new("models/shape/ceph400-v1.shape")).is_ok());

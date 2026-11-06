@@ -1065,6 +1065,27 @@ fn live_counter(db: &Path) -> i64 {
 /// Checks a safety copy: (copy folder, the schema it must be at, the live library folder).
 pub(crate) type CopyCheck<'a> = dyn Fn(&Path, i64, &Path) -> anyhow::Result<()> + 'a;
 
+/// Whether opening the library in `root` would upgrade its format, BEFORE anything is opened: `Some((stored, target))` when a library
+/// exists at a format from 1 up to below `target` (the app's `schema::CURRENT`); `None` for no library (a fresh install), an empty or
+/// foreign file (`open` decides what to do with it), a current library, or a newer one (`open` refuses that). Reads only the first 100
+/// bytes of `library.sqlite3` (the format number is in the file header, `user_version`, offset 60) and creates, changes and locks
+/// nothing, so it is safe to call and then quit. A write-ahead log left by a crash could hold a newer number than the header: then this
+/// says "upgrade" when none is needed (the safe side); it never says "current" for an old library.
+pub fn pending_upgrade_to(root: &Path, target: i64) -> anyhow::Result<Option<(i64, i64)>> {
+    use std::io::Read;
+    let mut f = match fs::File::open(root.join("library.sqlite3")) {
+        Ok(f) => f,
+        Err(e) if e.kind() == std::io::ErrorKind::NotFound => return Ok(None),
+        Err(e) => return Err(anyhow::Error::new(e).context(format!("could not read the library in {}", root.display()))),
+    };
+    let mut h = [0u8; 100];
+    if f.read_exact(&mut h).is_err() || &h[..16] != b"SQLite format 3\0" { return Ok(None); }
+    let v = i64::from(i32::from_be_bytes([h[60], h[61], h[62], h[63]]));
+    Ok((v > 0 && v < target).then_some((v, target)))
+}
+/// `pending_upgrade_to` for the format this app writes.
+pub fn pending_upgrade(root: &Path) -> anyhow::Result<Option<(i64, i64)>> { pending_upgrade_to(root, schema::CURRENT) }
+
 pub(crate) fn open_with(root: &Path, target: i64, check: &CopyCheck<'_>) -> anyhow::Result<Library> { open_with_above(root, target, check, 0) }
 
 /// Final review C1: a restore whose put-back failed leaves no library.sqlite3 in `root`, and the
@@ -1361,6 +1382,38 @@ mod upgrade_copy_tests {
     }
     fn db(root: &Path) -> PathBuf { root.join("library.sqlite3") }
     fn rows() -> Vec<(String, String)> { vec![("a".into(), "one".into()), ("b".into(), "two".into())] }
+
+    /// Every file under `root` with its bytes, sorted: what "nothing was touched" is compared on.
+    fn snapshot(root: &Path) -> Vec<(PathBuf, Vec<u8>)> {
+        let mut v = vec![];
+        fn walk(d: &Path, root: &Path, v: &mut Vec<(PathBuf, Vec<u8>)>) {
+            for e in fs::read_dir(d).unwrap() { let p = e.unwrap().path(); if p.is_dir() { v.push((p.strip_prefix(root).unwrap().to_path_buf(), vec![])); walk(&p, root, v) } else { v.push((p.strip_prefix(root).unwrap().to_path_buf(), fs::read(&p).unwrap())) } }
+        }
+        walk(root, root, &mut v); v.sort(); v
+    }
+    /// Item 3 (owner, 6 Nov 2026): the pending-upgrade peek. Fails if an old library does not read as pending, a fresh, current or newer one does,
+    /// or the peek changes a single byte or adds a file.
+    #[test] fn the_peek_says_upgrade_only_for_an_old_library_and_touches_nothing() {
+        let fresh = tempfile::tempdir().unwrap();
+        assert_eq!(pending_upgrade(fresh.path()).unwrap(), None, "no library: nothing to upgrade");
+        let empty = tempfile::tempdir().unwrap(); fs::write(empty.path().join("library.sqlite3"), b"").unwrap();
+        assert_eq!(pending_upgrade(empty.path()).unwrap(), None, "an empty file is not an old library");
+        let junk = tempfile::tempdir().unwrap(); fs::write(junk.path().join("library.sqlite3"), vec![7u8; 500]).unwrap();
+        assert_eq!(pending_upgrade(junk.path()).unwrap(), None, "a foreign file is left for `open` to refuse");
+        let old = tempfile::tempdir().unwrap(); old_library(old.path(), 7);
+        fs::write(old.path().join("images").join("abc.png"), b"film bytes").unwrap();
+        let before = snapshot(old.path());
+        assert_eq!(pending_upgrade(old.path()).unwrap(), Some((7, schema::CURRENT)));
+        assert_eq!(pending_upgrade_to(old.path(), 7).unwrap(), None, "already at the target: current");
+        assert_eq!(pending_upgrade_to(old.path(), 6).unwrap(), None, "newer than the target: not an upgrade");
+        assert_eq!(snapshot(old.path()), before, "the peek changed nothing ({} entries compared)", before.len());
+        assert!(before.len() >= 2);
+        let cur = tempfile::tempdir().unwrap(); drop(Library::open(cur.path()).unwrap());
+        assert_eq!(pending_upgrade(cur.path()).unwrap(), None, "a library this app already made: current");
+        let v0 = tempfile::tempdir().unwrap(); old_library(v0.path(), 0);
+        assert_eq!(pending_upgrade(v0.path()).unwrap(), None, "format 0 is a new library, as `open` treats it");
+        println!("pending: old {:?}, fresh/empty/junk/current/v0 none; {} entries unchanged", pending_upgrade(old.path()).unwrap(), before.len());
+    }
 
     #[test] fn an_old_library_is_copied_and_checked_then_upgraded_and_the_copy_stays_at_the_old_version() {
         let t = tempfile::tempdir().unwrap();
@@ -3116,10 +3169,10 @@ that folder.", schema::CURRENT, copies(t.path())[0].display()));
         assert!(before.iter().all(|d| d.1 > 0), "the instrument reads every table: {before:#?}");
         assert_ne!(expected, before, "the switch is visible to the instrument");
         let lib = Library::open(t.path()).unwrap();
-        assert_eq!(schema::version(&lib.conn).unwrap(), 19);
+        assert_eq!(schema::version(&lib.conn).unwrap(), 20);
         let made = copies(t.path());
         assert_eq!(made.len(), 1, "one safety copy for one open: {made:?}");
-        assert!(made[0].file_name().unwrap().to_string_lossy().starts_with(&format!("OpenCephAI backup before upgrade {v}→19 ")), "{made:?}");
+        assert!(made[0].file_name().unwrap().to_string_lossy().starts_with(&format!("OpenCephAI backup before upgrade {v}→20 ")), "{made:?}");
         assert_eq!(lib.upgrade_copy(), Some(made[0].as_path()));
         verify_backup(&made[0]).unwrap();
         assert_eq!(stored_version(&db(&made[0])), v);
@@ -3171,13 +3224,13 @@ that folder.", schema::CURRENT, copies(t.path())[0].display()));
         assert_eq!(table_digests(&shape, &db(t.path())), before, "every table: same rows, same content; no case switched");
         let made = copies(t.path());
         assert_eq!(made.len(), 1, "{made:?}");
-        assert!(made[0].file_name().unwrap().to_string_lossy().starts_with("OpenCephAI backup before upgrade 16→19 "));
+        assert!(made[0].file_name().unwrap().to_string_lossy().starts_with("OpenCephAI backup before upgrade 16→20 "));
         verify_backup(&made[0]).unwrap();
         assert_eq!(stored_version(&db(&made[0])), 16);
         // Final review M2 (2 Nov 2026): the library is left at 17, so 0.9.0 would only say "update the app"; the message
         // names the safety copy and how to go back to it. Positive control: drop the message → this fails.
         let msg = format!("{e:#}");
-        assert!(msg.contains(&made[0].display().to_string()) && msg.contains("Library ▸ Restore…") && msg.contains("16→19 did not finish"), "{msg}");
+        assert!(msg.contains(&made[0].display().to_string()) && msg.contains("Library ▸ Restore…") && msg.contains("16→20 did not finish"), "{msg}");
     }
     // Final review I4 (2 Nov 2026): format 17 is a placeholder; Tier 3 Stage A must append after 18, never take 17's place.
     // From format 18 the library records which upgrade ran at each format (`applied_migrations`, the SHA-256 of its SQL),
@@ -3190,7 +3243,7 @@ that folder.", schema::CURRENT, copies(t.path())[0].display()));
         let c = Connection::open(db(t.path())).unwrap();
         let rows: Vec<(i64, String)> = c.prepare("SELECT version, sha256 FROM applied_migrations ORDER BY version").unwrap()
             .query_map([], |r| Ok((r.get(0)?, r.get(1)?))).unwrap().collect::<Result<_, _>>().unwrap();
-        assert_eq!(rows, vec![(17, schema::migration_sha(17)), (18, schema::migration_sha(18)), (19, schema::migration_sha(19))]);
+        assert_eq!(rows, vec![(17, schema::migration_sha(17)), (18, schema::migration_sha(18)), (19, schema::migration_sha(19)), (20, schema::migration_sha(20))]);
         assert_eq!(rows[0].1.len(), 64);
         assert_ne!(rows[0].1, rows[1].1);
     }
@@ -3203,7 +3256,7 @@ that folder.", schema::CURRENT, copies(t.path())[0].display()));
         let before = all_rows(&db(t.path()));
         let e = Library::open(t.path()).err().expect("a library that ran a different format-17 upgrade is refused");
         assert!(format!("{e:#}").contains("format 17"), "{e:#}");
-        assert_eq!((all_rows(&db(t.path())), stored_version(&db(t.path()))), (before, 19), "refused unchanged");
+        assert_eq!((all_rows(&db(t.path())), stored_version(&db(t.path()))), (before, 20), "refused unchanged");
     }
     #[test] fn a_format_18_library_without_the_record_of_its_upgrades_is_refused_as_superseded() {
         let t = tempfile::tempdir().unwrap();
@@ -3216,7 +3269,7 @@ that folder.", schema::CURRENT, copies(t.path())[0].display()));
     #[test] fn a_new_library_opens_at_19() {
         let t = tempfile::tempdir().unwrap();
         let lib = Library::open(t.path()).unwrap();
-        assert_eq!(schema::version(&lib.conn).unwrap(), 19);
+        assert_eq!(schema::version(&lib.conn).unwrap(), 20);
         assert!(copies(t.path()).is_empty());
         assert!(has_column(&db(t.path()), "patients", "background") && has_table(&db(t.path()), "population_switches"));
         assert_eq!(lib.auto_switch_note().unwrap(), None);
@@ -3229,10 +3282,10 @@ that folder.", schema::CURRENT, copies(t.path())[0].display()));
         let t = tempfile::tempdir().unwrap();
         format_16_library(t.path());
         drop(Library::open(t.path()).unwrap());
-        assert_eq!(stored_version(&db(t.path())), 19);
+        assert_eq!(stored_version(&db(t.path())), 20);
         for knows in [16, 17] {
             let e = schema::ensure_known(stored_version(&db(t.path())), knows).unwrap_err().to_string();
-            assert_eq!(e, format!("this library was written by a newer OpenCephAI (schema 19, this app knows {knows}); update the app"));
+            assert_eq!(e, format!("this library was written by a newer OpenCephAI (schema 20, this app knows {knows}); update the app"));
         }
     }
 
@@ -3269,10 +3322,10 @@ that folder.", schema::CURRENT, copies(t.path())[0].display()));
         for (tb, n, h) in &before { println!("  before {tb}: {n} rows, sha256 {}", &h[..16]); }
         assert!(before.len() == 31 && before.iter().all(|d| d.1 > 0), "the instrument reads every table: {before:#?}");
         let lib = Library::open(t.path()).unwrap();
-        assert_eq!(schema::version(&lib.conn).unwrap(), 19);
+        assert_eq!(schema::version(&lib.conn).unwrap(), 20);
         let made = copies(t.path());
         assert_eq!(made.len(), 1, "one safety copy for one open: {made:?}");
-        assert!(made[0].file_name().unwrap().to_string_lossy().starts_with("OpenCephAI backup before upgrade 18→19 "), "{made:?}");
+        assert!(made[0].file_name().unwrap().to_string_lossy().starts_with("OpenCephAI backup before upgrade 18→20 "), "{made:?}");
         assert_eq!(lib.upgrade_copy(), Some(made[0].as_path()));
         verify_backup(&made[0]).unwrap();
         assert_eq!(stored_version(&db(&made[0])), 18);
@@ -3282,7 +3335,7 @@ that folder.", schema::CURRENT, copies(t.path())[0].display()));
         let after = digests_but_applied(&shape, &db(t.path()));
         for (tb, n, h) in &after { println!("  after  {tb}: {n} rows, sha256 {}", &h[..16]); }
         assert_eq!(after, before.iter().filter(|d| d.0 != "applied_migrations").cloned().collect::<Vec<_>>(), "every old table: same rows, same content");
-        assert_eq!(applied(&db(t.path())), vec![(17, schema::migration_sha(17)), (18, schema::migration_sha(18)), (19, schema::migration_sha(19))]);
+        assert_eq!(applied(&db(t.path())), vec![(17, schema::migration_sha(17)), (18, schema::migration_sha(18)), (19, schema::migration_sha(19)), (20, schema::migration_sha(20))]);
         for tb in ["point_check_runs", "point_checks", "point_check_resolutions"] { assert!(has_table(&db(t.path()), tb), "{tb}"); }
     }
     /// A library whose format 19 came from another file (another app's 019) is refused, unchanged, no copy made.
@@ -3296,7 +3349,7 @@ that folder.", schema::CURRENT, copies(t.path())[0].display()));
         let e = Library::open(t.path()).err().expect("a library that ran a different format-19 upgrade is refused");
         println!("different 019: {e:#}");
         assert!(format!("{e:#}").contains("format 19 was made by an upgrade this version of OpenCephAI does not have"), "{e:#}");
-        assert_eq!((all_rows(&db(t.path())), stored_version(&db(t.path()))), (before, 19), "refused unchanged");
+        assert_eq!((all_rows(&db(t.path())), stored_version(&db(t.path()))), (before, 20), "refused unchanged");
         assert_eq!(copies(t.path()), made, "no copy made for a refusal");
     }
     /// The injection: a view named `point_checks` in the format-18 library, so 019's first table and its index are
@@ -3320,10 +3373,10 @@ that folder.", schema::CURRENT, copies(t.path())[0].display()));
         assert_eq!(table_digests(&shape, &db(t.path())), before, "every table: same rows, same content");
         let made = copies(t.path());
         assert_eq!(made.len(), 1, "{made:?}");
-        assert!(made[0].file_name().unwrap().to_string_lossy().starts_with("OpenCephAI backup before upgrade 18→19 "), "{made:?}");
+        assert!(made[0].file_name().unwrap().to_string_lossy().starts_with("OpenCephAI backup before upgrade 18→20 "), "{made:?}");
         verify_backup(&made[0]).unwrap();
         assert_eq!(stored_version(&db(&made[0])), 18);
-        assert!(msg.contains(&made[0].display().to_string()) && msg.contains("Library ▸ Restore…") && msg.contains("18→19 did not finish"), "{msg}");
+        assert!(msg.contains(&made[0].display().to_string()) && msg.contains("Library ▸ Restore…") && msg.contains("18→20 did not finish"), "{msg}");
         assert!(!msg.contains("still failing"), "{msg}");
     }
     /// 1.0.1's later launch (owner ruling b): quit and reopen with 019 still failing → the earlier 18→19 copy is reused
@@ -3336,24 +3389,24 @@ that folder.", schema::CURRENT, copies(t.path())[0].display()));
         let shape = t.path().join("format-18-shape.sqlite3"); fs::copy(db(t.path()), &shape).unwrap();
         let before = table_digests(&shape, &db(t.path()));
         let first = open_err(t.path());
-        assert!(first.contains("18→19 did not finish"), "{first}");
+        assert!(first.contains("18→20 did not finish"), "{first}");
         forget_this_run_for_tests(t.path());                                   // quit and reopen
         let again = open_err(t.path());
         let made = copies(t.path());
         println!("second launch: {again}\n  copies: {made:?}");
         assert_eq!(made.len(), 1, "the earlier copy reused: {made:?}");
-        assert_eq!(again, format!("The library upgrade to format 19 is still failing. Your library hasn't been changed (it is still at \
+        assert_eq!(again, format!("The library upgrade to format 20 is still failing. Your library hasn't been changed (it is still at \
 format 18). No new safety copy was made: the safety copy already made for this upgrade is in {}. To go back to it, choose Library ▸ Restore… and pick \
 that folder.", made[0].display()));
         assert_eq!(stored_version(&db(t.path())), 18);
         assert_eq!(table_digests(&shape, &db(t.path())), before, "every table: same rows, same content");
         Connection::open(db(t.path())).unwrap().execute_batch("DROP VIEW point_checks;").unwrap();
         let lib = Library::open(t.path()).unwrap();
-        assert_eq!(schema::version(&lib.conn).unwrap(), 19);
+        assert_eq!(schema::version(&lib.conn).unwrap(), 20);
         assert_eq!((copies(t.path()), lib.upgrade_copy()), (made.clone(), Some(made[0].as_path())), "finished with the same copy");
         drop(lib);
         assert_eq!(digests_but_applied(&shape, &db(t.path())), before.into_iter().filter(|d| d.0 != "applied_migrations").collect::<Vec<_>>());
-        assert_eq!(applied(&db(t.path())).last().cloned(), Some((19, schema::migration_sha(19))));
+        assert_eq!(applied(&db(t.path())).last().cloned(), Some((20, schema::migration_sha(20))));
     }
     /// 1.0.1's tidy-up after success (owner ruling a), for 18→19: four old copies planted as
     /// `a_successful_upgrade_prunes_old_copies` plants them; after the upgrade the new 18→19 copy and the two newest old
@@ -3364,10 +3417,144 @@ that folder.", made[0].display()));
         let old: Vec<PathBuf> = ["2020-01-01 10-00-00", "2020-02-01 10-00-00", "2020-03-01 10-00-00", "2020-04-01 10-00-00"]
             .iter().map(|s| plant(t.path(), s)).collect();
         let lib = Library::open(t.path()).unwrap();
-        assert_eq!(schema::version(&lib.conn).unwrap(), 19);
+        assert_eq!(schema::version(&lib.conn).unwrap(), 20);
         let made = lib.upgrade_copy().unwrap().to_path_buf();
         println!("after 18→19: {:#?}", copies(t.path()));
-        assert!(made.is_dir() && made.file_name().unwrap().to_string_lossy().starts_with("OpenCephAI backup before upgrade 18→19 "), "{made:?}");
+        assert!(made.is_dir() && made.file_name().unwrap().to_string_lossy().starts_with("OpenCephAI backup before upgrade 18→20 "), "{made:?}");
+        assert!(!old[0].exists() && !old[1].exists(), "{:?}", copies(t.path()));
+        assert!(old[2].exists() && old[3].exists(), "{:?}", copies(t.path()));
+        assert_eq!(copies(t.path()), vec![old[2].clone(), old[3].clone(), made], "exactly three left");
+    }
+
+    // ---- Format 20 (SC-1 Part 1, the whole-film check; spec 2026-11-03 §8): five append-only tables behind the same
+    // safety copy, SHA-256 record and refusals as format 19; the later-launch reuse and the tidy-up, for 19→20. ----
+    /// A real format-19 library, every table holding a row: the format-18 fixture brought to 19 by this app's own
+    /// upgrade (which records 19), and a Stage A row set on its first model run (a check run, a point flag, a resolution).
+    fn format_19_library(root: &Path) {
+        format_18_library(root);
+        let mut c = Connection::open(db(root)).unwrap();
+        schema::migrate_to(&mut c, 19).unwrap();
+        c.execute_batch("INSERT INTO point_check_runs (run_id, case_id, rule_version, prior_sha256, prior_films, outcome, not_run_reason, present, checked_at)
+              SELECT id, case_id, 'point-check/2', 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa', 300, 'flagged', NULL, 19, '2026-11-02T00:00:00.000Z'
+              FROM ai_runs WHERE id = (SELECT MIN(id) FROM ai_runs);
+            INSERT INTO point_checks (run_id, landmark_id, action, tail, off_px) SELECT run_id, 'N', 'flagged', 0.0001, 150.0 FROM point_check_runs;
+            INSERT INTO point_check_resolutions (check_id, how, operator, resolved_at) SELECT id, 'accepted', 'Dr A', '2026-11-02T00:00:00.000Z' FROM point_checks;").unwrap();
+        assert_eq!(schema::version(&c).unwrap(), 19);
+    }
+    const FORMAT_20_TABLES: [&str; 5] = ["film_regions", "film_region_boxes", "whole_film_checks", "whole_film_check_reasons", "whole_film_check_resolutions"];
+    /// Test 6, the production path 19→20: one safety copy named 19→20, checked and held at 19 with every table as it
+    /// was; then the library at 20 with every old table's row count and content hash unchanged, the five new tables
+    /// empty, and `applied_migrations` holding 17, 18, 19 and 20 (this app's SHA-256 of each). Fails if 020 is not run,
+    /// if it touches an old row (positive control: `format_20_control_a_020_that_moves_a_landmark_is_seen`), or if no
+    /// checked copy is made first.
+    #[test] fn a_format_19_library_opens_at_20_with_one_checked_copy_and_records_20() {
+        let t = tempfile::tempdir().unwrap();
+        format_19_library(t.path());
+        let shape = t.path().join("format-19-shape.sqlite3"); fs::copy(db(t.path()), &shape).unwrap();
+        let before = table_digests(&shape, &db(t.path()));
+        println!("19→20: {} tables, {} rows", before.len(), before.iter().map(|d| d.1).sum::<usize>());
+        for (tb, n, h) in &before { println!("  before {tb}: {n} rows, sha256 {}", &h[..16]); }
+        assert!(before.len() == 34 && before.iter().all(|d| d.1 > 0), "the instrument reads every table: {before:#?}");
+        let lib = Library::open(t.path()).unwrap();
+        assert_eq!(schema::version(&lib.conn).unwrap(), 20);
+        let made = copies(t.path());
+        assert_eq!(made.len(), 1, "one safety copy for one open: {made:?}");
+        assert!(made[0].file_name().unwrap().to_string_lossy().starts_with("OpenCephAI backup before upgrade 19→20 "), "{made:?}");
+        assert_eq!(lib.upgrade_copy(), Some(made[0].as_path()));
+        verify_backup(&made[0]).unwrap();
+        assert_eq!(stored_version(&db(&made[0])), 19);
+        assert!(!has_table(&db(&made[0]), "whole_film_checks"), "the copy is the format-19 library");
+        assert_eq!(table_digests(&shape, &db(&made[0])), before, "the copy holds every table as it was");
+        drop(lib);
+        let after = digests_but_applied(&shape, &db(t.path()));
+        for (tb, n, h) in &after { println!("  after  {tb}: {n} rows, sha256 {}", &h[..16]); }
+        assert_eq!(after, before.iter().filter(|d| d.0 != "applied_migrations").cloned().collect::<Vec<_>>(), "every old table: same rows, same content");
+        assert_eq!(applied(&db(t.path())), (17..=20).map(|v| (v, schema::migration_sha(v))).collect::<Vec<_>>());
+        let c = Connection::open(db(t.path())).unwrap();
+        for tb in FORMAT_20_TABLES { assert_eq!(c.query_row(&format!("SELECT COUNT(*) FROM {tb}"), [], |r| r.get::<_, i64>(0)).unwrap(), 0, "{tb} empty"); }
+    }
+    /// Test 7: a library whose format 20 came from another file (another app's 020) is refused, unchanged, no copy made.
+    /// Positive control: skip the check in `check_applied` → this fails.
+    #[test] fn a_library_that_ran_a_different_format_20_upgrade_is_refused_unchanged() {
+        let t = tempfile::tempdir().unwrap();
+        format_19_library(t.path());
+        drop(Library::open(t.path()).unwrap());
+        Connection::open(db(t.path())).unwrap().execute("UPDATE applied_migrations SET sha256 = ?1 WHERE version = 20", ["0".repeat(64)]).unwrap();
+        let (before, made) = (all_rows(&db(t.path())), copies(t.path()));
+        let e = Library::open(t.path()).err().expect("a library that ran a different format-20 upgrade is refused");
+        println!("different 020: {e:#}");
+        assert!(format!("{e:#}").contains("format 20 was made by an upgrade this version of OpenCephAI does not have"), "{e:#}");
+        assert_eq!((all_rows(&db(t.path())), stored_version(&db(t.path()))), (before, 20), "refused unchanged");
+        assert_eq!(copies(t.path()), made, "no copy made for a refusal");
+    }
+    /// The injection: a view named `film_region_boxes` in the format-19 library, so 020's first table is created and its
+    /// second statement fails. 19→20 is one step, so the library is always left at 19.
+    fn failing_format_19_library(root: &Path) {
+        format_19_library(root);
+        Connection::open(db(root)).unwrap().execute_batch("CREATE VIEW film_region_boxes AS SELECT 1;").unwrap();
+    }
+    /// Test 8: a failed 19→20 upgrade leaves the library at 19, every row as it was, 020's first table rolled back, and
+    /// the message names the checked copy. Fails if 020 is not one transaction, or the copy is not named.
+    #[test] fn a_failed_19_to_20_upgrade_keeps_19_and_names_the_copy() {
+        let t = tempfile::tempdir().unwrap();
+        failing_format_19_library(t.path());
+        let shape = t.path().join("format-19-shape.sqlite3"); fs::copy(db(t.path()), &shape).unwrap();
+        let before = table_digests(&shape, &db(t.path()));
+        let e = Library::open(t.path()).err().expect("migration 20 fails");
+        let msg = format!("{e:#}");
+        println!("injected 19→20 failure: {msg}");
+        assert!(msg.contains("film_region_boxes") && !msg.contains(UPGRADE_COPY_FAILED), "the copy was fine; the migration failed: {msg}");
+        assert_eq!(stored_version(&db(t.path())), 19);
+        assert!(!has_table(&db(t.path()), "film_regions"), "020's first table rolled back with the rest");
+        assert_eq!(table_digests(&shape, &db(t.path())), before, "every table: same rows, same content");
+        let made = copies(t.path());
+        assert_eq!(made.len(), 1, "{made:?}");
+        assert!(made[0].file_name().unwrap().to_string_lossy().starts_with("OpenCephAI backup before upgrade 19→20 "), "{made:?}");
+        verify_backup(&made[0]).unwrap();
+        assert_eq!(stored_version(&db(&made[0])), 19);
+        assert!(msg.contains(&made[0].display().to_string()) && msg.contains("Library ▸ Restore…") && msg.contains("19→20 did not finish"), "{msg}");
+        assert!(!msg.contains("still failing"), "{msg}");
+    }
+    /// Test 8's later-launch twin: quit and reopen with 020 still failing → the earlier 19→20 copy is reused (still one
+    /// copy), the library still at 19, the words "is still failing … No new safety copy was made"; with the view removed
+    /// the next open finishes at 20 with that same copy. Positive control: `reusable_copy` returning None → two copies.
+    #[test] fn a_failed_19_to_20_upgrade_on_a_later_launch_reuses_its_copy_and_says_still_failing() {
+        let t = tempfile::tempdir().unwrap();
+        failing_format_19_library(t.path());
+        let shape = t.path().join("format-19-shape.sqlite3"); fs::copy(db(t.path()), &shape).unwrap();
+        let before = table_digests(&shape, &db(t.path()));
+        let first = open_err(t.path());
+        assert!(first.contains("19→20 did not finish"), "{first}");
+        forget_this_run_for_tests(t.path());                                   // quit and reopen
+        let again = open_err(t.path());
+        let made = copies(t.path());
+        println!("second launch: {again}\n  copies: {made:?}");
+        assert_eq!(made.len(), 1, "the earlier copy reused: {made:?}");
+        assert_eq!(again, format!("The library upgrade to format 20 is still failing. Your library hasn't been changed (it is still at \
+format 19). No new safety copy was made: the safety copy already made for this upgrade is in {}. To go back to it, choose Library ▸ Restore… and pick \
+that folder.", made[0].display()));
+        assert_eq!(stored_version(&db(t.path())), 19);
+        assert_eq!(table_digests(&shape, &db(t.path())), before, "every table: same rows, same content");
+        Connection::open(db(t.path())).unwrap().execute_batch("DROP VIEW film_region_boxes;").unwrap();
+        let lib = Library::open(t.path()).unwrap();
+        assert_eq!(schema::version(&lib.conn).unwrap(), 20);
+        assert_eq!((copies(t.path()), lib.upgrade_copy()), (made.clone(), Some(made[0].as_path())), "finished with the same copy");
+        drop(lib);
+        assert_eq!(digests_but_applied(&shape, &db(t.path())), before.into_iter().filter(|d| d.0 != "applied_migrations").collect::<Vec<_>>());
+        assert_eq!(applied(&db(t.path())).last().cloned(), Some((20, schema::migration_sha(20))));
+    }
+    /// Test 8's tidy-up after success, for 19→20: four old copies planted; after the upgrade the new 19→20 copy and the
+    /// two newest old ones are kept (latest 3), and the two oldest, older than 30 days, are removed.
+    #[test] fn a_successful_19_to_20_upgrade_prunes_old_copies() {
+        let t = tempfile::tempdir().unwrap();
+        format_19_library(t.path());
+        let old: Vec<PathBuf> = ["2020-01-01 10-00-00", "2020-02-01 10-00-00", "2020-03-01 10-00-00", "2020-04-01 10-00-00"]
+            .iter().map(|s| plant(t.path(), s)).collect();
+        let lib = Library::open(t.path()).unwrap();
+        assert_eq!(schema::version(&lib.conn).unwrap(), 20);
+        let made = lib.upgrade_copy().unwrap().to_path_buf();
+        println!("after 19→20: {:#?}", copies(t.path()));
+        assert!(made.is_dir() && made.file_name().unwrap().to_string_lossy().starts_with("OpenCephAI backup before upgrade 19→20 "), "{made:?}");
         assert!(!old[0].exists() && !old[1].exists(), "{:?}", copies(t.path()));
         assert!(old[2].exists() && old[3].exists(), "{:?}", copies(t.path()));
         assert_eq!(copies(t.path()), vec![old[2].clone(), old[3].clone(), made], "exactly three left");

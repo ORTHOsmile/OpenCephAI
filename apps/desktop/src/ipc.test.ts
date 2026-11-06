@@ -49,6 +49,13 @@ describe('ipc wrappers', () => {
     await library.pointChecksForCase('c1');
     expect(invoke).toHaveBeenLastCalledWith('point_checks_for_case', { caseId: 'c1' });
   });
+  /** SC-1 task 8. Fails if a command name or an argument key drifts from src-tauri/src/whole_film.rs (camelCase args, kebab-case reason). */
+  it('SC-1 task 8: the whole-film commands carry the case, the check and the stored reason key', async () => {
+    await library.wholeFilmCheck('c1');
+    expect(invoke).toHaveBeenLastCalledWith('whole_film_check', { caseId: 'c1' });
+    await library.wholeFilmCheckResolve('c1', 5, 'corrected-tracing');
+    expect(invoke).toHaveBeenLastCalledWith('whole_film_check_resolve', { caseId: 'c1', checkId: 5, reason: 'corrected-tracing' });
+  });
   it('writes and reads the text file the clinician chose (owner B4: an analysis as a file)', async () => {
     await files.writeText('/Users/demo/NOS SYNTHETIC.analysis.json', '{"x":1}\n');
     expect(invoke).toHaveBeenLastCalledWith('text_file_write', { path: '/Users/demo/NOS SYNTHETIC.analysis.json', text: '{"x":1}\n' });

@@ -18,7 +18,7 @@ import { docPoints } from './film';
 import type { ReportModel } from '../report/model';
 import { exportFilmsCsv, filmModels, wordsByFilm, type BatchDeps, type ExportDeps } from './batch';
 import { library } from '../ipc';
-import type { CaseDoc, ModelPoints, PointCheckFlag, PointCheckView } from '../ipc';
+import type { CaseDoc, ModelPoints, PointCheckFlag, PointCheckView, WholeCheckView, WholeFilmView } from '../ipc';
 import { hydrateAction } from '../library/persist';
 import { reportPoints } from '../report/points';
 import { measurementsCsv } from './measurementsCsv';
@@ -398,7 +398,7 @@ describe('Stage A task 8: the batch export carries each film\'s point_check', ()
     expect(at).toBeGreaterThan(0);
     return Object.fromEntries(rows.filter((r) => r[0] === film).map((r) => [r[pt], r[at]]));
   };
-  const OPTS = { layout: 'points' as const, anonymise: false, salt: '0123456789abcdef0123456789abcdef', exportedAt: NOW.toISOString(), decimals: 1 as const };
+  const OPTS = { layout: 'points' as const, anonymise: false, salt: '0123456789abcdef0123456789abcdef', exportedAt: NOW.toISOString(), decimals: 1 as const, wholeFilm: true };
   const csvFor = async (ids: string[], o: Partial<BatchDeps> = {}) => {
     const r = await filmModels(ids, deps({ points: true, pointChecks: async (id) => readOf(id), ...o }));
     expect(r.failed).toEqual([]);
@@ -456,3 +456,75 @@ describe('Stage A task 8: the batch export carries each film\'s point_check', ()
   });
 });
 
+// SC-1 Part 1 task 9: the batch export carries each film's own whole_film_check, read per film (fails if filmModels stops reading the
+// view, reads it once for all films, or hides a failed read as a blank).
+describe('SC-1 Part 1 task 9: the batch export carries each film\'s whole_film_check', () => {
+  const sh = (over: Partial<WholeCheckView>): WholeFilmView => ({ checks: [], shown: { id: 1, subject: 'run', modelId: 'aariz', outcome: 'flagged', shapeLook: 'judged', regionLook: 'judged', present: 19,
+    reasons: [], resolved: null, sizeLook: 'not-set-up', cbLook: 'not-set-up', cbPresent: 0, ...over }, off: false });
+  const views: Record<string, WholeFilmView | null> = {
+    mand: sh({ reasons: [{ reason: 'region', region: 'mandible', ids: ['Me'], named: [] }, { reason: 'facing', region: null, ids: [], named: [] }] }),
+    clean: sh({ outcome: 'clean' }), notrun: sh({ outcome: 'not-run', shapeLook: 'too-few-points', present: 9 }),
+    checked: sh({ resolved: { reason: 'expected-variant', operator: 'SYNTHETIC', resolvedAt: 'x' } }),
+    nothing: { shown: null, checks: [], off: false },
+  };
+  const OPTS = { layout: 'points' as const, anonymise: false, salt: '0123456789abcdef0123456789abcdef', exportedAt: NOW.toISOString(), decimals: 1 as const, wholeFilm: true };
+  const cells = (csv: string, film: string) => {
+    const [head, ...rows] = csv.replace(/^\uFEFF/, '').trim().split(/\r?\n/).map((l) => l.split(','));
+    const at = head.indexOf('whole_film_check'), pt = head.indexOf('point');
+    expect(at, 'column present').toBeGreaterThan(0);
+    return Object.fromEntries(rows.filter((r) => r[0] === film).map((r) => [r[pt], r[at]]));
+  };
+  const csvFor = async (ids: string[], o: Partial<BatchDeps> = {}) => {
+    const r = await filmModels(ids, deps({ points: true, wholeFilmInReports: true, wholeFilms: async (id) => views[id] ?? null, ...o }));
+    expect(r.failed).toEqual([]);
+    expect(r.models.length, 'films compared').toBe(ids.length);
+    return measurementsCsv(r.models, OPTS);
+  };
+  it('each film its own value on every row: region+facing / clean / not-run / checked / nothing shown / never read (older library)', async () => {
+    const ids = ['mand', 'clean', 'notrun', 'checked', 'nothing', 'old'];
+    const csv = await csvFor(ids);
+    const want: Record<string, string> = { mand: 'flagged:region-mandible+facing', clean: 'clean', notrun: 'not-run', checked: 'checked:expected-variant', nothing: '', old: '' };
+    for (const id of ids) {
+      const c = cells(csv, id);
+      console.log(`whole_film_check ${id}:`, JSON.stringify([...new Set(Object.values(c))]), 'rows', Object.keys(c).length);
+      expect(Object.keys(c).length).toBeGreaterThan(5);
+      expect([...new Set(Object.values(c))]).toEqual([want[id]]);
+    }
+  });
+  it('a failed read leaves the film out and counts it (a blank would read as "no record")', async () => {
+    const r = await filmModels(['mand', 'clean'], deps({ points: true, wholeFilmInReports: true, wholeFilms: async (id) => { if (id === 'clean') throw new Error('busy'); return views[id]; } }));
+    expect(r.failed).toEqual(['clean']);
+    expect(r.models.length).toBe(1);
+  });
+  it('without a reader (other callers) the column is there and blank; without the points layout nothing is read', async () => {
+    const r = await filmModels(['mand'], deps({ points: true, wholeFilmInReports: true }));
+    expect(Object.values(cells(measurementsCsv(r.models, OPTS), 'mand')).every((v) => v === '')).toBe(true);
+    let reads = 0;
+    await filmModels(['mand'], deps({ wholeFilmInReports: true, wholeFilms: async () => { reads += 1; return views.mand; } }));
+    expect(reads).toBe(0);
+  });
+  // Research switch (owner, 6 Nov 2026).
+  it('switch off (the default): the view is never read, and the CSV has no whole-film column, whatever the film holds', async () => {
+    let reads = 0;
+    const r = await filmModels(['mand'], deps({ points: true, wholeFilms: async () => { reads += 1; return views.mand; } }));
+    const csv = measurementsCsv(r.models, { ...OPTS, wholeFilm: false });
+    console.log('switch off: reads', reads, 'header has whole_film:', csv.includes('whole_film'));
+    expect(reads).toBe(0);
+    expect(csv).not.toContain('whole_film');
+    expect(csv).not.toContain('flagged:region');
+  });
+  it('switch on: each landmark carries its region result (fine / region flagged / not checked) beside the film value', async () => {
+    const landmarkRegions = (res: Record<string, 'fine' | 'flagged' | 'not-checked'>) => Object.entries(res).map(([id, result]) => ({ id, region: 'x', result }));
+    const v = (over: Partial<WholeCheckView>) => sh(over);
+    const mixed = v({ reasons: [{ reason: 'region', region: 'mandible', ids: ['Me'], named: [] }], landmarkRegions: landmarkRegions({ S: 'fine', N: 'flagged', Go: 'not-checked' }) });
+    const csv = await csvFor(['m'], { wholeFilms: async () => mixed });
+    const [head, ...rows] = csv.replace(/^\uFEFF/, '').trim().split(/\r?\n/).map((l) => l.split(','));
+    const pt = head.indexOf('point'), rg = head.indexOf('whole_film_region');
+    expect(rg).toBe(head.indexOf('whole_film_check') + 1);
+    const got = Object.fromEntries(rows.map((r) => [r[pt], r[rg]]));
+    console.log('region cells:', JSON.stringify(got));
+    expect(got.S).toBe('fine');
+    expect(got.N).toBe('region flagged');
+    expect(got.Go).toBe('not checked');
+  });
+});

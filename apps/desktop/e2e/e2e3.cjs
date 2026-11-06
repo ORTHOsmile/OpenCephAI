@@ -123,14 +123,14 @@ const shot = (page, n) => page.screenshot({ path: `${__dirname}/out/w3-${n}.png`
   await page.evaluate(() => localStorage.clear()); await page.reload();
   await page.waitForSelector('.library');
   // Owner, 2 Nov 2026: the one-time Beta notice. First open shows it (nothing stored yet); OK dismisses it; a reload (quit + reopen) does not bring it back.
-  const betaDlg = page.getByRole('dialog', { name: 'OpenCephAI 1.1 Beta' });
+  const betaDlg = page.getByRole('dialog', { name: 'OpenCephAI 1.2 Beta' });
   await betaDlg.waitFor();
   ok('BETA1. first open: the notice shows the owner\'s exact words', (await betaDlg.innerText()).includes('OpenCephAI is beta research software, not a diagnostic device. Every point must be checked by a clinician. Please report any problem.'));
-  ok('BETA2. the window title (document title) is "OpenCephAI 1.1 Beta"', (await page.title()) === 'OpenCephAI 1.1 Beta', await page.title());
+  ok('BETA2. the window title (document title) is "OpenCephAI 1.2 Beta"', (await page.title()) === 'OpenCephAI 1.2 Beta', await page.title());
   await betaDlg.getByRole('button', { name: 'OK' }).click();
-  ok('BETA3. OK closes it', (await page.getByRole('dialog', { name: 'OpenCephAI 1.1 Beta' }).count()) === 0);
+  ok('BETA3. OK closes it', (await page.getByRole('dialog', { name: 'OpenCephAI 1.2 Beta' }).count()) === 0);
   await page.reload(); await page.waitForSelector('.library'); await page.waitForTimeout(400);
-  ok('BETA4. closed and reopened: it does not come back (remembered)', (await page.getByRole('dialog', { name: 'OpenCephAI 1.1 Beta' }).count()) === 0);
+  ok('BETA4. closed and reopened: it does not come back (remembered)', (await page.getByRole('dialog', { name: 'OpenCephAI 1.2 Beta' }).count()) === 0);
   await page.evaluate(() => localStorage.setItem('betaDone', '1'));   // later checks replace the whole fake library; they must not meet the notice again
   ok('1. starts on the Library, empty', (await page.locator('.lib-empty').innerText()).includes('Drop cephalograms'));
   // Owner, 16 Oct (A): the OPEN CEPH AI wordmark sits at the top left, just right of the window buttons (traffic lights end ~78 px).
@@ -242,16 +242,45 @@ const shot = (page, n) => page.screenshot({ path: `${__dirname}/out/w3-${n}.png`
   await zoomBtn(5).click(); await page.waitForTimeout(150);
   ok('Z1. back to 5×', (await zoomBtn(5).getAttribute('aria-pressed')) === 'true');
 
-  await page.getByRole('tab', { name: 'Steps' }).click();
-  await page.locator('.steps li.next button').click();                       // start on the highlighted step
-  const step0 = await page.locator('.steps li.next').innerText(), active0 = await page.locator('.active-head b').innerText();
+  // Owner, 5 Nov 2026: the Steps tab is gone; the 2.5 s pause then move-on to the next point is the magnifier's alone.
+  ok('10. the right panel has no Steps tab', (await page.getByRole('tab', { name: 'Steps' }).count()) === 0);
+  await page.getByRole('tab', { name: 'Landmarks' }).click();
+  await page.locator('.lm-list button:has(.st.ai)').first().click();                       // start on a point not accepted yet
+  const active0 = await page.locator('.active-head b').innerText();
   await dragBy(active0, 20, 10);
   await page.waitForTimeout(600);
-  const step1 = await page.locator('.steps li.next').innerText(), active1 = await page.locator('.active-head b').innerText();
-  ok('10. just after release the highlight and the magnifier both stay put', step1 === step0 && active1 === active0, `${step0}/${active0} → ${step1}/${active1}`);
+  const active1 = await page.locator('.active-head b').innerText();
+  ok('10. just after release the magnifier stays on the point', active1 === active0, `${active0} → ${active1}`);
   await page.waitForTimeout(2400);
-  const step2 = await page.locator('.steps li.next').innerText(), active2 = await page.locator('.active-head b').innerText();
-  ok('10. ~2.5 s later both move to the next point together', step2 !== step0 && active2 !== active0 && step2.includes(active2), `${step2} / ${active2}`);
+  const active2 = await page.locator('.active-head b').innerText();
+  ok('10. ~2.5 s later it moves to the next point', active2 !== active0, `${active0} → ${active2}`);
+  // Owner, 6 Nov 2026: Settings › Norms, "Move to the next point automatically" (on by default). Off: the magnifier stays on the point.
+  const sdlg = page.getByRole('dialog', { name: 'Settings' });
+  const autoBox = () => sdlg.getByRole('checkbox', { name: 'Move to the next point automatically' });
+  const openNorms = async () => { await page.getByRole('button', { name: 'Settings…' }).first().click(); await sdlg.waitFor(); await sdlg.getByRole('tab', { name: 'Norms', exact: true }).click(); };
+  const closeS = async () => { await sdlg.getByRole('button', { name: 'Close', exact: true }).click(); await sdlg.waitFor({ state: 'detached' }); };
+  await openNorms();
+  ok('10a. the switch is there, ticked by default', await autoBox().isChecked());
+  await autoBox().click();
+  ok('10b. unticked: stored as 0', await page.waitForFunction(() => JSON.parse(localStorage.getItem('fakeLib')).settings.auto_advance === '0', null, { timeout: 3000 }).then(() => true, () => false));
+  await closeS();
+  await page.getByRole('tab', { name: 'Landmarks' }).click();
+  await page.locator('.lm-list button:has(.st.ai)').first().click();
+  const offA = await page.locator('.active-head b').innerText();
+  await dragBy(offA, 20, 10);
+  await page.waitForTimeout(3300);
+  const offB = await page.locator('.active-head b').innerText();
+  ok('10c. off: 3.3 s after release (longer than the 2.5 s pause) the magnifier is still on the point', offB === offA, `${offA} → ${offB}`);
+  await openNorms(); await autoBox().click();
+  ok('10d. ticked again: stored as 1', await page.waitForFunction(() => JSON.parse(localStorage.getItem('fakeLib')).settings.auto_advance === '1', null, { timeout: 3000 }).then(() => true, () => false));
+  await closeS();
+  await page.getByRole('tab', { name: 'Landmarks' }).click();
+  await page.locator('.lm-list button:has(.st.ai)').first().click();
+  const onA = await page.locator('.active-head b').innerText();
+  await dragBy(onA, 20, 10);
+  await page.waitForTimeout(3300);
+  const onB = await page.locator('.active-head b').innerText();
+  ok('10e. on again: it moves to the next point after the pause (positive control for 10c)', onB !== onA, `${onA} → ${onB}`);
   await page.getByRole('tab', { name: 'Landmarks' }).click();
   await page.locator('.lm-list button', { hasText: 'Condylion' }).click();
   ok('4. choosing an unplaced point shows the placement hint', (await page.locator('.place-hint').count()) === 1);

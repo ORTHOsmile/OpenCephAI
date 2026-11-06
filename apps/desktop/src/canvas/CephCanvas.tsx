@@ -1,9 +1,10 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import type { Expr, NodeId, Vec2 } from '@ceph/geometry';
-import type { PointCheckFlag, RulerMarks } from '../ipc';
+import type { PointCheckFlag, ResolveReason, RulerMarks, WholeCheckView } from '../ipc';
 import type { Action, TracingState } from '../tracing/state';
 import { AI_LINE, aiLineShown } from '../confidence';
 import { PointCheckNote } from '../layout/PointCheckNote';
+import { WholeFilmNote, wholeNoteCanCheck } from '../layout/WholeFilmNote';
 import { pressOnPoint, DOUBLE_PX, type LastPress } from '../tracing/pointGestures';
 import { isMod, isSpacePan } from '../input/keymap';
 import { canvasMatrix, displayBounds, fitOriented, toImage, toScreen } from './orientation';
@@ -62,10 +63,14 @@ interface Props {
   checks?: Record<string, PointCheckFlag> | null; checkLines?: string[];
   /** Stage A (task 7): the film note ("This film looks unusual overall…") and its Checked press; no press when `canCheck` is false. */
   filmChecks?: PointCheckFlag[]; canCheck?: boolean; onFilmChecked?: (checkIds: number[]) => void;
+  /** SC-1 Part 1 task 8: the whole-film note for the shown check, under Stage A's note. `canCheckWhole` is the page's, never the
+   *  film's signed-off state (OQ-6); the canvas adds `!readOnly`. */
+  wholeCheck?: WholeCheckView | null; canCheckWhole?: boolean; wholeAsking?: boolean;
+  onWholeAsk?: (checkId: number) => void; onWholeResolve?: (checkId: number, reason: ResolveReason) => void;
 }
 
 /** Image on a canvas (pixel-centre convention, §2), overlay in screen space, drag/pan/zoom through one mapping. */
-export function CephCanvas({ bitmap, state, dispatch, view, setView, registry, mmPerPx, readOnly, assumedScale, calib, onCalibrationClick, onCalibrationHover, onCalibrationMove, drawn, compare, own, chooser, ghosts, caseId, decimals, bars, fitLayer, fitInput, fitMarks, rulerMarks, onRulerMove, onRulerEnd, signedOff = false, checks, checkLines, filmChecks, canCheck = false, onFilmChecked }: Props) {
+export function CephCanvas({ bitmap, state, dispatch, view, setView, registry, mmPerPx, readOnly, assumedScale, calib, onCalibrationClick, onCalibrationHover, onCalibrationMove, drawn, compare, own, chooser, ghosts, caseId, decimals, bars, fitLayer, fitInput, fitMarks, rulerMarks, onRulerMove, onRulerEnd, signedOff = false, checks, checkLines, filmChecks, canCheck = false, onFilmChecked, wholeCheck, canCheckWhole = false, wholeAsking = false, onWholeAsk, onWholeResolve }: Props) {
   const host = useRef<HTMLDivElement>(null), canvas = useRef<HTMLCanvasElement>(null);
   const [size, setSize] = useState({ w: 0, h: 0 });
   const dims = useMemo(() => (bitmap ? { W: bitmap.width, H: bitmap.height } : { W: 1, H: 1 }), [bitmap]);
@@ -323,7 +328,13 @@ export function CephCanvas({ bitmap, state, dispatch, view, setView, registry, m
       {placing && <div className="place-hint">Click the film to place {placing}. Esc cancels.</div>}
       {bars && <ModelBars bars={bars} />}
       {aiLineShown(state.points, signedOff) && <div className="banner">{AI_LINE}</div>}
-      {!!filmChecks?.length && <PointCheckNote flags={filmChecks} canCheck={canCheck && !readOnly && !!onFilmChecked} onChecked={(ids) => onFilmChecked?.(ids)} />}
+      {(!!filmChecks?.length || !!wholeCheck) && (
+        <div className="check-notes">
+          {!!filmChecks?.length && <PointCheckNote flags={filmChecks} canCheck={canCheck && !readOnly && !!onFilmChecked} onChecked={(ids) => onFilmChecked?.(ids)} />}
+          <WholeFilmNote check={wholeCheck ?? null} canCheck={wholeNoteCanCheck({ canCheck: canCheckWhole && !!onWholeResolve, readOnly: !!readOnly })} asking={wholeAsking}
+            onAsk={(id) => onWholeAsk?.(id)} onResolve={(id, r) => onWholeResolve?.(id, r)} />
+        </div>
+      )}
       {aiLineShown(state.points, signedOff) && !!checkLines?.length && <div className="check-line">{checkLines.map((l) => <div key={l}>{l}</div>)}</div>}
     </div>
   );

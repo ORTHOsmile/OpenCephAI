@@ -18,6 +18,25 @@ const TINY: AnalysisDef = {
 const steps = guidedSteps([TINY], buildRegistry([TINY]));
 const set = (...ids: string[]) => new Set(ids);
 
+// Owner, 6 Nov 2026: the "Move to the next point automatically" switch (ON by default). Off: the magnifier stays where it is.
+describe('step advance with the switch off', () => {
+  const set = (...ids: string[]) => new Set(ids);
+  /** Fails if off still waits (and so still moves on after the pause), or if on stops waiting. */
+  it('a point just released: on waits then advances (as always); off syncs at once, with no pause and no move', () => {
+    expect(advanceDecision(set('S'), set('S', 'N'), { dragging: false, fresh: false })).toBe('wait');
+    expect(advanceDecision(set('S'), set('S', 'N'), { dragging: false, fresh: false, auto: true })).toBe('wait');
+    expect(advanceDecision(set('S'), set('S', 'N'), { dragging: false, fresh: false, auto: false })).toBe('sync');
+  });
+  it('edges: nothing new, or mid-drag: none either way; undo and a fresh film sync either way', () => {
+    for (const auto of [true, false]) {
+      expect(advanceDecision(set('S'), set('S'), { dragging: false, fresh: false, auto })).toBe('none');
+      expect(advanceDecision(set('S'), set('S', 'N'), { dragging: true, fresh: false, auto })).toBe('none');
+      expect(advanceDecision(set('S', 'N'), set('S'), { dragging: false, fresh: false, auto })).toBe('sync');
+      expect(advanceDecision(set(), set('S', 'N'), { dragging: false, fresh: true, auto })).toBe('sync');
+    }
+  });
+});
+
 describe('step advance: the highlight and the magnifier move together, after a pause', () => {
   it('the next point to place is the first unverified landmark of the next step', () => {
     expect(nextToPlace(steps, set())).toBe('S');

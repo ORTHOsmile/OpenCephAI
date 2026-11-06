@@ -578,6 +578,69 @@ const results = []; const ok = (name, cond, extra = '') => { results.push(`${con
     `close.y=${closeBox && closeBox.y}, max other y=${Math.max(...otherTops)}`);
   await closeReport();
 
+  // Owner, 5 Nov 2026: "Points table" (ON by default). Off hides the whole Points section; remembered across a reload.
+  await openReport();
+  ok('O4. "Points table" defaults ON', (await preview.getByLabel('Points table').isChecked()) === true);
+  const ptsOn = await preview.locator('.report-points').count();
+  ok('O4. (fixture) the film has a Points table to hide', ptsOn === 1, String(ptsOn));
+  await preview.getByLabel('Points table').uncheck();
+  ok('O4. off: no Points section (heading or table) in the preview',
+    (await preview.locator('.report-points').count()) === 0 && !(await preview.locator('h3', { hasText: /^Points$/ }).count()), String(await preview.locator('.report-points').count()));
+  await page.waitForTimeout(200);
+  ok('O4. off is stored as report_points_table = 0', (await stored('report_points_table')) === '0', String(await stored('report_points_table')));
+  await closeReport();
+  await page.reload();
+  await page.waitForSelector('.library');
+  await page.getByRole('button', { name: 'Open Demo Synthetic T5' }).click();
+  await page.waitForSelector('g.landmark[data-id="S"]');
+  await openReport();
+  ok('O4. after a reload the box is still off and the section still absent',
+    (await preview.getByLabel('Points table').isChecked()) === false && (await preview.locator('.report-points').count()) === 0);
+  await preview.getByLabel('Points table').check();
+  ok('O4. ticking it again brings the section back', (await preview.locator('.report-points').count()) === 1);
+  await closeReport();
+
+  // Owner, 5 Nov 2026: "Grid behind the profilogram" (ON by default; needs the Profilogram page; only on a calibrated film).
+  const gridLines = () => preview.locator('.report-profilogram-page line.grid-minor, .report-profilogram-page line.grid-major').count();
+  await openReport();
+  ok('G1. "Grid behind the profilogram" defaults ON, but is greyed out while "Profilogram page" is off',
+    (await preview.getByLabel('Grid behind the profilogram').isChecked()) === true && (await preview.getByLabel('Grid behind the profilogram').isDisabled()) === true);
+  ok('G2. page off: no profilogram page and no grid', (await preview.locator('.report-profilogram-page').count()) === 0 && (await gridLines()) === 0);
+  await preview.getByLabel('Profilogram page').check();
+  ok('G3. page on, film NOT calibrated (assumed scale): the profilogram shows, with no grid and no note',
+    (await preview.locator('.report-profilogram-page').count()) === 1 && (await preview.locator('.report-profilogram-page line.grid-minor').count()) === 0
+    && !(await preview.locator('.report-profilogram-page').innerHTML()).includes('patient millimetres'), String(await gridLines()));
+  await preview.getByLabel('Profilogram page').uncheck();
+  await closeReport();
+  await page.evaluate((id) => { const db = JSON.parse(localStorage.getItem('fakeLib')); db.cases[id].spacingMm = 0.1; localStorage.setItem('fakeLib', JSON.stringify(db)); }, jpId);
+  await page.reload();
+  await page.waitForSelector('.library');
+  await page.getByRole('button', { name: 'Open Demo Synthetic T5' }).click();
+  await page.waitForSelector('g.landmark[data-id="S"]');
+  await openReport();
+  await preview.getByLabel('Profilogram page').check();
+  ok('G4. film calibrated, page on, grid on: mm grid lines are on the profilogram page, with the patient-millimetres note',
+    (await preview.getByLabel('Grid behind the profilogram').isDisabled()) === false && (await gridLines()) > 50
+    && (await preview.locator('.report-profilogram-page').innerHTML()).includes('patient millimetres'), String(await gridLines()));
+  await preview.getByLabel('Grid behind the profilogram').uncheck();
+  ok('G5. grid unticked: no grid lines, the profilogram stays', (await gridLines()) === 0 && (await preview.locator('.report-profilogram-page').count()) === 1);
+  await page.waitForTimeout(200);
+  ok('G6. stored: report_profilogram_grid = 0, report_profilogram_page = 1', (await stored('report_profilogram_grid')) === '0' && (await stored('report_profilogram_page')) === '1');
+  await closeReport();
+  await page.reload();
+  await page.waitForSelector('.library');
+  await page.getByRole('button', { name: 'Open Demo Synthetic T5' }).click();
+  await page.waitForSelector('g.landmark[data-id="S"]');
+  await openReport();
+  ok('G7. after a reload: page still on, grid still off, no lines',
+    (await preview.getByLabel('Profilogram page').isChecked()) === true && (await preview.getByLabel('Grid behind the profilogram').isChecked()) === false && (await gridLines()) === 0);
+  await preview.getByLabel('Grid behind the profilogram').check();
+  ok('G8. grid ticked again: the lines are back', (await gridLines()) > 50);
+  await preview.getByLabel('Profilogram page').uncheck();
+  ok('G9. page unticked: the page and the grid are gone, and the grid box greys out',
+    (await preview.locator('.report-profilogram-page').count()) === 0 && (await gridLines()) === 0 && (await preview.getByLabel('Grid behind the profilogram').isDisabled()) === true);
+  await closeReport();
+
   ok('no page errors', errors.length === 0, errors.slice(0, 3).join(' | '));
   console.log(results.join('\n'));
   await browser.close();

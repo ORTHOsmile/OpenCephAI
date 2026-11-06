@@ -1,0 +1,365 @@
+{
+  "boxQuality": [
+    [
+      "Ceph-400 test1 (10 films; expert boxes from the 19 traced points only)",
+      [
+        {
+          "centreErrMedian": 0.0,
+          "centreErrP90": 0.0,
+          "films": 10,
+          "inMm": true,
+          "iouMedian": 1.0,
+          "iouP90": 1.0,
+          "notFound": 0,
+          "region": "cranialBase"
+        },
+        {
+          "centreErrMedian": 0.0,
+          "centreErrP90": 0.0,
+          "films": 10,
+          "inMm": true,
+          "iouMedian": 1.0,
+          "iouP90": 1.0,
+          "notFound": 0,
+          "region": "maxilla"
+        },
+        {
+          "centreErrMedian": 0.0,
+          "centreErrP90": 0.0,
+          "films": 10,
+          "inMm": true,
+          "iouMedian": 1.0,
+          "iouP90": 1.0,
+          "notFound": 0,
+          "region": "mandible"
+        },
+        {
+          "centreErrMedian": 0.0,
+          "centreErrP90": 0.0,
+          "films": 10,
+          "inMm": true,
+          "iouMedian": 1.0,
+          "iouP90": 1.0,
+          "notFound": 0,
+          "region": "incisors"
+        },
+        {
+          "centreErrMedian": 0.0,
+          "centreErrP90": 0.0,
+          "films": 10,
+          "inMm": true,
+          "iouMedian": 1.0,
+          "iouP90": 1.0,
+          "notFound": 0,
+          "region": "softTissue"
+        }
+      ]
+    ],
+    [
+      "Aariz valid (10 films; expert boxes from the 19 traced points only; centre error in mm only when every film has a scale)",
+      [
+        {
+          "centreErrMedian": 0.0,
+          "centreErrP90": 0.0,
+          "films": 10,
+          "inMm": false,
+          "iouMedian": 1.0,
+          "iouP90": 1.0,
+          "notFound": 0,
+          "region": "cranialBase"
+        },
+        {
+          "centreErrMedian": 0.0,
+          "centreErrP90": 0.0,
+          "films": 10,
+          "inMm": false,
+          "iouMedian": 1.0,
+          "iouP90": 1.0,
+          "notFound": 0,
+          "region": "maxilla"
+        },
+        {
+          "centreErrMedian": 0.0,
+          "centreErrP90": 0.0,
+          "films": 10,
+          "inMm": false,
+          "iouMedian": 1.0,
+          "iouP90": 1.0,
+          "notFound": 0,
+          "region": "mandible"
+        },
+        {
+          "centreErrMedian": 0.0,
+          "centreErrP90": 0.0,
+          "films": 10,
+          "inMm": false,
+          "iouMedian": 1.0,
+          "iouP90": 1.0,
+          "notFound": 0,
+          "region": "incisors"
+        },
+        {
+          "centreErrMedian": 0.0,
+          "centreErrP90": 0.0,
+          "films": 10,
+          "inMm": false,
+          "iouMedian": 1.0,
+          "iouP90": 1.0,
+          "notFound": 0,
+          "region": "softTissue"
+        }
+      ]
+    ]
+  ],
+  "calibrationRule": "sc1-box-gate/2",
+  "controls": [
+    {
+      "got": "50 of 50 mirrored",
+      "holds": true,
+      "name": "C1",
+      "what": "50 SYNTHETIC faces mirrored, judged by 300 SYNTHETIC faces: 50 of 50 mirrored"
+    },
+    {
+      "got": "10 of 10 region at x2; unscaled 0 of 10 flagged",
+      "holds": true,
+      "name": "C2",
+      "what": "10 control films' tracings x2: 10 of 10 region; unscaled: not all 10 flagged"
+    },
+    {
+      "got": "10 of 10 mandible flags at 40 mm; unshifted 0 of 10 flagged",
+      "holds": true,
+      "name": "C3",
+      "what": "the mandible moved 40 mm forward: 10 of 10 region (mandible); unshifted: not all 10"
+    },
+    {
+      "got": "10 of 10 flipped",
+      "holds": true,
+      "name": "C4",
+      "what": "the 10 control films flipped: the detector's facing flips on 10 of 10"
+    },
+    {
+      "got": "test2 refused: true; Aariz test refused: true",
+      "holds": true,
+      "name": "C5",
+      "what": "Ceph-400 test2 and Aariz test refused"
+    },
+    {
+      "got": "refused: true",
+      "holds": true,
+      "name": "C6",
+      "what": "a judged film planted into its own reference set is refused"
+    },
+    {
+      "got": "planted 175 of 175, untouched 20 of 20, every type and dataset as expected",
+      "holds": true,
+      "name": "C7",
+      "what": "every count equals its expected total; a mark that counted nothing is an error"
+    },
+    {
+      "got": "10 of 10 at x1000",
+      "holds": true,
+      "name": "C8",
+      "what": "coordinates x1000: 10 of 10 region, every point off the film"
+    },
+    {
+      "got": "controlTripped: true",
+      "holds": true,
+      "name": "C9",
+      "what": "carried from the gate report: control tripped"
+    }
+  ],
+  "counts": {
+    "caught": 175,
+    "falseAlarms": 0,
+    "lines": [
+      {
+        "cases": 20,
+        "facing": 20,
+        "flagged": 20,
+        "label": "P1a mirrored with the film",
+        "mirrored": 20,
+        "noCephFound": 0,
+        "region": 20,
+        "shape": 0,
+        "stageA": 0
+      },
+      {
+        "cases": 20,
+        "facing": 20,
+        "flagged": 20,
+        "label": "P1b mirrored in place",
+        "mirrored": 20,
+        "noCephFound": 0,
+        "region": 20,
+        "shape": 0,
+        "stageA": 0
+      },
+      {
+        "cases": 20,
+        "facing": 0,
+        "flagged": 20,
+        "label": "P2 another film's tracing",
+        "mirrored": 0,
+        "noCephFound": 0,
+        "region": 20,
+        "shape": 0,
+        "stageA": 1
+      },
+      {
+        "cases": 20,
+        "facing": 0,
+        "flagged": 20,
+        "label": "P3 x0.5",
+        "mirrored": 0,
+        "noCephFound": 0,
+        "region": 20,
+        "shape": 0,
+        "stageA": 1
+      },
+      {
+        "cases": 20,
+        "facing": 0,
+        "flagged": 20,
+        "label": "P3 x2",
+        "mirrored": 0,
+        "noCephFound": 0,
+        "region": 20,
+        "shape": 0,
+        "stageA": 1
+      },
+      {
+        "cases": 15,
+        "facing": 0,
+        "flagged": 15,
+        "label": "P4 cranial base moved 10-20 mm",
+        "mirrored": 0,
+        "noCephFound": 0,
+        "region": 4,
+        "shape": 15,
+        "stageA": 14
+      },
+      {
+        "cases": 15,
+        "facing": 0,
+        "flagged": 15,
+        "label": "P4 maxilla moved 10-20 mm",
+        "mirrored": 0,
+        "noCephFound": 0,
+        "region": 15,
+        "shape": 15,
+        "stageA": 15
+      },
+      {
+        "cases": 15,
+        "facing": 0,
+        "flagged": 15,
+        "label": "P4 mandible moved 10-20 mm",
+        "mirrored": 0,
+        "noCephFound": 0,
+        "region": 15,
+        "shape": 15,
+        "stageA": 15
+      },
+      {
+        "cases": 15,
+        "facing": 0,
+        "flagged": 15,
+        "label": "P4 incisors moved 10-20 mm",
+        "mirrored": 0,
+        "noCephFound": 0,
+        "region": 15,
+        "shape": 15,
+        "stageA": 15
+      },
+      {
+        "cases": 15,
+        "facing": 0,
+        "flagged": 15,
+        "label": "P4 soft-tissue profile moved 10-20 mm",
+        "mirrored": 0,
+        "noCephFound": 0,
+        "region": 8,
+        "shape": 15,
+        "stageA": 15
+      }
+    ],
+    "normal": 20,
+    "normalLines": [
+      {
+        "cases": 10,
+        "facing": 0,
+        "flagged": 0,
+        "label": "N on Ceph-400 test1",
+        "mirrored": 0,
+        "noCephFound": 0,
+        "region": 0,
+        "shape": 0,
+        "stageA": 0
+      },
+      {
+        "cases": 10,
+        "facing": 0,
+        "flagged": 0,
+        "label": "N on Aariz valid",
+        "mirrored": 0,
+        "noCephFound": 0,
+        "region": 0,
+        "shape": 0,
+        "stageA": 1
+      }
+    ],
+    "planted": 175
+  },
+  "detectorFingerprint": "17171e68f9f7072062e2a3a2cbd4851618056f5136bed998f1782c49d4897b80",
+  "gateReportSha256": "e082a5709d3e36d478871b6dc3f0c90958cee433fbce4c8fa14bfe9cf28eab61",
+  "gitSha": "SYNTHETIC",
+  "marks": {
+    "falseMax": 0,
+    "needed": 167,
+    "normal": 20,
+    "planted": 175,
+    "scaledValid": 5,
+    "test1": 10,
+    "valid": 10
+  },
+  "preregSha256": "26cc74f72fea63fab2807bef44479b78314bc892c3076e38a2e0ac2be5e6e706",
+  "priorSha256": "e5a8c5d11ee720e046be779f1c2c3e428123199729e3e64a6b90f9a9b17f5048",
+  "realRuns": [
+    "real runs: no cache was given (--cache), so no real-run flag rate"
+  ],
+  "scoreLine": 0.5,
+  "seconds": 0,
+  "shifts": [
+    {
+      "cases": 15,
+      "facing": 0,
+      "flagged": 15,
+      "label": "the whole tracing moved 10 mm (information)",
+      "mirrored": 0,
+      "noCephFound": 0,
+      "region": 15,
+      "shape": 0,
+      "stageA": 1
+    },
+    {
+      "cases": 15,
+      "facing": 0,
+      "flagged": 15,
+      "label": "the whole tracing moved 20 mm (information)",
+      "mirrored": 0,
+      "noCephFound": 0,
+      "region": 15,
+      "shape": 0,
+      "stageA": 1
+    }
+  ],
+  "tau": [
+    0.09,
+    0.02,
+    0.02,
+    0.01,
+    0.1
+  ],
+  "verdict": "pass",
+  "version": "sc1-1a/1"
+}

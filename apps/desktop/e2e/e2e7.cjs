@@ -32,8 +32,12 @@ const seed = { settings: {}, cases: {}, installs: {}, models: [
         switch (cmd) {
           case 'model_status': return { loaded: true, modelId: 'cwlachap-hrnet-w32', searched: [], error: null };
           case 'plugin:event|listen': return 1;
-          case 'library_list': if (localStorage.getItem('failOpen') === 'still') throw "The library upgrade to format 18 is still failing. Your library hasn't been changed (it is still at format 7). No new safety copy was made: the safety copy already made for this upgrade is in /Users/demo/Library/OpenCephAI/upgrade-backups/OpenCephAI backup before upgrade 7→18 2026-11-02 10-00-00. To go back to it, choose Library ▸ Restore… and pick that folder.";
+          case 'library_list': if (localStorage.getItem('gatePending') && !localStorage.getItem('gateConfirmed')) call('library_list_before_confirm', a);
+            if (localStorage.getItem('failOpen') === 'still') throw "The library upgrade to format 18 is still failing. Your library hasn't been changed (it is still at format 7). No new safety copy was made: the safety copy already made for this upgrade is in /Users/demo/Library/OpenCephAI/upgrade-backups/OpenCephAI backup before upgrade 7→18 2026-11-02 10-00-00. To go back to it, choose Library ▸ Restore… and pick that folder.";
             if (localStorage.getItem('failOpen')) throw "Couldn't make a safety copy before upgrading, so your library hasn't been changed. OpenCephAI tries again only after you quit it and open it again."; return [];
+          case 'library_upgrade_pending': return localStorage.getItem('gatePending') && !localStorage.getItem('gateConfirmed') ? { from: 19, to: 20 } : null;   // item 3: the notice before an upgrade
+          case 'library_upgrade_confirm': call(cmd, a); localStorage.setItem('gateConfirmed', '1'); return null;
+          case 'library_upgrade_quit': call(cmd, a); return null;
           case 'library_upgrade_copy': if (db.upgradeShown || localStorage.getItem('failOpen')) return null; db.upgradeShown = true; store(db);
             return '/Users/demo/Library/OpenCephAI/upgrade-backups/OpenCephAI backup before upgrade 8→9 2026-10-13 10-00-00';
           case 'settings_get': return a.key === 'betaNoticeSeen' ? '1' : (db.settings[a.key] ?? null);
@@ -177,6 +181,22 @@ const seed = { settings: {}, cases: {}, installs: {}, models: [
   await page.waitForSelector('.library .error', { timeout: 5000 }).catch(() => {});
   ok('0b. a still-failing upgrade shows the "still failing" words and no notice', ((await page.locator('.library .error').allInnerTexts()).join(' ')) ===
     "The library upgrade to format 18 is still failing. Your library hasn't been changed (it is still at format 7). No new safety copy was made: the safety copy already made for this upgrade is in /Users/demo/Library/OpenCephAI/upgrade-backups/OpenCephAI backup before upgrade 7→18 2026-11-02 10-00-00. To go back to it, choose Library ▸ Restore… and pick that folder." && (await page.locator('.library [role="status"]', { hasText: 'safety copy' }).count()) === 0);
+  // Item 3 (owner, 6 Nov 2026): the notice before a library upgrade. Continue / Quit; nothing opens until Continue; none when no upgrade is needed.
+  await page.evaluate(() => { localStorage.removeItem('failOpen'); localStorage.setItem('calls', '[]'); localStorage.setItem('gatePending', '1'); localStorage.removeItem('gateConfirmed'); });
+  await page.reload(); await page.waitForSelector('[role="alertdialog"]'); await page.waitForTimeout(400);
+  const gateText = (await page.locator('[role="alertdialog"]').innerText()).replace(/\s+/g, ' ');
+  ok('G1. the notice shows the owner\'s words with Continue and Quit', gateText.includes('This version of OpenCephAI will upgrade your library. A checked safety copy is made first. For extra safety, back up your library yourself before continuing. To do that, choose Quit, then in Finder choose Go › Go to Folder… (⇧⌘G) and copy ~/Library/Application Support/app.cephtrace.desktop.')
+    && (await page.getByRole('button', { name: 'Continue', exact: true }).count()) === 1 && (await page.getByRole('button', { name: 'Quit', exact: true }).count()) === 1, gateText);
+  ok('G2. before Continue the app is not shown and the library is not read', (await page.locator('.library').count()) === 0 && (await calls('library_list_before_confirm')).length === 0 && (await calls('library_upgrade_confirm')).length === 0);
+  await page.getByRole('button', { name: 'Quit', exact: true }).click(); await page.waitForTimeout(300);
+  ok('G3. Quit asks the back end to quit, confirms nothing, reads nothing', (await calls('library_upgrade_quit')).length === 1 && (await calls('library_upgrade_confirm')).length === 0 && (await calls('library_list_before_confirm')).length === 0 && (await page.locator('.library').count()) === 0);
+  await page.reload(); await page.waitForSelector('[role="alertdialog"]');   // (the real app has closed; the stub reopens it: still asking, since nothing was confirmed)
+  await page.getByRole('button', { name: 'Continue', exact: true }).click(); await page.waitForSelector('.library');
+  ok('G4. Continue confirms, then the library opens as before', (await calls('library_upgrade_confirm')).length === 1 && (await page.locator('[role="alertdialog"]').count()) === 0 && (await calls('library_list_before_confirm')).length === 0);
+  await page.reload(); await page.waitForSelector('.library'); await page.waitForTimeout(300);
+  ok('G5. confirmed (this run\'s stub): no notice again', (await page.locator('[role="alertdialog"]').count()) === 0);
+  await page.evaluate(() => { localStorage.removeItem('gatePending'); localStorage.removeItem('gateConfirmed'); }); await page.reload(); await page.waitForSelector('.library'); await page.waitForTimeout(300);
+  ok('G6. no upgrade needed (fresh install or already current): no notice, the library opens at once', (await page.locator('[role="alertdialog"]').count()) === 0 && (await page.locator('.library').count()) === 1);
   console.log(results.join('\n'));
   await browser.close();
 })().catch((e) => { console.log(results.join('\n')); console.error(e); process.exit(1); });

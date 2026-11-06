@@ -22,14 +22,19 @@ export const CONTEXT_LINE = "Meanings compare this film with the chosen norm; in
  *  drawn over the film), the long per-row norm-source paragraph (the new one-sentence summary, model.ts
  *  `normSourceSummary`, is shown regardless and is not one of these), and who placed each point. Remembered per
  *  Mac, the same way `report_paper` already is (App.tsx). */
-export interface ReportOptions { profilogramPage: boolean; normSources: boolean; placedBy: boolean }
-export const DEFAULT_REPORT_OPTIONS: ReportOptions = { profilogramPage: false, normSources: false, placedBy: false };
+export interface ReportOptions { profilogramPage: boolean; normSources: boolean; placedBy: boolean;
+  /** Owner, 5 Nov 2026: the whole Points section (heading and table) — ON by default, so today's reports are unchanged. */
+  pointsTable: boolean;
+  /** Owner, 5 Nov 2026: the true-size mm grid behind the profilogram page — ON by default; only has an effect while
+   *  `profilogramPage` is on, and only on a calibrated film (profilogramPage.ts). */
+  profilogramGrid: boolean }
+export const DEFAULT_REPORT_OPTIONS: ReportOptions = { profilogramPage: false, normSources: false, placedBy: false, pointsTable: true, profilogramGrid: true };
 /** The settings keys each option is remembered under (App.tsx), the same mechanism as `report_paper`. */
 export const REPORT_OPTION_KEYS: Record<keyof ReportOptions, string> = {
-  profilogramPage: 'report_profilogram_page', normSources: 'report_norm_sources', placedBy: 'report_placed_by',
+  profilogramPage: 'report_profilogram_page', normSources: 'report_norm_sources', placedBy: 'report_placed_by', pointsTable: 'report_points_table', profilogramGrid: 'report_profilogram_grid',
 };
 export const FOOTER = 'Research tool — not a diagnostic device';
-/** One version only, with the Beta label (owner option A, 2 Nov 2026): "OpenCephAI 1.1.0 (Beta)". Also the CSV app_version. */
+/** One version only, with the Beta label (owner option A, 2 Nov 2026): "OpenCephAI 1.2.0 (Beta)". Also the CSV app_version. */
 export const APP = `${tauriConf.productName} ${tauriConf.version} (Beta)`;
 
 export interface ReportRow {
@@ -314,7 +319,7 @@ export function buildReport(i: ReportInput): ReportModel {
             ? `from a fit: ${i.scale.mmPerPx.toFixed(4)} mm per pixel (${fitMark(i.scale.fit)}) †`
             : `assumed (${i.scale.mmPerPx} mm per pixel): not calibrated, so mm values are not shown`,
       models: i.models.length ? i.models.join(', ') : 'none: every point placed by hand',
-      verified: d.verifiedAt ? `Verified by ${d.verifiedBy?.trim() || 'unknown'} on ${formatDate(d.verifiedAt, fmt)}` : 'Not verified: the tracing has not been signed off',
+      verified: d.verifiedAt ? `All points approved by ${d.verifiedBy?.trim() || 'unknown'} on ${formatDate(d.verifiedAt, fmt)}` : 'Not verified: the tracing has not been signed off',
       // Minor (preflight-rulings Task 4): localDay uses this computer's own time zone, so "Report made" is right for
       // the clinician sitting at it, but holds the test's expected '18/10/2026' only in Sydney and in UTC.
       made: formatDate(localDay(i.now), fmt),
@@ -373,7 +378,7 @@ export const visibleChartRows = (rows: ChartRow[]): ChartRow[] => rows.filter((r
  *  every row's label/norm/result (with its stars)/meaning, the block's source lines, the context line, the footer
  *  and the app name. One list, used for the preview's "can't be printed" warning (Task 8), the system font search
  *  (Task 9, which code points need a CJK font) and the PDF itself (`pdf.ts`, here). */
-export function reportTexts(m: ReportModel): string[] {
+export function reportTexts(m: ReportModel, options: ReportOptions = DEFAULT_REPORT_OPTIONS): string[] {
   const out: string[] = [];
   for (const [k, v] of headerLines(m.header)) out.push(k, v);
   for (const b of m.blocks) {
@@ -390,7 +395,8 @@ export function reportTexts(m: ReportModel): string[] {
   out.push(m.contextLine);
   if (m.fitNote) out.push(m.fitNote);
   // Chain spec §5 (Part F Task 13): the Points table, after the fit note and before the footer.
-  if (m.points.length) { out.push('Points'); for (const p of m.points) out.push(p.id, p.name, p.label); }
+  // Owner, 5 Nov 2026: with the "Points table" option off the section is absent, so its names cannot need a CJK font.
+  if (options.pointsTable && m.points.length) { out.push('Points'); for (const p of m.points) out.push(p.id, p.name, p.label); }
   out.push(m.footer, m.app);
   return out;
 }

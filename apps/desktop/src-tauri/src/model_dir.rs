@@ -17,6 +17,17 @@ pub fn find_shape_prior(candidates: &[Option<PathBuf>]) -> Option<PathBuf> {
     candidates.iter().flatten().map(|d| ceph_model::pointcheck::prior_path(d)).find(|p| p.is_file())
 }
 
+/// First candidate directory that holds the whole-film check's shape reference (`shape/whole-film-reference-v1.shape`,
+/// joins only). Stage A's `ceph400-v1.shape` is never taken in its place.
+pub fn find_whole_film_reference(candidates: &[Option<PathBuf>]) -> Option<PathBuf> {
+    candidates.iter().flatten().map(|d| ceph_model::wholefilm::reference_path(d)).find(|p| p.is_file())
+}
+
+/// First candidate directory that holds the region finder (`regions/manifest.json`, joins only).
+pub fn find_regions(candidates: &[Option<PathBuf>]) -> Option<PathBuf> {
+    candidates.iter().flatten().map(|d| ceph_infer::regions::regions_manifest_path(d)).find(|p| p.is_file())
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -51,6 +62,16 @@ mod tests {
         std::fs::write(a.join("manifest.json"), "{}").unwrap();                       // a model folder without the file
         assert_eq!(find_shape_prior(&[None, Some(a.clone()), Some(b.clone()), Some(c.clone())]), Some(ceph_model::pointcheck::prior_path(&b)));
         assert_eq!(find_shape_prior(&[Some(a.clone())]), None);
+        for d in [a, b, c] { std::fs::remove_dir_all(d).ok(); }
+    }
+    /// Task 7: the region finder is found like the tracings file: the first candidate folder that holds
+    /// `regions/manifest.json` (joins only). Fails if a folder without it were taken, or the order ignored.
+    #[test] fn the_first_folder_holding_the_region_finder_wins() {
+        let (a, b, c) = (tmp("regions-a"), tmp("regions-b"), tmp("regions-c"));
+        for d in [&b, &c] { let p = ceph_infer::regions::regions_manifest_path(d); std::fs::create_dir_all(p.parent().unwrap()).unwrap(); std::fs::write(&p, "{}").unwrap(); }
+        std::fs::write(a.join("manifest.json"), "{}").unwrap();                       // a landmark model's folder, no region finder
+        assert_eq!(find_regions(&[None, Some(a.clone()), Some(b.clone()), Some(c.clone())]), Some(ceph_infer::regions::regions_manifest_path(&b)));
+        assert_eq!(find_regions(&[Some(a.clone())]), None);
         for d in [a, b, c] { std::fs::remove_dir_all(d).ok(); }
     }
     #[test] fn nothing_found_is_none() {

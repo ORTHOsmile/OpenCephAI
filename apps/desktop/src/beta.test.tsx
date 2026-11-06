@@ -7,8 +7,8 @@ import { BetaNotice } from './layout/BetaNotice';
 
 // Owner, 2 Nov 2026: the whole program is labelled Beta. The identifier must NOT change (the installed library lives under it).
 describe('Beta label (owner, 2 Nov 2026)', () => {
-  it('the name is exactly "OpenCephAI 1.1 Beta"', () => {
-    expect(BETA_NAME).toBe('OpenCephAI 1.1 Beta');
+  it('the name is exactly "OpenCephAI 1.2 Beta"', () => {
+    expect(BETA_NAME).toBe('OpenCephAI 1.2 Beta');
   });
   it('the window title carries it; productName stays OpenCephAI so no second .app is built', () => {
     expect(tauriConf.productName).toBe('OpenCephAI');
@@ -20,8 +20,8 @@ describe('Beta label (owner, 2 Nov 2026)', () => {
   it('the bundle identifier is unchanged', () => {
     expect(tauriConf.identifier).toBe('app.cephtrace.desktop');
   });
-  it('the Beta label does not touch the version number (1.1.0 since 2 Nov 2026; one number in three files)', () => {
-    expect(tauriConf.version).toMatch(/^1\.1\.0$/);
+  it('the Beta label does not touch the version number (1.2.0 since 6 Nov 2026; one number in three files)', () => {
+    expect(tauriConf.version).toMatch(/^1\.2\.0$/);
   });
 });
 

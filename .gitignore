@@ -37,6 +37,7 @@ case.json
 *.3mf
 *.obj
 !apps/desktop/src-tauri/icons/*.png
+!apps/desktop/src-tauri/icons/dmg/*.png
 !docs/design/assets/*.png
 !tests/fixtures/synthetic/*.csv
 !tests/fixtures/synthetic/*.png

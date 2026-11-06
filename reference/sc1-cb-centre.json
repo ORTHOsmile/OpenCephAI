@@ -1,0 +1,24 @@
+{
+  "version": "sc1-cb-centre/1",
+  "rule": "whole-film/2 cranial-base centre look",
+  "spec": "docs/superpowers/specs/2026-11-03-sc1-whole-film-check-design.md §17.5 Option 1 (owner rulings OQ-1b-D = A, R1b-5)",
+  "films": {
+    "holdout": "Aariz-train hold-out, 70 (reference/sc1-aariz-split.json)",
+    "ceph400Train": "Ceph-400 Train 001-150",
+    "development": "Ceph-400 Test1 151-300 and Aariz valid 150: SC1-1a's spent films, tuned on by the owner's ruling R1b-5",
+    "never": "the 560 teaching films, the 70 tuning-slice films, PKU, Ceph-400 Test2, Aariz test"
+  },
+  "boxes": "the region finder 17171e68f9f7072062e2a3a2cbd4851618056f5136bed998f1782c49d4897b80 at score line 0.50, from the box cache",
+  "tau": "the region calibration in force: rule sc1-box-gate/3, gate report reports/sc1/box-gate-3.json SHA-256 f639b5bc41b12388ab430e9e86fda78143bb2984ae483d83cd65e3916d1ff0d5",
+  "measure": "offset = (mean of the present S, N, Po, Ar, Or − the cranial-base box centre) / its longer side, x mirrored on a left-facing film; at least 3 points",
+  "judged": "the check judges a tracing only when all five of S, N, Po, Ar, Or are present; with any missing the centre look reads too-few and never flags (the median and line are set on complete expert tracings, and a missing point moves the tracing pin). Every calibration tracing is complete (checked before the run) and is read as stored, facing right",
+  "median": "nearest rank per axis",
+  "line": "largest |offset − median| rounded up to 0.01, never below 0.02",
+  "stop": "line above 0.10 → exit 4",
+  "control": "the cranial base moved 20 mm along +x on every calibration film with a scale: flagged on at least 95% (20 × flagged ≥ 19 × films)",
+  "scales": "Ceph-400 Train and Test1 at 0.1 mm/px (300 films); the hold-out and Aariz valid under aariz-scale/1 (Aariz valid: 98 films; the hold-out's count printed); a film without a scale is not moved; each count printed",
+  "separation": "information, and a stop: the cranial base moved 10 mm along +x on the same films with a scale, flagged count per set and in all; stated as in-sample (the line is set on these same films, the development films among them); stop (exit 4) when at most half are flagged in all (2 × flagged ≤ films): the centre look then cannot tell a 10 mm move from normal",
+  "counts": "C7: 70 + 150 + 150 + 150 = 520 films, each set's count as stated",
+  "writes": "models/regions/cb-centre-calibration.json (git-ignored) with the report's SHA-256; reports/sc1/cb-centre-calibration.json",
+  "verdicts": { "pass": "the 20 mm control holds, the 10 mm separation holds, line at most 0.10 -> exit 0", "stop": "line above 0.10, the 20 mm control under 95%, or the 10 mm move flagged on at most half -> exit 4, to the owner", "broken": "a count off, a refusal failed, a pin differs -> exit 1" }
+}

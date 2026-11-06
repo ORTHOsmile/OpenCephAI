@@ -382,12 +382,25 @@ export const library = {
   pointCheckFilmChecked: (caseId: string, checkId: number) => invoke<boolean>('point_check_film_checked', { caseId, checkId }),
   /** Stage A task 8: Models… counts, per point: flagged, and left as placed; each model's latest run on live films. */
   pointCheckCounts: () => invoke<PointCheckCount[]>('point_check_counts'),
+  /** SC-1 Part 1 task 8: the whole-film note's stored result (src-tauri/src/whole_film.rs `WholeFilmView`), read only. */
+  wholeFilmCheck: (caseId: string) => invoke<WholeFilmView>('whole_film_check', { caseId }),
+  /** SC-1 Part 1b Task D2: Settings › Checks, "Whole-film check (beta)": read the switch, and set it (writes `on`/`off`; deletes nothing). */
+  wholeFilmSwitch: () => invoke<WholeSwitch>('whole_film_switch'),
+  wholeFilmSwitchSet: (on: boolean) => invoke<WholeSwitch>('whole_film_switch_set', { on }),
+  /** SC-1 task 8: `Checked` with one of three reasons on the shown check. false: already resolved (the first reason stays). */
+  wholeFilmCheckResolve: (caseId: string, checkId: number, reason: ResolveReason) => invoke<boolean>('whole_film_check_resolve', { caseId, checkId, reason }),
   remove: (caseId: string) => invoke<void>('library_delete', { caseId }),
   restore: (caseId: string) => invoke<void>('library_restore', { caseId }),
   backup: (dest: string) => invoke<string>('library_backup', { dest }),
   restoreBackup: (dir: string) => invoke<void>('library_restore_backup', { dir }),
   /** The safety copy's folder if opening the library upgraded its format (once; then null). */
   upgradeCopy: () => invoke<string | null>('library_upgrade_copy'),
+  /** Owner, 6 Nov 2026: whether opening the library would upgrade its format (a notice comes first); null: no upgrade needed. Opens nothing. */
+  upgradePending: () => invoke<{ from: number; to: number } | null>('library_upgrade_pending'),
+  /** Continue on that notice: the library may now be opened (and upgraded, after its checked safety copy). */
+  upgradeConfirm: () => invoke<void>('library_upgrade_confirm'),
+  /** Quit on that notice: closes the app; the library has not been opened. */
+  upgradeQuit: () => invoke<void>('library_upgrade_quit'),
   /** The case's chosen reference population (Part C, N6); null clears it back to the clinic default. */
   setCasePopulation: (caseId: string, population: string | null) => invoke<void>('library_set_case_population', { caseId, population }),
   /** The clinician's own norms (never in git; always labelled "user norm"). */
@@ -406,6 +419,27 @@ export interface PointCheckFlag {
 }
 export interface PointCheckRun { modelId: string; outcome: 'clean' | 'flagged' | 'film-unusual' | 'not-run'; notRunReason: string | null; present: number | null }
 export interface PointCheckView { runs: PointCheckRun[]; flags: PointCheckFlag[] }
+/** SC-1 Part 1 (src-tauri/src/whole_film.rs `WholeFilmView`, `CheckView`, `ReasonView`): the strings are the STORED keys (kebab-case),
+ *  region keys included (`cranial-base`, `maxilla`, `mandible`, `incisors`, `soft-tissue`); `wholeFilm.ts` turns them into words. */
+export type ResolveReason = 'tracing-right' | 'expected-variant' | 'corrected-tracing';
+/** `factor` (a `size` reason only): how big the tracing is against the anatomy on this film, ×0.5 half, ×2 double (read from the stored `factor=` detail). */
+export interface WholeReasonView { reason: 'mirrored' | 'shape' | 'region' | 'size' | 'facing' | 'no-ceph-found'; region: string | null; ids: string[]; named: string[]; factor?: number | null }
+export interface WholeCheckView {
+  id: number; subject: 'run' | 'final'; modelId: string | null; outcome: 'clean' | 'flagged' | 'not-run';
+  shapeLook: 'judged' | 'too-few-points' | 'not-set-up'; regionLook: 'judged' | 'no-region-model' | 'not-set-up' | 'film-too-small';
+  present: number; reasons: WholeReasonView[]; resolved: { reason: ResolveReason; operator: string; resolvedAt: string } | null;
+  /** Whole-film/2: the size look's stored status, and the cranial-base centre look's stored status (the same five keys). */
+  sizeLook: 'judged' | 'not-set-up' | 'no-region-model' | 'film-too-small' | 'too-few'; cbLook: 'judged' | 'not-set-up' | 'no-region-model' | 'film-too-small' | 'too-few'; cbPresent: number;
+  /** The 19 landmarks with their region's result from the region look (src-tauri `LandmarkRegionView`; only the research CSV reads it). */
+  landmarkRegions?: { id: string; region: string; result: 'fine' | 'flagged' | 'not-checked' }[];
+  /** Whether the region finder gave a facing (stored with its run); the facing look is judged by the regions only then. Absent (an older view) reads false. */
+  regionFacing?: boolean;
+}
+/** `shown` is null until a run's landmarks are saved (and for a film never checked): then there is no note. `off`: the switch in
+ *  Settings › Checks is off; nothing is shown (the stored checks are kept) and the points file's cell reads `off`. */
+export interface WholeFilmView { shown: WholeCheckView | null; checks: WholeCheckView[]; off: boolean }
+/** Settings › Checks (src-tauri `WholeSwitch`): whether the whole-film check is on, whether that is its default (nothing stored), and the result line. */
+export interface WholeSwitch { on: boolean; isDefault: boolean; line: string }
 /** One Models… row (src-tauri `PointCount`): how often the placing model's flag at this point was raised, and how often you (the operator now) left it as placed. */
 export interface PointCheckCount { landmarkId: string; flagged: number; left: number }
 /** Who traces on this Mac (spec 2026-10-01 Part 3): verified tracings are credited to `current`. */

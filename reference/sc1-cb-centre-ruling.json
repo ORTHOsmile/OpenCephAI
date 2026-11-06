@@ -1,0 +1,13 @@
+{
+  "version": "sc1-cb-centre-ruling/1",
+  "wholeFilmRule": "whole-film/3",
+  "kind": "an owner ruling (5 Nov 2026), not the pre-registered rule (sc1-cb-centre/1 sets the line as the worst distance rounded up); reference/sc1-cb-centre.json and its measured record are unchanged",
+  "line": 0.08,
+  "measuredLine": 0.06,
+  "measuredReportSha256": "111776c2bfb0e5932061f7ccb92e0d2eab1a049ba32c779309b29c070362e797",
+  "median": "unchanged: the measured median (-0.0457, +0.0048) of sc1-cb-centre/1",
+  "why": "margin against PKU's possible offset. The median y offset differs by source: Aariz +0.019 (valid; hold-out +0.018), Ceph-400 -0.006 (Test1 and Train). PKU is a third source and may sit at its own value; at 0.06 a source shift of 0.03 would put normal films at the line",
+  "cost": "on the development films (in-sample), with gate /3: 0.06 -> 0.08 cost 12 of 2,740 catches (P4 cranial base 248 -> 243); untouched false alarms 2 at both lines (the centre look raises none on these films by construction)",
+  "writes": "models/regions/cb-centre-calibration.json with line 0.08 and a ruling field (this rule, the measured line, this file's SHA-256); the measured file kept byte for byte as models/regions/cb-centre-calibration-1.json. Reads no film",
+  "spec": "docs/superpowers/specs/2026-11-03-sc1-whole-film-check-design.md §17.15"
+}

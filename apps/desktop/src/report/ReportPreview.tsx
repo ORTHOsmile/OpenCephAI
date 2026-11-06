@@ -1,8 +1,10 @@
+import { looksLine } from '../points/wholeFilm';
 import { useEffect, type ReactNode } from 'react';
 import type { Decimals } from '../format';
 import { allChartRows, DEFAULT_REPORT_OPTIONS, headerLines, reportTexts, visibleChartRows, type ReportModel, type ReportOptions } from './model';
-import { chartShapes, figure, figureFit, layoutChart, profilogramShapes, toSvg, type FigureInput } from './shapes';
+import { chartShapes, figure, layoutChart, toSvg, type FigureInput } from './shapes';
 import { chartContinuationBox, pageOneBoxes, profilogramBox, type Paper } from './page';
+import { profilogramPageShapes as profilogramPageShapesOf } from './profilogramPage';
 import { printProblems, type PrintFonts } from './pdfText';
 import { isCjk } from './systemFont';
 import { WORD_MAX } from './words';
@@ -51,9 +53,7 @@ export function ReportPreview({ model, problem, decimals, figureInput, film, wor
   const chartPages = layoutChart(visibleRows, chartBox.h, chartContinuationBox(paper).h);
   const ch = chartPages.length ? chartShapes(chartPages[0].rows, { x: chartBox.x, y: chartBox.y, w: chartBox.w }, decimals, chartPages[0].rowH) : null;
   // Owner, 29 Oct 2026 (item 1): the profilogram, on its own page, never over the film.
-  const profilogramPageShapes = options.profilogramPage && figureInput
-    ? profilogramShapes(figureInput.points, figureInput.orientation, figureInput.dims, figureFit(figureInput.orientation, figureInput.dims, profilogramBox(paper)), { registry: figureInput.registry, overlays: figureInput.overlays })
-    : [];
+  const profilogramPageShapes = profilogramPageShapesOf(figureInput ?? null, paper, options);
   // FONT-2: every letter the PDF prints, split into "a CJK font could have carried this" and everything else —
   // Arabic/Hebrew/Indic/Thai never go through the system font (pdfText.ts's own rule), so they always land in
   // `otherBad` even when a found font happens to cover them.
@@ -64,7 +64,7 @@ export function ReportPreview({ model, problem, decimals, figureInput, film, wor
   // pdfText.test.ts pins this with a positive control against the old placeholder), the full `reportTexts(model)`
   // runs through the check with nothing carved out — the same list `pdf.ts` itself prints — so a fixed string can
   // never again escape unnoticed just because it happened to be one of these three.
-  const texts = reportTexts(model);
+  const texts = reportTexts(model, options);
   const bad = printProblems(texts, print);
   const isCjkLetter = (ch: string) => isCjk(ch.codePointAt(0)!);
   const hasCjkLetter = texts.some((t) => [...t].some(isCjkLetter));
@@ -140,9 +140,10 @@ export function ReportPreview({ model, problem, decimals, figureInput, film, wor
           {model.fitNote && <p className="report-fit-note">{model.fitNote}</p>}
           {/* Chain spec §5 (Part F Task 13): each point and its label as it stood when it was placed. Owner, 29 Oct
               2026 (item 4): who placed it is OFF by default. */}
-          {model.points.length > 0 && <div className="report-block report-points"><h3>Points</h3>
-            <table><thead><tr><th>Point</th><th>Name</th>{options.placedBy && <th>Placed by</th>}<th>Point check</th></tr></thead>
-              <tbody>{model.points.map((p) => <tr key={p.id} data-point={p.id}><td>{p.id}</td><td>{p.name}</td>{options.placedBy && <td>{p.label}</td>}<td>{p.pointCheck}</td></tr>)}</tbody></table></div>}
+          {options.pointsTable && model.points.length > 0 && <div className="report-block report-points"><h3>Points</h3>
+            <table><thead><tr><th>Point</th><th>Name</th>{options.placedBy && <th>Placed by</th>}<th>Point check</th>{model.points.some((p) => p.wholeFilmCheck !== null) && <><th>Whole-film check</th><th>Region</th></>}</tr></thead>
+              <tbody>{model.points.map((p) => <tr key={p.id} data-point={p.id}><td>{p.id}</td><td>{p.name}</td>{options.placedBy && <td>{p.label}</td>}<td>{p.pointCheck}</td>{p.wholeFilmCheck !== null && <><td>{p.wholeFilmCheck}</td><td className="whole-region">{p.wholeFilmRegion}</td></>}</tr>)}</tbody></table>
+            {model.points.find((p) => p.wholeFilmLooks)?.wholeFilmLooks && <p className="report-whole-looks">Whole-film check, each look: {looksLine(model.points.find((p) => p.wholeFilmLooks)!.wholeFilmLooks!)}.</p>}</div>}
           <p className="report-footer">{model.footer} · {model.app}</p>
         </section>
         {/* Owner, 29 Oct 2026 (items 1-2): the profilogram, on its own page, never over the film — only when the

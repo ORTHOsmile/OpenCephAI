@@ -27,7 +27,7 @@ fn identity_read(f: ceph_label::LabelFields) -> IdentityRead {
 pub fn setting(app: &tauri::AppHandle, key: &str) -> Option<String> { setting_at(&app.state::<LibState>().0, &root(app).ok()?, key) }
 fn setting_at(st: &Mutex<Option<Library>>, root: &Path, key: &str) -> Option<String> {
     let mut g = st.lock().ok()?;
-    if g.is_none() { *g = open_library(root).ok(); }
+    if g.is_none() { *g = open_gated(root).ok(); }
     g.as_ref()?.setting(key).ok().flatten().filter(|v| !v.trim().is_empty())
 }
 /// Best-effort synchronous setting write (a failure only means it isn't remembered).
@@ -37,7 +37,7 @@ pub fn set_setting(app: &tauri::AppHandle, key: &str, value: &str) {
 }
 fn set_setting_at(st: &Mutex<Option<Library>>, root: &Path, key: &str, value: &str) {
     let Ok(mut g) = st.lock() else { return };
-    if g.is_none() { *g = open_library(root).ok(); }
+    if g.is_none() { *g = open_gated(root).ok(); }
     if let Some(lib) = g.as_mut() { lib.set_setting(key, value).ok(); }
 }
 
@@ -45,6 +45,32 @@ fn set_setting_at(st: &Mutex<Option<Library>>, root: &Path, key: &str, value: &s
 /// A library that can't be opened (including a refused upgrade, `ceph_store::UPGRADE_COPY_FAILED`) stays unopened and
 /// its error reaches the screen through `with`, like any other open failure.
 fn open_library(root: &Path) -> anyhow::Result<Library> { Ok(noting(Library::open(root)?)) }
+
+/// Owner, 6 Nov 2026: a library that needs its format upgraded is not opened (so not upgraded, copied or touched in any way) until the
+/// clinician has pressed Continue on the notice. Set once per run by `library_upgrade_confirm`.
+static UPGRADE_CONFIRMED: std::sync::atomic::AtomicBool = std::sync::atomic::AtomicBool::new(false);
+/// The error every lazy open gives while the upgrade waits for Continue. The screen never shows it (the notice comes first); it is what a
+/// stray background caller gets instead of an upgrade.
+pub const UPGRADE_NOT_CONFIRMED: &str = "UPGRADE_NOT_CONFIRMED: this OpenCephAI will upgrade your library, and is waiting for you to press Continue.";
+/// `open_library` behind the notice: while an upgrade is pending and not confirmed, nothing is opened. Every lazy way into the library
+/// (`with`, `shared`, `setting`, `set_setting`) goes through this. A fresh install (no library) and a library already in this format open as before.
+fn open_gated(root: &Path) -> anyhow::Result<Library> {
+    if !UPGRADE_CONFIRMED.load(std::sync::atomic::Ordering::SeqCst) && ceph_store::pending_upgrade(root)?.is_some() { anyhow::bail!(UPGRADE_NOT_CONFIRMED); }
+    open_library(root)
+}
+/// What the notice needs: the format the library is at and the one this version writes. `None`: no upgrade is needed (a fresh install, a
+/// library already current, or one already confirmed this run), so no notice. Reads the file header only.
+#[derive(Debug, Clone, PartialEq, serde::Serialize)]
+pub struct UpgradePending { pub from: i64, pub to: i64 }
+fn upgrade_pending_at(root: &Path) -> anyhow::Result<Option<UpgradePending>> {
+    if UPGRADE_CONFIRMED.load(std::sync::atomic::Ordering::SeqCst) { return Ok(None); }
+    Ok(ceph_store::pending_upgrade(root)?.map(|(from, to)| UpgradePending { from, to }))
+}
+#[tauri::command] pub async fn library_upgrade_pending(app: tauri::AppHandle) -> Result<Option<UpgradePending>, String> {
+    upgrade_pending_at(&root(&app)?).map_err(|e| format!("{e:#}"))
+}
+/// Continue: from now on the library may open, and so upgrade (after its checked safety copy, exactly as before).
+#[tauri::command] pub async fn library_upgrade_confirm() { UPGRADE_CONFIRMED.store(true, std::sync::atomic::Ordering::SeqCst); }
 static UPGRADE_COPY: Mutex<Option<String>> = Mutex::new(None);
 fn noting(lib: Library) -> Library {
     if let Some(dir) = lib.upgrade_copy() { if let Ok(mut g) = UPGRADE_COPY.lock() { *g = Some(dir.display().to_string()); } }
@@ -75,7 +101,7 @@ pub(crate) async fn with<T: Send + 'static>(app: &tauri::AppHandle, f: impl FnOn
 /// `with`'s body, on the calling thread.
 pub(crate) fn with_at<T>(st: &Mutex<Option<Library>>, root: &Path, f: impl FnOnce(&mut Library, &str) -> anyhow::Result<T>) -> Result<T, String> {
     let mut g = st.lock().map_err(|_| "the library is unavailable after an earlier failure; restart OpenCephAI".to_string())?;
-    if g.is_none() { *g = Some(open_library(root).map_err(|e| format!("{e:#}"))?); }
+    if g.is_none() { *g = Some(open_gated(root).map_err(|e| format!("{e:#}"))?); }
     let lib = g.as_mut().expect("opened above");
     let op = operator(lib);
     f(lib, &op).map_err(|e| format!("{e:#}"))
@@ -91,7 +117,7 @@ pub(crate) fn shared(app: &tauri::AppHandle) -> Result<Arc<Mutex<Option<Library>
 /// `shared`'s opening step.
 fn shared_at(st: &Mutex<Option<Library>>, root: &Path) -> Result<(), String> {
     let mut g = st.lock().map_err(|_| "the library is unavailable after an earlier failure; restart OpenCephAI".to_string())?;
-    if g.is_none() { *g = Some(open_library(root).map_err(|e| format!("{e:#}"))?); }
+    if g.is_none() { *g = Some(open_gated(root).map_err(|e| format!("{e:#}"))?); }
     Ok(())
 }
 
@@ -123,9 +149,19 @@ pub(crate) fn save_ai_if_untraced_and_learn(l: &mut Library, edit: &CaseEdit, op
 pub(crate) fn record_ai_and_learn(l: &mut Library, case_id: &str, run: &AiRun, points: &[ceph_store::AiPoint], st: &crate::point_check::PointCheckState, op: &str) -> anyhow::Result<()> {
     record_ai_and_learn_fresh(l, case_id, run, points, st, op, &[])
 }
+// Stage A's entry, kept for its tests and callers; the app's command now goes through `record_ai_and_learn_checked`.
+#[cfg_attr(not(test), allow(dead_code))]
 pub(crate) fn record_ai_and_learn_fresh(l: &mut Library, case_id: &str, run: &AiRun, points: &[ceph_store::AiPoint], st: &crate::point_check::PointCheckState, op: &str, fresh: &[String]) -> anyhow::Result<()> {
+    record_ai_and_learn_checked(l, case_id, run, points, st, None, op, fresh)
+}
+/// The run recorded, then Stage A's check (unchanged), then the whole-film check when `wf` is given (SC-1; a note only,
+/// a failure logged, never failing the run), then the learning record.
+#[allow(clippy::too_many_arguments)]
+pub(crate) fn record_ai_and_learn_checked(l: &mut Library, case_id: &str, run: &AiRun, points: &[ceph_store::AiPoint], st: &crate::point_check::PointCheckState,
+        wf: Option<&crate::whole_film::WholeFilmInput>, op: &str, fresh: &[String]) -> anyhow::Result<()> {
     let id = l.record_ai_run(case_id, run, points)?;
     crate::point_check::check_run_or_log_fresh(l, case_id, id, &run.model_id, st, fresh);
+    if let Some(wf) = wf { crate::whole_film::check_run_or_log(l, case_id, id, wf); }
     crate::learning::learn_or_log(l, case_id, op);
     Ok(())
 }
@@ -133,6 +169,13 @@ pub(crate) fn record_ai_and_learn_fresh(l: &mut Library, case_id: &str, run: &Ai
 pub(crate) fn set_verified_and_learn(l: &mut Library, case_id: &str, verified: bool, op: &str) -> anyhow::Result<()> {
     l.set_verified(case_id, verified, op)?;
     crate::learning::learn_or_log(l, case_id, op);
+    Ok(())
+}
+/// `set_verified_and_learn`, then, on a sign-off (`verified`), the whole-film check of the final tracing when `wf` is
+/// given (OQ-6). The check runs after the sign-off is stored and never holds or fails it (R3).
+pub(crate) fn set_verified_checked(l: &mut Library, case_id: &str, verified: bool, wf: Option<&crate::whole_film::WholeFilmInput>, op: &str) -> anyhow::Result<()> {
+    set_verified_and_learn(l, case_id, verified, op)?;
+    if let (true, Some(wf)) = (verified, wf) { crate::whole_film::check_final_or_log(l, case_id, wf); }
     Ok(())
 }
 /// A ruler calibration changes every millimetre: the store drops the old rows, and they are rebuilt at the new scale.
@@ -156,7 +199,11 @@ pub(crate) fn recalibrate_and_learn(l: &mut Library, case_id: &str, p1: (f64, f6
     // The loaded Arc, moved into the closure. A load that fails is "not set up" for this run, never a failed run (review M2).
     let st = crate::point_check::PointCheckState::with(crate::point_check::loaded(&app).await.unwrap_or_else(|e| { eprintln!("Point check not set up: {e}"); None }));
     let fresh = fresh.unwrap_or_default();
-    with(&app, move |l, op| record_ai_and_learn_fresh(l, &case_id, &run, &points, &st, op, &fresh)).await
+    // SC-1: the whole-film check's input (state loaded on a blocking thread; the region plan read under the lock; the
+    // finder run, and this run's line fitted, outside it). Never fails the run.
+    let tracing = crate::whole_film::Tracing::Run { marks: crate::whole_film::marks_of(&points), facing_left: run.facing == "left" };
+    let wf = crate::whole_film::prepare(&app, &case_id, tracing).await;
+    with(&app, move |l, op| record_ai_and_learn_checked(l, &case_id, &run, &points, &st, Some(&wf), op, &fresh)).await
 }
 #[tauri::command] pub async fn library_ghosts(app: tauri::AppHandle, case_id: String) -> Result<Vec<ceph_store::ModelPoints>, String> {
     with(&app, move |l, _| l.latest_ai_points(&case_id)).await
@@ -511,7 +558,12 @@ async fn after_confirm(app: &tauri::AppHandle, case_id: String) {
 #[tauri::command] pub async fn library_set_fit_own(app: tauri::AppHandle, case_id: String, on: bool) -> Result<(), String> {
     with(&app, move |l, _| l.set_fit_own(&case_id, on)).await
 }
-#[tauri::command] pub async fn library_set_verified(app: tauri::AppHandle, case_id: String, verified: bool) -> Result<(), String> { with(&app, move |l, op| set_verified_and_learn(l, &case_id, verified, op)).await }
+/// On a sign-off, SC-1 checks the final tracing (its input prepared as for a run: the current landmarks read in a short
+/// lock and their line fitted outside it, before the lock is taken to sign off and check); an undo checks nothing.
+#[tauri::command] pub async fn library_set_verified(app: tauri::AppHandle, case_id: String, verified: bool) -> Result<(), String> {
+    let wf = if verified { Some(crate::whole_film::prepare(&app, &case_id, crate::whole_film::Tracing::Final).await) } else { None };
+    with(&app, move |l, op| set_verified_checked(l, &case_id, verified, wf.as_ref(), op)).await
+}
 #[tauri::command] pub async fn library_calibrate(app: tauri::AppHandle, case_id: String, p1: [f64; 2], p2: [f64; 2], mm: f64) -> Result<f64, String> {
     with(&app, move |l, op| calibrate_and_learn(l, &case_id, (p1[0], p1[1]), (p2[0], p2[1]), mm, op)).await
 }
@@ -582,6 +634,71 @@ mod tests {
     fn schema_7_library(root: &Path) {
         let c = rusqlite::Connection::open(root.join("library.sqlite3")).unwrap();
         for (i, sql) in ceph_store::schema::MIGRATIONS.iter().take(7).enumerate() { c.execute_batch(sql).unwrap(); c.pragma_update(None, "user_version", i as i64 + 1).unwrap(); }
+    }
+    /// Every file under `root` with its bytes (folders too), sorted: what "nothing was touched" is compared on.
+    fn snapshot(root: &Path) -> Vec<(PathBuf, Vec<u8>)> {
+        fn walk(d: &Path, root: &Path, v: &mut Vec<(PathBuf, Vec<u8>)>) {
+            for e in std::fs::read_dir(d).unwrap() { let p = e.unwrap().path(); let rel = p.strip_prefix(root).unwrap().to_path_buf();
+                if p.is_dir() { v.push((rel, vec![])); walk(&p, root, v) } else { v.push((rel, std::fs::read(&p).unwrap())) } }
+        }
+        let mut v = vec![]; walk(root, root, &mut v); v.sort(); v
+    }
+    fn unconfirm() { UPGRADE_CONFIRMED.store(false, std::sync::atomic::Ordering::SeqCst); }
+    /// Item 3 (owner, 6 Nov 2026): the upgrade does not start until Continue. Every lazy way in (`with_at`, `shared_at`, `setting_at`,
+    /// `set_setting_at`) refuses an old library: no safety copy, no migration, not one byte or file changed. After Continue the same call
+    /// upgrades it exactly as before. Fails if any of the four paths opens an unconfirmed old library.
+    #[test] fn an_old_library_is_not_opened_or_upgraded_until_continue_and_quitting_changes_nothing() {
+        let _turn = NOTE_LOCK.lock().unwrap_or_else(|e| e.into_inner());
+        library_upgrade_copy_take();
+        let t = tempfile::tempdir().unwrap();
+        schema_7_library(t.path());
+        std::fs::create_dir_all(t.path().join("images")).unwrap();
+        std::fs::write(t.path().join("images").join("SYNTHETIC-film.png"), b"synthetic film bytes").unwrap();
+        let before = snapshot(t.path());
+        unconfirm();
+        let st = Mutex::new(None);
+        let e1 = with_at(&st, t.path(), |l, _| l.list(false)).unwrap_err();
+        let e2 = shared_at(&st, t.path()).unwrap_err();
+        let g1 = setting_at(&st, t.path(), "modelDir");
+        set_setting_at(&st, t.path(), "k", "v");
+        let pending = upgrade_pending_at(t.path()).unwrap();
+        // the user presses Quit: nothing else happens
+        println!("unconfirmed: with -> {e1:.60}; shared -> {e2:.60}; setting {g1:?}; pending {pending:?}; {} entries compared", before.len());
+        assert!(e1.starts_with("UPGRADE_NOT_CONFIRMED") && e2.starts_with("UPGRADE_NOT_CONFIRMED"), "{e1} / {e2}");
+        assert_eq!(g1, None);
+        assert!(st.lock().unwrap().is_none(), "no library was opened");
+        assert_eq!(pending, Some(UpgradePending { from: 7, to: ceph_store::schema::CURRENT }));
+        assert_eq!(snapshot(t.path()), before, "Quit: every file byte-for-byte as it was, none added (no upgrade-backups, no -wal)");
+        assert!(!t.path().join(ceph_store::UPGRADE_BACKUPS_DIR).exists());
+        assert_eq!(library_upgrade_copy_take(), None);
+        // Continue: the existing upgrade, as today
+        UPGRADE_CONFIRMED.store(true, std::sync::atomic::Ordering::SeqCst);
+        let st2 = Mutex::new(None);
+        let n = with_at(&st2, t.path(), |l, _| Ok(l.list(false)?.len())).unwrap();
+        println!("after Continue: list -> {n} films; copies {}", std::fs::read_dir(t.path().join(ceph_store::UPGRADE_BACKUPS_DIR)).unwrap().count());
+        assert_eq!(std::fs::read_dir(t.path().join(ceph_store::UPGRADE_BACKUPS_DIR)).unwrap().count(), 1, "the checked safety copy was made, once");
+        assert!(library_upgrade_copy_take().is_some());
+        assert_eq!(upgrade_pending_at(t.path()).unwrap(), None, "confirmed this run: no notice again");
+        drop(st2);
+        unconfirm();
+        assert_eq!(upgrade_pending_at(t.path()).unwrap(), None, "the library is now current: no notice on the next run either");
+    }
+    /// Item 3: no notice when no upgrade is needed: a fresh install (no library) and a library already in this format open as before,
+    /// with the notice never asked for, and nothing is made by asking.
+    #[test] fn no_notice_for_a_fresh_install_or_a_current_library() {
+        let _turn = NOTE_LOCK.lock().unwrap_or_else(|e| e.into_inner());
+        unconfirm();
+        let fresh = tempfile::tempdir().unwrap();
+        let before = snapshot(fresh.path());
+        assert_eq!(upgrade_pending_at(fresh.path()).unwrap(), None, "fresh install: no notice");
+        assert_eq!(snapshot(fresh.path()), before, "asking made nothing");
+        let st = Mutex::new(None);
+        with_at(&st, fresh.path(), |l, _| l.list(false)).expect("a fresh install opens with no notice");
+        drop(st);
+        assert_eq!(upgrade_pending_at(fresh.path()).unwrap(), None, "a library already in this format: no notice");
+        let st = Mutex::new(None);
+        with_at(&st, fresh.path(), |l, _| l.list(false)).expect("a current library opens with no notice");
+        assert!(!fresh.path().join(ceph_store::UPGRADE_BACKUPS_DIR).exists(), "no safety copy for a library that needs none");
     }
     /// AUTOBACKUP-1 reaching the screen: opening an old library leaves the copy's folder for the notice, once; a
     /// current library leaves none.

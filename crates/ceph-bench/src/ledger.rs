@@ -15,6 +15,25 @@ pub fn is_held_back(data: &Path, split: &str) -> bool {
     HELD_BACK.iter().any(|(d, s)| *d == name && (*s == split || split == "all"))
 }
 
+/// (dataset folder name, split) pairs SEALED until their one pre-registered run (spec 2026-11-03 §17.7, C5): PKU is the
+/// fresh test set for SC1-1b-PKU. Only `--pku-prepare` (which makes the folder and runs no check) and `--sc1-1b-pku`
+/// (Task F) may open it; every other mode is refused by `refuse_held_back` and `chainproof::refuse_held_back_cache`.
+pub const SEALED: [(&str, &str); 1] = [("pku", "test")];
+
+/// Whether `split` of a dataset folder called `name` is sealed; the same name rules as `is_held_back` ("all" included,
+/// folder name and split without case).
+pub fn is_sealed(data: &Path, split: &str) -> bool {
+    let name = data.file_name().map(|n| n.to_string_lossy().to_lowercase()).unwrap_or_default();
+    let split = split.to_lowercase();
+    SEALED.iter().any(|(d, s)| *d == name && (*s == split || split == "all"))
+}
+
+/// The seal's refusal, in plain words (one wording for both gates).
+pub fn sealed_message(data: &Path, split: &str) -> String {
+    format!("{} {split} is sealed: PKU is the fresh test set for SC1-1b-PKU (spec 2026-11-03 §17.7, C5) and stays unseen until \
+        its one run; only --pku-prepare (which makes the folder) and --sc1-1b-pku may open it", data.display())
+}
+
 /// Every name the folder goes by: as written, each link it passes through, and its real (canonical) location.
 /// A folder that cannot be resolved is an error, so the caller refuses rather than allows.
 fn names_of(data: &Path) -> anyhow::Result<Vec<std::path::PathBuf>> {
@@ -31,12 +50,39 @@ fn names_of(data: &Path) -> anyhow::Result<Vec<std::path::PathBuf>> {
     Ok(names)
 }
 
-pub fn refuse_held_back(data: &Path, split: &str) -> anyhow::Result<()> {
+pub fn refuse_held_back(data: &Path, split: &str) -> anyhow::Result<()> { refuse_held_back_unless(data, split, None) }
+
+/// The key that opens the PKU seal for SC1-1b-PKU's one run (spec 2026-11-03 §17.7, §17.9; plan M19). Its field is
+/// private and `open_seal` is its only maker, so no other module can hold one:
+///
+/// ```compile_fail
+/// let _k = ceph_bench::ledger::SealKey { _private: () };
+/// ```
+#[derive(Debug)]
+pub struct SealKey { _private: () }
+
+/// Opens the PKU seal once: the pre-registration at HEAD is `prereg` byte for byte (committed as built), the tree is
+/// clean, and `report` (the run's one report) is not there yet. Each refusal names its reason; nothing is read.
+pub fn open_seal(prereg_path: &str, prereg: &str, git: &crate::sc1_gate::Git, report: &Path) -> anyhow::Result<SealKey> {
+    anyhow::ensure!(!git.dirty, "the PKU seal stays shut: the tree is not clean (commit first; {prereg_path} runs only from a clean tree)");
+    crate::ft_common::committed_as_built(prereg_path, prereg, git.prereg_at_head.clone()).map_err(|e| anyhow::anyhow!("the PKU seal stays shut: {e}"))?;
+    anyhow::ensure!(!report.exists(), "the PKU seal stays shut: {} already exists, so the one run has happened (PKU is opened once)", report.display());
+    Ok(SealKey { _private: () })
+}
+
+/// `refuse_held_back`, except that with a key a SEALED split named exactly (not "all") passes. Held-back splits are
+/// refused with or without a key.
+pub fn refuse_held_back_unless(data: &Path, split: &str, key: Option<&SealKey>) -> anyhow::Result<()> {
     let names = names_of(data)?;
     anyhow::ensure!(!names.iter().any(|n| is_held_back(n, split)),
         "{} {split} is held back for the single test run (spec 2026-10-13 §7, owner O7); it is opened only by `--crosscheck-run --single-test-run` in Task 8",
         data.display());
+    anyhow::ensure!(!names.iter().any(|n| is_sealed(n, split)) || opens(key, split), "{}", sealed_message(data, split));
     Ok(())
+}
+/// A key opens a sealed split named exactly ("test"), never "all".
+pub(crate) fn opens(key: Option<&SealKey>, split: &str) -> bool {
+    key.is_some() && SEALED.iter().any(|(_, s)| s.eq_ignore_ascii_case(split))
 }
 
 /// The ledger's one place: `reference/aariz-test-ledger.json` at the repo root, whatever folder the bench runs from
@@ -168,6 +214,30 @@ mod tests {
             assert!(e.as_ref().is_err_and(|e| e.contains("held back")), "{p} {s}: {e:?}");
         }
         assert!(refuse_held_back(&t.join("elsewhere/foo"), "valid").is_ok(), "an open split through a link is still allowed");
+    }
+    /// SC-1 Part 1b Task A (C5): PKU test is sealed for every mode. Fails if `SEALED` is not consulted by
+    /// `refuse_held_back`, if "all" or another case of the name or split passes, or if a link hides the name.
+    #[test] fn pku_test_is_sealed_for_every_mode() {
+        let d = tempfile::tempdir().unwrap();
+        let t = d.path();
+        std::fs::create_dir_all(t.join("pku")).unwrap();
+        std::fs::create_dir_all(t.join("aariz")).unwrap();
+        for s in ["test", "all", "Test", "ALL"] {
+            let e = refuse_held_back(&t.join("pku"), s).unwrap_err().to_string();
+            eprintln!("pku {s}: {e}");
+            assert!(e.contains("sealed"), "pku {s}: {e}");
+        }
+        assert!(refuse_held_back(&t.join("PKU"), "test").is_err(), "the folder written in capitals");
+        assert!(is_sealed(Path::new("x/PKU"), "test") && is_sealed(Path::new("x/pku"), "Test") && is_sealed(Path::new("pku"), "all"));
+        assert!(!is_sealed(Path::new("x/pku"), "train") && !is_sealed(Path::new("x/aariz"), "test"), "only pku test");
+        #[cfg(unix)] {
+            std::os::unix::fs::symlink(t.join("pku"), t.join("x")).unwrap();
+            let e = refuse_held_back(&t.join("x"), "test").unwrap_err().to_string();
+            eprintln!("a link named x -> pku: {e}");
+            assert!(e.contains("sealed"), "{e}");
+        }
+        assert!(refuse_held_back(&t.join("aariz"), "valid").is_ok(), "aariz valid is still allowed");
+        assert!(!is_held_back(Path::new("x/pku"), "test"), "sealed is its own list, not HELD_BACK");
     }
     #[test] fn a_set_is_opened_once_and_a_second_opening_is_refused() {
         let d = tempfile::tempdir().unwrap();

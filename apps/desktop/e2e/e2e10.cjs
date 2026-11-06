@@ -247,7 +247,7 @@ const seed = { settings: {}, ops: ['Dr A', 'Dr B'], userNorms: [], cases: { c1: 
   // MEANING-APPROVE: the Chart tab's label is the approved abbreviation (the full name, hidden, keeps the row height).
   ok('CH1. the Chart label is the approved abbreviation (Interincisal angle -> U1-L1)', (await page.locator('.inspector table.chart tr.m-row[data-node="m53_Interincisal"] .abbr').first().innerText()) === 'U1-L1');
   const tabTops = await page.locator('.inspector .tabs [role="tab"]').evaluateAll((els) => els.map((e) => Math.round(e.getBoundingClientRect().top)));
-  ok('CH1. the four tabs fit on one line', tabTops.length === 4 && new Set(tabTops).size === 1, JSON.stringify(tabTops));
+  ok('CH1. the three tabs (Landmarks, Measurements, Chart; no Steps) fit on one line', tabTops.length === 3 && new Set(tabTops).size === 1, JSON.stringify(tabTops));
   ok('CH1. no "Measurement" heading on the Chart tab', !(await page.locator('.inspector table.chart').innerText()).includes('Measurement'));
   const chk = await page.evaluate(() => { const ov = document.querySelector('.inspector .chart-overlay'); const g = [...ov.querySelectorAll('g.chart-row')];
     return { rows: g.length, withZ: g.filter((x) => x.getAttribute('data-z') !== '').length, greenOnZ: g.every((x) => (x.getAttribute('data-z') === '') === !x.querySelector('.norm-band')),
@@ -312,8 +312,10 @@ const seed = { settings: {}, ops: ['Dr A', 'Dr B'], userNorms: [], cases: { c1: 
   const missing = await page.locator('.missing-points').innerText();
   ok('3. the Measurements tab names the points no model finds', missing.startsWith('Needs points no model finds:') && missing.includes('L1A') && !missing.includes('U1A'), missing.slice(0, 120));
   await page.locator('.missing-points').getByRole('button', { name: 'Place them' }).click();
-  ok('3. "Place them" opens the guided steps on the first such point', (await page.getByRole('tab', { name: 'Steps' }).getAttribute('aria-selected')) === 'true'
-    && (await page.locator('.active-head b').innerText()) === 'L1A');
+  ok('3. "Place them" opens Landmarks on the first such point (there is no Steps tab)', (await page.getByRole('tab', { name: 'Landmarks' }).getAttribute('aria-selected')) === 'true'
+    && (await page.getByRole('tab', { name: 'Steps' }).count()) === 0
+    && (await page.locator('.active-head b').innerText()) === 'L1A'
+    && (await page.locator('.lm-list button[aria-current="true"] b').innerText()) === 'L1A');
   const st3 = await page.locator('.stage').boundingBox();
   await page.mouse.click(st3.x + st3.width * 0.62, st3.y + st3.height * 0.72);
   await page.getByRole('tab', { name: 'Measurements' }).click();

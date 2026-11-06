@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { APP } from '../report/model';
 import { synthDoc, synthFitModel, synthModel } from '../report/fixtures';
-import { filmCode, measurementsCsv, patientCode, POINTS_COLUMNS, readSalt, TIDY_COLUMNS, type CsvOptions } from './measurementsCsv';
+import { filmCode, measurementsCsv, patientCode, POINTS_COLUMNS, POINTS_COLUMNS_WHOLE, readSalt, TIDY_COLUMNS, type CsvOptions } from './measurementsCsv';
 
 const SALT = '0123456789abcdef0123456789abcdef';
 const opts = (o: Partial<CsvOptions> = {}): CsvOptions => ({ anonymise: false, layout: 'tidy', salt: SALT, exportedAt: '2026-10-18T02:00:00.000Z', decimals: 1, ...o });
@@ -326,10 +326,11 @@ describe('age_years is the age the norms use; age_source says where it came from
 });
 
 describe('Part F: measurements CSV, points layout (one row per film × point; chain spec §5)', () => {
-  const pts = [{ id: 'S', name: 'Sella', label: 'Aariz', model: 'aariz-cepha29', modelFile: 'fp-az', acceptKind: 'single' as const, pointCheck: '' as const },
-    { id: 'N', name: 'Nasion', label: 'Placed by you', model: null, modelFile: null, acceptKind: 'hand' as const, pointCheck: '' as const }];
+  const pts = [{ id: 'S', name: 'Sella', label: 'Aariz', model: 'aariz-cepha29', modelFile: 'fp-az', acceptKind: 'single' as const, pointCheck: '' as const, wholeFilmCheck: null, wholeFilmRegion: null },
+    { id: 'N', name: 'Nasion', label: 'Placed by you', model: null, modelFile: null, acceptKind: 'hand' as const, pointCheck: '' as const, wholeFilmCheck: null, wholeFilmRegion: null }];
   it('the columns, and one row per point with the label and the structured columns', () => {
     expect(POINTS_COLUMNS.slice(11, 19)).toEqual(['point', 'point_name', 'placed_by_label', 'placed_by_model', 'model_file', 'personal_model_version', 'accept_kind', 'point_check']);
+    expect(POINTS_COLUMNS).not.toContain('whole_film_check');   // the research switch is off by default: no whole-film column
     const out = lines(measurementsCsv([synthModel({ points: pts })], opts({ layout: 'points' })));
     expect(out[0]).toBe(POINTS_COLUMNS.join(','));
     expect(out.slice(1)).toEqual([`${FILM},S,Sella,Aariz,aariz-cepha29,fp-az,,single,,${TAIL}`, `${FILM},N,Nasion,Placed by you,,,,hand,,${TAIL}`]);
@@ -351,9 +352,14 @@ describe('Part F: measurements CSV, points layout (one row per film × point; ch
     const at = POINTS_COLUMNS.indexOf('point_check');
     const checked = (cells: Array<'flagged' | 'film-unusual' | ''>, over: Partial<(typeof pts)[number]> = {}) =>
       pts.map((p, i) => ({ ...p, ...over, pointCheck: cells[i] }));
-    it('is the LAST point column: after accept_kind, before scale; nothing else moves', () => {
+    // (the Task 9 cell stays blank in every point_check test below, so a point_check test cannot pass by reading the wrong column)
+    it('sits after accept_kind; scale follows it (the whole-film columns come between only with the research switch on); nothing before it moves', () => {
       expect(at).toBe(POINTS_COLUMNS.indexOf('accept_kind') + 1);
       expect(POINTS_COLUMNS.indexOf('scale')).toBe(at + 1);
+      expect(POINTS_COLUMNS_WHOLE.indexOf('whole_film_check')).toBe(at + 1);
+      expect(POINTS_COLUMNS_WHOLE.indexOf('whole_film_region')).toBe(at + 2);
+      expect(POINTS_COLUMNS_WHOLE.indexOf('whole_film_look_shape')).toBe(at + 3);
+      expect(POINTS_COLUMNS_WHOLE.indexOf('scale')).toBe(at + 3 + 6);
       expect(POINTS_COLUMNS.slice(0, 18).join(',')).toBe('film,patient,library_patient_id,printed_patient_id,scan_id,date_of_birth,sex,film_date,age_years,age_source,timepoint,point,point_name,placed_by_label,placed_by_model,model_file,personal_model_version,accept_kind');
     });
     it('writes flagged / film-unusual / blank, and removing that column gives byte-for-byte the file without any check', () => {
@@ -377,6 +383,79 @@ describe('Part F: measurements CSV, points layout (one row per film × point; ch
     it('the anonymised file keeps it (it holds no patient data)', () => {
       const anon = lines(measurementsCsv([synthModel({ points: checked(['flagged', 'film-unusual']) })], opts({ layout: 'points', anonymise: true })));
       expect([parseRow(anon[1])[at], parseRow(anon[2])[at]]).toEqual(['flagged', 'film-unusual']);
+    });
+  });
+  // Task 9 (SC-1 Part 1, spec §11). Fails if `whole_film_check` is put anywhere but immediately after `point_check` (induced:
+  // column before point_check), is dropped, or changes any other cell.
+  describe('the whole_film_check column (SC-1 Part 1 task 9)', () => {
+    const at = POINTS_COLUMNS_WHOLE.indexOf('whole_film_check');
+    const withCell = (cell: string, region = '') => pts.map((p) => ({ ...p, wholeFilmCheck: cell, wholeFilmRegion: region }));
+    it('is immediately after point_check; every column after it is one place to the right of where it was', () => {
+      const before = POINTS_COLUMNS_WHOLE.filter((c) => !c.startsWith('whole_film'));          // the columns as they stood before this task
+      expect(at).toBe(POINTS_COLUMNS_WHOLE.indexOf('point_check') + 1);
+      expect(before.indexOf('scale')).toBe(POINTS_COLUMNS_WHOLE.indexOf('scale') - 8);
+      expect(POINTS_COLUMNS_WHOLE.slice(at + 8)).toEqual(before.slice(before.indexOf('point_check') + 1));
+      expect(POINTS_COLUMNS_WHOLE[at + 1]).toBe('whole_film_region');
+      expect(POINTS_COLUMNS_WHOLE.length).toBe(before.length + 8);
+      expect(POINTS_COLUMNS_WHOLE.slice(at, at + 8)).toEqual(['whole_film_check', 'whole_film_region', 'whole_film_look_shape', 'whole_film_look_regions', 'whole_film_look_size', 'whole_film_look_centre', 'whole_film_look_mirrored', 'whole_film_look_facing']);
+      expect(before).toEqual(POINTS_COLUMNS);
+    });
+    it('writes the film\'s value on every row, and removing that column gives byte-for-byte the file with a blank one', () => {
+      const flagged = lines(measurementsCsv([synthModel({ points: withCell('flagged:region-mandible+facing') })], opts({ layout: 'points', wholeFilm: true })));
+      const blank = lines(measurementsCsv([synthModel({ points: withCell('') })], opts({ layout: 'points', wholeFilm: true })));
+      expect(flagged.slice(1).map((l) => parseRow(l)[at])).toEqual(['flagged:region-mandible+facing', 'flagged:region-mandible+facing']);   // the same on every row
+      expect(blank.slice(1).map((l) => parseRow(l)[at])).toEqual(['', '']);
+      expect(parseRow(flagged[0])[at]).toBe('whole_film_check');
+      const strip = (l: string) => parseRow(l).filter((_, i) => i !== at).join('\u0001');
+      expect(flagged.map(strip)).toEqual(blank.map(strip));             // every OTHER cell equal, row by row
+      console.log(`whole_film_check: compared ${flagged.length} lines x ${parseRow(flagged[0]).length - 1} other cells = ${flagged.length * (parseRow(flagged[0]).length - 1)} cells`);
+      expect(flagged.length).toBe(3);
+    });
+    it('point_check\'s own value is unchanged beside it (a flag stays in its own cell)', () => {
+      const both = lines(measurementsCsv([synthModel({ points: [{ ...pts[0], pointCheck: 'flagged' as const, wholeFilmCheck: 'clean' }, { ...pts[1], pointCheck: '' as const, wholeFilmCheck: 'clean' }] })], opts({ layout: 'points', wholeFilm: true })));
+      const pc = POINTS_COLUMNS_WHOLE.indexOf('point_check');
+      expect([parseRow(both[1])[pc], parseRow(both[1])[at], parseRow(both[2])[pc], parseRow(both[2])[at]]).toEqual(['flagged', 'clean', '', 'clean']);
+    });
+    it.each(['', 'clean', 'not-run', 'flagged:region-mandible', 'flagged:region-maxilla+region-mandible', 'flagged:mirrored+facing',
+      'checked:tracing-right', 'checked:expected-variant', 'checked:corrected-tracing'])('the cell %j is written as it is, in one cell', (cell) => {
+      const rows = lines(measurementsCsv([synthModel({ points: withCell(cell) })], opts({ layout: 'points', wholeFilm: true })));
+      expect(parseRow(rows[1])[at]).toBe(cell);
+      expect(parseRow(rows[1]).length).toBe(POINTS_COLUMNS_WHOLE.length);
+    });
+    // Research switch (owner, 6 Nov 2026). Fails if the region column is dropped, moved off `whole_film_check`, or its words change.
+    it.each(['fine', 'region flagged', 'not checked', '', 'off'])('whole_film_region %j is written in its own cell, right after whole_film_check', (region) => {
+      const rows = lines(measurementsCsv([synthModel({ points: withCell('flagged:region-mandible', region) })], opts({ layout: 'points', wholeFilm: true })));
+      const ar = POINTS_COLUMNS_WHOLE.indexOf('whole_film_region');
+      expect(ar).toBe(at + 1);
+      expect(parseRow(rows[1])[ar]).toBe(region);
+      expect(parseRow(rows[1])[at]).toBe('flagged:region-mandible');
+      expect(parseRow(rows[1]).length).toBe(POINTS_COLUMNS_WHOLE.length);
+    });
+    it('each look\'s status is written on every row, in its own cell, as the film\'s value', () => {
+      const looks = { shape: 'judged', regions: 'judged', size: 'not checked (not set up)', centre: 'judged', mirrored: 'judged', facing: 'judged' };
+      const rows = lines(measurementsCsv([synthModel({ points: pts.map((p) => ({ ...p, wholeFilmCheck: 'clean', wholeFilmRegion: 'fine', wholeFilmLooks: looks })) })], opts({ layout: 'points', wholeFilm: true })));
+      const col = (n: string) => POINTS_COLUMNS_WHOLE.indexOf(n);
+      expect(rows.slice(1).map((r) => parseRow(r)[col('whole_film_look_size')])).toEqual(['not checked (not set up)', 'not checked (not set up)']);
+      expect(rows.slice(1).map((r) => parseRow(r)[col('whole_film_look_shape')])).toEqual(['judged', 'judged']);
+      expect(parseRow(rows[1]).length).toBe(POINTS_COLUMNS_WHOLE.length);
+    });
+    // Switch OFF (the default): neither column, and the file is byte-for-byte the one made from points carrying no whole-film cells at all.
+    it('switch off: no whole_film_check and no whole_film_region column, whatever the points carry', () => {
+      const off = measurementsCsv([synthModel({ points: withCell('flagged:region-mandible', 'region flagged') })], opts({ layout: 'points' }));
+      const none = measurementsCsv([synthModel({ points: pts })], opts({ layout: 'points' }));
+      expect(off).toBe(none);
+      expect(off).not.toContain('whole_film');
+      expect(off).not.toContain('region flagged');
+      expect(off).not.toContain('flagged:region-mandible');
+    });
+    it('the anonymised file keeps it (it holds no patient data)', () => {
+      const anon = lines(measurementsCsv([synthModel({ points: withCell('flagged:shape') })], opts({ layout: 'points', anonymise: true, wholeFilm: true })));
+      expect(parseRow(anon[1])[at]).toBe('flagged:shape');
+    });
+    it('the tidy and wide layouts are unchanged by it (no whole_film_check column there)', () => {
+      expect(TIDY_COLUMNS).not.toContain('whole_film_check');
+      expect(measurementsCsv([synthModel({ points: withCell('flagged:shape') })], opts())).toBe(measurementsCsv([synthModel()], opts()));
+      expect(measurementsCsv([synthModel({ points: withCell('flagged:shape') })], opts({ layout: 'wide' }))).toBe(measurementsCsv([synthModel()], opts({ layout: 'wide' })));
     });
   });
 });

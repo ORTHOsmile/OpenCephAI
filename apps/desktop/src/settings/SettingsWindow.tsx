@@ -24,11 +24,15 @@ const EMPTY_DRAFT: UserNormDraft = { setName: '', measurement: '', mean: '', sd:
  *  and from the Sidebar (owner, 7 Oct). Every write that can fail (a user-norm save/delete, the clinic default)
  *  is shown on screen on failure — `useNorms`'s own `loadError`/`settingsError` cover the reads; this component
  *  covers the writes it makes itself. */
-export type SettingsTab = 'analyses' | 'norms' | 'meanings' | 'filmText' | 'bestModel';
-export function SettingsWindow({ tab: initialTab, found, norms, decimals, onDecimals, onClose, meanings, filmDetails, mine, onMineSaved, onMineDeleted, dateFormat, bestModel = null }: {
+export const AUTO_ADVANCE_LABEL = 'Move to the next point automatically';
+export const AUTO_ADVANCE_KEY = 'auto_advance';
+export type SettingsTab = 'analyses' | 'norms' | 'meanings' | 'filmText' | 'bestModel' | 'checks';
+export function SettingsWindow({ tab: initialTab, found, norms, decimals, onDecimals, onClose, meanings, filmDetails, mine, onMineSaved, onMineDeleted, dateFormat, bestModel = null, wholeFilm = null, autoAdvance = true, onAutoAdvance }: {
   tab: SettingsTab; found: ReadonlySet<LandmarkId> | null; norms: Norms;
   /** Settings › Best model (spec 2026-10-29 §2): App's `BestModelSettings`, which holds the shared base state. */
   bestModel?: ReactNode;
+  /** Settings › Checks (SC-1 Part 1b Task D2, owner 5 Nov): App's `WholeFilmSettings`, the "Whole-film check (beta)" switch. */
+  wholeFilm?: ReactNode;
   /** Owner MEANING-PER-CLINICIAN (16 Oct) + NOCLIN-2 (17 Oct): the clinician Settings › Meanings edits (the
    *  top-bar choice, or the Mac login name) and their words, plus `referrerNote` when the open film is actually
    *  showing a different clinician's words (the referring practitioner's). */
@@ -39,6 +43,8 @@ export function SettingsWindow({ tab: initialTab, found, norms, decimals, onDeci
   // Edit, Delete). A save shows the new/edited analysis at once; a delete leaves it off the shown list (App.tsx).
   mine: ReturnType<typeof useMyAnalyses>; onMineSaved: (a: MyAnalysis, isNew: boolean) => void; onMineDeleted: (id: string) => void;
   decimals: Decimals; onDecimals: (d: Decimals) => void; onClose: () => void;
+  /** Owner, 6 Nov 2026: "Move to the next point automatically" (on by default, remembered). Absent `onAutoAdvance`: shown but not changeable (tests). */
+  autoAdvance?: boolean; onAutoAdvance?: (on: boolean) => void;
   /** The operator's date format, for the build day in the version line at the foot (owner, 19 Oct). */
   dateFormat: DateFormat;
 }) {
@@ -114,8 +120,10 @@ export function SettingsWindow({ tab: initialTab, found, norms, decimals, onDeci
           <button type="button" role="tab" aria-selected={tab === 'meanings'} onClick={() => setTab('meanings')}>Meanings</button>
           <button type="button" role="tab" aria-selected={tab === 'filmText'} onClick={() => setTab('filmText')}>Text on the film</button>
           <button type="button" role="tab" aria-selected={tab === 'bestModel'} onClick={() => setTab('bestModel')}>Best model</button>
+          <button type="button" role="tab" aria-selected={tab === 'checks'} onClick={() => setTab('checks')}>Checks</button>
         </div>
         {tab === 'bestModel' && bestModel}
+        {tab === 'checks' && wholeFilm}
         {tab === 'meanings' && <MeaningsSettings clinician={meanings.clinician} overrides={meanings.overrides} referrerNote={meanings.referrerNote} onChanged={meanings.refresh} />}
         {tab === 'filmText' && <FilmDetailsSettings filmDetails={filmDetails} />}
         {tab === 'analyses' && (
@@ -137,6 +145,11 @@ export function SettingsWindow({ tab: initialTab, found, norms, decimals, onDeci
                 {([0, 1, 2, 3] as const).map((d) => <option key={d} value={d}>{d}</option>)}
               </select>
             </label>
+            <label className="auto-advance-control">
+              <input type="checkbox" checked={autoAdvance} disabled={!onAutoAdvance} onChange={(e) => onAutoAdvance?.(e.target.checked)} />
+              {' '}{AUTO_ADVANCE_LABEL}
+            </label>
+            <p className="hint">On: after you place or move a point and let go, the magnifier waits a moment, then moves to the next point. Off: it stays on that point.</p>
             <label>Clinic default population
               <select value={norms.clinicDefault ?? ''} onChange={(e) => void onClinicDefault(e.target.value)}>
                 <option value="">Not set</option>

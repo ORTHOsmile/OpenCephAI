@@ -1,6 +1,7 @@
 import type { Expr, NodeId, Vec2 } from '@ceph/geometry';
+import { GRID_STYLE, MM_PER_PX } from '../canvas/gridStyle';
 import { tickLabels, xOf } from '../chart/polygon';
-import { planeSegments, profilogramPaths } from '../canvas/overlayGeometry';
+import { mmGrid, planeSegments, profilogramPaths } from '../canvas/overlayGeometry';
 import { displayBounds, displayOf, type Dims, type Orientation } from '../canvas/orientation';
 import { softDash } from '../compare/series';
 import type { Overlays, TracingPoint } from '../tracing/state';
@@ -133,11 +134,53 @@ export function tracingShapes(points: Record<string, TracingPoint>, registry: Re
   return out;
 }
 
+/** Liang-Barsky: the part of the segment a-b inside [x0,x1] x [y0,y1], or null when none of it is. */
+function clipSegment(a: Vec2, b: Vec2, x0: number, y0: number, x1: number, y1: number): [Vec2, Vec2] | null {
+  const dx = b.x - a.x, dy = b.y - a.y;
+  let t0 = 0, t1 = 1;
+  for (const [p, q] of [[-dx, a.x - x0], [dx, x1 - a.x], [-dy, a.y - y0], [dy, y1 - a.y]]) {
+    if (p === 0) { if (q < 0) return null; continue; }
+    const r = q / p;
+    if (p < 0) { if (r > t1) return null; if (r > t0) t0 = r; } else { if (r < t0) return null; if (r < t1) t1 = r; }
+  }
+  return t1 - t0 <= 0 ? null : [{ x: a.x + t0 * dx, y: a.y + t0 * dy }, { x: a.x + t1 * dx, y: a.y + t1 * dy }];
+}
+
+/** Owner, 5 Nov 2026: the screen's true-size millimetre grid (canvas/overlayGeometry.ts `mmGrid`: 1 mm lines, heavier
+ *  every 5 mm and every 10 mm, the two axes through Po; lined up with Frankfort and anchored at Po) laid under the
+ *  profilogram. One grid line is 1 mm of the PATIENT, so on the page a cell is `fit.k / mmPerPx` page mm — the page is
+ *  not life size, and the note says so. Cut to the film's own outline (the grid is the film's paper), so it never
+ *  runs into the margin. Colours, line weights and opacity are the screen's, from `canvas/gridStyle.ts` (the colour is the light value of the screen's `--grid-*` token). */
+function gridShapes(pos: Record<string, Vec2>, mmPerPx: number, dims: Dims, fit: Fit, P: (p: Vec2) => Vec2): Shape[] {
+  const Po = pos.Po, Or = pos.Or;
+  const g = Po && Or ? mmGrid(Po, Or, mmPerPx, dims) : null;
+  if (!g) return [];
+  const out: Shape[] = [];
+  const draw = (list: { a: Vec2; b: Vec2 }[], role: string, colour: string, width: number) => {
+    for (const s of list) {
+      const c = clipSegment(s.a, s.b, -0.5, -0.5, dims.W - 0.5, dims.H - 0.5);
+      if (!c) continue;
+      const a = P(c[0]), b = P(c[1]);
+      out.push({ t: 'line', x1: a.x, y1: a.y, x2: b.x, y2: b.y, stroke: tokenColour(colour), width, role });
+    }
+  };
+  // The screen's own colours and line weights, from the one shared table (`canvas/gridStyle.ts`); 1 CSS px = 25.4/96 page mm.
+  const S = GRID_STYLE;
+  draw(g.minor, 'grid-minor', `var(--${S.minor.token})`, S.minor.px * MM_PER_PX);
+  draw(g.mid, 'grid-mid', `var(--${S.mid.token})`, S.mid.px * MM_PER_PX);
+  draw(g.major, 'grid-major', `var(--${S.major.token})`, S.major.px * MM_PER_PX);
+  draw(g.axes, 'grid-axis', `var(--${S.axis.token})`, S.axis.px * MM_PER_PX);
+  out.push({ t: 'text', x: fit.img.x, y: fit.img.y - 1.5, s: 'Grid: 1 mm, 5 mm and 10 mm lines in patient millimetres (this page is not life size)', size: 6, fill: PRINT.grey, role: 'grid-note' });
+  return out;
+}
+
 /** The profilogram alone (review Minor 3/4's own marks, unchanged), for its OWN page (owner ruling, 29 Oct 2026,
  *  item 1): never drawn over the film. `fit` places it on whatever box the caller gives it — the same `figureFit`
  *  used for the film, but typically a full page box rather than the (now narrower) film box. `planes`, when given,
- *  adds the operator's selected planes AFTER the profile shapes (painted on top), as the film page draws them. */
-export function profilogramShapes(points: Record<string, TracingPoint>, o: Orientation, dims: Dims, fit: Fit, planes?: { registry: Record<NodeId, Expr>; overlays: Overlays }): Shape[] {
+ *  adds the operator's selected planes AFTER the profile shapes (painted on top), as the film page draws them.
+ *  `grid`, when given, lays the true-size mm grid BEFORE them (underneath); the caller passes it only for a
+ *  calibrated film (profilogramPage.ts). */
+export function profilogramShapes(points: Record<string, TracingPoint>, o: Orientation, dims: Dims, fit: Fit, planes?: { registry: Record<NodeId, Expr>; overlays: Overlays }, grid?: { mmPerPx: number } | null): Shape[] {
   const P = (p: Vec2) => { const q = displayOf(o, dims, p); return { x: fit.x0 + fit.k * q.x, y: fit.y0 + fit.k * q.y }; };
   const pos: Record<string, Vec2> = Object.fromEntries(Object.entries(points).map(([id, p]) => [id, { x: p.x, y: p.y }]));
   const pr = profilogramPaths(pos), pts = (l: Vec2[]) => l.map((p) => { const q = P(p); return [q.x, q.y] as [number, number]; });
@@ -150,6 +193,8 @@ export function profilogramShapes(points: Record<string, TracingPoint>, o: Orien
   // Owner (Nov 2026): the operator's selected lines (FH, SN...) sit ON TOP of the profilogram, so they are pushed last.
   // Only when there is a profile: a page with lines and no profilogram would not be a profilogram page.
   if (planes && out.length) out.push(...planeShapes(pos, planes.registry, planes.overlays, P));
+  // Owner, 5 Nov 2026: the mm grid goes UNDER everything (first), and, like the planes, only on a page that has a profile.
+  if (grid && out.length) return [...gridShapes(pos, grid.mmPerPx, dims, fit, P), ...out];
   return out;
 }
 

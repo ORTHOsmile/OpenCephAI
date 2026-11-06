@@ -3,9 +3,10 @@ import { compile, type Vec2 } from '@ceph/geometry';
 import { ALL_ANALYSES, buildRegistry, foundBy, resolveNorm, type MyAnalysis } from '@ceph/analyses';
 import { getCurrentWebview } from '@tauri-apps/api/webview';
 import { ask, open } from '@tauri-apps/plugin-dialog';
-import { library, models, modelStatus, operators, setModelDir, settings, type CaseSummary, type ModelPointRow, type ModelStatus, type PointCheckFlag, type PointCheckView } from './ipc';
+import { library, models, modelStatus, operators, setModelDir, settings, type CaseSummary, type ModelPointRow, type ModelStatus, type PointCheckFlag, type PointCheckView, type ResolveReason } from './ipc';
 import { checkExportProblem, checkStatus, filmFlags, filmHoldsSignOff, flagAt, notRunLines, shownView, signHoldLine, type CheckRead, type CheckStatus } from './points/pointCheck';
 import { pressChecked } from './layout/PointCheckNote';
+import { shownFor, wholeStatus, WHOLE_EXPORT_WORDS, type WholeRead } from './points/wholeFilm';
 import { CephCanvas } from './canvas/CephCanvas';
 import { Sidebar } from './layout/Sidebar';
 import { Inspector } from './layout/Inspector';
@@ -50,6 +51,8 @@ import { zoomAt, type Viewport } from './canvas/viewport';
 import { shownName } from './library/identity';
 import { DECIMALS_KEY, DEFAULT_DECIMALS, readDecimals, type Decimals } from './format';
 import { SettingsWindow, type SettingsTab } from './settings/SettingsWindow';
+import { WholeFilmSettings, WHOLE_IN_REPORTS_KEY } from './settings/WholeFilmSettings';
+import { AUTO_ADVANCE_KEY } from './settings/SettingsWindow';
 import { BEST_TABLE_KEY, BestModelSettings, foldOpen, foldValue } from './settings/BestModelSettings';
 import { useNorms } from './norms/useNorms';
 import { AutoSwitchNote, clinicDefaultShortLabel } from './norms/AutoSwitchNote';
@@ -486,6 +489,46 @@ export default function App() {
     void landRead(id, kase.checkRev, library.pointChecksForCase(id), () => live);
     return () => { live = false; };
   }, [kase.doc?.id, kase.aiPoints, kase.busy, kase.doc?.updatedAt, kase.checkRev, checkRetry]);   // eslint-disable-line react-hooks/exhaustive-deps
+  // SC-1 Part 1 task 8: the whole-film note's stored result. Read at the same moments (a film opens, each stored run, each save)
+  // and after sign-off (the final tracing is checked then). A note only: it feeds nothing but the note (never `signHeldRef`,
+  // `filmHoldsSignOff`, `setFlagged` or `checkWaits`), and a failed read just shows no note.
+  const [wholeLanded, setWholeLanded] = useState<WholeRead | null>(null);
+  const [wholeBusy, setWholeBusy] = useState(false);   // a Checked is being stored: the view held is about to change
+  const [wholeAsking, setWholeAsking] = useState<number | null>(null);
+  const verifiedAtRef = useRef<string | null>(null); verifiedAtRef.current = kase.doc?.verifiedAt ?? null;
+  const readWhole = useCallback((id: string, live: () => boolean = () => true): Promise<void> => {
+    const rev = checkRevRef.current, verifiedAt = verifiedAtRef.current;   // the tags this read is issued at
+    return library.wholeFilmCheck(id).then((v) => { if (live() && openIdRef.current === id) setWholeLanded({ caseId: id, rev, verifiedAt, view: v ?? null, failed: false }); })
+      .catch(() => { if (live() && openIdRef.current === id) setWholeLanded({ caseId: id, rev, verifiedAt, view: null, failed: true }); });
+  }, []);
+  useEffect(() => {
+    const id = kase.doc?.id;
+    setWholeAsking(null);
+    if (!id) return;
+    let live = true;
+    void readWhole(id, () => live);
+    return () => { live = false; };
+  }, [kase.doc?.id, kase.aiPoints, kase.busy, kase.doc?.updatedAt, kase.doc?.verifiedAt, kase.checkRev]);   // eslint-disable-line react-hooks/exhaustive-deps
+  const wholeShown = shownFor(wholeLanded, kase.doc?.id);
+  // Task 9: the report's `whole_film_check` cell reads this same view. A view not yet read for the open film, or whose read failed,
+  // stops the export (a blank cell would read as "no record"); the note itself just shows nothing then.
+  const wholeNow = wholeStatus(kase.doc?.id ?? null, kase.checkRev, kase.doc?.verifiedAt ?? null, kase.checkRecording || wholeBusy, wholeLanded);
+  const wholeForReport = wholeNow === 'read' ? wholeLanded : null;
+  // Research switch (owner, 6 Nov 2026; Settings › Checks): off by default, remembered per Mac. While it is off the whole-film view is in neither
+  // the PDF nor the CSV, so an unread or failed read stops nothing.
+  // Owner, 6 Nov 2026: "Move to the next point automatically", ON unless stored '0'; remembered per Mac.
+  const [autoAdvance, setAutoAdvance] = useState(true);
+  useEffect(() => { settings.get(AUTO_ADVANCE_KEY).then((v) => { if (v === '0') setAutoAdvance(false); }).catch(() => {}); }, []);
+  const onAutoAdvance = useCallback((on: boolean) => { setAutoAdvance(on); settings.set(AUTO_ADVANCE_KEY, on ? '1' : '0').catch(() => {}); }, []);
+  const [wholeInReports, setWholeInReports] = useState(false);
+  useEffect(() => { settings.get(WHOLE_IN_REPORTS_KEY).then((v) => { if (v === '1') setWholeInReports(true); }).catch(() => {}); }, []);
+  const onWholeInReports = useCallback((on: boolean) => { setWholeInReports(on); settings.set(WHOLE_IN_REPORTS_KEY, on ? '1' : '0').catch(() => {}); }, []);
+  const wholeFilmProblem = !wholeInReports ? null : wholeNow === 'pending' ? WHOLE_EXPORT_WORDS.pending : wholeNow === 'failed' ? WHOLE_EXPORT_WORDS.failed : null;
+  const onWholeResolve = useCallback((checkId: number, reason: ResolveReason) => {
+    const id = kase.doc?.id;
+    if (!id) return;
+    void (async () => { setWholeBusy(true); try { await library.wholeFilmCheckResolve(id, checkId, reason); } catch { /* the re-read shows what is stored */ } setWholeAsking(null); await readWhole(id); setWholeBusy(false); })();
+  }, [kase.doc?.id, readWhole]);
   const checkNow: CheckStatus = checkStatus(kase.doc?.id ?? null, kase.checkRev, kase.checkRecording, landed);
   const pointCheck = useMemo(() => shownView(landed, kase.doc?.id), [landed, kase.doc?.id]);
   // The flag at each pin: the one from the run of the model that placed it; a hand-placed point has none. Flags only.
@@ -560,11 +603,22 @@ export default function App() {
   // Library export uses too).
   const populationChoice = useMemo(() => (kase.doc && !norms.loadError ? casePopulationChoice(kase.doc, norms) : null),
     [kase.doc, norms.sets, norms.userNorms, norms.clinicDefault, norms.loadError]);   // eslint-disable-line react-hooks/exhaustive-deps
+  // Owner, 29 Oct 2026 / 5 Nov: the export options (Profilogram page, Norm sources, Placed by, Points table), remembered per Mac
+  const [reportOptions, setReportOptions] = useState<ReportOptions>(DEFAULT_REPORT_OPTIONS);
+  useEffect(() => {
+    (Object.keys(REPORT_OPTION_KEYS) as (keyof ReportOptions)[]).forEach((k) => {
+      settings.get(REPORT_OPTION_KEYS[k]).then((v) => { if (v !== null) setReportOptions((o) => ({ ...o, [k]: v === '1' })); }).catch(() => {});
+    });
+  }, []);
+  const onReportOptions = useCallback((o: ReportOptions) => {
+    setReportOptions(o);
+    (Object.keys(REPORT_OPTION_KEYS) as (keyof ReportOptions)[]).forEach((k) => { settings.set(REPORT_OPTION_KEYS[k], o[k] ? '1' : '0').catch(() => {}); });
+  }, []);
   const report = useReport({ open: reportOpen, doc: kase.doc, rows: compareRows, defs, normFor: kase.doc && !norms.loadError ? normFor : null,
     normsError: norms.loadError, words: meanings.words, points: tracing.points, placer: reportPlacer, titleOf: reportTitle, scale, dateFormat,
     bitmap: drawn, orientation: tracing.orientation, display: tracing.display, decimals, figureInput: reportFigure, pointFiles,
-    via: (id) => kase.placedVia?.[id] ?? null, populationChoice, pointCheck,
-    pointCheckProblem: checkExportProblem(checkNow) });
+    via: (id) => kase.placedVia?.[id] ?? null, populationChoice, pointCheck, options: reportOptions,
+    pointCheckProblem: checkExportProblem(checkNow), wholeFilm: wholeForReport?.view ?? null, wholeFilmProblem, wholeFilmInReports: wholeInReports });
   // Task 9: Save PDF… offers A4/Letter, remembered across sessions (`report_paper`); Export CSV… offers including
   // the film in the PDF (`withFilm`, defaulting on — the clinician usually wants it, and — owner, 29 Oct 2026 —
   // remembered per Mac the same way, `report_with_film`). Owner, 29 Oct 2026: the three export options
@@ -575,16 +629,6 @@ export default function App() {
   const [withFilm, setWithFilm] = useState(true);
   useEffect(() => { settings.get('report_with_film').then((v) => { if (v !== null) setWithFilm(v !== '0'); }).catch(() => {}); }, []);
   const onWithFilm = useCallback((on: boolean) => { setWithFilm(on); settings.set('report_with_film', on ? '1' : '0').catch(() => {}); }, []);
-  const [reportOptions, setReportOptions] = useState<ReportOptions>(DEFAULT_REPORT_OPTIONS);
-  useEffect(() => {
-    (['profilogramPage', 'normSources', 'placedBy'] as const).forEach((k) => {
-      settings.get(REPORT_OPTION_KEYS[k]).then((v) => { if (v !== null) setReportOptions((o) => ({ ...o, [k]: v === '1' })); }).catch(() => {});
-    });
-  }, []);
-  const onReportOptions = useCallback((o: ReportOptions) => {
-    setReportOptions(o);
-    (['profilogramPage', 'normSources', 'placedBy'] as const).forEach((k) => { settings.set(REPORT_OPTION_KEYS[k], o[k] ? '1' : '0').catch(() => {}); });
-  }, []);
   // Library ▸ Select ▸ Export CSV… (spec 2026-10-17, Task 10): several films, one CSV, each worked out as if it were
   // open — its own points and scale, its chosen norms, its changed words, and (NOCLIN-2, preflight-rulings Task 10)
   // the meaning words its own screen would show: the top-bar clinician, else its referrer's saved words, else the
@@ -599,10 +643,11 @@ export default function App() {
       wordsOf: wordsByFilm(settings, { explicit, login: ops.current, names: ops.names }),
       defs, compiled, decimals, norms, titleOf: reportTitle, dateFormat, now: new Date(), normsError: norms.loadError,
       pointFiles: (id: string) => library.pointFiles(id), runs: (id: string) => library.ghosts(id), pointChecks: (id: string) => library.pointChecksForCase(id),
+      wholeFilms: (id: string) => library.wholeFilmCheck(id), wholeFilmInReports: wholeInReports,
       salt: () => readSalt(settings), save: (name, bytes) => chooseAndSave('csv', name, bytes) });
     if (note) setLibNotice(note);
     return note !== null;
-  }, [norms, defs, compiled, decimals, reportTitle, dateFormat]);
+  }, [norms, defs, compiled, decimals, reportTitle, dateFormat, wholeInReports]);
   const fixedMain = modelList.rows.find((r) => r.main)?.id ?? null;
   // Automatic best (spec §2, D1): the model line names it, not the fixed main model, while it is on.
   const line = modelLine(model?.modelId ?? null, pointSource?.autoBest, autoBestTitle);
@@ -639,7 +684,10 @@ export default function App() {
   const bestModel = <BestModelSettings base={base} rows={modelList.rows} titleOf={autoBestTitle} tableOpen={bestTableOpen} onTable={onBestTable}
     onAutoBestUndone={autoBest.undone} dateFormat={dateFormat} />;
   const switchNoteWindow = switchNote && <AutoSwitchNote n={switchNote.n} defaultLabel={clinicDefaultShortLabel(switchNote.clinicDefault, norms.sets)} onClose={closeSwitchNote} />;
-  const settingsWindow = settingsOpen && <SettingsWindow tab={settingsTab} bestModel={bestModel} found={found} norms={norms}
+  // SC-1 Part 1b Task D2: Settings › Checks. A change of the switch makes the open film read its whole-film view again (off: no note, the CSV cell `off`).
+  const onWholeSwitch = useCallback(() => { const id = openIdRef.current; if (id) void readWhole(id); }, [readWhole]);
+  const wholeFilmSwitch = <WholeFilmSettings onChanged={onWholeSwitch} inReports={wholeInReports} onInReports={onWholeInReports} />;
+  const settingsWindow = settingsOpen && <SettingsWindow autoAdvance={autoAdvance} onAutoAdvance={onAutoAdvance} tab={settingsTab} bestModel={bestModel} wholeFilm={wholeFilmSwitch} found={found} norms={norms}
     decimals={decimals} onDecimals={onDecimals} meanings={meanings} filmDetails={filmDetails} mine={mine} onMineSaved={onMineSaved} onMineDeleted={onMineDeleted}
     dateFormat={dateFormat} onClose={() => { setSettingsOpen(false); norms.refresh(); refreshAutoBest(); }} />;
   const onLocateModel = useCallback(async (): Promise<string | null> => {
@@ -770,8 +818,9 @@ export default function App() {
         // the other keys, rather than depending only on CephCanvas's internal render gate to remove the listener.
         calib={calib} onCalibrationClick={(p) => setCalib((k) => (k && k.length < 2 ? [...k, p] : k))} onCalibrationHover={setCalibHover} onCalibrationMove={sup ? undefined : moveMark} chooser={sup || reportOpen ? null : chooser} ghosts={ghosts} caseId={d?.id ?? null} decimals={decimals} bars={sup ? undefined : kase.modelBars}
         rulerMarks={rulerMarks.marks} onRulerMove={rulerMarks.onMove} onRulerEnd={rulerMarks.onEnd} signedOff={!!d?.verifiedAt} checks={pointChecks} checkLines={checkLines}
-        filmChecks={filmChecks} canCheck={!sup && !reportOpen && !d?.verifiedAt} onFilmChecked={onFilmChecked} />
-      <Inspector bitmap={drawn} state={tracing} dispatch={dispatch} defs={defs} registry={registry} compiled={compiled} values={values} scale={scale} change={series?.change ?? null}
+        filmChecks={filmChecks} canCheck={!sup && !reportOpen && !d?.verifiedAt} onFilmChecked={onFilmChecked}
+        wholeCheck={wholeShown} canCheckWhole={!sup && !reportOpen} wholeAsking={wholeShown != null && wholeAsking === wholeShown.id} onWholeAsk={setWholeAsking} onWholeResolve={onWholeResolve} />
+      <Inspector autoAdvance={autoAdvance} bitmap={drawn} state={tracing} dispatch={dispatch} defs={defs} registry={registry} compiled={compiled} values={values} scale={scale} change={series?.change ?? null}
         dateFormat={dateFormat}
         otherPointsOpen={otherPointsOpen} onOtherPoints={onOtherPoints} decimals={decimals}
         normFor={normFor} normsError={normsErrorMessage(norms.loadError, [norms.settingsError, normPicks.error].filter(Boolean).join(' ') || null)}

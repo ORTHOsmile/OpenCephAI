@@ -113,7 +113,7 @@ const seed = { settings: {}, ops: ['Dr A'], userNorms: [], runs: { 'cwlachap-hrn
   const after = await stored();
   ok('2. Re-detect runs the new main model and replaces the unverified AI points (control)', after.find((l) => l.id === 'S').x === seed.cases.c1.landmarks.find((l) => l.id === 'S').x + 40);
   // The S point's hover label in the Landmarks list (check 1 left the Inspector on Measurements; the list item is the
-  // button whose bold label is exactly "S" — a "starts with S" match would find the Steps tab).
+  // button whose bold label is exactly "S" — a "starts with S" match would find a tab whose name starts with S)
   await page.getByRole('tab', { name: 'Landmarks' }).click();
   ok('2. and the point says it was placed by Aariz', / — Aariz$/.test(await page.evaluate(() => {
     const b = [...document.querySelectorAll('.inspector .lm-list button')].find((x) => x.querySelector('b')?.textContent === 'S'); return b ? b.title : ''; })));

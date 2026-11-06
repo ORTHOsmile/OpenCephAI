@@ -26,7 +26,7 @@ const results = []; const ok = (name, cond, extra = '') => { results.push(`${con
   page.on('console', (m) => { if (m.type() === 'error' && !(m.location().url || '').endsWith('/favicon.ico')) errors.push(m.text()); });
   await page.addInitScript(({ png, landmarks }) => {
     window.__written = [];
-    const load = () => JSON.parse(localStorage.getItem('fakeLib') || '{"cases":{},"settings":{},"films":0}');
+    const load = () => JSON.parse(localStorage.getItem('fakeLib') || '{"cases":{},"settings":{"whole_film_in_reports":"1"},"films":0}');
     const store = (db) => localStorage.setItem('fakeLib', JSON.stringify(db));
     const now = () => new Date().toISOString();
     let cb = 0;
@@ -128,7 +128,7 @@ const results = []; const ok = (name, cond, extra = '') => { results.push(`${con
   };
 
   const MODEL = 'SYNTHETIC-stub';
-  const set = (patch) => page.evaluate((p) => { const d = JSON.parse(localStorage.getItem('fakeLib') || '{"cases":{},"settings":{},"films":0}'); Object.assign(d, p); localStorage.setItem('fakeLib', JSON.stringify(d)); }, patch);
+  const set = (patch) => page.evaluate((p) => { const d = JSON.parse(localStorage.getItem('fakeLib') || '{"cases":{},"settings":{"whole_film_in_reports":"1"},"films":0}'); Object.assign(d, p); localStorage.setItem('fakeLib', JSON.stringify(d)); }, patch);
   const run = (outcome, extra = {}) => ({ modelId: MODEL, outcome, notRunReason: null, present: 19, ...extra });
   // N sits at film (1050, 200). A flag says: the rest of the face expected it 142 px to the LEFT, on the film as stored.
   const flagN = (over = {}) => ({ id: 1, modelId: MODEL, landmarkId: 'N', action: 'flagged', points: null, offPx: 142, expectedX: 908, expectedY: 200,
@@ -415,7 +415,7 @@ const results = []; const ok = (name, cond, extra = '') => { results.push(`${con
     return (await nWritten()) > n ? page.evaluate(() => window.__written[window.__written.length - 1]) : null;
   };
   const cellsFrom = (w) => { const [h, ...rows] = parseCsv(w); const at = h.indexOf('point_check'), pt = h.indexOf('point'); return { h, at, rows, byPoint: Object.fromEntries(rows.map((r) => [r[pt], r[at]])) }; };
-  const previewCells = () => page.evaluate(() => Object.fromEntries([...document.querySelectorAll('.report-points tr[data-point]')].map((r) => [r.getAttribute('data-point'), r.lastElementChild.textContent])));
+  const previewCells = () => page.evaluate(() => Object.fromEntries([...document.querySelectorAll('.report-points tr[data-point]')].map((r) => [r.getAttribute('data-point'), r.children[[...r.closest('table').querySelectorAll('thead th')].findIndex((t) => t.textContent === 'Point check')].textContent])));   // the Point check cell (SC-1 task 9 added a column after it)
   const previewHead = () => page.evaluate(() => [...document.querySelectorAll('.report-points thead th')].map((t) => t.textContent));
   const reopenFilm = async (n, patch, beforeOpen) => { await toLibrary(); if (patch) await set(patch); if (beforeOpen) await beforeOpen(); await page.locator('.cards .card', { hasText: `SYNTHETIC-film-${n}` }).locator('.open').click(); await page.waitForSelector('g.landmark[data-id="N"]'); await page.waitForTimeout(500); };
   const film = (n) => `SYNTHETIC-film-${n}`;
@@ -425,7 +425,7 @@ const results = []; const ok = (name, cond, extra = '') => { results.push(`${con
   await importNew();                                                                      // c22
   await openReport();
   const pHead = await previewHead(), pCells = await previewCells();
-  ok('T8-p1. the report\'s Points table ends with "Point check"', pHead[pHead.length - 1] === 'Point check', pHead.join('|'));
+  ok('T8-p1. the report\'s Points table has "Point check" (SC-1 task 9 then adds "Whole-film check" after it)', pHead[pHead.length - 3] === 'Point check' && pHead[pHead.length - 2] === 'Whole-film check', pHead.join('|'));
   ok('T8-p2. the report: N reads flagged, every other point blank (19 rows compared)', Object.keys(pCells).length === 19 && pCells.N === 'flagged' && Object.entries(pCells).every(([id, v]) => id === 'N' || v === ''), JSON.stringify(pCells));
   const csvFlag = await exportPoints('/Users/demo/out/flag.csv');
   const cf = csvFlag ? cellsFrom(csvFlag) : null;
@@ -456,7 +456,7 @@ const results = []; const ok = (name, cond, extra = '') => { results.push(`${con
   for (const [name, pc] of [['never checked', null], ['not run (no tracings file)', { runs: [run('not-run', { notRunReason: 'not-set-up', present: null })], flags: [] }], ['nothing flagged', { runs: [run('clean')], flags: [] }]]) {
     await reopenFilm(22, { pc }); await openReport();
     const h = await previewHead(), c = await previewCells(), w = await exportPoints('/Users/demo/out/blank.csv'), cc = w ? cellsFrom(w) : null;
-    ok(`T8-s. ${name}: the column is there and blank (19 rows)`, h[h.length - 1] === 'Point check' && Object.keys(c).length === 19 && Object.values(c).every((v) => v === '')
+    ok(`T8-s. ${name}: the column is there and blank (19 rows)`, h[h.length - 3] === 'Point check' && Object.keys(c).length === 19 && Object.values(c).every((v) => v === '')
       && !!cc && cc.at > 0 && cc.rows.length === 19 && Object.values(cc.byPoint).every((v) => v === ''));
     await closeReport();
   }

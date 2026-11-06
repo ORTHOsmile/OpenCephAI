@@ -1,5 +1,5 @@
 use ceph_bench::{run, run_orient, BenchConfig, PARITY_MAX_PX};
-use clap::Parser;
+use clap::{CommandFactory, FromArgMatches, Parser};
 use std::path::{Path, PathBuf};
 
 /// MRE/SDR benchmark on Ceph-Biometrics-400 using the same ceph-infer pipeline the app ships.
@@ -11,7 +11,7 @@ struct Args {
     /// One manifest, or several separated by commas (one report per model in <out>/<model id>)
     #[arg(long, default_value = "models/manifest.json")] manifest: PathBuf,
     /// Output folder, e.g. reports/2026-09-26 (gitignored). Not used by --shape-prior.
-    #[arg(long, required_unless_present_any = ["shape_prior", "stage_a_acceptance"])] out: Option<PathBuf>,
+    #[arg(long, required_unless_present_any = ["shape_prior", "stage_a_acceptance", "sc1_split", "sc1_teaching_boxes", "sc1_box_gate", "sc1_region_probe", "sc1_box_gate_2", "sc1_box_gate_3", "sc1_size_calibrate", "sc1_cb_calibrate", "sc1_1a", "sc1_1b_dev", "sc1_1b_dev_decompose", "sc1_1b_dev3", "sc1_whole_film_3", "pku_prepare", "sc1_reference", "sc1_reference_lines", "sc1_1b_pku"])] out: Option<PathBuf>,
     /// Python reference predictions.csv; exit non-zero if any point differs by more than 0.5 px
     #[arg(long)] parity: Option<PathBuf>,
     /// Check automatic facing instead: every film as-is must read as facing right and mirrored as facing left
@@ -69,11 +69,131 @@ struct Args {
     /// starting-knowledge file under models/. Runs alone; writes reports/stage-a-acceptance/acceptance.json. Exit 0 pass,
     /// 3 fail, 1 broken.
     #[arg(long = "stage-a-acceptance")] stage_a_acceptance: bool,
+    /// SC-1 Part 1: split Aariz TRAIN 80/10/10 by the pinned seed and write the split file here (a git-ignored folder, e.g.
+    /// reports/sc1/sc1-aariz-split.json). Needs --data <the Aariz folder>. Runs alone. Prints counts and the SHA-256.
+    #[arg(long = "sc1-split")] sc1_split: Option<PathBuf>,
+    /// SC-1 Part 1: write the teaching boxes (COCO, each film and its mirror image) for the split in
+    /// reference/sc1-aariz-split.json into this folder (outside the repo or git-ignored): <dir>/train (teach) and <dir>/valid
+    /// (hold-out). Ignores --split (always Aariz train); an explicit --split other than train is refused. Runs alone.
+    #[arg(long = "sc1-teaching-boxes")] sc1_teaching_boxes: Option<PathBuf>,
+    /// SC-1 Part 1: the region finder's faithfulness on the Aariz train hold-out: the app's runtime (ONNX Runtime CPU fp32,
+    /// models/regions/manifest.json) against the PyTorch reference in --pytorch (pytorch-boxes.json), every box corner
+    /// within 0.5 px and the same region label. Needs --data <the Aariz folder>, --split-file, --boxes (the box cache
+    /// root, e.g. reports/sc1/boxes) and --out (writes <out>/faithfulness.json). Runs alone. Exit 0 pass, 3 fail, 1 broken.
+    #[arg(long = "sc1-faithfulness")] sc1_faithfulness: bool,
+    /// The SC-1 split file (--sc1-faithfulness), e.g. reference/sc1-aariz-split.json.
+    #[arg(long = "split-file")] split_file: Option<PathBuf>,
+    /// The region finder's box cache root (--sc1-faithfulness), outside the repo or git-ignored.
+    #[arg(long)] boxes: Option<PathBuf>,
+    /// The PyTorch reference boxes, pytorch-boxes.json (--sc1-faithfulness).
+    #[arg(long)] pytorch: Option<PathBuf>,
+    /// SC-1 Part 1 Task 10: the box-quality gate (reference/sc1-box-gate.json, pre-registered) on the Aariz-train hold-out,
+    /// through the app's region finder (models/regions), with the information table on Ceph-400 test1 (--ceph400) and Aariz
+    /// valid. Needs --data <the Aariz folder> and a passed reports/sc1/faithfulness/faithfulness.json for the same model.
+    /// Runs alone; writes reports/sc1/box-gate.json and, on a pass only, models/regions/calibration.json. Exit 0 pass,
+    /// 4 stop (to the owner; SC1-1a does not run), 1 broken.
+    #[arg(long = "sc1-box-gate")] sc1_box_gate: bool,
+    /// SC-1 Part 1, before SC1-1a (owner, 5 Nov 2026): the region false-alarm probe (reference/sc1-region-probe.json,
+    /// pre-registered) on Ceph-400 train 001-150 (--ceph400) and the Aariz-train hold-out (--data <the Aariz folder>),
+    /// through the app's region path with the pinned calibration. Ceph-400 test1, Aariz valid, Test2 and Aariz test are
+    /// refused. Runs alone; writes reports/sc1/region-probe.json. Exit 0 keep tau (at most 3 of 150 flagged), 3 to the
+    /// owner, 1 broken.
+    #[arg(long = "sc1-region-probe")] sc1_region_probe: bool,
+    /// SC-1 Part 1, the box gate's second version (owner, 5 Nov 2026, "Set from both sets"; reference/sc1-box-gate-2.json,
+    /// pre-registered): /1's gate, score line and C9 on the Aariz-train hold-out (--data <the Aariz folder>), with τ from
+    /// the hold-out AND Ceph-400 train 001-150 (--ceph400). Ceph-400 test1, Aariz valid, Test2 and Aariz test are
+    /// refused. Runs alone; writes reports/sc1/box-gate-2.json and, on a pass only, models/regions/calibration.json (rule
+    /// sc1-box-gate/2; the /1 file kept as calibration-1.json). Exit 0 pass, 4 stop (to the owner), 1 broken.
+    #[arg(long = "sc1-box-gate-2")] sc1_box_gate_2: bool,
+    /// SC-1 Part 1b Task C0, the box gate's third version (owner OQ-1b-A = A, 5 Nov 2026; reference/sc1-box-gate-3.json,
+    /// pre-registered): /2's gate, score line and C9 on the Aariz-train hold-out, with τ over the hold-out, Ceph-400 train
+    /// 001-150 and the development films (Ceph-400 test1 151-300 and Aariz valid: SC1-1a's spent films, tuned on and
+    /// stated). Test2, Aariz test and PKU are refused. Runs alone, no --split; writes reports/sc1/box-gate-3.json and, on a
+    /// pass only, models/regions/calibration.json (rule sc1-box-gate/3; the /2 file kept as calibration-2.json). Exit 0
+    /// pass, 4 stop (to the owner), 1 broken.
+    #[arg(long = "sc1-box-gate-3")] sc1_box_gate_3: bool,
+    /// SC-1 Part 1b Task C: the size look's calibration (rule sc1-size/1, reference/sc1-size.json, pre-registered): the
+    /// centre and line of q = ln(tracing spread / box spread) per set of regions, over the 520 calibration films (the
+    /// Aariz-train hold-out, Ceph-400 train 001-150, and the development films Ceph-400 test1 151-300 and Aariz valid,
+    /// tuned on and stated), with the gate /3 calibration in force and the box cache. Test2, Aariz test, PKU, the teaching
+    /// and tuning films are refused. Runs alone, no --split; writes reports/sc1/size-calibration.json and, on a pass only,
+    /// models/regions/size-calibration.json. Exit 0 pass, 4 stop (to the owner), 1 broken.
+    #[arg(long = "sc1-size-calibrate")] sc1_size_calibrate: bool,
+    /// SC-1 Part 1b Task D: the cranial-base centre look's calibration (rule sc1-cb-centre/1, reference/sc1-cb-centre.json,
+    /// pre-registered): the per-axis median offset of the traced cranial-base pin from the finder's cranial-base box pin,
+    /// and the line, over the same 520 calibration films as the size look (development films included and stated), with
+    /// the gate /3 calibration in force and the box cache; the cranial base moved 20 mm (control) and 10 mm (separation,
+    /// in-sample) on the films with a scale. Runs alone, no --split; writes reports/sc1/cb-centre-calibration.json and, on
+    /// a pass only, models/regions/cb-centre-calibration.json. Exit 0 pass, 4 stop (to the owner), 1 broken.
+    #[arg(long = "sc1-cb-calibrate")] sc1_cb_calibrate: bool,
+    /// SC-1 Part 1 Task 11, SC1-1a: the one-time pre-registered test of the whole-film check (reference/sc1-1a.json) on
+    /// Ceph-400 test1 (--ceph400) and Aariz valid (--data <the Aariz folder>), with the gate /2 calibration. Needs
+    /// reports/sc1/box-gate-2.json, models/regions and models/shape/ceph400-v1.shape. Optional --cache: caches of real
+    /// model runs on those films (information). Test2 and Aariz test are refused. Runs alone; writes
+    /// reports/sc1/sc1-1a.json. Exit 0 pass, 3 fail (to the owner), 1 broken, 4 gate stop.
+    #[arg(long = "sc1-1a")] sc1_1a: bool,
+    /// SC-1 Part 1b Task E: the development-film run (reference/sc1-1b-dev.json, pre-registered; information, not a test):
+    /// SC1-1a's films, folds, seeds and plants judged by whole-film/1 (gate /2, the 300-tracing file) beside whole-film/2
+    /// (gate /3, the 1,000-tracing reference, the size and centre looks), with the centre-line sensitivity. Reads Ceph-400
+    /// test1 (--ceph400) and Aariz valid (--data); Test2, Aariz test and PKU refused. Runs alone, no --split; writes
+    /// reports/sc1/sc1-1b-dev.json. Exit 0 printed, 3 the stop tripped (to the owner before PKU), 1 broken.
+    #[arg(long = "sc1-1b-dev")] sc1_1b_dev: bool,
+    /// SC-1 Part 1b Task E information (owner, 5 Nov 2026, "Find the cause first"): the development films judged by
+    /// whole-film/2 five ways (gate /2 or /3 tau, the 300- or 1,000-tracing reference, and gate /3 with only the maxilla and
+    /// mandible at /2's), SC1-1a's plants; P4 per region and the untouched films by look. Information only: no stored
+    /// calibration or pre-registration changed. Runs alone; writes reports/sc1/sc1-1b-dev-decompose.json. Exit 0, 1 broken.
+    #[arg(long = "sc1-1b-dev-decompose")] sc1_1b_dev_decompose: bool,
+    /// whole-film/3 (owner ruling, 5 Nov 2026, spec §17.15): put the two ruling records in force under models/regions:
+    /// calibration.json becomes sc1-box-gate/4 (gate /3's kept as calibration-3.json) and cb-centre-calibration.json gets
+    /// the ruled line 0.08 (the measured file kept as cb-centre-calibration-1.json). Reads no film. Runs alone. Exit 0, 1 refused.
+    #[arg(long = "sc1-whole-film-3")] sc1_whole_film_3: bool,
+    /// whole-film/3's confirmation run (reference/sc1-1b-dev3.json, pre-registered): SC1-1a's films, folds, seeds and
+    /// plants judged by whole-film/1 beside whole-film/3. Reads Ceph-400 test1 (--ceph400) and Aariz valid (--data); Test2,
+    /// Aariz test and PKU refused. Runs alone; writes reports/sc1/sc1-1b-dev3.json. Exit 0 printed, 3 the stop tripped (to
+    /// the owner, no re-tuning), 1 broken.
+    #[arg(long = "sc1-1b-dev3")] sc1_1b_dev3: bool,
+    /// SC-1 Part 1b Task A: make the sealed PKU bench folder from the unpacked download given here
+    /// (<...>/data/pku/unpacked/dental-cepha-dataset): writes <...>/data/pku/{images, gt.csv, gt-doctor1.csv,
+    /// gt-doctor2.csv, splits.json, spacing.csv, provenance.json}. Needs --ceph400 (the C12 scale control reads Ceph-400
+    /// train). Runs alone; runs no check, no region finder and no shape look. Prints counts, sizes, the S-N ratio, the
+    /// doctor-gap figures and the provenance SHA-256 only. Exit 0 made, 1 refused.
+    #[arg(long = "pku-prepare")] pku_prepare: Option<PathBuf>,
+    /// SC-1 Part 1b Task F: SC1-1b-PKU, the one pre-registered test of whole-film/3 on the 102 sealed PKU films
+    /// (reference/sc1-1b-pku.json). Needs --data <the pku folder> and --ceph400 <the Ceph-400 folder> (C12 reads its train
+    /// tracings only). Runs alone. The PKU seal opens only with the pre-registration committed as built, a clean tree and no
+    /// report yet; writes reports/sc1/sc1-1b-pku.json last. Exit 0 pass, 3 fail, 1 broken, 4 the gate report in force says stop.
+    #[arg(long = "sc1-1b-pku")] sc1_1b_pku: bool,
+    /// SC-1 Part 1b Task B: write the whole-film check's shape reference (`whole-film-reference/1`: Ceph-400 Train and
+    /// Test1, 300 tracings, and all Aariz train tracings, with the full-19 and 18-point lines stored) to this file, under
+    /// the git-ignored models folder (models/shape/whole-film-reference-v1.shape; never Stage A's ceph400-v1.shape).
+    /// Needs --data <the Aariz folder> and --ceph400 <the Ceph-400 folder>. Ceph-400 Test2, Aariz valid, Aariz test and
+    /// PKU are never read. Runs alone. Prints counts, the lines, the controls, the time and the SHA-256 only.
+    #[arg(long = "sc1-reference")] sc1_reference: Option<PathBuf>,
+    /// SC-1 Part 1b Task B fix round 1 (information only): read the whole-film reference file given (under models) and
+    /// print the full-19 line fitted fresh, by the same rule, on Ceph-400 alone, 300 random Aariz, 300 random of all
+    /// (seed 20261105), all Aariz and all. Reads no dataset and changes no file. Runs alone.
+    #[arg(long = "sc1-reference-lines")] sc1_reference_lines: Option<PathBuf>,
+    /// The Ceph-400 folder (--sc1-box-gate's information table reads its test1 films only; --sc1-region-probe its train films only).
+    #[arg(long, default_value = "data/ceph400")] ceph400: PathBuf,
+    /// Set by `parse_explicit`: whether --split was typed on the command line (its default is test1).
+    #[arg(skip)] split_explicit: bool,
+    /// Set by `parse_explicit`: whether --data and --ceph400 were typed (their defaults are data/ceph400).
+    #[arg(skip)] data_explicit: bool,
+    #[arg(skip)] ceph400_explicit: bool,
 }
 
 impl Args {
+    /// Parses like `Parser::try_parse_from`, and records whether `--split` was typed (the SC-1 modes ignore the default).
+    fn parse_explicit<I: IntoIterator<Item = T>, T: Into<std::ffi::OsString> + Clone>(it: I) -> Result<Args, clap::Error> {
+        let m = Args::command().try_get_matches_from(it)?;
+        let mut a = Args::from_arg_matches(&m)?;
+        a.split_explicit = m.value_source("split") == Some(clap::parser::ValueSource::CommandLine);
+        a.data_explicit = m.value_source("data") == Some(clap::parser::ValueSource::CommandLine);
+        a.ceph400_explicit = m.value_source("ceph400") == Some(clap::parser::ValueSource::CommandLine);
+        Ok(a)
+    }
     /// `--out`; clap requires it unless `--shape-prior` is given, and `--shape-prior` returns before any mode uses it.
-    fn out(&self) -> &PathBuf { self.out.as_ref().expect("clap requires --out unless --shape-prior or --stage-a-acceptance is given") }
+    fn out(&self) -> &PathBuf { self.out.as_ref().expect("clap requires --out unless a mode that runs alone is given") }
 }
 
 /// `--shape-prior <out>` (Stage A Task 3): build, write, read the written file back with the app's loader, and print
@@ -90,6 +210,76 @@ fn shape_prior(a: &Args, out: &Path) -> anyhow::Result<()> {
     println!("films {}", p.films);
     println!("coordinates checked {}", b.coordinates_checked);
     println!("sha256 {}", p.sha256);
+    Ok(())
+}
+
+/// `--sc1-reference <out>` (SC-1 Part 1b Task B): build (read-back inside), the positive controls, the slice counts, then
+/// write and read the written file back. Stage A's `models/shape/ceph400-v1.shape` is hashed before and after (it must
+/// not change), loaded, and its 300 tracings compared with the reference's Ceph-400 300; its full-19 line (Part 1's) is
+/// printed beside the new one. Aggregates only: counts, lines, times, SHA-256s.
+fn sc1_reference(a: &Args, out: &Path) -> anyhow::Result<()> {
+    use anyhow::Context;
+    use ceph_bench::{ft_common::sha256_hex, sc1_data, sc1_reference as r};
+    use ceph_model::wholefilm::{parse_reference, WholeScorer};
+    let stage_a = ceph_model::pointcheck::prior_path(Path::new("models"));
+    let hash = |p: &Path| std::fs::read(p).ok().map(|b| sha256_hex(&b));
+    let before = hash(&stage_a);
+    let b = r::build(&a.ceph400, &a.data)?;
+    let built = parse_reference(b.text.as_bytes())?;
+    let c = r::controls(&built)?;
+    let sp = sc1_data::split_path()?;
+    let split = sc1_data::load_split(&std::fs::read_to_string(&sp).with_context(|| sp.display().to_string())?)?;
+    let (teach, hold, tune, outside) = r::slices(&built.names, &split);
+    println!("films {} (Ceph-400 {}, Aariz train {}: teach {teach}, hold-out {hold}, tuning {tune}, in no slice {outside})", b.films, b.ceph400, b.aariz);
+    println!("coordinates checked {}", b.coordinates_checked);
+    println!("lines stored {} (full 19 and each 18); full-19 line {}", built.lines.len(), b.line19);
+    println!("lines fitted cold in {:.1} s", b.seconds_cold);
+    println!("control: mirrored over the full-19 line {} of {}; scrambled over it {} of {}", c.mirrored_over, c.tracings, c.scrambled_over, c.tracings);
+    anyhow::ensure!(outside == 0 && (teach, hold, tune) == (split.teach.len(), split.holdout.len(), split.tuning.len()),
+        "the reference must hold all Aariz train, each slice whole (R1b-4): teach {teach} of {}, hold-out {hold} of {}, tuning {tune} of {}, in no slice {outside}; nothing written",
+        split.teach.len(), split.holdout.len(), split.tuning.len());
+    anyhow::ensure!(c.mirrored_over == c.tracings && c.scrambled_over == c.tracings, "a positive control did not hold (above); nothing written");
+    let sn = r::sanity(&built)?;
+    println!("data check: fit better mirrored than as stored (each against the others) {} of {}; over the full-19 line as stored {} of {}", sn.better_mirrored, sn.tracings, sn.over_line_as_stored, sn.tracings);
+    println!("data check: tracings failing any of Task A's nine order and facing rules {} of {}; by rule: {}", sn.failing_any, sn.tracings,
+        sn.rules.iter().map(|(n, k)| format!("{n} {k}")).collect::<Vec<_>>().join(", "));
+    anyhow::ensure!(sn.better_mirrored == 0, "{} reference tracing(s) fit better mirrored than as stored: STOP, to the coordinator (none dropped); nothing written", sn.better_mirrored);
+    let dir = out.parent().filter(|p| !p.as_os_str().is_empty()).unwrap_or(Path::new("."));
+    std::fs::create_dir_all(dir)?;
+    ceph_bench::ft_common::ensure_ignored(dir)?;
+    std::fs::write(out, &b.text)?;
+    let written = std::fs::read_to_string(out)?;
+    anyhow::ensure!(r::read_back(&written, &built.names, &built.tracings, &built.lines)? == b.coordinates_checked, "{}: the written file is not the text that was checked", out.display());
+    let back = parse_reference(written.as_bytes())?;
+    anyhow::ensure!(back.sha256 == sha256_hex(b.text.as_bytes()), "{}: the written file is not the text that was checked", out.display());
+    println!("sha256 {}", back.sha256);
+    let after = hash(&stage_a);
+    anyhow::ensure!(before == after, "Stage A's {} changed during this run", stage_a.display());
+    match after {
+        None => println!("Stage A's file {}: not present here (nothing to compare)", stage_a.display()),
+        Some(h) => {
+            let p = ceph_model::pointcheck::load_prior(&stage_a)?;
+            let same = p.names.iter().zip(&p.tracings).filter(|(n, t)| {
+                built.names.iter().position(|m| *m == format!("ceph400:{n}")).is_some_and(|i| built.tracings[i].iter().zip(t.iter())
+                    .all(|(x, y)| x.0.to_bits() == y.0.to_bits() && x.1.to_bits() == y.1.to_bits()))
+            }).count();
+            let t0 = std::time::Instant::now();
+            let line300 = WholeScorer::from_prior(&p)?.line_for(&(0..19).collect::<Vec<_>>())?;
+            println!("Stage A's file unchanged: sha256 {h}, loads, {} films; its tracings equal to the reference's Ceph-400 ones, bit for bit: {same} of {}", p.films, p.films);
+            println!("Part 1's 300-tracing full-19 line {line300} (fitted in {:.1} s); this reference's {}", t0.elapsed().as_secs_f64(), b.line19);
+        }
+    }
+    Ok(())
+}
+
+/// `--sc1-reference-lines <file>` (Task B fix round 1, F2; information only): the full-19 line on subsets of the stored
+/// reference, each fitted fresh by the same rule. Reads only the file; writes nothing.
+fn sc1_reference_lines(f: &Path) -> anyhow::Result<()> {
+    let r = ceph_model::wholefilm::parse_reference(&std::fs::read(f).map_err(|e| anyhow::anyhow!("{}: {e}", f.display()))?)?;
+    println!("reference {} tracings, sha256 {}, stored full-19 line {}", r.names.len(), r.sha256, r.lines[0].1);
+    let t0 = std::time::Instant::now();
+    for (what, n, line) in ceph_bench::sc1_reference::line_decomposition(&r, 300, 20261105)? { println!("full-19 line on {what}: {n} tracings, line {line}"); }
+    println!("fitted in {:.1} s", t0.elapsed().as_secs_f64());
     Ok(())
 }
 
@@ -161,15 +351,327 @@ fn preflight(a: &Args) -> anyhow::Result<()> {
     // pre-registration (crosscheck-pass/2), which needs the owner's OK and must remove this line on purpose.
     anyhow::ensure!(!a.single_test_run, "--single-test-run is switched off: the Aariz test films stay closed (owner PARK-FLAGS, 15 Oct 2026; \
         Task 8 cancelled). It can come back only with a new pre-registration and the owner's OK. Nothing was read or written.");
+    if a.sc1_1b_pku {
+        // SC-1 Part 1b Task F: checked first, before any other mode's branch, so no combination slips past. It runs alone
+        // (no other mode, no --out, --split or --cache), reads the folder named pku given as --data (the seal opens inside the
+        // run, never here) and Ceph-400 train (--ceph400, C12 only). It returns here, so the generic --data gate below (which
+        // refuses the sealed PKU folder) is not consulted.
+        anyhow::ensure!(!(a.crosscheck_run || a.crosscheck_tune || a.decide_source || a.scale_check || a.orient || a.diag_facing
+            || a.diag_flip_control || a.diag_reframe_control || a.diag_pad_control.is_some()
+            || a.chain_proof.is_some() || a.parity.is_some() || a.scores_out.is_some() || a.out.is_some() || a.cache.is_some()
+            || a.single_test_run || a.leakage.is_some() || a.shape_prior.is_some() || a.stage_a_acceptance || a.sc1_split.is_some()
+            || a.sc1_teaching_boxes.is_some() || a.sc1_faithfulness || a.sc1_box_gate || a.sc1_region_probe || a.sc1_box_gate_2 || a.sc1_box_gate_3
+            || a.sc1_size_calibrate || a.sc1_cb_calibrate || a.sc1_1a || a.sc1_1b_dev || a.sc1_1b_dev_decompose || a.sc1_1b_dev3 || a.sc1_whole_film_3
+            || a.pku_prepare.is_some() || a.sc1_reference.is_some() || a.sc1_reference_lines.is_some()
+            || a.split_explicit || a.posthoc_clinicians.is_some() || a.runs.is_some() || a.source_out.is_some() || a.check_bits.is_some()
+            || a.split_file.is_some() || a.boxes.is_some() || a.pytorch.is_some()),
+            "--sc1-1b-pku runs alone (no other mode, and no --out, --split or --cache: it reads PKU's test films and writes reports/sc1/sc1-1b-pku.json)");
+        anyhow::ensure!(a.data_explicit && a.data.file_name().is_some_and(|n| n.to_string_lossy().eq_ignore_ascii_case("pku")),
+            "--sc1-1b-pku needs --data <the pku folder> (the folder the seal covers); {} is not it", a.data.display());
+        anyhow::ensure!(a.ceph400_explicit, "--sc1-1b-pku needs --ceph400 <the Ceph-400 folder>: C12 compares PKU's S-N with Ceph-400 train's");
+        anyhow::ensure!(ceph_bench::sc1_gate::is_ceph400(&a.ceph400), "--sc1-1b-pku needs --ceph400 <the Ceph-400 folder>; {} is not Ceph-400", a.ceph400.display());
+        ceph_bench::ledger::refuse_held_back(&a.ceph400, "train")?;
+        return Ok(());
+    }
+    if let Some(f) = &a.sc1_reference_lines {
+        // SC-1 Part 1b Task B fix round 1: information only, reads the one reference file under models and nothing else.
+        anyhow::ensure!(!(a.crosscheck_run || a.crosscheck_tune || a.decide_source || a.scale_check || a.orient || a.diag_facing
+            || a.diag_flip_control || a.diag_reframe_control || a.diag_pad_control.is_some()
+            || a.chain_proof.is_some() || a.parity.is_some() || a.scores_out.is_some() || a.out.is_some() || a.cache.is_some()
+            || a.single_test_run || a.leakage.is_some() || a.shape_prior.is_some() || a.stage_a_acceptance || a.sc1_split.is_some()
+            || a.sc1_teaching_boxes.is_some() || a.sc1_faithfulness || a.sc1_box_gate || a.sc1_region_probe || a.sc1_box_gate_2
+            || a.sc1_box_gate_3 || a.sc1_size_calibrate || a.sc1_cb_calibrate || a.sc1_1a || a.sc1_1b_dev || a.sc1_1b_dev_decompose || a.sc1_1b_dev3 || a.sc1_whole_film_3 || a.pku_prepare.is_some() || a.sc1_reference.is_some()
+            || a.split_explicit || a.data_explicit || a.ceph400_explicit || a.posthoc_clinicians.is_some() || a.runs.is_some()
+            || a.source_out.is_some() || a.check_bits.is_some() || a.split_file.is_some() || a.boxes.is_some() || a.pytorch.is_some()),
+            "--sc1-reference-lines runs alone (no other mode, no --out, --data, --ceph400 or --split: it reads the reference file only)");
+        ceph_bench::sc1_reference::check_out(f)?;
+        return Ok(());
+    }
+    if a.pku_prepare.is_some() {
+        // SC-1 Part 1b Task A: before any file, it runs alone (no other mode, no --out, no --split, no --data, no --cache),
+        // and needs --ceph400 typed (C12 reads Ceph-400 train). It returns here, so the generic --data gate below (whose
+        // default is data/ceph400) is not consulted; the loader refuses Ceph-400's held-back splits itself.
+        anyhow::ensure!(!(a.crosscheck_run || a.crosscheck_tune || a.decide_source || a.scale_check || a.orient || a.diag_facing
+            || a.diag_flip_control || a.diag_reframe_control || a.diag_pad_control.is_some()
+            || a.chain_proof.is_some() || a.parity.is_some() || a.scores_out.is_some() || a.out.is_some() || a.cache.is_some()
+            || a.single_test_run || a.leakage.is_some() || a.shape_prior.is_some() || a.stage_a_acceptance || a.sc1_split.is_some()
+            || a.sc1_teaching_boxes.is_some() || a.sc1_faithfulness || a.sc1_box_gate || a.sc1_region_probe || a.sc1_box_gate_2 || a.sc1_box_gate_3 || a.sc1_size_calibrate || a.sc1_cb_calibrate || a.sc1_1a || a.sc1_1b_dev || a.sc1_1b_dev_decompose || a.sc1_1b_dev3 || a.sc1_whole_film_3
+            || a.split_explicit || a.data_explicit || a.posthoc_clinicians.is_some() || a.runs.is_some() || a.source_out.is_some()
+            || a.check_bits.is_some() || a.split_file.is_some() || a.boxes.is_some() || a.pytorch.is_some() || a.sc1_reference.is_some()),
+            "--pku-prepare runs alone (no other mode, no --out, --split or --data: it reads the folder it is given and writes the pku folder two levels above it)");
+        anyhow::ensure!(a.ceph400_explicit, "--pku-prepare needs --ceph400 <the Ceph-400 folder>: the scale control C12 compares PKU's S-N with Ceph-400 train's");
+        anyhow::ensure!(ceph_bench::sc1_gate::is_ceph400(&a.ceph400), "--pku-prepare needs --ceph400 <the Ceph-400 folder>; {} is not Ceph-400", a.ceph400.display());
+        ceph_bench::ledger::refuse_held_back(&a.ceph400, "train")?;
+        return Ok(());
+    }
+    if let Some(out) = &a.sc1_reference {
+        // SC-1 Part 1b Task B: before any file, it runs alone, reads exactly Ceph-400 train and test1 and Aariz train (no
+        // --split: Aariz valid and test and Ceph-400 Test2 are refused, held-back ones by the ledger's own words), and
+        // writes only under models, never Stage A's file. It returns here, so the generic --ceph400 gate below is not consulted.
+        anyhow::ensure!(!(a.crosscheck_run || a.crosscheck_tune || a.decide_source || a.scale_check || a.orient || a.diag_facing
+            || a.diag_flip_control || a.diag_reframe_control || a.diag_pad_control.is_some()
+            || a.chain_proof.is_some() || a.parity.is_some() || a.scores_out.is_some() || a.out.is_some() || a.cache.is_some()
+            || a.single_test_run || a.leakage.is_some() || a.shape_prior.is_some() || a.stage_a_acceptance || a.sc1_split.is_some()
+            || a.sc1_teaching_boxes.is_some() || a.sc1_faithfulness || a.sc1_box_gate || a.sc1_region_probe || a.sc1_box_gate_2 || a.sc1_box_gate_3 || a.sc1_size_calibrate || a.sc1_cb_calibrate || a.sc1_1a || a.sc1_1b_dev || a.sc1_1b_dev_decompose || a.sc1_1b_dev3 || a.sc1_whole_film_3
+            || a.pku_prepare.is_some() || a.posthoc_clinicians.is_some() || a.runs.is_some() || a.source_out.is_some()
+            || a.check_bits.is_some() || a.split_file.is_some() || a.boxes.is_some() || a.pytorch.is_some() || a.sc1_reference_lines.is_some()),
+            "--sc1-reference runs alone (no other mode, and no --out: the file goes where --sc1-reference says)");
+        if a.split_explicit {
+            ceph_bench::ledger::refuse_held_back(&a.data, &a.split)?;
+            ceph_bench::ledger::refuse_held_back(&a.ceph400, &a.split)?;
+            anyhow::bail!("--sc1-reference reads Ceph-400 train and test1 and Aariz train, as ruled (R1b-4); --split {} is refused (leave --split out)", a.split);
+        }
+        anyhow::ensure!(ceph_bench::scale::is_aariz(&a.data), "--sc1-reference needs --data <the Aariz folder>: the reference's other tracings are all Aariz train");
+        anyhow::ensure!(a.ceph400_explicit, "--sc1-reference needs --ceph400 <the Ceph-400 folder>: the reference's first 300 tracings are Ceph-400 Train and Test1");
+        anyhow::ensure!(ceph_bench::sc1_gate::is_ceph400(&a.ceph400), "--sc1-reference needs --ceph400 <the Ceph-400 folder>; {} is not Ceph-400", a.ceph400.display());
+        ceph_bench::sc1_reference::check_out(out)?;
+        return Ok(());
+    }
+    if a.sc1_1b_dev {
+        // SC-1 Part 1b Task E: before any file, it runs alone, writes only reports/sc1/sc1-1b-dev.json (no --out), takes no
+        // --split (SC1-1a's films: Ceph-400 test1 and Aariz valid; Test2, Aariz test and PKU refused).
+        anyhow::ensure!(!(a.crosscheck_run || a.crosscheck_tune || a.decide_source || a.scale_check || a.orient || a.diag_facing
+            || a.diag_flip_control || a.diag_reframe_control || a.diag_pad_control.is_some()
+            || a.chain_proof.is_some() || a.parity.is_some() || a.scores_out.is_some() || a.out.is_some() || a.cache.is_some()
+            || a.single_test_run || a.leakage.is_some() || a.shape_prior.is_some() || a.stage_a_acceptance || a.sc1_split.is_some()
+            || a.sc1_teaching_boxes.is_some() || a.sc1_faithfulness || a.sc1_box_gate || a.sc1_region_probe || a.sc1_box_gate_2 || a.sc1_box_gate_3
+            || a.sc1_size_calibrate || a.sc1_cb_calibrate || a.sc1_1a || a.sc1_1b_dev_decompose || a.sc1_1b_dev3 || a.sc1_whole_film_3 || a.pku_prepare.is_some() || a.sc1_reference.is_some() || a.sc1_reference_lines.is_some()
+            || a.posthoc_clinicians.is_some() || a.runs.is_some() || a.source_out.is_some() || a.check_bits.is_some() || a.split_file.is_some()
+            || a.boxes.is_some() || a.pytorch.is_some()),
+            "--sc1-1b-dev runs alone (no other mode, and no --out: the report goes to reports/sc1/sc1-1b-dev.json)");
+        if a.split_explicit {
+            ceph_bench::ledger::refuse_held_back(&a.data, &a.split)?;
+            ceph_bench::ledger::refuse_held_back(&a.ceph400, &a.split)?;
+            anyhow::bail!("--sc1-1b-dev reads SC1-1a's films (Ceph-400 test1 and Aariz valid), as pre-registered; --split {} is refused (leave --split out)", a.split);
+        }
+        anyhow::ensure!(ceph_bench::scale::is_aariz(&a.data), "--sc1-1b-dev needs --data <the Aariz folder>: Aariz valid");
+        anyhow::ensure!(ceph_bench::sc1_gate::is_ceph400(&a.ceph400), "--sc1-1b-dev needs --ceph400 <the Ceph-400 folder>; {} is not Ceph-400", a.ceph400.display());
+        ceph_bench::sc1_gate2::refuse_reads_for(&ceph_bench::sc1_gate2::GATE3, &[(&a.data, "valid"), (&a.ceph400, "test1")])?;
+        return Ok(());
+    }
+    if a.sc1_1b_dev3 {
+        // whole-film/3's confirmation run: before any file, it runs alone, writes only reports/sc1/sc1-1b-dev3.json (no --out), takes no
+        // --split (SC1-1a's films: Ceph-400 test1 and Aariz valid; Test2, Aariz test and PKU refused).
+        anyhow::ensure!(!(a.crosscheck_run || a.crosscheck_tune || a.decide_source || a.scale_check || a.orient || a.diag_facing
+            || a.diag_flip_control || a.diag_reframe_control || a.diag_pad_control.is_some()
+            || a.chain_proof.is_some() || a.parity.is_some() || a.scores_out.is_some() || a.out.is_some() || a.cache.is_some()
+            || a.single_test_run || a.leakage.is_some() || a.shape_prior.is_some() || a.stage_a_acceptance || a.sc1_split.is_some()
+            || a.sc1_teaching_boxes.is_some() || a.sc1_faithfulness || a.sc1_box_gate || a.sc1_region_probe || a.sc1_box_gate_2 || a.sc1_box_gate_3
+            || a.sc1_size_calibrate || a.sc1_cb_calibrate || a.sc1_1a || a.sc1_1b_dev_decompose || a.sc1_1b_dev || a.sc1_whole_film_3 || a.pku_prepare.is_some() || a.sc1_reference.is_some() || a.sc1_reference_lines.is_some()
+            || a.posthoc_clinicians.is_some() || a.runs.is_some() || a.source_out.is_some() || a.check_bits.is_some() || a.split_file.is_some()
+            || a.boxes.is_some() || a.pytorch.is_some()),
+            "--sc1-1b-dev3 runs alone (no other mode, and no --out: the report goes to reports/sc1/sc1-1b-dev3.json)");
+        if a.split_explicit {
+            ceph_bench::ledger::refuse_held_back(&a.data, &a.split)?;
+            ceph_bench::ledger::refuse_held_back(&a.ceph400, &a.split)?;
+            anyhow::bail!("--sc1-1b-dev3 reads SC1-1a's films (Ceph-400 test1 and Aariz valid), as pre-registered; --split {} is refused (leave --split out)", a.split);
+        }
+        anyhow::ensure!(ceph_bench::scale::is_aariz(&a.data), "--sc1-1b-dev3 needs --data <the Aariz folder>: Aariz valid");
+        anyhow::ensure!(ceph_bench::sc1_gate::is_ceph400(&a.ceph400), "--sc1-1b-dev3 needs --ceph400 <the Ceph-400 folder>; {} is not Ceph-400", a.ceph400.display());
+        ceph_bench::sc1_gate2::refuse_reads_for(&ceph_bench::sc1_gate2::GATE3, &[(&a.data, "valid"), (&a.ceph400, "test1")])?;
+        return Ok(());
+    }
+    if a.sc1_whole_film_3 {
+        // whole-film/3's setup: before any file, it runs alone and reads no film (no --data, --ceph400, --split or --out).
+        anyhow::ensure!(!(a.crosscheck_run || a.crosscheck_tune || a.decide_source || a.scale_check || a.orient || a.diag_facing
+            || a.diag_flip_control || a.diag_reframe_control || a.diag_pad_control.is_some()
+            || a.chain_proof.is_some() || a.parity.is_some() || a.scores_out.is_some() || a.out.is_some() || a.cache.is_some()
+            || a.single_test_run || a.leakage.is_some() || a.shape_prior.is_some() || a.stage_a_acceptance || a.sc1_split.is_some()
+            || a.sc1_teaching_boxes.is_some() || a.sc1_faithfulness || a.sc1_box_gate || a.sc1_region_probe || a.sc1_box_gate_2 || a.sc1_box_gate_3
+            || a.sc1_size_calibrate || a.sc1_cb_calibrate || a.sc1_1a || a.sc1_1b_dev || a.sc1_1b_dev_decompose || a.sc1_1b_dev3 || a.pku_prepare.is_some()
+            || a.sc1_reference.is_some() || a.sc1_reference_lines.is_some() || a.split_explicit || a.data_explicit || a.ceph400_explicit
+            || a.posthoc_clinicians.is_some() || a.runs.is_some() || a.source_out.is_some() || a.check_bits.is_some() || a.split_file.is_some()
+            || a.boxes.is_some() || a.pytorch.is_some()),
+            "--sc1-whole-film-3 runs alone (no other mode, and no --data, --ceph400, --split or --out: it reads no film and writes only under models/regions)");
+        return Ok(());
+    }
+    if a.sc1_1b_dev_decompose {
+        // SC-1 Part 1b Task E information: before any file, it runs alone, writes only reports/sc1/sc1-1b-dev-decompose.json (no --out), takes no
+        // --split (SC1-1a's films: Ceph-400 test1 and Aariz valid; Test2, Aariz test and PKU refused).
+        anyhow::ensure!(!(a.crosscheck_run || a.crosscheck_tune || a.decide_source || a.scale_check || a.orient || a.diag_facing
+            || a.diag_flip_control || a.diag_reframe_control || a.diag_pad_control.is_some()
+            || a.chain_proof.is_some() || a.parity.is_some() || a.scores_out.is_some() || a.out.is_some() || a.cache.is_some()
+            || a.single_test_run || a.leakage.is_some() || a.shape_prior.is_some() || a.stage_a_acceptance || a.sc1_split.is_some()
+            || a.sc1_teaching_boxes.is_some() || a.sc1_faithfulness || a.sc1_box_gate || a.sc1_region_probe || a.sc1_box_gate_2 || a.sc1_box_gate_3
+            || a.sc1_size_calibrate || a.sc1_cb_calibrate || a.sc1_1a || a.sc1_1b_dev3 || a.sc1_whole_film_3 || a.sc1_1b_dev || a.pku_prepare.is_some() || a.sc1_reference.is_some() || a.sc1_reference_lines.is_some()
+            || a.posthoc_clinicians.is_some() || a.runs.is_some() || a.source_out.is_some() || a.check_bits.is_some() || a.split_file.is_some()
+            || a.boxes.is_some() || a.pytorch.is_some()),
+            "--sc1-1b-dev-decompose runs alone (no other mode, and no --out: the report goes to reports/sc1/sc1-1b-dev-decompose.json)");
+        if a.split_explicit {
+            ceph_bench::ledger::refuse_held_back(&a.data, &a.split)?;
+            ceph_bench::ledger::refuse_held_back(&a.ceph400, &a.split)?;
+            anyhow::bail!("--sc1-1b-dev-decompose reads SC1-1a's films (Ceph-400 test1 and Aariz valid), as pre-registered; --split {} is refused (leave --split out)", a.split);
+        }
+        anyhow::ensure!(ceph_bench::scale::is_aariz(&a.data), "--sc1-1b-dev-decompose needs --data <the Aariz folder>: Aariz valid");
+        anyhow::ensure!(ceph_bench::sc1_gate::is_ceph400(&a.ceph400), "--sc1-1b-dev-decompose needs --ceph400 <the Ceph-400 folder>; {} is not Ceph-400", a.ceph400.display());
+        ceph_bench::sc1_gate2::refuse_reads_for(&ceph_bench::sc1_gate2::GATE3, &[(&a.data, "valid"), (&a.ceph400, "test1")])?;
+        return Ok(());
+    }
     if let Some(out) = &a.shape_prior {
         anyhow::ensure!(!(a.crosscheck_run || a.crosscheck_tune || a.decide_source || a.scale_check || a.orient || a.diag_facing
-            || a.chain_proof.is_some() || a.parity.is_some() || a.scores_out.is_some() || a.out.is_some()),
+            || a.chain_proof.is_some() || a.parity.is_some() || a.scores_out.is_some() || a.out.is_some()
+            || a.sc1_split.is_some() || a.sc1_teaching_boxes.is_some()),
             "--shape-prior runs alone (no other mode, and no --out: the file goes where --shape-prior says)");
         ceph_bench::shape_prior::check_out(out)?;
     }
     anyhow::ensure!(!a.stage_a_acceptance || !(a.crosscheck_run || a.crosscheck_tune || a.decide_source || a.scale_check || a.orient || a.diag_facing
-        || a.chain_proof.is_some() || a.parity.is_some() || a.scores_out.is_some() || a.out.is_some() || a.shape_prior.is_some()),
+        || a.chain_proof.is_some() || a.parity.is_some() || a.scores_out.is_some() || a.out.is_some() || a.shape_prior.is_some() || a.sc1_split.is_some() || a.sc1_teaching_boxes.is_some()),
         "--stage-a-acceptance runs alone (no other mode, and no --out: the report goes to reports/stage-a-acceptance)");
+    if a.sc1_split.is_some() || a.sc1_teaching_boxes.is_some() {
+        // Before the ledger and before any file: the Aariz test films and Test2 are refused for every split, and these modes
+        // read Aariz train only (ruling P1: the default --split is ignored; one typed on the command line must be train).
+        let mode = if a.sc1_split.is_some() { "--sc1-split" } else { "--sc1-teaching-boxes" };
+        anyhow::ensure!(!(a.sc1_split.is_some() && a.sc1_teaching_boxes.is_some()), "--sc1-split and --sc1-teaching-boxes each run alone");
+        anyhow::ensure!(!(a.crosscheck_run || a.crosscheck_tune || a.decide_source || a.scale_check || a.orient || a.diag_facing
+            || a.chain_proof.is_some() || a.parity.is_some() || a.scores_out.is_some() || a.out.is_some() || a.cache.is_some()
+            || a.single_test_run || a.leakage.is_some()),
+            "{mode} runs alone (no other mode and no --out: the files go where {mode} says)");
+        ceph_bench::ledger::refuse_held_back(&a.data, "train")?;
+        if a.split_explicit {
+            ceph_bench::ledger::refuse_held_back(&a.data, &a.split)?;
+            anyhow::ensure!(a.split == "train", "{mode} reads Aariz train only; --split {} is refused (leave --split out)", a.split);
+        }
+        anyhow::ensure!(ceph_bench::scale::is_aariz(&a.data), "{mode} needs --data <the Aariz folder>: it splits and boxes Aariz train only");
+    }
+    if a.sc1_size_calibrate {
+        // Before any file: it runs alone, writes only where the pre-registration says (no --out), takes no --split (the
+        // films are fixed by reference/sc1-size.json; Test2, Aariz test and PKU refused).
+        anyhow::ensure!(!(a.crosscheck_run || a.crosscheck_tune || a.decide_source || a.scale_check || a.orient || a.diag_facing
+            || a.chain_proof.is_some() || a.parity.is_some() || a.scores_out.is_some() || a.out.is_some() || a.cache.is_some()
+            || a.single_test_run || a.leakage.is_some() || a.shape_prior.is_some() || a.stage_a_acceptance || a.sc1_split.is_some()
+            || a.sc1_teaching_boxes.is_some() || a.sc1_faithfulness || a.sc1_box_gate || a.sc1_region_probe || a.sc1_box_gate_2 || a.sc1_box_gate_3
+            || a.sc1_1a || a.sc1_cb_calibrate || a.pku_prepare.is_some() || a.sc1_reference.is_some()),
+            "--sc1-size-calibrate runs alone (no other mode, and no --out: the report goes to reports/sc1/size-calibration.json)");
+        if a.split_explicit {
+            ceph_bench::ledger::refuse_held_back(&a.data, &a.split)?;
+            ceph_bench::ledger::refuse_held_back(&a.ceph400, &a.split)?;
+            anyhow::bail!("--sc1-size-calibrate reads the 520 calibration films fixed by reference/sc1-size.json; --split {} is refused (leave --split out)", a.split);
+        }
+        anyhow::ensure!(ceph_bench::scale::is_aariz(&a.data), "--sc1-size-calibrate needs --data <the Aariz folder>: the hold-out and Aariz valid");
+        anyhow::ensure!(ceph_bench::sc1_gate::is_ceph400(&a.ceph400), "--sc1-size-calibrate needs --ceph400 <the Ceph-400 folder>; {} is not Ceph-400", a.ceph400.display());
+        ceph_bench::sc1_size::refuse_reads(&a.data, &a.ceph400)?;
+        return Ok(());
+    }
+    if a.sc1_cb_calibrate {
+        // Before any file: it runs alone, writes only where the pre-registration says (no --out), takes no --split (the
+        // films are fixed by reference/sc1-cb-centre.json; Test2, Aariz test and PKU refused).
+        anyhow::ensure!(!(a.crosscheck_run || a.crosscheck_tune || a.decide_source || a.scale_check || a.orient || a.diag_facing
+            || a.chain_proof.is_some() || a.parity.is_some() || a.scores_out.is_some() || a.out.is_some() || a.cache.is_some()
+            || a.single_test_run || a.leakage.is_some() || a.shape_prior.is_some() || a.stage_a_acceptance || a.sc1_split.is_some()
+            || a.sc1_teaching_boxes.is_some() || a.sc1_faithfulness || a.sc1_box_gate || a.sc1_region_probe || a.sc1_box_gate_2 || a.sc1_box_gate_3
+            || a.sc1_size_calibrate || a.sc1_1a || a.pku_prepare.is_some() || a.sc1_reference.is_some()),
+            "--sc1-cb-calibrate runs alone (no other mode, and no --out: the report goes to reports/sc1/cb-centre-calibration.json)");
+        if a.split_explicit {
+            ceph_bench::ledger::refuse_held_back(&a.data, &a.split)?;
+            ceph_bench::ledger::refuse_held_back(&a.ceph400, &a.split)?;
+            anyhow::bail!("--sc1-cb-calibrate reads the 520 calibration films fixed by reference/sc1-cb-centre.json; --split {} is refused (leave --split out)", a.split);
+        }
+        anyhow::ensure!(ceph_bench::scale::is_aariz(&a.data), "--sc1-cb-calibrate needs --data <the Aariz folder>: the hold-out and Aariz valid");
+        anyhow::ensure!(ceph_bench::sc1_gate::is_ceph400(&a.ceph400), "--sc1-cb-calibrate needs --ceph400 <the Ceph-400 folder>; {} is not Ceph-400", a.ceph400.display());
+        ceph_bench::sc1_size::refuse_reads(&a.data, &a.ceph400)?;
+        return Ok(());
+    }
+    if a.sc1_box_gate_3 {
+        // Before any file: it runs alone, writes only where the pre-registration says (no --out), takes no --split (it reads
+        // Aariz train and valid and Ceph-400 train and test1, as pre-registered; Test2, Aariz test and PKU refused).
+        anyhow::ensure!(!(a.crosscheck_run || a.crosscheck_tune || a.decide_source || a.scale_check || a.orient || a.diag_facing
+            || a.chain_proof.is_some() || a.parity.is_some() || a.scores_out.is_some() || a.out.is_some() || a.cache.is_some()
+            || a.single_test_run || a.leakage.is_some() || a.shape_prior.is_some() || a.stage_a_acceptance || a.sc1_split.is_some()
+            || a.sc1_teaching_boxes.is_some() || a.sc1_faithfulness || a.sc1_box_gate || a.sc1_region_probe || a.sc1_box_gate_2 || a.sc1_1a
+            || a.sc1_size_calibrate || a.sc1_cb_calibrate || a.pku_prepare.is_some() || a.sc1_reference.is_some()),
+            "--sc1-box-gate-3 runs alone (no other mode, and no --out: the report goes to reports/sc1/box-gate-3.json)");
+        if a.split_explicit {
+            ceph_bench::ledger::refuse_held_back(&a.data, &a.split)?;
+            ceph_bench::ledger::refuse_held_back(&a.ceph400, &a.split)?;
+            anyhow::bail!("--sc1-box-gate-3 reads Aariz train and valid and Ceph-400 train and test1, as pre-registered; --split {} is refused (leave --split out)", a.split);
+        }
+        anyhow::ensure!(ceph_bench::scale::is_aariz(&a.data), "--sc1-box-gate-3 needs --data <the Aariz folder>: the gate runs on the Aariz-train hold-out");
+        anyhow::ensure!(ceph_bench::sc1_gate::is_ceph400(&a.ceph400), "--sc1-box-gate-3 needs --ceph400 <the Ceph-400 folder> for tau; {} is not Ceph-400", a.ceph400.display());
+        ceph_bench::sc1_gate2::refuse_reads_for(&ceph_bench::sc1_gate2::GATE3, &[(&a.data, "train"), (&a.data, "valid"), (&a.ceph400, "train"), (&a.ceph400, "test1")])?;
+        return Ok(());
+    }
+    anyhow::ensure!(a.sc1_box_gate || a.sc1_region_probe || a.sc1_box_gate_2 || a.sc1_box_gate_3 || a.sc1_size_calibrate || a.sc1_cb_calibrate || a.sc1_1a || a.ceph400 == Path::new("data/ceph400"), "--ceph400 goes only with --sc1-box-gate, --sc1-region-probe, --sc1-box-gate-2 or --sc1-1a");
+    if a.sc1_1a {
+        // Before any file: it runs alone (only --cache, the real-runs information, may go with it), writes only
+        // reports/sc1/sc1-1a.json (no --out), and reads exactly Ceph-400 test1 and Aariz valid (no --split; Test2 and Aariz
+        // test refused).
+        anyhow::ensure!(!(a.crosscheck_run || a.crosscheck_tune || a.decide_source || a.scale_check || a.orient || a.diag_facing
+            || a.chain_proof.is_some() || a.parity.is_some() || a.scores_out.is_some() || a.out.is_some()
+            || a.single_test_run || a.leakage.is_some() || a.shape_prior.is_some() || a.stage_a_acceptance || a.sc1_split.is_some()
+            || a.sc1_teaching_boxes.is_some() || a.sc1_faithfulness || a.sc1_box_gate || a.sc1_region_probe || a.sc1_box_gate_2),
+            "--sc1-1a runs alone (no other mode, and no --out: the report goes to reports/sc1/sc1-1a.json)");
+        if a.split_explicit {
+            ceph_bench::ledger::refuse_held_back(&a.data, &a.split)?;
+            ceph_bench::ledger::refuse_held_back(&a.ceph400, &a.split)?;
+            anyhow::bail!("--sc1-1a reads Ceph-400 test1 and Aariz valid, as pre-registered; --split {} is refused (leave --split out)", a.split);
+        }
+        anyhow::ensure!(ceph_bench::scale::is_aariz(&a.data), "--sc1-1a needs --data <the Aariz folder>: its Aariz films are Aariz valid");
+        anyhow::ensure!(ceph_bench::sc1_gate::is_ceph400(&a.ceph400), "--sc1-1a needs --ceph400 <the Ceph-400 folder>; {} is not Ceph-400", a.ceph400.display());
+    }
+    if a.sc1_box_gate_2 {
+        // Before any file: it runs alone, writes only where the pre-registration says (no --out), and reads the train
+        // splits only (SC1-1a's Ceph-400 test1 and Aariz valid, Test2 and Aariz test refused).
+        anyhow::ensure!(!(a.crosscheck_run || a.crosscheck_tune || a.decide_source || a.scale_check || a.orient || a.diag_facing
+            || a.chain_proof.is_some() || a.parity.is_some() || a.scores_out.is_some() || a.out.is_some() || a.cache.is_some()
+            || a.single_test_run || a.leakage.is_some() || a.shape_prior.is_some() || a.stage_a_acceptance || a.sc1_split.is_some()
+            || a.sc1_teaching_boxes.is_some() || a.sc1_faithfulness || a.sc1_box_gate || a.sc1_region_probe),
+            "--sc1-box-gate-2 runs alone (no other mode, and no --out: the report goes to reports/sc1/box-gate-2.json)");
+        if a.split_explicit {
+            ceph_bench::ledger::refuse_held_back(&a.data, &a.split)?;
+            anyhow::ensure!(a.split == "train", "--sc1-box-gate-2 reads train only (the Aariz-train hold-out and Ceph-400 train); --split {} is refused (leave --split out)", a.split);
+        }
+        anyhow::ensure!(ceph_bench::scale::is_aariz(&a.data), "--sc1-box-gate-2 needs --data <the Aariz folder>: the gate runs on the Aariz-train hold-out");
+        anyhow::ensure!(ceph_bench::sc1_gate::is_ceph400(&a.ceph400), "--sc1-box-gate-2 needs --ceph400 <the Ceph-400 folder> for tau; {} is not Ceph-400", a.ceph400.display());
+    }
+    if a.sc1_region_probe {
+        // Before any file: it runs alone, writes only reports/sc1/region-probe.json (no --out), and reads the train splits
+        // only (SC1-1a's Ceph-400 test1 and Aariz valid, Test2 and Aariz test refused).
+        anyhow::ensure!(!(a.crosscheck_run || a.crosscheck_tune || a.decide_source || a.scale_check || a.orient || a.diag_facing
+            || a.chain_proof.is_some() || a.parity.is_some() || a.scores_out.is_some() || a.out.is_some() || a.cache.is_some()
+            || a.single_test_run || a.leakage.is_some() || a.shape_prior.is_some() || a.stage_a_acceptance || a.sc1_split.is_some()
+            || a.sc1_teaching_boxes.is_some() || a.sc1_faithfulness || a.sc1_box_gate || a.sc1_box_gate_2),
+            "--sc1-region-probe runs alone (no other mode, and no --out: the report goes to reports/sc1/region-probe.json)");
+        ceph_bench::sc1_probe::refuse_reads(&[(&a.data, "train"), (&a.ceph400, "train")])?;
+        if a.split_explicit {
+            ceph_bench::ledger::refuse_held_back(&a.data, &a.split)?;
+            anyhow::ensure!(a.split == "train", "--sc1-region-probe reads train only (Ceph-400 train and the Aariz-train hold-out); --split {} is refused (leave --split out)", a.split);
+        }
+        anyhow::ensure!(ceph_bench::scale::is_aariz(&a.data), "--sc1-region-probe needs --data <the Aariz folder>: its information set is the Aariz-train hold-out");
+        anyhow::ensure!(ceph_bench::sc1_gate::is_ceph400(&a.ceph400), "--sc1-region-probe needs --ceph400 <the Ceph-400 folder>; {} is not Ceph-400", a.ceph400.display());
+    }
+    if a.sc1_box_gate {
+        // Before any file: it runs alone, writes only where the pre-registration says (no --out), reads Aariz train for the
+        // gate (Aariz test and Test2 refused) and Ceph-400 test1 for the information table.
+        anyhow::ensure!(!(a.crosscheck_run || a.crosscheck_tune || a.decide_source || a.scale_check || a.orient || a.diag_facing
+            || a.chain_proof.is_some() || a.parity.is_some() || a.scores_out.is_some() || a.out.is_some() || a.cache.is_some()
+            || a.single_test_run || a.leakage.is_some() || a.shape_prior.is_some() || a.stage_a_acceptance || a.sc1_split.is_some()
+            || a.sc1_teaching_boxes.is_some() || a.sc1_faithfulness || a.sc1_region_probe || a.sc1_box_gate_2),
+            "--sc1-box-gate runs alone (no other mode, and no --out: the report goes to reports/sc1/box-gate.json)");
+        ceph_bench::sc1_gate::refuse_reads(&[(&a.data, "train"), (&a.data, "valid"), (&a.ceph400, "test1")])?;
+        if a.split_explicit {
+            ceph_bench::ledger::refuse_held_back(&a.data, &a.split)?;
+            anyhow::ensure!(a.split == "train", "--sc1-box-gate reads Aariz train only for the gate (its hold-out); --split {} is refused (leave --split out)", a.split);
+        }
+        anyhow::ensure!(ceph_bench::scale::is_aariz(&a.data), "--sc1-box-gate needs --data <the Aariz folder>: the gate runs on the Aariz-train hold-out");
+        anyhow::ensure!(ceph_bench::sc1_gate::is_ceph400(&a.ceph400), "--sc1-box-gate needs --ceph400 <the Ceph-400 folder> for its information table; {} is not Ceph-400", a.ceph400.display());
+    }
+    anyhow::ensure!(a.sc1_faithfulness || (a.split_file.is_none() && a.boxes.is_none() && a.pytorch.is_none()),
+        "--split-file, --boxes and --pytorch go only with --sc1-faithfulness");
+    if a.sc1_faithfulness {
+        // Before any file: the paths are all given, it runs alone, and it reads Aariz train only (Aariz test and Test2 refused).
+        anyhow::ensure!(a.split_file.is_some() && a.boxes.is_some() && a.pytorch.is_some() && a.out.is_some(),
+            "--sc1-faithfulness needs --split-file, --boxes, --pytorch and --out");
+        anyhow::ensure!(!(a.crosscheck_run || a.crosscheck_tune || a.decide_source || a.scale_check || a.orient || a.diag_facing
+            || a.chain_proof.is_some() || a.parity.is_some() || a.scores_out.is_some() || a.cache.is_some() || a.single_test_run
+            || a.leakage.is_some() || a.shape_prior.is_some() || a.stage_a_acceptance || a.sc1_split.is_some() || a.sc1_teaching_boxes.is_some()),
+            "--sc1-faithfulness runs alone (no other mode)");
+        ceph_bench::ledger::refuse_held_back(&a.data, "train")?;
+        if a.split_explicit {
+            ceph_bench::ledger::refuse_held_back(&a.data, &a.split)?;
+            anyhow::ensure!(a.split == "train", "--sc1-faithfulness reads Aariz train only (its hold-out); --split {} is refused (leave --split out)", a.split);
+        }
+        anyhow::ensure!(ceph_bench::scale::is_aariz(&a.data), "--sc1-faithfulness needs --data <the Aariz folder>: it runs on the Aariz train hold-out only");
+    }
     anyhow::ensure!(a.posthoc_clinicians.is_none() || a.chain_proof.as_deref() == Some("s1"),
         "--posthoc-clinicians goes only with --chain-proof s1 (POST-HOC, owner 27 Oct, not pre-registered; cannot change the S1 result)");
     anyhow::ensure!(a.posthoc_clinicians != Some(0), "--posthoc-clinicians needs at least 1 clinician");
@@ -197,11 +699,108 @@ fn preflight(a: &Args) -> anyhow::Result<()> {
     Ok(())
 }
 
+/// `--pku-prepare <raw>` (SC-1 Part 1b Task A): the bench folder is `<raw>/../..` (data/pku beside its download).
+/// Prints aggregates only: counts, sizes, each rule's failures, the S-N ratio, the doctor-gap figures, the provenance hash.
+fn pku_prepare(raw: &Path, ceph400: &Path) -> anyhow::Result<()> {
+    use anyhow::Context;
+    let real = std::fs::canonicalize(raw).with_context(|| format!("the PKU download folder {}", raw.display()))?;
+    let out = real.parent().and_then(Path::parent).ok_or_else(|| anyhow::anyhow!("{}: no folder two levels above it", real.display()))?;
+    let p = ceph_bench::pku::prepare(&real, out, ceph400)?;
+    println!("films {} (split {}, ids pku001-pku{:03})", p.films, ceph_bench::pku::PKU_SPLIT, p.films);
+    for ((w, h), n) in &p.sizes { println!("size {w} x {h} px: {n} films"); }
+    for o in &p.order { println!("rule {}: {} failures", o.rule, o.failures); }
+    println!("C12 S-N ratio (PKU median at {} mm/px / Ceph-400 train median at 0.1 mm/px): {:.4} (limit 1 +/- {})",
+        ceph_bench::pku::PKU_MM_PER_PX, p.sn_ratio, ceph_bench::pku::SN_TOLERANCE);
+    println!("doctor1 vs doctor2: 95th percentile {:.3} mm over {} points; {} points more than 5 mm apart", p.doctor_gap_p95_mm, p.films * 19, p.doctor_gap_over_5mm);
+    println!("rule {}; truth {}; provenance.json sha256 {}", ceph_bench::pku::PREPARE_RULE, ceph_bench::pku::TRUTH_RULE, p.provenance_sha256);
+    Ok(())
+}
+
 fn main() -> anyhow::Result<()> {
-    let a = Args::parse();
+    let a = Args::parse_explicit(std::env::args_os()).unwrap_or_else(|e| e.exit());
     let list = manifests(&a.manifest);
     preflight(&a)?;
+    if a.sc1_1b_pku {
+        let code = ceph_bench::sc1_1b_pku::run_cli(&a.data, &a.ceph400, Path::new("models"), &Path::new("reports").join("sc1"))?;
+        if code != 0 { std::process::exit(code); }
+        return Ok(());
+    }
     if let Some(out) = &a.shape_prior { return shape_prior(&a, out); }
+    if let Some(out) = &a.sc1_reference { return sc1_reference(&a, out); }
+    if let Some(f) = &a.sc1_reference_lines { return sc1_reference_lines(f); }
+    if let Some(raw) = &a.pku_prepare { return pku_prepare(raw, &a.ceph400); }
+    if let Some(out) = &a.sc1_split { ceph_bench::sc1_data::write_split_cli(&a.data, out)?; return Ok(()); }
+    if let Some(dir) = &a.sc1_teaching_boxes {
+        use anyhow::Context;
+        let p = ceph_bench::sc1_data::split_path()?;
+        let split = ceph_bench::sc1_data::load_split(&std::fs::read_to_string(&p).with_context(|| format!("{} (made by --sc1-split and pinned in Task 5)", p.display()))?)?;
+        ceph_bench::sc1_data::teaching_boxes_cli(&a.data, &split, dir)?;
+        return Ok(());
+    }
+    if a.sc1_box_gate {
+        let code = ceph_bench::sc1_gate::run_cli(&a.data, &a.ceph400, Path::new("models"), &Path::new("reports").join("sc1"))?;
+        if code != 0 { std::process::exit(code); }
+        return Ok(());
+    }
+    if a.sc1_cb_calibrate {
+        let code = ceph_bench::sc1_cb::run_cli(&a.data, &a.ceph400, Path::new("models"), &Path::new("reports").join("sc1"))?;
+        if code != 0 { std::process::exit(code); }
+        return Ok(());
+    }
+    if a.sc1_size_calibrate {
+        let code = ceph_bench::sc1_size::run_cli(&a.data, &a.ceph400, Path::new("models"), &Path::new("reports").join("sc1"))?;
+        if code != 0 { std::process::exit(code); }
+        return Ok(());
+    }
+    if a.sc1_box_gate_3 {
+        let code = ceph_bench::sc1_gate2::run_cli_spec(&ceph_bench::sc1_gate2::GATE3, &a.data, &a.ceph400, Path::new("models"), &Path::new("reports").join("sc1"))?;
+        if code != 0 { std::process::exit(code); }
+        return Ok(());
+    }
+    if a.sc1_box_gate_2 {
+        let code = ceph_bench::sc1_gate2::run_cli(&a.data, &a.ceph400, Path::new("models"), &Path::new("reports").join("sc1"))?;
+        if code != 0 { std::process::exit(code); }
+        return Ok(());
+    }
+    if a.sc1_whole_film_3 {
+        let code = ceph_bench::sc1_wf3::setup_cli(Path::new("models"))?;
+        if code != 0 { std::process::exit(code); }
+        return Ok(());
+    }
+    if a.sc1_1b_dev3 {
+        let code = ceph_bench::sc1_dev::run3_cli(&a.data, &a.ceph400, Path::new("models"), &Path::new("reports").join("sc1"))?;
+        if code != 0 { std::process::exit(code); }
+        return Ok(());
+    }
+    if a.sc1_1b_dev_decompose {
+        let code = ceph_bench::sc1_dev::decompose_cli(&a.data, &a.ceph400, Path::new("models"), &Path::new("reports").join("sc1"))?;
+        if code != 0 { std::process::exit(code); }
+        return Ok(());
+    }
+    if a.sc1_1b_dev {
+        let code = ceph_bench::sc1_dev::run_cli(&a.data, &a.ceph400, Path::new("models"), &Path::new("reports").join("sc1"))?;
+        if code != 0 { std::process::exit(code); }
+        return Ok(());
+    }
+    if a.sc1_1a {
+        let caches = a.cache.as_ref().map(|c| manifests(c)).unwrap_or_default();
+        let code = ceph_bench::sc1_1a::run_cli(&a.ceph400, &a.data, Path::new("models"), &Path::new("reports").join("sc1"), &caches)?;
+        if code != 0 { std::process::exit(code); }
+        return Ok(());
+    }
+    if a.sc1_region_probe {
+        let code = ceph_bench::sc1_probe::run_cli(&a.data, &a.ceph400, Path::new("models"), &Path::new("reports").join("sc1"))?;
+        if code != 0 { std::process::exit(code); }
+        return Ok(());
+    }
+    if a.sc1_faithfulness {
+        use anyhow::Context;
+        let (sf, boxes, pytorch) = (a.split_file.as_ref().unwrap(), a.boxes.as_ref().unwrap(), a.pytorch.as_ref().unwrap());
+        let split = ceph_bench::sc1_data::load_split(&std::fs::read_to_string(sf).with_context(|| sf.display().to_string())?)?;
+        let code = ceph_bench::sc1_boxes::faithfulness_cli(&a.data, &split, Path::new("models"), boxes, pytorch, a.out())?;
+        if code != 0 { std::process::exit(code); }
+        return Ok(());
+    }
     if a.stage_a_acceptance {
         let caches = a.cache.as_ref().map(|c| manifests(c)).unwrap_or_default();
         let code = ceph_bench::stage_a_accept::run_cli(&a.data, &caches, Path::new("models"), Path::new("reports").join("stage-a-acceptance").as_path())?;
@@ -469,6 +1068,506 @@ mod tests {
         let e = preflight(&sp(&["--shape-prior", "reports/ceph400-v1.shape"]).unwrap()).unwrap_err().to_string();
         eprintln!("--shape-prior reports/ceph400-v1.shape: {e}");
         assert!(e.contains("git-ignored models folder"), "{e}");
+    }
+    /// SC-1 Task 3: both modes need no `--out`, run alone, ignore the default `--split` (test1), refuse a typed one other
+    /// than train, and refuse Aariz test, Test2 and any non-Aariz folder BEFORE any file is read (the fixture folders are
+    /// empty: a read would fail with "No such file", not with these messages). Fails if any check is removed.
+    #[test] fn the_sc1_modes_run_alone_read_train_only_and_refuse_held_back_folders() {
+        let (_d, az, c4) = fixture();
+        let sc = |v: &[&str]| Args::parse_explicit([&["ceph-bench"][..], v].concat());
+        for mode in ["--sc1-split", "--sc1-teaching-boxes"] {
+            let ok = sc(&["--data", &az, mode, "/tmp/sc1-x"]).unwrap();
+            assert!(preflight(&ok).is_ok(), "{mode}: the default --split (test1) is ignored");
+            assert!(preflight(&sc(&["--data", &az, "--split", "train", mode, "/tmp/sc1-x"]).unwrap()).is_ok(), "{mode}: --split train is fine");
+            for bad in ["valid", "test", "test1", "all"] {
+                let e = preflight(&sc(&["--data", &az, "--split", bad, mode, "/tmp/sc1-x"]).unwrap()).unwrap_err().to_string();
+                eprintln!("{mode} --split {bad}: {e}");
+                assert!(e.contains("held back") || e.contains("train only"), "{bad}: {e}");
+            }
+            let e = preflight(&sc(&["--data", &c4, mode, "/tmp/sc1-x"]).unwrap()).unwrap_err().to_string();
+            eprintln!("{mode} on ceph400: {e}");
+            assert!(e.contains("Aariz"), "{e}");
+            let e = preflight(&sc(&["--data", &c4, "--split", "test2", mode, "/tmp/sc1-x"]).unwrap()).unwrap_err().to_string();
+            eprintln!("{mode} on ceph400 test2: {e}");
+            assert!(e.contains("held back"), "{e}");
+            for other in [&["--crosscheck-tune"][..], &["--scale-check"], &["--orient"], &["--decide-source"], &["--crosscheck-run"],
+                          &["--diag-facing"], &["--out", "/tmp/x"], &["--chain-proof", "s1"], &["--parity", "p.csv"], &["--shape-prior", "models/shape/x.shape"]] {
+                let e = preflight(&sc(&[&["--data", &az, mode, "/tmp/sc1-x"][..], other].concat()).unwrap()).unwrap_err().to_string();
+                assert!(e.contains("runs alone"), "{mode} with {other:?}: {e}");
+            }
+        }
+        let e = preflight(&sc(&["--data", &az, "--sc1-split", "/tmp/a", "--sc1-teaching-boxes", "/tmp/b"]).unwrap()).unwrap_err().to_string();
+        assert!(e.contains("each run alone"), "{e}");
+        assert!(sc(&["--data", &az, "--sc1-split", "/tmp/sc1-x"]).unwrap().out.is_none(), "no --out needed");
+    }
+    /// SC-1 Task 4: `--sc1-faithfulness` needs its four paths, runs alone, reads Aariz train only (the default --split is
+    /// ignored, a typed one must be train) and refuses Aariz test, Test2 and non-Aariz folders before any file is read (the
+    /// fixture folders are empty). Fails if any of those checks is removed, or if its paths are accepted without the mode.
+    #[test] fn sc1_faithfulness_needs_its_paths_runs_alone_and_reads_aariz_train_only() {
+        let (_d, az, c4) = fixture();
+        let sc = |v: &[&str]| Args::parse_explicit([&["ceph-bench"][..], v].concat());
+        let paths = ["--split-file", "s.json", "--boxes", "/tmp/sc1-boxes", "--pytorch", "p.json", "--out", "/tmp/sc1-f"];
+        let with = |extra: &[&str]| sc(&[&["--data", &az, "--sc1-faithfulness"][..], &paths, extra].concat()).unwrap();
+        assert!(preflight(&with(&[])).is_ok(), "the default --split (test1) is ignored");
+        assert!(preflight(&with(&["--split", "train"])).is_ok());
+        for (i, flag) in ["--split-file", "--boxes", "--pytorch", "--out"].iter().enumerate() {
+            let mut v: Vec<&str> = vec!["--data", &az, "--sc1-faithfulness"];
+            for (j, pair) in paths.chunks(2).enumerate() { if j != i { v.extend_from_slice(pair); } }
+            if *flag == "--out" { assert!(sc(&v).is_err(), "clap requires --out for this mode"); eprintln!("without --out: clap refuses (--out required)"); continue; }
+            let e = preflight(&sc(&v).unwrap()).unwrap_err().to_string();
+            eprintln!("--sc1-faithfulness without {flag}: {e}");
+            assert!(e.contains("needs --split-file, --boxes, --pytorch and --out"), "{flag}: {e}");
+        }
+        for bad in ["valid", "test", "test1", "all"] {
+            let e = preflight(&with(&["--split", bad])).unwrap_err().to_string();
+            eprintln!("--sc1-faithfulness --split {bad}: {e}");
+            assert!(e.contains("held back") || e.contains("train only"), "{bad}: {e}");
+        }
+        let on = |data: &str, extra: &[&str]| sc(&[&["--data", data, "--sc1-faithfulness"][..], &paths, extra].concat()).unwrap();
+        let e = preflight(&on(&c4, &[])).unwrap_err().to_string();
+        eprintln!("--sc1-faithfulness on ceph400: {e}");
+        assert!(e.contains("Aariz"), "{e}");
+        assert!(preflight(&on(&c4, &["--split", "test2"])).unwrap_err().to_string().contains("held back"));
+        for other in [&["--crosscheck-tune"][..], &["--scale-check"], &["--orient"], &["--crosscheck-run"], &["--diag-facing"],
+                      &["--chain-proof", "s1"], &["--parity", "p.csv"], &["--sc1-split", "/tmp/a"], &["--sc1-teaching-boxes", "/tmp/b"],
+                      &["--stage-a-acceptance"]] {
+            let e = preflight(&with(other)).unwrap_err().to_string();
+            assert!(e.contains("runs alone"), "with {other:?}: {e}");
+        }
+        let e = preflight(&sc(&["--data", &az, "--out", "/tmp/x", "--pytorch", "p.json"]).unwrap()).unwrap_err().to_string();
+        eprintln!("--pytorch without the mode: {e}");
+        assert!(e.contains("only with --sc1-faithfulness"), "{e}");
+    }
+    /// SC-1 Task 10: `--sc1-box-gate` needs no `--out` (it writes reports/sc1), runs alone, reads Aariz train for the gate
+    /// (the default --split is ignored, a typed one must be train), takes Ceph-400 from `--ceph400` (default data/ceph400),
+    /// and refuses Aariz test, Test2, a non-Aariz --data and a non-Ceph-400 --ceph400 before any file is read (the fixture
+    /// folders are empty). Fails if any of those checks is removed, or if --ceph400 is accepted without the mode.
+    #[test] fn sc1_box_gate_runs_alone_and_reads_the_aariz_hold_out() {
+        let (_d, az, c4) = fixture();
+        let sc = |v: &[&str]| Args::parse_explicit([&["ceph-bench"][..], v].concat());
+        let with = |extra: &[&str]| sc(&[&["--data", &az, "--ceph400", &c4, "--sc1-box-gate"][..], extra].concat()).unwrap();
+        let ok = with(&[]);
+        assert!(preflight(&ok).is_ok(), "the default --split (test1) is ignored");
+        assert!(ok.out.is_none() && ok.ceph400 == PathBuf::from(&c4));
+        assert_eq!(sc(&["--data", &az, "--sc1-box-gate"]).unwrap().ceph400, PathBuf::from("data/ceph400"));
+        assert!(preflight(&with(&["--split", "train"])).is_ok());
+        for bad in ["valid", "test", "test1", "all"] {
+            let e = preflight(&with(&["--split", bad])).unwrap_err().to_string();
+            eprintln!("--sc1-box-gate --split {bad}: {e}");
+            assert!(e.contains("held back") || e.contains("train only"), "{bad}: {e}");
+        }
+        let e = preflight(&sc(&["--data", &c4, "--ceph400", &c4, "--sc1-box-gate"]).unwrap()).unwrap_err().to_string();
+        eprintln!("--sc1-box-gate with --data ceph400: {e}");
+        assert!(e.contains("Aariz"), "{e}");
+        let e = preflight(&sc(&["--data", &az, "--ceph400", &az, "--sc1-box-gate"]).unwrap()).unwrap_err().to_string();
+        eprintln!("--sc1-box-gate with --ceph400 aariz: {e}");
+        assert!(e.contains("Ceph-400"), "{e}");
+        for other in [&["--crosscheck-tune"][..], &["--scale-check"], &["--orient"], &["--crosscheck-run"], &["--diag-facing"], &["--out", "/tmp/x"],
+                      &["--chain-proof", "s1"], &["--parity", "p.csv"], &["--sc1-split", "/tmp/a"], &["--sc1-teaching-boxes", "/tmp/b"],
+                      &["--stage-a-acceptance"], &["--sc1-faithfulness"], &["--shape-prior", "models/shape/x.shape"]] {
+            let e = preflight(&with(other)).unwrap_err().to_string();
+            assert!(e.contains("runs alone"), "with {other:?}: {e}");
+        }
+        let e = preflight(&sc(&["--data", &az, "--out", "/tmp/x", "--ceph400", &c4]).unwrap()).unwrap_err().to_string();
+        eprintln!("--ceph400 without the mode: {e}");
+        assert!(e.contains("only with --sc1-box-gate, --sc1-region-probe, --sc1-box-gate-2 or --sc1-1a"), "{e}");
+    }
+    /// The region probe (owner, 5 Nov): `--sc1-region-probe` needs no `--out`, runs alone, reads train only (a typed
+    /// --split other than train is refused: SC1-1a's test1 and valid, the held-back test and test2, and all), and needs
+    /// --data Aariz and --ceph400 Ceph-400.
+    #[test] fn sc1_region_probe_runs_alone_and_reads_train_only() {
+        let (_d, az, c4) = fixture();
+        let sc = |v: &[&str]| Args::parse_explicit([&["ceph-bench"][..], v].concat());
+        let with = |extra: &[&str]| sc(&[&["--data", &az, "--ceph400", &c4, "--sc1-region-probe"][..], extra].concat()).unwrap();
+        let ok = with(&[]);
+        assert!(preflight(&ok).is_ok(), "the default --split (test1) is ignored");
+        assert!(ok.out.is_none() && ok.ceph400 == PathBuf::from(&c4) && ok.sc1_region_probe);
+        assert!(preflight(&with(&["--split", "train"])).is_ok());
+        for bad in ["valid", "test", "test1", "test2", "all"] {
+            let e = preflight(&with(&["--split", bad])).unwrap_err().to_string();
+            eprintln!("--sc1-region-probe --split {bad}: {e}");
+            assert!(e.contains("held back") || e.contains("train only"), "{bad}: {e}");
+        }
+        let e = preflight(&sc(&["--data", &c4, "--ceph400", &c4, "--sc1-region-probe"]).unwrap()).unwrap_err().to_string();
+        eprintln!("--sc1-region-probe with --data ceph400: {e}");
+        assert!(e.contains("Aariz"), "{e}");
+        let e = preflight(&sc(&["--data", &az, "--ceph400", &az, "--sc1-region-probe"]).unwrap()).unwrap_err().to_string();
+        eprintln!("--sc1-region-probe with --ceph400 aariz: {e}");
+        assert!(e.contains("Ceph-400"), "{e}");
+        for other in [&["--crosscheck-tune"][..], &["--scale-check"], &["--orient"], &["--crosscheck-run"], &["--diag-facing"], &["--out", "/tmp/x"],
+                      &["--chain-proof", "s1"], &["--parity", "p.csv"], &["--sc1-split", "/tmp/a"], &["--sc1-teaching-boxes", "/tmp/b"],
+                      &["--stage-a-acceptance"], &["--sc1-faithfulness"], &["--shape-prior", "models/shape/x.shape"], &["--sc1-box-gate"]] {
+            let e = preflight(&with(other)).unwrap_err().to_string();
+            assert!(e.contains("runs alone"), "with {other:?}: {e}");
+        }
+    }
+    /// The box gate /2 (owner, 5 Nov): `--sc1-box-gate-2` needs no `--out`, runs alone (and /1 and the probe refuse it
+    /// beside them), reads train only (a typed --split other than train is refused), and needs --data Aariz and --ceph400
+    /// Ceph-400. Fails if any of those checks is removed.
+    /// SC1-1a (Task 11): `--sc1-1a` needs no `--out`, runs alone (only `--cache` may go with it), takes no `--split`
+    /// (it reads Ceph-400 test1 and Aariz valid, fixed by the pre-registration), and needs --data Aariz and --ceph400
+    /// Ceph-400; Test2 and Aariz test are refused before any file is read. Fails if any of those checks is removed.
+    #[test] fn sc1_1a_runs_alone_and_reads_test1_and_valid_only() {
+        let (_d, az, c4) = fixture();
+        let sc = |v: &[&str]| Args::parse_explicit([&["ceph-bench"][..], v].concat());
+        let with = |extra: &[&str]| sc(&[&["--data", &az, "--ceph400", &c4, "--sc1-1a"][..], extra].concat()).unwrap();
+        let ok = with(&[]);
+        assert!(preflight(&ok).is_ok(), "{:?}", preflight(&ok).err());
+        assert!(ok.out.is_none() && ok.ceph400 == PathBuf::from(&c4) && ok.sc1_1a);
+        assert!(preflight(&with(&["--cache", "/tmp/sc1-cache-a,/tmp/sc1-cache-b"])).is_ok(), "--cache goes with it (the real-runs line)");
+        for bad in ["test1", "valid", "test", "test2", "train", "all"] {
+            let e = preflight(&with(&["--split", bad])).unwrap_err().to_string();
+            eprintln!("--sc1-1a --split {bad}: {e}");
+            assert!(e.contains("held back") || e.contains("leave --split out"), "{bad}: {e}");
+        }
+        let e = preflight(&sc(&["--data", &c4, "--ceph400", &c4, "--sc1-1a"]).unwrap()).unwrap_err().to_string();
+        eprintln!("--sc1-1a with --data ceph400: {e}");
+        assert!(e.contains("Aariz"), "{e}");
+        let e = preflight(&sc(&["--data", &az, "--ceph400", &az, "--sc1-1a"]).unwrap()).unwrap_err().to_string();
+        eprintln!("--sc1-1a with --ceph400 aariz: {e}");
+        assert!(e.contains("Ceph-400"), "{e}");
+        for other in [&["--crosscheck-tune"][..], &["--scale-check"], &["--orient"], &["--crosscheck-run"], &["--diag-facing"], &["--out", "/tmp/x"],
+                      &["--chain-proof", "s1"], &["--parity", "p.csv"], &["--sc1-split", "/tmp/a"], &["--sc1-teaching-boxes", "/tmp/b"],
+                      &["--stage-a-acceptance"], &["--sc1-faithfulness"], &["--shape-prior", "models/shape/x.shape"], &["--sc1-box-gate"],
+                      &["--sc1-region-probe"], &["--sc1-box-gate-2"]] {
+            let e = preflight(&with(other)).unwrap_err().to_string();
+            assert!(e.contains("runs alone"), "with {other:?}: {e}");
+        }
+    }
+    #[test] fn sc1_box_gate_2_runs_alone_and_reads_train_only() {
+        let (_d, az, c4) = fixture();
+        let sc = |v: &[&str]| Args::parse_explicit([&["ceph-bench"][..], v].concat());
+        let with = |extra: &[&str]| sc(&[&["--data", &az, "--ceph400", &c4, "--sc1-box-gate-2"][..], extra].concat()).unwrap();
+        let ok = with(&[]);
+        assert!(preflight(&ok).is_ok(), "the default --split (test1) is ignored: {:?}", preflight(&ok).err());
+        assert!(ok.out.is_none() && ok.ceph400 == PathBuf::from(&c4) && ok.sc1_box_gate_2);
+        assert!(preflight(&with(&["--split", "train"])).is_ok());
+        for bad in ["valid", "test", "test1", "test2", "all"] {
+            let e = preflight(&with(&["--split", bad])).unwrap_err().to_string();
+            eprintln!("--sc1-box-gate-2 --split {bad}: {e}");
+            assert!(e.contains("held back") || e.contains("train only"), "{bad}: {e}");
+        }
+        let e = preflight(&sc(&["--data", &c4, "--ceph400", &c4, "--sc1-box-gate-2"]).unwrap()).unwrap_err().to_string();
+        eprintln!("--sc1-box-gate-2 with --data ceph400: {e}");
+        assert!(e.contains("Aariz"), "{e}");
+        let e = preflight(&sc(&["--data", &az, "--ceph400", &az, "--sc1-box-gate-2"]).unwrap()).unwrap_err().to_string();
+        eprintln!("--sc1-box-gate-2 with --ceph400 aariz: {e}");
+        assert!(e.contains("Ceph-400"), "{e}");
+        for other in [&["--crosscheck-tune"][..], &["--scale-check"], &["--orient"], &["--crosscheck-run"], &["--diag-facing"], &["--out", "/tmp/x"],
+                      &["--chain-proof", "s1"], &["--parity", "p.csv"], &["--sc1-split", "/tmp/a"], &["--sc1-teaching-boxes", "/tmp/b"],
+                      &["--stage-a-acceptance"], &["--sc1-faithfulness"], &["--shape-prior", "models/shape/x.shape"], &["--sc1-box-gate"], &["--sc1-region-probe"]] {
+            let e = preflight(&with(other)).unwrap_err().to_string();
+            assert!(e.contains("runs alone"), "with {other:?}: {e}");
+            if other[0].starts_with("--sc1-box-gate") || other[0] == "--sc1-region-probe" || other[0] == "--out" {
+                assert!(e.contains("--sc1-box-gate-2 runs alone"), "/2's own check, not another mode's: {other:?}: {e}");
+            }
+        }
+    }
+    /// SC-1 Part 1b Task C0 (owner OQ-1b-A = A): `--sc1-box-gate-3` needs no `--out`, runs alone, takes no `--split` (it
+    /// reads Aariz train and valid, Ceph-400 train and test1, fixed by the pre-registration), needs --data Aariz and
+    /// --ceph400 Ceph-400; Test2, Aariz test and PKU are refused before any file is read. Fails if any check is removed.
+    #[test] fn sc1_box_gate_3_runs_alone_and_takes_no_split() {
+        let (d, az, c4) = fixture();
+        let sc = |v: &[&str]| Args::parse_explicit([&["ceph-bench"][..], v].concat());
+        let with = |extra: &[&str]| sc(&[&["--data", &az, "--ceph400", &c4, "--sc1-box-gate-3"][..], extra].concat()).unwrap();
+        let ok = with(&[]);
+        assert!(preflight(&ok).is_ok(), "the default --split is ignored: {:?}", preflight(&ok).err());
+        assert!(ok.out.is_none() && ok.sc1_box_gate_3);
+        for bad in ["train", "valid", "test1", "test", "test2", "all"] {
+            let e = preflight(&with(&["--split", bad])).unwrap_err().to_string();
+            eprintln!("--sc1-box-gate-3 --split {bad}: {e}");
+            assert!(e.contains("held back") || e.contains("leave --split out"), "{bad}: {e}");
+        }
+        let pku = d.path().join("pku");
+        std::fs::create_dir_all(&pku).unwrap();
+        let e = preflight(&sc(&["--data", &pku.to_string_lossy(), "--ceph400", &c4, "--sc1-box-gate-3", "--split", "test"]).unwrap()).unwrap_err().to_string();
+        eprintln!("--sc1-box-gate-3 on PKU: {e}");
+        assert!(e.contains("sealed"), "{e}");
+        let e = preflight(&sc(&["--data", &c4, "--ceph400", &c4, "--sc1-box-gate-3"]).unwrap()).unwrap_err().to_string();
+        assert!(e.contains("Aariz"), "{e}");
+        let e = preflight(&sc(&["--data", &az, "--ceph400", &az, "--sc1-box-gate-3"]).unwrap()).unwrap_err().to_string();
+        assert!(e.contains("Ceph-400"), "{e}");
+        for other in [&["--crosscheck-tune"][..], &["--scale-check"], &["--orient"], &["--diag-facing"], &["--out", "/tmp/x"], &["--cache", "/tmp/c"],
+                      &["--chain-proof", "s1"], &["--parity", "p.csv"], &["--sc1-split", "/tmp/a"], &["--sc1-teaching-boxes", "/tmp/b"],
+                      &["--stage-a-acceptance"], &["--sc1-faithfulness"], &["--shape-prior", "models/shape/x.shape"], &["--sc1-box-gate"],
+                      &["--sc1-region-probe"], &["--sc1-box-gate-2"], &["--sc1-1a"]] {
+            let e = preflight(&with(other)).unwrap_err().to_string();
+            assert!(e.contains("--sc1-box-gate-3 runs alone"), "with {other:?}: {e}");
+        }
+    }
+    /// SC-1 Part 1b Task C: `--sc1-size-calibrate` needs no `--out`, runs alone, takes no `--split` (it reads the 520
+    /// calibration films fixed by reference/sc1-size.json), needs --data Aariz and --ceph400 Ceph-400; Test2, Aariz test
+    /// and PKU are refused before any file is read. Fails if any of those checks is removed.
+    #[test] fn sc1_size_calibrate_runs_alone_and_takes_no_split() {
+        let (d, az, c4) = fixture();
+        let sc = |v: &[&str]| Args::parse_explicit([&["ceph-bench"][..], v].concat());
+        let with = |extra: &[&str]| sc(&[&["--data", &az, "--ceph400", &c4, "--sc1-size-calibrate"][..], extra].concat()).unwrap();
+        let ok = with(&[]);
+        assert!(preflight(&ok).is_ok(), "{:?}", preflight(&ok).err());
+        assert!(ok.out.is_none() && ok.sc1_size_calibrate);
+        for bad in ["train", "valid", "test1", "test", "test2", "all"] {
+            let e = preflight(&with(&["--split", bad])).unwrap_err().to_string();
+            eprintln!("--sc1-size-calibrate --split {bad}: {e}");
+            assert!(e.contains("held back") || e.contains("leave --split out"), "{bad}: {e}");
+        }
+        let pku = d.path().join("pku");
+        std::fs::create_dir_all(&pku).unwrap();
+        let e = preflight(&sc(&["--data", &pku.to_string_lossy(), "--ceph400", &c4, "--sc1-size-calibrate", "--split", "test"]).unwrap()).unwrap_err().to_string();
+        assert!(e.contains("sealed"), "{e}");
+        let e = preflight(&sc(&["--data", &c4, "--ceph400", &c4, "--sc1-size-calibrate"]).unwrap()).unwrap_err().to_string();
+        assert!(e.contains("Aariz"), "{e}");
+        let e = preflight(&sc(&["--data", &az, "--ceph400", &az, "--sc1-size-calibrate"]).unwrap()).unwrap_err().to_string();
+        assert!(e.contains("Ceph-400"), "{e}");
+        for other in [&["--crosscheck-tune"][..], &["--scale-check"], &["--orient"], &["--diag-facing"], &["--out", "/tmp/x"], &["--cache", "/tmp/c"],
+                      &["--chain-proof", "s1"], &["--parity", "p.csv"], &["--sc1-split", "/tmp/a"], &["--sc1-teaching-boxes", "/tmp/b"],
+                      &["--stage-a-acceptance"], &["--sc1-faithfulness"], &["--shape-prior", "models/shape/x.shape"], &["--sc1-box-gate"],
+                      &["--sc1-region-probe"], &["--sc1-box-gate-2"], &["--sc1-box-gate-3"], &["--sc1-1a"]] {
+            let e = preflight(&with(other)).unwrap_err().to_string();
+            assert!(e.contains("--sc1-size-calibrate runs alone"), "with {other:?}: {e}");
+        }
+    }
+    /// whole-film/3 (owner ruling, 5 Nov 2026): `--sc1-1b-dev3` runs alone, takes no `--split` or `--out`, needs --data
+    /// Aariz and --ceph400 Ceph-400; Test2, Aariz test and PKU refused. `--sc1-whole-film-3` runs alone and takes no
+    /// --data, --ceph400, --split or --out (it reads no film). Fails if any check is removed.
+    #[test] fn sc1_whole_film_3_and_its_confirmation_run_run_alone() {
+        let (d, az, c4) = fixture();
+        let sc = |v: &[&str]| Args::parse_explicit([&["ceph-bench"][..], v].concat());
+        let with = |extra: &[&str]| sc(&[&["--data", &az, "--ceph400", &c4, "--sc1-1b-dev3"][..], extra].concat()).unwrap();
+        let ok = with(&[]);
+        assert!(preflight(&ok).is_ok(), "{:?}", preflight(&ok).err());
+        assert!(ok.out.is_none() && ok.sc1_1b_dev3);
+        for bad in ["train", "valid", "test1", "test", "test2", "all"] {
+            let e = preflight(&with(&["--split", bad])).unwrap_err().to_string();
+            assert!(e.contains("held back") || e.contains("leave --split out"), "{bad}: {e}");
+        }
+        let pku = d.path().join("pku");
+        std::fs::create_dir_all(&pku).unwrap();
+        let e = preflight(&sc(&["--data", &pku.to_string_lossy(), "--ceph400", &c4, "--sc1-1b-dev3", "--split", "test"]).unwrap()).unwrap_err().to_string();
+        eprintln!("--sc1-1b-dev3 on PKU test: {e}");
+        assert!(e.contains("sealed"), "{e}");
+        for other in [&["--out", "/tmp/x"][..], &["--cache", "/tmp/c"], &["--sc1-1b-dev"], &["--sc1-1b-dev-decompose"], &["--sc1-whole-film-3"], &["--sc1-1a"]] {
+            let e = preflight(&with(other)).unwrap_err().to_string();
+            assert!(e.contains("runs alone"), "--sc1-1b-dev3 with {other:?}: {e}");
+        }
+        let w = sc(&["--sc1-whole-film-3"]).unwrap();
+        assert!(preflight(&w).is_ok(), "{:?}", preflight(&w).err());
+        assert!(w.sc1_whole_film_3 && w.out.is_none());
+        for other in [&["--data", &az][..], &["--ceph400", &c4], &["--split", "valid"], &["--out", "/tmp/x"], &["--sc1-1b-dev3"], &["--sc1-cb-calibrate"]] {
+            let e = preflight(&sc(&[&["--sc1-whole-film-3"][..], other].concat()).unwrap()).unwrap_err().to_string();
+            eprintln!("--sc1-whole-film-3 with {other:?}: {e}");
+            assert!(e.contains("runs alone"), "--sc1-whole-film-3 with {other:?}: {e}");
+        }
+    }
+    /// SC-1 Part 1b Task E information (owner, 5 Nov 2026): `--sc1-1b-dev-decompose` runs alone, takes no `--split` or
+    /// `--out`, needs --data Aariz and --ceph400 Ceph-400; Test2, Aariz test and PKU refused. Fails if any check is removed.
+    #[test] fn sc1_1b_dev_decompose_runs_alone() {
+        let (d, az, c4) = fixture();
+        let sc = |v: &[&str]| Args::parse_explicit([&["ceph-bench"][..], v].concat());
+        let with = |extra: &[&str]| sc(&[&["--data", &az, "--ceph400", &c4, "--sc1-1b-dev-decompose"][..], extra].concat()).unwrap();
+        let ok = with(&[]);
+        assert!(preflight(&ok).is_ok(), "{:?}", preflight(&ok).err());
+        assert!(ok.out.is_none() && ok.sc1_1b_dev_decompose);
+        for bad in ["train", "valid", "test1", "test", "test2", "all"] {
+            let e = preflight(&with(&["--split", bad])).unwrap_err().to_string();
+            assert!(e.contains("held back") || e.contains("leave --split out"), "{bad}: {e}");
+        }
+        let pku = d.path().join("pku");
+        std::fs::create_dir_all(&pku).unwrap();
+        let e = preflight(&sc(&["--data", &pku.to_string_lossy(), "--ceph400", &c4, "--sc1-1b-dev-decompose", "--split", "test"]).unwrap()).unwrap_err().to_string();
+        eprintln!("--sc1-1b-dev-decompose on PKU test: {e}");
+        assert!(e.contains("sealed"), "{e}");
+        let e = preflight(&sc(&["--data", &c4, "--ceph400", &c4, "--sc1-1b-dev-decompose"]).unwrap()).unwrap_err().to_string();
+        assert!(e.contains("Aariz"), "{e}");
+        for other in [&["--out", "/tmp/x"][..], &["--cache", "/tmp/c"], &["--sc1-1b-dev"], &["--sc1-1a"], &["--sc1-cb-calibrate"]] {
+            let e = preflight(&with(other)).unwrap_err().to_string();
+            assert!(e.contains("runs alone"), "with {other:?}: {e}");
+        }
+    }
+    /// SC-1 Part 1b Task E: `--sc1-1b-dev` needs no `--out`, runs alone, takes no `--split` (it reads SC1-1a's films,
+    /// fixed by reference/sc1-1b-dev.json), needs --data Aariz and --ceph400 Ceph-400; Test2, Aariz test and PKU are refused
+    /// before any file is read. Fails if any of those checks is removed.
+    #[test] fn sc1_1b_dev_runs_alone_and_takes_no_split() {
+        let (d, az, c4) = fixture();
+        let sc = |v: &[&str]| Args::parse_explicit([&["ceph-bench"][..], v].concat());
+        let with = |extra: &[&str]| sc(&[&["--data", &az, "--ceph400", &c4, "--sc1-1b-dev"][..], extra].concat()).unwrap();
+        let ok = with(&[]);
+        assert!(preflight(&ok).is_ok(), "{:?}", preflight(&ok).err());
+        assert!(ok.out.is_none() && ok.sc1_1b_dev);
+        for bad in ["train", "valid", "test1", "test", "test2", "all"] {
+            let e = preflight(&with(&["--split", bad])).unwrap_err().to_string();
+            eprintln!("--sc1-1b-dev --split {bad}: {e}");
+            assert!(e.contains("held back") || e.contains("leave --split out"), "{bad}: {e}");
+        }
+        let pku = d.path().join("pku");
+        std::fs::create_dir_all(&pku).unwrap();
+        let e = preflight(&sc(&["--data", &pku.to_string_lossy(), "--ceph400", &c4, "--sc1-1b-dev", "--split", "test"]).unwrap()).unwrap_err().to_string();
+        eprintln!("--sc1-1b-dev on PKU test: {e}");
+        assert!(e.contains("sealed"), "{e}");
+        let e = preflight(&sc(&["--data", &pku.to_string_lossy(), "--ceph400", &c4, "--sc1-1b-dev"]).unwrap()).unwrap_err().to_string();
+        eprintln!("--sc1-1b-dev on PKU, no split: {e}");
+        assert!(e.contains("Aariz"), "{e}");
+        let e = preflight(&sc(&["--data", &c4, "--ceph400", &c4, "--sc1-1b-dev"]).unwrap()).unwrap_err().to_string();
+        assert!(e.contains("Aariz"), "{e}");
+        let e = preflight(&sc(&["--data", &az, "--ceph400", &az, "--sc1-1b-dev"]).unwrap()).unwrap_err().to_string();
+        assert!(e.contains("Ceph-400"), "{e}");
+        for other in [&["--crosscheck-tune"][..], &["--scale-check"], &["--out", "/tmp/x"], &["--cache", "/tmp/c"], &["--sc1-1a"], &["--sc1-cb-calibrate"],
+                      &["--sc1-size-calibrate"], &["--sc1-box-gate-3"], &["--sc1-box-gate-2"], &["--stage-a-acceptance"], &["--shape-prior", "models/shape/x.shape"]] {
+            let e = preflight(&with(other)).unwrap_err().to_string();
+            assert!(e.contains("runs alone"), "with {other:?}: {e}");
+        }
+    }
+    /// SC-1 Part 1b Task D: `--sc1-cb-calibrate` needs no `--out`, runs alone, takes no `--split` (it reads the 520
+    /// calibration films fixed by reference/sc1-cb-centre.json), needs --data Aariz and --ceph400 Ceph-400; Test2, Aariz test
+    /// and PKU are refused before any file is read. Fails if any of those checks is removed.
+    #[test] fn sc1_cb_calibrate_runs_alone_and_takes_no_split() {
+        let (d, az, c4) = fixture();
+        let sc = |v: &[&str]| Args::parse_explicit([&["ceph-bench"][..], v].concat());
+        let with = |extra: &[&str]| sc(&[&["--data", &az, "--ceph400", &c4, "--sc1-cb-calibrate"][..], extra].concat()).unwrap();
+        let ok = with(&[]);
+        assert!(preflight(&ok).is_ok(), "{:?}", preflight(&ok).err());
+        assert!(ok.out.is_none() && ok.sc1_cb_calibrate);
+        for bad in ["train", "valid", "test1", "test", "test2", "all"] {
+            let e = preflight(&with(&["--split", bad])).unwrap_err().to_string();
+            eprintln!("--sc1-cb-calibrate --split {bad}: {e}");
+            assert!(e.contains("held back") || e.contains("leave --split out"), "{bad}: {e}");
+        }
+        let pku = d.path().join("pku");
+        std::fs::create_dir_all(&pku).unwrap();
+        let e = preflight(&sc(&["--data", &pku.to_string_lossy(), "--ceph400", &c4, "--sc1-cb-calibrate", "--split", "test"]).unwrap()).unwrap_err().to_string();
+        assert!(e.contains("sealed"), "{e}");
+        let e = preflight(&sc(&["--data", &c4, "--ceph400", &c4, "--sc1-cb-calibrate"]).unwrap()).unwrap_err().to_string();
+        assert!(e.contains("Aariz"), "{e}");
+        let e = preflight(&sc(&["--data", &az, "--ceph400", &az, "--sc1-cb-calibrate"]).unwrap()).unwrap_err().to_string();
+        assert!(e.contains("Ceph-400"), "{e}");
+        for other in [&["--crosscheck-tune"][..], &["--scale-check"], &["--orient"], &["--diag-facing"], &["--out", "/tmp/x"], &["--cache", "/tmp/c"],
+                      &["--chain-proof", "s1"], &["--parity", "p.csv"], &["--sc1-split", "/tmp/a"], &["--sc1-teaching-boxes", "/tmp/b"],
+                      &["--stage-a-acceptance"], &["--sc1-faithfulness"], &["--shape-prior", "models/shape/x.shape"], &["--sc1-box-gate"],
+                      &["--sc1-region-probe"], &["--sc1-box-gate-2"], &["--sc1-box-gate-3"], &["--sc1-1a"], &["--sc1-size-calibrate"]] {
+            let e = preflight(&with(other)).unwrap_err().to_string();
+            assert!(e.contains("runs alone"), "with {other:?}: {e}");
+        }
+    }
+    /// SC-1 Part 1b Task A: `--pku-prepare <raw>` needs no `--out`, runs alone (no other mode, no --split, no --data), and
+    /// needs --ceph400 typed (C12); refused before any file is read (the fixture folders are empty). Fails if any of
+    /// those checks is removed.
+    /// SC-1 Part 1b Task F: `--sc1-1b-pku` runs alone, needs --data naming the pku folder and --ceph400, and refuses
+    /// --split, --out and every other mode before anything is read (the seal itself opens only inside the run). Fails if:
+    /// its branch is not first, a mode or flag is let through, or --data may be another folder.
+    #[test] fn sc1_1b_pku_runs_alone() {
+        let (d, _az, c4) = fixture();
+        let pku = d.path().join("pku");
+        std::fs::create_dir_all(&pku).unwrap();
+        let pku = pku.to_string_lossy().to_string();
+        let sc = |v: &[&str]| Args::parse_explicit([&["ceph-bench"][..], v].concat());
+        let with = |extra: &[&str]| sc(&[&["--sc1-1b-pku", "--data", &pku, "--ceph400", &c4][..], extra].concat()).unwrap();
+        let ok = with(&[]);
+        assert!(preflight(&ok).is_ok(), "{:?}", preflight(&ok).err());
+        assert!(ok.out.is_none() && ok.sc1_1b_pku);
+        for (what, v) in [("no --ceph400", vec!["--sc1-1b-pku", "--data", &pku]), ("no --data", vec!["--sc1-1b-pku", "--ceph400", &c4]),
+                          ("--data not the pku folder", vec!["--sc1-1b-pku", "--data", &c4, "--ceph400", &c4]),
+                          ("--ceph400 not Ceph-400", vec!["--sc1-1b-pku", "--data", &pku, "--ceph400", &pku])] {
+            let e = preflight(&sc(&v).unwrap()).unwrap_err().to_string();
+            eprintln!("--sc1-1b-pku, {what}: {e}");
+            assert!(e.contains("--sc1-1b-pku needs"), "{what}: {e}");
+        }
+        for other in [&["--split", "test"][..], &["--split", "all"], &["--sc1-1a"], &["--sc1-1b-dev3"], &["--sc1-box-gate-3"], &["--sc1-cb-calibrate"],
+                      &["--out", "/tmp/x"], &["--cache", "/tmp/c"], &["--crosscheck-run"], &["--scale-check"], &["--orient"], &["--chain-proof", "s1"],
+                      &["--pku-prepare", "/tmp/r"], &["--sc1-whole-film-3"], &["--sc1-size-calibrate"], &["--stage-a-acceptance"]] {
+            let e = preflight(&with(other)).unwrap_err().to_string();
+            eprintln!("--sc1-1b-pku with {other:?}: {e}");
+            assert!(e.contains("--sc1-1b-pku runs alone"), "with {other:?}: {e}");
+        }
+    }
+    #[test] fn pku_prepare_runs_alone() {
+        let (d, _az, c4) = fixture();
+        let raw = d.path().join("pku").join("unpacked").join("dental-cepha-dataset");
+        std::fs::create_dir_all(&raw).unwrap();
+        let raw = raw.to_string_lossy().to_string();
+        let sc = |v: &[&str]| Args::parse_explicit([&["ceph-bench"][..], v].concat());
+        let with = |extra: &[&str]| sc(&[&["--pku-prepare", &raw, "--ceph400", &c4][..], extra].concat()).unwrap();
+        let ok = with(&[]);
+        assert!(preflight(&ok).is_ok(), "{:?}", preflight(&ok).err());
+        assert!(ok.out.is_none() && ok.pku_prepare.is_some());
+        let e = preflight(&sc(&["--pku-prepare", &raw]).unwrap()).unwrap_err().to_string();
+        eprintln!("--pku-prepare without --ceph400: {e}");
+        assert!(e.contains("--ceph400"), "{e}");
+        let e = preflight(&sc(&["--pku-prepare", &raw, "--ceph400", &raw]).unwrap()).unwrap_err().to_string();
+        eprintln!("--pku-prepare with --ceph400 not Ceph-400: {e}");
+        assert!(e.contains("Ceph-400"), "{e}");
+        for other in [&["--split", "test"][..], &["--split", "test1"], &["--data", &c4], &["--sc1-1a"], &["--sc1-box-gate"], &["--sc1-box-gate-2"],
+                      &["--sc1-region-probe"], &["--sc1-faithfulness"], &["--crosscheck-tune"], &["--scale-check"], &["--orient"],
+                      &["--crosscheck-run"], &["--diag-facing"], &["--out", "/tmp/x"], &["--chain-proof", "s1"], &["--parity", "p.csv"],
+                      &["--sc1-split", "/tmp/a"], &["--sc1-teaching-boxes", "/tmp/b"], &["--stage-a-acceptance"],
+                      &["--shape-prior", "models/shape/x.shape"], &["--cache", "/tmp/c"]] {
+            let e = preflight(&with(other)).unwrap_err().to_string();
+            eprintln!("--pku-prepare with {other:?}: {e}");
+            assert!(e.contains("--pku-prepare runs alone"), "with {other:?}: {e}");
+        }
+    }
+    /// C5 through the command line: the PKU folder as --data is refused by the ordinary modes (the seal), for its test
+    /// split and for "all". Fails if the generic gate stops consulting the seal.
+    /// SC-1 Part 1b Task B: `--sc1-reference <out>` runs alone, needs the Aariz and Ceph-400 folders, refuses Aariz valid
+    /// and test and Ceph-400 Test2 before any read, and writes only under `models`, never Stage A's file. Fails if any of
+    /// these gates is dropped from the preflight.
+    #[test] fn sc1_reference_runs_alone_and_refuses_closed_splits_before_any_read() {
+        let (d, az, c4) = fixture();
+        let sr = |v: &[&str]| Args::parse_explicit([&["ceph-bench"][..], v].concat()).unwrap();
+        let out = "models/shape/whole-film-reference-v1.shape";
+        let base = ["--data", az.as_str(), "--ceph400", c4.as_str(), "--sc1-reference", out];
+        assert!(preflight(&sr(&base)).is_ok(), "{:?}", preflight(&sr(&base)));
+        for (split, want) in [("valid", "--split valid is refused"), ("test", "held back"), ("test2", "held back"), ("all", "held back")] {
+            let e = preflight(&sr(&[&base[..], &["--split", split]].concat())).unwrap_err().to_string();
+            eprintln!("--sc1-reference --split {split}: {e}");
+            assert!(e.contains(want), "{split}: {e}");
+        }
+        for other in [&["--out", "/tmp/x"][..], &["--sc1-1a"], &["--shape-prior", "models/shape/x.shape"], &["--crosscheck-run"], &["--scale-check"]] {
+            let e = preflight(&sr(&[&base[..], other].concat())).unwrap_err().to_string();
+            eprintln!("--sc1-reference with {other:?}: {e}");
+            assert!(e.contains("--sc1-reference runs alone"), "{other:?}: {e}");
+        }
+        for (bad, want) in [("reports/w.shape", "models"), ("models/shape/ceph400-v1.shape", "Stage A")] {
+            let e = preflight(&sr(&["--data", &az, "--ceph400", &c4, "--sc1-reference", bad])).unwrap_err().to_string();
+            eprintln!("--sc1-reference {bad}: {e}");
+            assert!(e.contains(want), "{bad}: {e}");
+        }
+        let pku = d.path().join("pku"); std::fs::create_dir_all(&pku).unwrap();
+        let pku = pku.to_string_lossy().to_string();
+        for (v, want) in [(["--data", c4.as_str(), "--ceph400", c4.as_str()], "Aariz"), (["--data", pku.as_str(), "--ceph400", c4.as_str()], "Aariz"),
+                          (["--data", az.as_str(), "--ceph400", az.as_str()], "Ceph-400")] {
+            let e = preflight(&sr(&[&v[..], &["--sc1-reference", out]].concat())).unwrap_err().to_string();
+            eprintln!("--sc1-reference {v:?}: {e}");
+            assert!(e.contains(want), "{v:?}: {e}");
+        }
+        let e = preflight(&sr(&["--data", &az, "--sc1-reference", out])).unwrap_err().to_string();
+        eprintln!("--sc1-reference without --ceph400: {e}");
+        assert!(e.contains("--ceph400"), "{e}");
+    }
+    /// Fix round 1 (F2): `--sc1-reference-lines <file>` runs alone and only on a file under models. Fails if it could be
+    /// combined with another mode (or --data, --split) or read a file outside models.
+    #[test] fn sc1_reference_lines_runs_alone_on_a_file_under_models() {
+        let (_d, az, _) = fixture();
+        let sl = |v: &[&str]| Args::parse_explicit([&["ceph-bench"][..], v].concat()).unwrap();
+        let f = "models/shape/whole-film-reference-v1.shape";
+        assert!(preflight(&sl(&["--sc1-reference-lines", f])).is_ok());
+        for other in [&["--out", "/tmp/x"][..], &["--sc1-reference", f], &["--data", az.as_str()], &["--split", "train"], &["--sc1-1a"]] {
+            let e = preflight(&sl(&[&["--sc1-reference-lines", f][..], other].concat())).unwrap_err().to_string();
+            eprintln!("--sc1-reference-lines with {other:?}: {e}");
+            assert!(e.contains("--sc1-reference-lines runs alone"), "{other:?}: {e}");
+        }
+        let e = preflight(&sl(&["--sc1-reference-lines", "reports/w.shape"])).unwrap_err().to_string();
+        eprintln!("--sc1-reference-lines reports/w.shape: {e}");
+        assert!(e.contains("models"), "{e}");
+    }
+    #[test] fn the_pku_folder_is_refused_by_the_other_modes() {
+        let d = tempfile::tempdir().unwrap();
+        let pku = d.path().join("pku");
+        std::fs::create_dir_all(&pku).unwrap();
+        let p = pku.to_string_lossy().to_string();
+        for v in [&["--data", &p, "--split", "test"][..], &["--data", &p, "--split", "all", "--scale-check"], &["--data", &p, "--split", "test", "--orient"]] {
+            let e = preflight(&args(v)).unwrap_err().to_string();
+            eprintln!("{v:?}: {e}");
+            assert!(e.contains("sealed"), "{v:?}: {e}");
+        }
     }
     #[test] fn the_held_back_splits_are_refused_before_anything_runs() {
         let (_d, az, c4) = fixture();

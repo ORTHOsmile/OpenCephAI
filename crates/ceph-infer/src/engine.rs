@@ -69,7 +69,7 @@ pub struct Engine { session: Mutex<Session>, m: ModelSpec, provider: &'static st
 /// file through the C library's `dirname()`, and on macOS that returns one buffer shared by the whole process. Two
 /// loads at once could each read the other's folder, look for `weights.bin` in the wrong place and fail with
 /// "Encountered unknown exception in Initialize()". Only the start-up of a session waits here; runs on films do not.
-static SESSION_START: Mutex<()> = Mutex::new(());
+pub(crate) static SESSION_START: Mutex<()> = Mutex::new(());
 
 /// Test-only (Review I-1): poisons `SESSION_START` by panicking on another thread while it holds the lock, so an
 /// integration test can exercise the `into_inner()` recovery at `Engine::load`'s line above without needing a real

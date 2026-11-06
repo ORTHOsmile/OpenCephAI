@@ -15,6 +15,7 @@ mod auto_best;
 mod weights_check;
 pub mod film_scale;
 mod point_check;
+mod whole_film;
 
 pub use details::{merge_patient_id, FilmDetailsRead, NOT_AN_AGE, NOT_A_TITLE};
 pub use fits::{FilmFit, FitSave};
@@ -22,13 +23,14 @@ pub use library_ids::LibraryIdFound;
 pub use layouts::{MachineMatch, MachineSummary, Place};
 pub use machine_scale::{MachineRef, MachineScale, MachineScaleRow, ScaleChange};
 pub use library::LabelApplied;
-pub use library::{verify_backup, Library, UPGRADE_BACKUPS_DIR, UPGRADE_COPY_FAILED};
+pub use library::{pending_upgrade, pending_upgrade_to, verify_backup, Library, UPGRADE_BACKUPS_DIR, UPGRADE_COPY_FAILED};
 pub use schema::SUPERSEDED_11;
 pub use choices::{NewPointChoice, PointChoice};
 pub use auto_best::{AutoBestEvent, NewAutoBestEvent};
 pub use weights_check::{CheckFilm, WeightsCheckFilm, WeightsCheckRow};
 pub use film_scale::{film_scale, FilmScale, ScaleSource};
 pub use point_check::{point_check_flag, point_check_record, PointCheckFlag, PointCheckRecord, PointCheckRow};
+pub use whole_film::{RegionBoxRow, RegionRunRecord, ResolveReason, WholeFilmReasonRow, WholeFilmRecord, WholeFilmResolution, WholeFilmRow};
 pub use identity::{merge_reads, Conflict, IdentityIssue, IdentityOutcome, IdentityRead, PatientRef};
 use serde::{Deserialize, Serialize};
 

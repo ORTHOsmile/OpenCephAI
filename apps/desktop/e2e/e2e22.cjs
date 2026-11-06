@@ -254,6 +254,26 @@ const seed = { settings: {}, ops: ['Dr A'], runs: {}, best, autoOn: true, base: 
   ok('10. the model line reads "Model: Automatic best (starts from GU2Net)" and names no file id', line.includes('Model: Automatic best (starts from GU2Net)')
     && !line.includes('aariz-cepha29') && !line.includes('gu2net-isbi19'), line);
 
+  // Owner, 5 Nov 2026: the "Made from your verified films" label was white on white. Its computed colour must differ
+  // from its background and read at 4.5:1 or better, in light and in dark (positive control: a bare .chip, white on none).
+  const lum = (c) => { const [r, g, b] = c.match(/[\d.]+/g).slice(0, 3).map(Number).map((v) => { v /= 255; return v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4; }); return 0.2126 * r + 0.7152 * g + 0.0722 * b; };
+  const ratio = (a, b) => { const [x, y] = [lum(a), lum(b)].sort((p, q) => q - p); return (x + 0.05) / (y + 0.05); };
+  await openModels();
+  const label = mdlg().locator('section.auto-best-row .chip', { hasText: 'Made from your verified films' });
+  for (const scheme of ['light', 'dark']) {
+    await page.emulateMedia({ colorScheme: scheme });
+    await page.waitForTimeout(150);
+    const lc = await label.evaluate((e) => { const s = getComputedStyle(e); return { color: s.color, bg: s.backgroundColor, border: s.borderTopColor, bw: s.borderTopWidth }; });
+    const panelBg = await mdlg().evaluate((e) => getComputedStyle(e).backgroundColor);
+    const bare = await page.evaluate(() => { const e = document.createElement('span'); e.className = 'chip'; document.body.appendChild(e); const s = getComputedStyle(e); const r = { color: s.color, bg: s.backgroundColor }; e.remove(); return r; });
+    ok(`11. ${scheme}: the label is grey on --bg with an outline, not white text`, lc.bg === (await resolvedBg('--bg')) && lc.color === (await resolved('--text-2')) && lc.bw === '1px', JSON.stringify(lc));
+    ok(`11. ${scheme}: label text against its own background reads at 4.5:1 or better (${ratio(lc.color, lc.bg).toFixed(2)})`, lc.bg !== 'rgba(0, 0, 0, 0)' && ratio(lc.color, lc.bg) >= 4.5);   // a transparent background would read as black here
+    ok(`11. ${scheme}: positive control: a bare .chip has no background and white text (the old fault) `, bare.bg === 'rgba(0, 0, 0, 0)' && bare.color === (await resolved('--on-fill')), JSON.stringify(bare));
+    void panelBg;
+  }
+  await page.emulateMedia({ colorScheme: null });
+  await closeModels();
+
   ok('no page errors', errors.length === 0, errors.join(' | '));
   await browser.close();
   console.log(results.join('\n'));

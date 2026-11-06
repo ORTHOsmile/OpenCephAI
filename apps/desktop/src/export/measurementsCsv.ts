@@ -5,13 +5,16 @@ import { patientIdOf } from '../library/filter';
 import type { FilmFacts, ReportModel, ReportRow } from '../report/model';
 import type { ReportPoint } from '../report/points';
 import { adjustedWords, fitMark, machineWords, type Scale } from '../tracing/spacing';
+import { LOOK_ORDER } from '../points/wholeFilm';
 import { toCsv, type Column } from './csv';
 import { sha256Hex } from './sha256';
 
 /** Measurements CSV (spec 2026-10-17 report-exports; master plan §8): tidy (one row per film × measurement) or wide
  *  (one row per film). The numbers are the report's — the screen's — so a hidden mm value is blank, never a number. */
 export type CsvLayout = 'tidy' | 'wide' | 'points';
-export interface CsvOptions { anonymise: boolean; layout: CsvLayout; salt: string; exportedAt: string; decimals: Decimals }
+export interface CsvOptions { anonymise: boolean; layout: CsvLayout; salt: string; exportedAt: string; decimals: Decimals;
+  /** Research switch (Settings › Checks, 6 Nov 2026): the points file gets `whole_film_check` and `whole_film_region` after `point_check`. Off/absent: neither column. */
+  wholeFilm?: boolean }
 export const SALT_KEY = 'export_salt';
 
 /** Anonymised (ANON-1): no name, DOB or IDs; a code per patient and per film, the same in every export from this library (the salt is kept in its
@@ -126,7 +129,7 @@ function measureColumns(o: CsvOptions): Column<T>[] {
 }
 /** Chain spec §5 (Part F Task 13): one row per point — its label and the structured columns. The anonymised file keeps
  *  them: they hold no patient data. `personal_model_version` stays blank until Tier 3 (S3). */
-function pointColumns(): Column<T>[] {
+function pointColumns(whole = false): Column<T>[] {
   const p = (t: T) => t.pt!;
   return [
     { name: 'point', get: (t) => p(t).id, text: true },
@@ -136,13 +139,24 @@ function pointColumns(): Column<T>[] {
     { name: 'model_file', get: (t) => p(t).modelFile, text: true },
     { name: 'personal_model_version', get: () => null },
     { name: 'accept_kind', get: (t) => p(t).acceptKind, text: true },
-    // Stage A: the placing model's point check at this point (`flagged`, `film-unusual`, or blank). The last point column.
+    // Stage A: the placing model's point check at this point (`flagged`, `film-unusual`, or blank).
     { name: 'point_check', get: (t) => p(t).pointCheck, text: true },
+    // SC-1 Part 1 task 9: the film's whole-film check, the same on every point row, right after `point_check`; every later column
+    // (scale, ...) is one place to the right of where it stood in format <= 19 files. Tidy and wide layouts have no such column.
+    // Research switch (6 Nov 2026): only when it is on. Then `whole_film_check` (the film's result) and `whole_film_region` (this landmark's region).
+    ...(whole ? [
+      { name: 'whole_film_check', get: (t: T) => p(t).wholeFilmCheck, text: true },
+      { name: 'whole_film_region', get: (t: T) => p(t).wholeFilmRegion, text: true },
+      // the status of each look (same on every row of a film): judged / not checked (why)
+      ...LOOK_ORDER.map((k) => ({ name: `whole_film_look_${k}`, get: (t: T) => p(t).wholeFilmLooks?.[k] ?? null, text: true })),
+    ] : []),
   ];
 }
 const blank: CsvOptions = { anonymise: false, layout: 'tidy', salt: '', exportedAt: '', decimals: 1 };
 export const TIDY_COLUMNS = [...filmColumns(blank), ...measureColumns(blank), ...tailColumns(blank, clinicianCoder())].map((c) => c.name);
 export const POINTS_COLUMNS = [...filmColumns(blank), ...pointColumns(), ...tailColumns(blank, clinicianCoder())].map((c) => c.name);
+/** The same, with the research switch on. */
+export const POINTS_COLUMNS_WHOLE = [...filmColumns(blank), ...pointColumns(true), ...tailColumns(blank, clinicianCoder())].map((c) => c.name);
 
 export function measurementsCsv(models: ReportModel[], o: CsvOptions): string {
   // One coder per export call, shared by every column/row it produces below — so a clinician's code is stable
@@ -150,7 +164,7 @@ export function measurementsCsv(models: ReportModel[], o: CsvOptions): string {
   const clinicianOf = clinicianCoder();
   if (o.layout === 'points') {
     const rows: T[] = models.flatMap((m) => m.points.map((pt) => ({ m, pt })));
-    return toCsv([...filmColumns(o), ...pointColumns(), ...tailColumns(o, clinicianOf)], rows);
+    return toCsv([...filmColumns(o), ...pointColumns(!!o.wholeFilm), ...tailColumns(o, clinicianOf)], rows);
   }
   if (o.layout === 'tidy') {
     const rows: T[] = models.flatMap((m) => m.blocks.flatMap((b) => b.rows.map((r) => ({ m, r }))));

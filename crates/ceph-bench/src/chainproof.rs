@@ -139,8 +139,11 @@ pub fn leakage(model: &str, split: &str) -> &'static str {
 }
 
 /// A cache of a held-back split is refused before any film is read (owner O7; question 8).
-pub fn refuse_held_back_cache(data: &std::path::Path, split: &str) -> anyhow::Result<()> {
+pub fn refuse_held_back_cache(data: &std::path::Path, split: &str) -> anyhow::Result<()> { refuse_held_back_cache_unless(data, split, None) }
+/// `refuse_held_back_cache`, except that with the seal's key (`ledger::open_seal`) a sealed split named exactly passes.
+pub fn refuse_held_back_cache_unless(data: &std::path::Path, split: &str, key: Option<&crate::ledger::SealKey>) -> anyhow::Result<()> {
     anyhow::ensure!(!crate::ledger::is_held_back(data, split), "{} {split} is held back (owner O7): the chain proof never opens it (question 8)", data.display());
+    anyhow::ensure!(!crate::ledger::is_sealed(data, split) || crate::ledger::opens(key, split), "{}", crate::ledger::sealed_message(data, split));
     Ok(())
 }
 
@@ -429,6 +432,17 @@ mod tests {
         assert!(aariz.iter().all(|r| (r.how == "accepted-unmoved") == (r.dist_px == 0.0)));
         assert!(aariz.iter().filter(|r| r.how == "moved").all(|r| r.dist_px * 0.1 > 0.5));
         assert!(aariz.iter().any(|r| r.how == "accepted-unmoved"), "some of 300 pins fall within 0.5 mm (about 5 % do)");
+    }
+    /// SC-1 Part 1b Task A (C5). Fails if the cache refusal skips the seal.
+    #[test] fn a_sealed_cache_is_refused() {
+        let d = tempfile::tempdir().unwrap();
+        let p = d.path().join("pku");
+        for s in ["test", "all", "Test"] {
+            let e = refuse_held_back_cache(&p, s).unwrap_err().to_string();
+            eprintln!("cache pku {s}: {e}");
+            assert!(e.contains("sealed"), "{e}");
+        }
+        assert!(refuse_held_back_cache(&d.path().join("aariz"), "valid").is_ok());
     }
     #[test] fn held_back_caches_are_refused_and_allowed_ones_pass() {
         let d = std::path::Path::new("data/ceph400");

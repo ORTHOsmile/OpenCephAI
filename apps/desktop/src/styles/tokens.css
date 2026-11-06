@@ -170,7 +170,6 @@ button.tool.pressed { background: var(--accent-fill); border-color: var(--accent
 .chip { padding: 3px 8px; border-radius: var(--radius-pill); font-size: var(--size-sm); font-weight: var(--weight-semibold); color: var(--on-fill); }
 .chip.ai { background: var(--ai-fill); } .chip.verified { background: var(--accent-fill); }
 .tabs { display: flex; flex-wrap: wrap; gap: 2px; } .tabs [aria-selected="true"] { background: var(--control); }
-.steps .next button { background: rgba(10,132,255,.2); } .steps .done button { color: var(--text-3); }
 .needs { color: var(--warn-text); } .muted { color: var(--text-3); }
 .drop-overlay { position: absolute; inset: 12px; z-index: 10; pointer-events: none; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; border: 2px dashed var(--accent); border-radius: 14px; background: rgba(10, 132, 255, 0.14); color: var(--text); font-size: 13px; }
 .drop-overlay b { font-size: 20px; }
@@ -219,8 +218,8 @@ button:disabled { opacity: .45; }
 .status-row .sign-off { display: flex; flex-direction: column; gap: 2px; } .status-row .verified-note { color: var(--link); }
 .tabs button { border: 0; background: transparent; font-weight: var(--weight-semibold); color: var(--text-2); padding: 4px 5px; white-space: nowrap; font-size: var(--size-sm); }   /* all five tabs on one line (owner, 16 Oct: Chart; review M-4) */
 .tabs button[aria-selected="true"] { color: var(--text); }
-.lm-list, .steps { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 2px; }
-.lm-list button, .steps button { width: 100%; display: flex; gap: 10px; align-items: center; text-align: left; border: 0; background: transparent; padding: 6px 8px; }
+.lm-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 2px; }
+.lm-list button { width: 100%; display: flex; gap: 10px; align-items: center; text-align: left; border: 0; background: transparent; padding: 6px 8px; }
 .lm-list button[aria-current="true"] { background: var(--control); }
 .lm-list button[data-picked="true"] { box-shadow: inset 3px 0 0 var(--link); }
 .lm-list b { width: 44px; } .lm-list span:nth-child(2) { flex: 1; color: var(--text-2); }
@@ -482,7 +481,8 @@ h2.section-head { font-size: var(--size-xs); font-weight: var(--weight-bold); le
 .best-switches { margin: 0; padding-left: var(--space-4); }
 .best-checks { display: flex; flex-direction: column; gap: var(--space-1); }
 .best-checks ul { margin: 0; padding-left: var(--space-4); font-size: var(--size-sm); }
-.model-row .chip { background: var(--bg); color: var(--text-2); border: 1px solid var(--line); font-size: var(--size-xs); }
+/* `.chip.neutral`: the same look outside a .model-row (Automatic best's label; a bare .chip is white text, no background). */
+.model-row .chip, .chip.neutral { background: var(--bg); color: var(--text-2); border: 1px solid var(--line); font-size: var(--size-xs); }
 .model-row .chip.warn { background: var(--warn-bg); color: var(--warn-text); border-color: var(--warn); }
 .model-status { margin-left: auto; font-size: var(--size-sm); color: var(--text-2); }
 .model-row label { display: flex; gap: var(--space-1); align-items: center; font-size: var(--size-sm); margin-right: auto; }
@@ -687,7 +687,11 @@ h2.section-head { font-size: var(--size-xs); font-weight: var(--weight-bold); le
 .stage .check-line { position: absolute; left: 12px; bottom: 44px; padding: 4px 10px; border-radius: 6px; background: rgba(0,0,0,.6); color: #fff; font-size: 12px; }
 
 /* Stage A task 7: the film note ("This film looks unusual overall…") with its Checked button, top left of the film. */
-.stage .check-note { pointer-events: none; position: absolute; left: 12px; top: 12px; max-width: 60%; padding: 4px 10px; border-radius: 6px; background: rgba(0,0,0,.6); color: #fff; font-size: 12px; }
+.stage .check-notes { pointer-events: none; position: absolute; left: 12px; top: 12px; max-width: 60%; display: flex; flex-direction: column; gap: 4px; align-items: flex-start; }
+.stage .check-note { pointer-events: none; padding: 4px 10px; border-radius: 6px; background: rgba(0,0,0,.6); color: #fff; font-size: 12px; }
 .stage .check-note button { pointer-events: auto; }
+/* SC-1 task 8 (fix round 1): the note's text lets the film have the pointer, as Stage A's; only the "?" marker takes it, for the hover words. */
+.stage .whole-film-hover { pointer-events: auto; cursor: help; display: inline-block; min-width: 14px; text-align: center; border: 1px solid rgba(255,255,255,.6); border-radius: 50%; font-size: 11px; line-height: 14px; }
+.stage .whole-film-actions { flex-wrap: wrap; }
 .stage .check-note-line { display: flex; align-items: center; gap: var(--space-2); }
 .stage .check-note-line[data-resolved="true"] { opacity: .75; }

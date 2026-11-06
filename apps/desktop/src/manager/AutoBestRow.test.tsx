@@ -55,3 +55,17 @@ describe('Models… row: the base drop-down beside it, greyed out with a plain r
     expect(h).toContain('>Best model settings…<');
   });
 });
+
+// Owner, 5 Nov 2026: the "Made from your verified films" label was white on white (a bare .chip has colour
+// var(--on-fill) and no background; only .model-row .chip gave it the neutral look). It sits in the Automatic best
+// section, not in a .model-row, so it carries the neutral modifier.
+describe('the "Made from your verified films" label is readable (owner, 5 Nov 2026)', () => {
+  it('is a neutral chip, never a bare .chip (white text, no background)', () => {
+    const out = html(map());
+    expect(out).toMatch(/<span class="chip neutral">Made from your verified films<\/span>/);
+    expect(out).not.toMatch(/<span class="chip">Made from your verified films/);
+  });
+  it('is still there when the state cannot be read (the error path draws the same head)', () => {
+    expect(html(map(), 'SYNTHETIC: could not read')).toMatch(/<span class="chip neutral">Made from your verified films<\/span>/);
+  });
+});

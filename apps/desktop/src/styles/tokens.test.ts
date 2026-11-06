@@ -97,3 +97,32 @@ describe('blue Settings tabs (spec §2a)', () => {
     expect(tokensCss).toMatch(/\.sidebar \.row\.settings-row \{[^}]*justify-content: center;[^}]*\}/);
   });
 });
+
+// Owner, 5 Nov 2026: a chip outside a .model-row (Automatic best's "Made from your verified films") must not fall back
+// to the bare .chip, which is white text (--on-fill) on no background. `.chip.neutral` carries the same grey outlined
+// look as `.model-row .chip`; text-2 on bg is already held at AA in both themes by the token tests above.
+describe('chip looks (owner, 5 Nov 2026)', () => {
+  const rule = (selector: string) => {
+    const css = tokensCss.replace(/\/\*[\s\S]*?\*\//g, '');
+    const hit = [...css.matchAll(/([^{}]+)\{([^}]*)\}/g)].find((m) => m[1].split(',').map((x) => x.trim()).includes(selector));
+    return hit ? hit[2] : null;
+  };
+  it('the bare .chip is white text with no background of its own (why a bare chip cannot be used on a plain panel)', () => {
+    const bare = rule('.chip')!;
+    expect(bare).toContain('color: var(--on-fill)');
+    expect(bare).not.toContain('background');
+  });
+  it('.chip.neutral has the same neutral look as .model-row .chip: grey text on --bg with a --line outline', () => {
+    const neutral = rule('.chip.neutral'), inRow = rule('.model-row .chip');
+    expect(inRow).not.toBeNull();
+    expect(neutral).not.toBeNull();
+    for (const d of ['background: var(--bg)', 'color: var(--text-2)', 'border: 1px solid var(--line)']) {
+      expect(neutral).toContain(d);
+      expect(inRow).toContain(d);
+    }
+  });
+  it('the other chips are unchanged: .chip.ai and .chip.verified keep their fills', () => {
+    expect(rule('.chip.ai')).toContain('var(--ai-fill)');
+    expect(rule('.chip.verified')).toContain('var(--accent-fill)');
+  });
+});

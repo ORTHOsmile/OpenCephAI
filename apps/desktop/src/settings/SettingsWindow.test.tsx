@@ -98,16 +98,24 @@ const AZ9 = 'aariz-cepha29', SR9 = 'srpose-cldet23';
 const rows9 = [{ id: AZ9, title: 'Aariz', status: 'ready' }, { id: SR9, title: 'SRPose', status: 'ready' }] as ModelRow[];
 const map9: AutoBestMap = { available: true, on: true, base: AZ9, uses: { Go: SR9 }, notes: {}, kept: {}, latest: [event()] };
 const best9: BestPerPoint = { ruleVersion: 'best-point/4', choices: [], checks: [], points: [] };
-const settings9 = (tab: 'analyses' | 'bestModel') => renderToStaticMarkup(<SettingsWindow tab={tab} found={null} norms={norms(null, null)} decimals={1} onDecimals={() => {}} onClose={() => {}}
+const settings9 = (tab: 'analyses' | 'bestModel' | 'checks') => renderToStaticMarkup(<SettingsWindow tab={tab} found={null} norms={norms(null, null)} decimals={1} onDecimals={() => {}} onClose={() => {}}
   meanings={{ clinician: '', overrides: {}, refresh: () => {} }} filmDetails={{ off: new Set(), toggle: async () => {} }}
   mine={{ clinician: '', list: [], defs: [], error: null, refresh: () => {} }} onMineSaved={() => {}} onMineDeleted={() => {}} dateFormat="AU"
-  bestModel={<p className="best-model-stub">the Best model tab</p>} />);
+  bestModel={<p className="best-model-stub">the Best model tab</p>} wholeFilm={<p className="checks-stub">the Checks tab</p>} />);
 const view9 = (o: Partial<Parameters<typeof BestModelSettingsView>[0]> = {}) => renderToStaticMarkup(<BestModelSettingsView base={AZ9} baseError={null} rows={rows9} titleOf={(m) => m}
   map={map9} mapError={null} dateFormat="AU" tableOpen best={{ data: best9, error: null, notice: null, progress: null }} onChoose={() => {}} onTable={() => {}}
   onAnswer={() => {}} onUndo={() => {}} onRedo={() => {}} {...o} />);
 describe('Settings › Best model (spec §2)', () => {
-  it('the tabs are Analyses, Norms, Meanings, Text on the film, Best model, in that order', () => {
-    expect([...settings9('analyses').matchAll(/role="tab"[^>]*>([^<]+)</g)].map((m) => m[1])).toEqual(['Analyses', 'Norms', 'Meanings', 'Text on the film', 'Best model']);
+  it('the tabs are Analyses, Norms, Meanings, Text on the film, Best model, Checks, in that order', () => {
+    expect([...settings9('analyses').matchAll(/role="tab"[^>]*>([^<]+)</g)].map((m) => m[1])).toEqual(['Analyses', 'Norms', 'Meanings', 'Text on the film', 'Best model', 'Checks']);
+  });
+  /** SC-1 Part 1b Task D2: Settings › Checks holds the Whole-film check switch (App's `WholeFilmSettings`). Fails if the tab is missing, not selected, or shows another tab's body. */
+  it('opened at Checks, it shows that tab, selected, and not the Best model tab', () => {
+    const h = settings9('checks');
+    expect(h).toContain('the Checks tab');
+    expect(h).not.toContain('the Best model tab');
+    expect(h).toMatch(/aria-selected="true"[^>]*>Checks</);
+    expect(settings9('analyses')).not.toContain('the Checks tab');
   });
   it('opened at Best model, it shows that tab, selected', () => {
     const h = settings9('bestModel');
@@ -146,5 +154,19 @@ describe('Settings › Best model (spec §2)', () => {
   it('the fold is remembered as "0"/"1" and starts open', () => {
     expect([foldOpen(null), foldOpen('1'), foldOpen('0'), foldOpen('x')]).toEqual([true, true, false, true]);
     expect([foldValue(true), foldValue(false)]).toEqual(['1', '0']);
+  });
+});
+
+// Owner, 6 Nov 2026: "Move to the next point automatically", on by default.
+describe('SettingsWindow: the auto-advance switch', () => {
+  const tab = (autoAdvance?: boolean) => renderToStaticMarkup(<SettingsWindow tab="norms" found={null} norms={norms(null, null)} decimals={1} onDecimals={() => {}} onClose={() => {}}
+    meanings={{ clinician: '', overrides: {}, refresh: () => {} }} filmDetails={{ off: new Set(), toggle: async () => {} }} mine={mineOf('')} onMineSaved={() => {}} onMineDeleted={() => {}} dateFormat="AU"
+    autoAdvance={autoAdvance} onAutoAdvance={() => {}} />);
+  /** Fails if the label drifts or the box is not ticked by default. */
+  it('"Move to the next point automatically" is ticked by default and unticked when off', () => {
+    const on = tab(), off = tab(false);
+    expect(on).toContain('Move to the next point automatically');
+    expect(on.match(/<input[^>]*auto-advance|<label class="auto-advance-control"><input[^>]*>/)?.[0]).toMatch(/checked/);
+    expect(off.match(/<label class="auto-advance-control"><input[^>]*>/)?.[0]).not.toMatch(/checked/);
   });
 });
