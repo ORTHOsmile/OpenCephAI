@@ -310,7 +310,10 @@
       details.card > summary::after { right: 18px; }
       .card-body { padding: 0 18px 18px; }
     }
-  </style>
+  .wordmark, .brand img.wordmark { display: inline-block; height: 16px; width: auto; vertical-align: middle; border-radius: 0; box-shadow: none; }
+  .wordmark-hero { height: 36px; max-width: 100%; vertical-align: baseline; }
+  @media (max-width: 480px) { .wordmark-hero { height: 26px; } }
+</style>
 </head>
 <body>
   <a class="skip" href="#main">Skip to content</a>
@@ -319,7 +322,7 @@
     <div class="wrap">
       <a class="brand" href="#top" aria-label="OpenCephAI home">
         <img src="assets/icon.png" alt="" width="28" height="28">
-        OpenCephAI
+        <img class="wordmark" src="assets/opencephai-wordmark.png" alt="OpenCephAI" width="138" height="16">
       </a>
       <nav aria-label="Main">
         <a href="#features">Features</a>
@@ -335,7 +338,7 @@
     <div class="hero" id="top">
       <div class="wrap">
         <div class="hero-icon"><img src="assets/icon.png" alt="OpenCephAI app icon" width="84" height="84"></div>
-        <h1>OpenCephAI <span class="version">1.2 Beta</span></h1>
+        <h1><img class="wordmark wordmark-hero" src="assets/opencephai-wordmark.png" alt="OpenCephAI" width="310" height="36"> <span class="version">1.2 Beta</span></h1>
         <p class="lede">A friendly macOS lateral cephalogram tracing app. Import an X-ray, check the landmarks AI suggests, and get a clear cephalometric analysis.</p>
 
         <div class="cta-row">
