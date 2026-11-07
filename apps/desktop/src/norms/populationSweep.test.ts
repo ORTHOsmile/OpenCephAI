@@ -90,7 +90,8 @@ describe('the population before/after instrument (spec §8)', () => {
     expect(d.changed.untouched).toBe(d.unexpected.length);
   });
   // Final review M1: a hand-chosen population with a recorded sex does not depend on the clinic default (one skull,
-  // every offered population, both sexes, three ages: 66 films). In this git state only: the before file was written
+  // every offered population, both sexes, three ages: 72 films since Indian was added, owner ruling 7 Nov 2026; was 66).
+  // In this git state only: the before file was written
   // with no clinic default.
   it('a hand-chosen population with a recorded sex grades the same whatever the clinic default', async () => {
     const skull = populationDocs()[0].timepoint.split('~')[3];
@@ -98,7 +99,7 @@ describe('the population before/after instrument (spec §8)', () => {
     const none = await populationSweep(docs, { sets: loadSets(), userNorms: [], clinicDefault: null });
     const set = await populationSweep(docs, { sets: loadSets(), userNorms: [], clinicDefault: 'caucasian' });
     const d = diffPopulationSweeps(none, set);
-    expect([docs.length, d.compared, d.unexpected.length, d.changed.untouched]).toEqual([66, 66 * 130, 0, 0]);
+    expect([docs.length, d.compared, d.unexpected.length, d.changed.untouched]).toEqual([72, 72 * 131, 0, 0]);   // 131 rows: NUS BaSN added (7 Nov 2026)
   }, 600_000);
   it('hand-chosen population + recorded sex: 0 changed, across two git states (in the ordinary suite: a self-check only)', async () => {
     const here = await gitState();

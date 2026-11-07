@@ -13,7 +13,7 @@ const deg = (a: { x: number; y: number }, v: { x: number; y: number }, b: { x: n
 /** Appendix §5 sizes: #70 counts as two ids (Steiner 14). */
 const SIZES: Record<string, number> = {
   steiner: 14, downs: 10, mcnamara: 12, ricketts: 11, tweed: 3, 'bjork-jarabak': 11, wits: 1,
-  eastman: 9, holdaway: 12, 'e-line': 2, kim: 4, abo: 12, nagasaki: 8, radney: 4, nus: 17,
+  eastman: 9, holdaway: 12, 'e-line': 2, kim: 4, abo: 12, nagasaki: 8, radney: 4, nus: 18,   // NUS 18: BaSN (#93) added, owner ruling 7 Nov 2026
 };
 
 /** The ids of every analysis whose measurement count disagrees with the appendix (`SIZES`).

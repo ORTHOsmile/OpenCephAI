@@ -14,6 +14,12 @@ can and cannot tell you: `reference/norms/sets/README.md`. The extraction workfl
 tool that must first catch a planted typo, every difference settled against the page image, `pnpm norms:check`):
 `docs/norms/HOW-TO-ADD-NORMS.md`.
 
+**The population rule (owner rulings and answers, 7 Nov 2026):** an Indian patient uses the Caucasian norms (no Indian
+set is on file; `normsOf`); a Malay patient uses the Malay sets below wherever they have the measurement, and the Chinese
+norms only where they do not (`fallsBackTo`). Research reports no significant norm difference between these pairs. Held
+in `reference/norms/populations.json`. Rows it supplies read "Norms: Caucasian (population rule)" or "Norms: Chinese
+(population rule)". What this can and cannot tell you: `docs/norms/SEVERITY.md`, "Indian and Malay patients".
+
 In the tables below, **Extracted 8 Oct** marks a row whose values are now in `reference/norms/sets/` (set id given).
 
 Status key:
@@ -110,7 +116,8 @@ These papers define *how* each built-in analysis is measured: landmarks, planes 
 | African-American (Kim indices) | Obamiyi S et al. *Angle Orthod* 2019;89(6):897–902 (doi 10.2319/021619-116.1) | **Extracted 8 Oct** (`obamiyi2019`) |
 | Latin American (Kim indices) | Caballero-Purizaga PJ et al. *Dental Press J Orthod* 2019;24(3):46–54 (doi 10.1590/2177-6709.24.3.046-054.oar) | **Extracted 8 Oct** (`caballero2019`) |
 | Eastman (own norm, U1–MxP) | Naini FB 2011, *Facial Aesthetics*, Ch. 7 p. 111 | **Extracted 8 Oct** (`eastman-naini`) |
-| NUS (own norms) | NDC teaching sheet (no author, year or sample printed) | **Extracted 8 Oct** (`ndc-sheet`) |
+| NUS (own norms), set 1: Chinese and Malay patients | Data on file (NUS norms): the NUS teaching sheet, first column set (no author, year or sample printed; earlier called the NDC sheet, the same source) | **Extracted 8 Oct** (`ndc-sheet`); reworded "Data on file (NUS norms)" and assigned to Chinese and Malay patients, owner ruling 7 Nov 2026; no number changed |
+| NUS (own norms), set 2: Caucasian and Indian patients | Data on file (NUS norms): the same sheet, second column set | **Transcribed 7 Nov** by the owner (`nus-set2`, single-extracted, shown as unverified); switched on 7 Nov 2026. Filled by owner ruling: U1 to SN from the app's ABO norm (102 ± 2°; agrees with 108 − 8 = 100°); L1 to APo pooled from Gu 2011 + McNamara 1984 Ann Arbor adults (2.42 ± 1.68 mm, N 201); SDs of Wits, LAFH %, OJ, OB from set 1. BaSN blank |
 | Eastman standards | Alassiry Ahmed 2022, *Bioinformation* (PMC10492906) | **Extracted 13 Oct** (`alassiry2022-eastman`, 9 entries, second-hand Eastman standards; status in app: verified) |
 | Björk–Jarabak, Middle-Eastern / Jordanian | Al Maaitah et al. 2022, *Angle Orthod* (PMC9374356) | **Extracted 13 Oct** (`jordanian/almaaitah2022`, Class I group, 4 entries; status in app: verified, ranked as an ordinary Class I sample, owner KIMRANK-1; own population 'jordanian', owner JORDAN-1, 13 Oct — first merged under Caucasian as a treatment-seeking sample, P37) |
 | Jarabak via Al Maaitah 2022 | Al Maaitah et al. 2022 (same paper) | Checked 13 Oct, no usable Jarabak values — only two quoted cut-offs (`jarabak-via-almaaitah2022` not created) |
@@ -120,22 +127,22 @@ These papers define *how* each built-in analysis is measured: landmarks, planes 
 Found by checking every citation in `reference/norms/sets/**/*.json` and the 6 Oct design spec
 (§"Part E") against this file.
 
-### Website source ([source removed], pages opened 2026)
+### Data on file (primary source being confirmed)
 
-Used, `status: "website"` (shown, never coloured), where no paper gives the measurement. Each set's
-citation year (2026) records when the page was opened, not a publication date:
+Used, `status: "website"` (shown, never coloured), where no paper gives the measurement. The primary paper for
+each set is still to be found. Each set's citation year (2026) records when the values were
+copied, not a publication date:
 
-| Set id | Analysis | URL |
-|---|---|---|
-| `onfile-abo` | ABO | [source removed] |
-| `onfile-bjork-jarabak` | Björk–Jarabak | [source removed] |
-| `onfile-nagasaki` | Nagasaki | [source removed] |
-| `onfile-radney` | Radney | [source removed] |
-| `onfile-kim-cf-ei` | Kim (combination factor, extraction index) | [source removed] |
+| Set id | Analysis |
+|---|---|
+| `onfile-abo` | ABO |
+| `onfile-bjork-jarabak` | Björk–Jarabak (and one ratio, #44, from a second source on file) |
+| `onfile-nagasaki` | Nagasaki |
+| `onfile-radney` | Radney |
+| `onfile-kim-cf-ei` | Kim (combination factor, extraction index) |
 
 Also cited (S mark, catalogue §6 second-hand list; no committed norm set, no values — definitions
-and Björk–Jarabak #43's "no norm of any kind" note only): [source removed] Dental, "Cephalometric analysis in
-orthodontics: Björk analysis, Jarabak analysis" — [source removed]
+and Björk–Jarabak #43's "no norm of any kind" note only): the same "data on file".
 
 ### Moate & Darendeliler 2002's primaries (second-hand only; primaries not on file)
 

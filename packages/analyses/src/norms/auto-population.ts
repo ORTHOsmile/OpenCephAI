@@ -1,7 +1,7 @@
 // Owner decision 1 (29 Oct 2026), spec 2026-10-29 norms-auto-population §4.1-§4.2: the Auto population — the
 // patient's recorded background, else the clinic default, else (owner R1/R5, 3 Nov 2026) for an adult the combined adult
 // norm, for a child the largest study for the patient's sex and age.
-import { POPULATIONS } from './load';
+import { POPULATIONS, normsPopulation } from './load';
 import { byYear, COMBINED_ADULT, COMBINED_ADULT_LABEL, populationsOffered, setCoversPatient, setNearestAge, type UserNorm } from './resolve';
 import type { NormSet } from './types';
 
@@ -17,7 +17,8 @@ export interface AutoPopulationInput { background: string | null; clinicDefault:
 /** Norm sources, not backgrounds (spec §4.1). */
 const NOT_BACKGROUNDS = ['analysis-own', 'singapore-nus'];
 const shortLabel = (label: string) => label.split(' (')[0];
-const labelOf = (sets: NormSet[], id: string) => sets.find((s) => s.population.id === id && s.kind === 'population')?.population.label ?? null;
+// Owner ruling 7 Nov 2026: an aliased population (Indian, Malay) is named by the norms it uses, as the report's rows are.
+const labelOf = (sets: NormSet[], id: string) => sets.find((s) => s.population.id === normsPopulation(id) && s.kind === 'population')?.population.label ?? null;
 
 /** Spec §4.1: the Background choices — people populations with a usable set, populations.json order, short labels. */
 export function backgroundOptions(sets: NormSet[]): { id: string; label: string }[] {

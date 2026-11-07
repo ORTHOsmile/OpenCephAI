@@ -60,6 +60,10 @@ export interface NormCell {
   normSex: NormSex | null;
   normPopulation: string | null;
   normAgeRowUsed: string | null;
+  /** Owner rulings 7 Nov 2026: the population rule gave this row from another population (Indian -> Caucasian; Malay ->
+   *  Chinese where no Malay study has it); the resolver's words, "Norms: Caucasian (population rule)". Absent
+   *  or null otherwise. The source line already carries them; the report sentence repeats them once. */
+  aliasNote?: string | null;
 }
 export interface NormContext { sets: NormSet[]; userNorms: UserNorm[]; clinicDefault: string | null }
 
@@ -131,7 +135,8 @@ export function normCell(value: number | null, r: Resolved, q: NormQuery, decima
     // own built-in norm still print fine everywhere else; they just never drive (or get counted into "mixed" by)
     // this one sentence.
     // Owner R1/R5 (3 Nov 2026): the combined adult norm is not one set; the sentence names it "combined adult".
-    normPopulation: r.setId === COMBINED_ADULT ? COMBINED_ADULT_LABEL : set && set.kind === 'population' ? set.population.label : null, normAgeRowUsed: r.ageRowUsed };
+    normPopulation: r.setId === COMBINED_ADULT ? COMBINED_ADULT_LABEL : set && set.kind === 'population' ? set.population.label : null, normAgeRowUsed: r.ageRowUsed,
+    aliasNote: r.alias ?? null };
 }
 
 /** Task 5: the Inspector's one message for a failed norms read. `useNorms()` reports a failed load of the

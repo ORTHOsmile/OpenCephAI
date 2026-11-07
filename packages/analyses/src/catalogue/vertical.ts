@@ -22,7 +22,7 @@ export const VERTICAL: CatalogueEntry[] = [
 
   E('m21_SNGoMe', '21', 'SN–GoMe (SN–MP)', 'deg',
     { kind: 'angleLines', l1: 'SN', l2: 'GoMe' },
-    { mark: 'S', cite: 'onfile (ABO, Nagasaki)' }),
+    { mark: 'S', cite: 'Data on file (primary source being confirmed)' }),
 
   E('m22_FHMPt', '22', 'FH–MP, tangent (FMA, Downs mandibular plane)', 'deg',
     { kind: 'angleLines', l1: 'FH', l2: 'MPt' },
@@ -30,7 +30,7 @@ export const VERTICAL: CatalogueEntry[] = [
 
   E('m23_FHGoMe', '23', 'FH–GoMe', 'deg',
     { kind: 'angleLines', l1: 'FH', l2: 'GoMe' },
-    { mark: 'P', cite: 'McNamara 1984; onfile (ABO FMA)' }),
+    { mark: 'P', cite: 'McNamara 1984; Data on file (primary source being confirmed)' }),
 
   E('m24_YAxis', '24', 'Y-axis', 'deg',
     { kind: 'angleLines', l1: 'FH', l2: 'SGn' },
@@ -38,11 +38,11 @@ export const VERTICAL: CatalogueEntry[] = [
 
   E('m25_MMPA', '25', 'MMPA', 'deg',
     { kind: 'angleLines', l1: 'MxP', l2: 'GoMe' },
-    { mark: 'T', cite: 'Naini; onfile (Eastman)' }),
+    { mark: 'T', cite: 'Naini; Data on file (primary source being confirmed)' }),
 
   E('m26_SNMxP', '26', 'SN–MxP', 'deg',
     { kind: 'angleLines', l1: 'SN', l2: 'MxP' },
-    { mark: 'T', cite: 'Naini; onfile (Eastman)' }),
+    { mark: 'T', cite: 'Naini; Data on file (primary source being confirmed)' }),
 
   E('m27_PalFH', '27', 'Palatal plane to FH', 'deg',
     { kind: 'alias', of: 'PalKim' },
@@ -68,7 +68,7 @@ export const VERTICAL: CatalogueEntry[] = [
     { mark: 'P', cite: 'McNamara 1984', where: 'p. 460' },
     { sign: 'The angle where the basion–nasion line crosses the facial axis (PTM to constructed gnathion): "A perpendicular relationship of the basion-nasion line and the facial axis is to be expected in a balanced face"; "deficient vertical facial development is indicated by positive values (values greater than 90°)" (McNamara 1984 p. 460). Measured as line against line, not the bracketed corner at PTM (owner ruling, 7 Oct 2026).' }),
 
-  E('m32_OralGnomon', '32', 'Oral gnomon (onfile: "lower facial height")', 'deg',
+  E('m32_OralGnomon', '32', 'Oral gnomon (Data on file (primary source being confirmed): "lower facial height")', 'deg',
     { kind: 'angle3', a: 'ANS', vertex: 'Xi', b: 'Pm' },
     { mark: 'P', cite: 'Ricketts 1981' }),
 
@@ -78,53 +78,53 @@ export const VERTICAL: CatalogueEntry[] = [
 
   E('m34_Saddle', '34', 'Saddle angle', 'deg',
     { kind: 'angle3', a: 'N', vertex: 'S', b: 'Ar' },
-    { mark: 'S', cite: 'onfile, [source removed]; Naini' }),
+    { mark: 'S', cite: 'Data on file (primary source being confirmed); Naini' }),
 
   E('m35_Articular', '35', 'Articular angle', 'deg',
     { kind: 'angle3', a: 'S', vertex: 'Ar', b: 'Go' },
-    { mark: 'S', cite: 'onfile, [source removed]' }),
+    { mark: 'S', cite: 'Data on file (primary source being confirmed)' }),
 
   E('m36_Gonial', '36', 'Gonial angle', 'deg',
     { kind: 'angle3', a: 'Ar', vertex: 'Go', b: 'Me' },
-    { mark: 'S', cite: 'onfile, [source removed]' }),
+    { mark: 'S', cite: 'Data on file (primary source being confirmed)' }),
 
   E('m37_UpperGonial', '37', 'Upper gonial angle', 'deg',
     { kind: 'angle3', a: 'Ar', vertex: 'Go', b: 'N' },
-    { mark: 'S', cite: 'onfile' }),
+    { mark: 'S', cite: 'Data on file (primary source being confirmed)' }),
 
   E('m38_LowerGonial', '38', 'Lower gonial angle', 'deg',
     { kind: 'angle3', a: 'N', vertex: 'Go', b: 'Me' },
-    { mark: 'S', cite: 'onfile' }),
+    { mark: 'S', cite: 'Data on file (primary source being confirmed)' }),
 
   E('m39_SumAngles', '39', 'Sum of angles', 'deg',
     { kind: 'sum', terms: ['m34_Saddle', 'm35_Articular', 'm36_Gonial'] },
-    { mark: 'S', cite: 'onfile, [source removed]' }),
+    { mark: 'S', cite: 'Data on file (primary source being confirmed)' }),
 
   E('m40_SGo', '40', 'Posterior face height S–Go (mm)', 'mm',
     { kind: 'distance', a: 'S', b: 'Go' },
-    { mark: 'S', cite: 'onfile; Naini' }),
+    { mark: 'S', cite: 'Data on file (primary source being confirmed); Naini' }),
 
   E('m41_NMe', '41', 'Anterior face height N–Me (mm)', 'mm',
     { kind: 'distance', a: 'N', b: 'Me' },
-    { mark: 'S', cite: 'onfile; Naini' }),
+    { mark: 'S', cite: 'Data on file (primary source being confirmed); Naini' }),
 
   E('m42_Jarabak', '42', 'Jarabak ratio (%)', '%',
     { kind: 'ratio', a: 'm40_SGo', b: 'm41_NMe', percent: true },
-    { mark: 'S', cite: 'onfile, [source removed]' }),
+    { mark: 'S', cite: 'Data on file (primary source being confirmed)' }),
 
   E('m43_SNtoGoMe', '43', 'Cranial base to body', '',
     { kind: 'ratio', a: 'm43_SN', b: 'm43_GoMe', percent: false },
-    { mark: 'S', cite: '[source removed]' },
+    { mark: 'S', cite: 'Data on file (primary source being confirmed)' },
     { nodes: { m43_SN: { kind: 'distance', a: 'S', b: 'N' }, m43_GoMe: { kind: 'distance', a: 'Go', b: 'Me' } } }),
 
   E('m44_ArStoArGo', '44', 'Posterior cranial base to ramus', '',
     { kind: 'ratio', a: 'm44_ArS', b: 'm44_ArGo', percent: false },
-    { mark: 'S', cite: '[source removed]' },
+    { mark: 'S', cite: 'Data on file (primary source being confirmed)' },
     { nodes: { m44_ArS: { kind: 'distance', a: 'Ar', b: 'S' }, m44_ArGo: { kind: 'distance', a: 'Ar', b: 'Go' } } }),
 
   E('m90_SNMP_ABO', '90', 'SN–MP, ABO', 'deg',
     { kind: 'angleLines', l1: 'SN', l2: 'GoCMe' },
-    { mark: 'P', cite: 'ABO 2025 slides (constructed gonion); menton per onfile' }),
+    { mark: 'P', cite: 'ABO 2025 slides (constructed gonion); menton per Data on file (primary source being confirmed)' }),
 
   E('m91_FMA_ABO', '91', 'FMA, ABO', 'deg',
     { kind: 'angleLines', l1: 'FH', l2: 'GoCMe' },
@@ -133,4 +133,11 @@ export const VERTICAL: CatalogueEntry[] = [
   E('m92_L1MP_ABO', '92', 'L1–MP, ABO', 'deg',
     { kind: 'angleLines', l1: 'MeGoC', l2: 'L1ax' },
     { mark: 'P', cite: 'ABO 2025 slides' }),
+
+  // Owner ruling, 7 Nov 2026: the NUS sheet's BaSN row. The cranial base angle, at S between basion and nasion, as the
+  // saddle angle (#34) is at S between N and Ar. Ba is placed by hand (MANUAL_ONLY). Ricketts 1960 p. 346 reports
+  // N–S–Ba (129.6°, range 114–144°, n 200), not entered as a norm (ricketts1960 caveats).
+  E('m93_BaSN', '93', 'Cranial base angle, Ba–S–N', 'deg',
+    { kind: 'angle3', a: 'Ba', vertex: 'S', b: 'N' },
+    { mark: 'P', cite: 'Ricketts 1960', where: 'p. 346' }),
 ];

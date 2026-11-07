@@ -22,6 +22,14 @@ describe('the population picker', () => {
 });
 describe('owner decision 3 (29 Oct 2026): Auto in the chooser', () => {
   const choice = (o: Partial<PopulationChoice>): PopulationChoice => ({ population: 'swedish', how: 'best-evidence', setId: 'thilander2005', ageCovered: true, label: 'Swedish', ...o });
+  // Owner ruling 7 Nov 2026: an Indian or Malay background says on screen which norms it uses.
+  it('an aliased background says which norms Auto uses, in the chooser and in the population list', () => {
+    // Malay has its own studies (owner answer B, 7 Nov 2026: Chinese only where they have no row).
+    expect(autoOptionLabel(choice({ population: 'malay', how: 'background' }), sets, [])).toBe("Auto — Malay (patient's background)");
+    // Owner answer C: the Auto option names the norms, never the recorded background; the list still offers Indian.
+    expect(autoOptionLabel(choice({ population: 'indian', how: 'background' }), sets, [])).toBe("Auto — Caucasian (patient's background; population rule)");
+    expect(populationOptions(sets, [], null, 'auto', null).map((o) => o.label)).toContain('Indian (Caucasian norms, population rule)');
+  });
   it('Auto first, saying what it chose and why', () => {
     expect(autoOptionLabel(choice({}), sets, [])).toBe('Auto — Swedish (largest study for this sex and age)');
     expect(autoOptionLabel(choice({ ageCovered: false }), sets, [])).toBe('Auto — Swedish (largest study for this sex, nearest age)');

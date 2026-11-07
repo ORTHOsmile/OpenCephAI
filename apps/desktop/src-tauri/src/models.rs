@@ -16,7 +16,7 @@ const FALLBACK_MAIN: &str = "cwlachap-hrnet-w32";
 pub const DOWNLOAD_BLOCKED: &str = "DOWNLOAD_BLOCKED";
 const PROGRESS: &str = "models://progress";
 /// A download that receives nothing for this long has stopped (spec Part 4: the partial file is deleted; Retry).
-const STALL: std::time::Duration = std::time::Duration::from_secs(60);
+pub(crate) const STALL: std::time::Duration = std::time::Duration::from_secs(60);
 
 #[derive(Default)]
 pub struct ModelsState { engines: Mutex<HashMap<String, Arc<Engine>>>, stage: Mutex<HashMap<String, String>>, failed: Mutex<HashMap<String, String>>, busy: InFlight,
@@ -28,6 +28,11 @@ impl Drop for Tracing { fn drop(&mut self) { self.0.fetch_sub(1, Ordering::SeqCs
 struct CheckLoading(Arc<AtomicBool>);
 impl Drop for CheckLoading { fn drop(&mut self) { self.0.store(false, Ordering::SeqCst); } }
 impl ModelsState {
+    /// The install's current stage, while one is running (the Models… row reads it).
+    pub(crate) fn stage_of(&self, id: &str) -> Option<String> { self.stage.lock().unwrap_or_else(|e| e.into_inner()).get(id).cloned() }
+    pub(crate) fn failed_of(&self, id: &str) -> Option<String> { self.failed.lock().unwrap_or_else(|e| e.into_inner()).get(id).cloned() }
+    pub(crate) fn set_failed(&self, id: &str, why: &str) { self.failed.lock().unwrap_or_else(|e| e.into_inner()).insert(id.into(), why.into()); }
+    pub(crate) fn clear_failed(&self, id: &str) { self.failed.lock().unwrap_or_else(|e| e.into_inner()).remove(id); }
     /// Part F final review I-1 (ruling: tracing always has priority): the engine the weights check runs a
     /// model on. It is the check's own copy, loaded on the check's first film with that model and let go when the check
     /// moves to the next model or ends (`end_check`); it is never the engine tracing runs on (`engine_for`). A run holds
@@ -180,7 +185,7 @@ pub fn installed_fingerprints(root: &Path) -> BTreeMap<String, String> {
 pub(crate) const DISK_FULL: &str = "There isn't enough free disk space to install this model. Free some space, then press Retry.";
 /// An IO error in plain words: a full disk (`StorageFull`, or the OS's own full-disk code on this platform) says so;
 /// any other error keeps its own words.
-fn friendly_io(e: &std::io::Error) -> String {
+pub(crate) fn friendly_io(e: &std::io::Error) -> String {
     // Raw codes mean different things per OS (28 is ENOSPC on Unix but ERROR_OUT_OF_PAPER on Windows; 112 is
     // ERROR_DISK_FULL on Windows but EHOSTDOWN on Linux), so each is trusted only on its own platform.
     #[cfg(unix)] let raw_full = e.raw_os_error() == Some(28);
@@ -204,7 +209,7 @@ fn copy_body(r: &mut impl std::io::Read, w: &mut impl std::io::Write, total: Opt
 }
 /// `copy_body` into a new file at `dest`; on any failure the partial file is removed. `wrap` lets a test put a failing
 /// writer in front of the file.
-fn write_download(r: &mut impl std::io::Read, dest: &Path, total: Option<u64>, on: &dyn Fn(Option<f64>),
+pub(crate) fn write_download(r: &mut impl std::io::Read, dest: &Path, total: Option<u64>, on: &dyn Fn(Option<f64>),
                   wrap: &dyn Fn(std::fs::File) -> Box<dyn std::io::Write>) -> Result<(), String> {
     let f = std::fs::File::create(dest).map_err(|e| friendly_io(&e))?;
     let mut w = wrap(f);
@@ -222,9 +227,9 @@ fn begin_install(st: &ModelsState, id: &str) -> Result<(), String> {
     stage.insert(id.into(), "starting".into());
     Ok(())
 }
-struct InstallSlot<'a>(&'a ModelsState, String);
+pub(crate) struct InstallSlot<'a>(&'a ModelsState, String);
 impl Drop for InstallSlot<'_> { fn drop(&mut self) { self.0.stage.lock().unwrap().remove(&self.1); } }
-fn claim_install<'a>(st: &'a ModelsState, id: &str) -> Result<InstallSlot<'a>, String> { begin_install(st, id)?; Ok(InstallSlot(st, id.into())) }
+pub(crate) fn claim_install<'a>(st: &'a ModelsState, id: &str) -> Result<InstallSlot<'a>, String> { begin_install(st, id)?; Ok(InstallSlot(st, id.into())) }
 
 /// After a Remove, whether the model is gone from use: not Ready, whether or not the delete has finished.
 fn main_must_be_cleared(root: &Path, id: &str) -> bool { !is_ready(root, id) }
@@ -247,7 +252,7 @@ pub fn remove_model_dir(root: &Path, id: &str) -> Result<(), String> {
 /// A reinstall's step (final review M1): the old `<root>/<id>` moves aside as in `remove_model_dir`, but the words are
 /// the install's. A full disk says so as an install; a file still in use says to close it and press Retry; a delete of the
 /// moved-aside folder that cannot finish does not stop the reinstall (the next start's `sweep` clears it).
-fn replace_model_dir(root: &Path, id: &str) -> Result<(), String> {
+pub(crate) fn replace_model_dir(root: &Path, id: &str) -> Result<(), String> {
     let dir = root.join(id);
     if !dir.exists() { return Ok(()); }
     let nanos = std::time::SystemTime::now().duration_since(std::time::UNIX_EPOCH).map(|d| d.subsec_nanos()).unwrap_or(0);
@@ -363,11 +368,15 @@ fn refresh_map(root: &Path, id: &str, manifest: &serde_json::Value) -> (bool, Op
         }
     }
 }
-fn emit(app: &tauri::AppHandle, id: &str, stage: &str, fraction: Option<f64>) {
+pub(crate) fn emit(app: &tauri::AppHandle, id: &str, stage: &str, fraction: Option<f64>) {
     app.state::<ModelsState>().stage.lock().unwrap().insert(id.into(), stage.into());
     app.emit(PROGRESS, Progress { id: id.into(), stage: stage.into(), fraction }).ok();
 }
 
+/// The end of an install as the screen is told: `ready` or `failed` (the place is already free, so Retry is allowed).
+pub(crate) fn emit_done(app: &tauri::AppHandle, id: &str, ok: bool) {
+    app.emit(PROGRESS, Progress { id: id.into(), stage: if ok { "ready".into() } else { "failed".into() }, fraction: None }).ok();
+}
 /// A Ready model's engine from `<root>/<id>`. `catalogue` is the model's catalogue manifest, when it has one.
 /// The installed map is upgraded to the catalogue's first (P16).
 pub fn load_engine(root: &Path, id: &str, catalogue: Option<&serde_json::Value>) -> Result<Engine, String> {

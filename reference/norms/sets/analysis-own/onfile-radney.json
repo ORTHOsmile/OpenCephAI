@@ -6,10 +6,9 @@
   ],
   "status": "website",
   "citation": {
-    "authors": "[source removed]",
-    "title": "Radney Analysis: A Complete Cephalometric Guide",
+    "authors": "Data on file (primary source being confirmed)",
+    "title": "Radney analysis norms",
     "year": 2026,
-    "url": "[source removed]",
     "openAccess": true
   },
   "population": {
@@ -37,7 +36,7 @@
     "Website values, not from a paper (status website; never coloured).",
     "The page prints every norm as 'x ± y' without saying whether y is an SD or a range; stored as sd with a note.",
     "No sample, population, sex or age stated on the page.",
-    "U1–NA (°) and L1–NA (°) are both printed 22 ± 2 (confirmed on the 8 Oct re-read). This may be a duplication on onfile; kept as printed."
+    "U1–NA (°) and L1–NA (°) are both printed 22 ± 2 (confirmed on the 8 Oct re-read). This may be a duplication on the on-file source; kept as printed."
   ],
   "entries": [
     {
@@ -46,7 +45,7 @@
       "mean": 22,
       "sd": 2,
       "unit": "deg",
-      "source": "[source removed] Radney page, norms table, row 'U1–NA (°)'",
+      "source": "Data on file (primary source being confirmed), Radney analysis, norms table, row 'U1–NA (°)'",
       "definitionMatch": "same",
       "note": "printed as ± on the website; not stated to be an SD"
     },
@@ -56,7 +55,7 @@
       "mean": 5,
       "sd": 2,
       "unit": "mm",
-      "source": "[source removed] Radney page, norms table, row 'U1–NA (mm)'",
+      "source": "Data on file (primary source being confirmed), Radney analysis, norms table, row 'U1–NA (mm)'",
       "definitionMatch": "same",
       "note": "printed as ± on the website; not stated to be an SD. Page: perpendicular distance from the upper incisor tip to N–A, given as roughly 5 ± 2 mm in front of the line"
     },
@@ -66,7 +65,7 @@
       "mean": 22,
       "sd": 2,
       "unit": "deg",
-      "source": "[source removed] Radney page, norms table, row 'L1–NA (°)'",
+      "source": "Data on file (primary source being confirmed), Radney analysis, norms table, row 'L1–NA (°)'",
       "definitionMatch": "same",
       "note": "printed as ± on the website; not stated to be an SD"
     },
@@ -76,7 +75,7 @@
       "mean": 0.5,
       "sd": 2,
       "unit": "mm",
-      "source": "[source removed] Radney page, norms table, row 'L1–NA (mm)'",
+      "source": "Data on file (primary source being confirmed), Radney analysis, norms table, row 'L1–NA (mm)'",
       "definitionMatch": "same",
       "note": "printed as ± on the website; not stated to be an SD. Page: perpendicular distance from the lower incisor tip to N–A, given as close to the N–A line itself"
     }

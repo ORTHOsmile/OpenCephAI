@@ -1,4 +1,4 @@
-import { AUTO_CASE_POPULATION, COMBINED_ADULT, OWN_NORMS_LABEL, populationsOffered, resolveAcross, type NormSet, type PopulationChoice, type PopulationHow, type UserNorm } from '@ceph/analyses';
+import { AUTO_CASE_POPULATION, COMBINED_ADULT, OWN_NORMS_LABEL, POPULATIONS, normsPopulation, populationsOffered, resolveAcross, type NormSet, type PopulationChoice, type PopulationHow, type UserNorm } from '@ceph/analyses';
 import type { CaseDoc } from '../ipc';
 import type { MeasurementRow } from '../measurements';
 import { DEFAULT_DECIMALS, type Decimals } from '../format';
@@ -18,6 +18,9 @@ export function autoOptionLabel(c: PopulationChoice | null, sets: NormSet[], use
   // Owner R1/R5 (3 Nov 2026; spec 2026-11-03 §8.2): "Auto — combined adult norm (no background or clinic default)".
   const name = c.population === COMBINED_ADULT ? 'combined adult norm' : c.population === 'analysis-own' ? OWN_NORMS_LABEL : c.population.startsWith('user:') ? label : label.split(' (')[0];
   const why = c.how === 'best-evidence' && !c.ageCovered ? 'largest study for this sex, nearest age' : AUTO_WHY[c.how];
+  // Owner answer C (7 Nov 2026): a population the rule sends elsewhere (Indian) is named by the norms it uses.
+  const to = c.population.startsWith('user:') ? c.population : normsPopulation(c.population);
+  if (to !== c.population) return `Auto — ${(POPULATIONS.find((p) => p.id === to)?.label ?? to).split(' (')[0]} (${why}; population rule)`;
   return `Auto — ${name} (${why})`;
 }
 

@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest';
 import { validateSet } from './validate';
 import { POPULATIONS } from './load';
 import type { NormSet, NormEntry } from './types';
-import { resolveNorm, zScore, band, resolveAcross, populationsOffered, donorHomePopulation, type NormQuery, type UserNorm, type Resolved } from './resolve';
+import { resolveNorm, zScore, band, resolveAcross, populationsOffered, donorHomePopulation, shortCitation, type NormQuery, type UserNorm, type Resolved } from './resolve';
 
 // ---- SYNTHETIC fixtures (no real paper values). Every set must pass validateSet, so the fixtures
 // cannot drift from the norm-set format.
@@ -52,10 +52,11 @@ const CHEN = mkSet({
     { measurement: 'm46_U1NAmm', sex: 'pooled', mean: 5, sd: 2, unit: 'mm', source: 'Table 4', definitionMatch: 'close', definitionNote: 'paper measured from the labial surface' },
   ],
 });
-// Single-extracted (unverified) set, with a 'different' entry.
+// Single-extracted (unverified) set, with a 'different' entry. Filed under 'jordanian' (was 'malay'): since the owner
+// ruling of 7 Nov 2026 a Malay patient uses the Chinese norms, so 'malay' can no longer stand for an arbitrary population.
 const MALAY = mkSet({
   id: 'malay-synthetic', status: 'single-extracted',
-  population: { id: 'malay', label: 'Malay', ethnicity: ['Malay'] },
+  population: { id: 'jordanian', label: 'Malay', ethnicity: ['Malay'] },
   citation: { authors: 'Malay M', title: 'Synthetic', year: 2019, openAccess: true },
   entries: [
     deg('m01_SNA', 'pooled', 84),
@@ -153,7 +154,7 @@ const norm = (r: Resolved) => {
 describe('resolveNorm', () => {
   it('rule 1: the case population wins over the clinic default; the clinic default applies when the case has none; user norm sets are populations', () => {
     expect(norm(resolveNorm(q({ population: null, clinicDefault: 'chinese', sex: 'M', ageYears: 12 }))).setId).toBe('wu-synthetic');
-    expect(norm(resolveNorm(q({ population: 'malay', clinicDefault: 'chinese' }))).setId).toBe('malay-synthetic');
+    expect(norm(resolveNorm(q({ population: 'jordanian', clinicDefault: 'chinese' }))).setId).toBe('malay-synthetic');
     const u = norm(resolveNorm(q({ measurement: 'm13_Wits', analysisId: 'wits', population: 'user:Zeta' })));
     expect(u.setId).toBe('user:Zeta');
     expect(u.mean).toBe(1);
@@ -163,10 +164,10 @@ describe('resolveNorm', () => {
   it('rule 2: pending sets and "different" entries are never used; single-extracted is used and flagged unverified', () => {
     expect(norm(resolveNorm(q({ population: 'saudi' }))).auto?.step).toBe('analysis-own');   // N-A3: Steiner's own (was 'choose', OWNFALL-1)
     // The malay ANB row is 'different', so Malay has no ANB: Auto, Steiner's own (was 'choose', OWNFALL-1).
-    expect(norm(resolveNorm(q({ measurement: 'm03_ANB', population: 'malay' }))).auto?.step).toBe('analysis-own');
-    const d = norm(resolveNorm(q({ measurement: 'm03_ANB', population: 'malay', picks: { malay: { m03_ANB: 'analysis-own' } } })));
+    expect(norm(resolveNorm(q({ measurement: 'm03_ANB', population: 'jordanian' }))).auto?.step).toBe('analysis-own');
+    const d = norm(resolveNorm(q({ measurement: 'm03_ANB', population: 'jordanian', picks: { jordanian: { m03_ANB: 'analysis-own' } } })));
     expect([d.setId, d.entry.definitionMatch]).toEqual(['steiner-own', 'same']);
-    const s = norm(resolveNorm(q({ population: 'malay' })));
+    const s = norm(resolveNorm(q({ population: 'jordanian' })));
     expect(s.setId).toBe('malay-synthetic');
     expect(s.flags).toContain('unverified');
     expect(norm(resolveNorm(q({ population: 'chinese', sex: 'M', ageYears: 12 }))).flags).not.toContain('unverified');
@@ -365,6 +366,11 @@ describe('resolveNorm', () => {
   });
 
   // Task 5 fix round 1: undated sources (the NDC sheet).
+  it('review minor 7: an undated name already ending in a bracket gets one bracket, "Data on file (NUS norms, undated)"', () => {
+    const base = mkSet({ id: 'undated-synthetic', citation: { authors: 'Synthetic A', title: 'T', undated: true, openAccess: false }, entries: [deg('m01_SNA', 'pooled', 80)] });
+    expect(shortCitation({ ...base, citation: { ...base.citation, authors: 'Data on file (NUS norms)' } })).toBe('Data on file (NUS norms, undated)');
+    expect(shortCitation(base)).toBe('Synthetic (undated)');
+  });
   it('an undated set reads "<name> (undated)" in the source line', () => {
     const u = mkSet({ id: 'undated-synthetic', citation: { authors: 'Synthetic A', title: 'T', undated: true, openAccess: false }, entries: [deg('m01_SNA', 'pooled', 80)] });
     expect(norm(resolveNorm(q({ population: 'chinese', sets: [u] }))).sourceLine).toBe('Synthetic (undated), Chinese, sexes pooled, n = 50, Table 2');
@@ -416,7 +422,7 @@ describe('resolveNorm', () => {
     expect(norm(resolveNorm(q({ measurement: 'm46_U1NAmm', population: 'chinese' }))).flags).toContain('close');
     expect(norm(resolveNorm(q({ measurement: 'm34_Saddle', analysisId: 'bjork-jarabak', population: 'analysis-own' }))).flags).toContain('second-hand');
     expect(norm(resolveNorm(q({ measurement: 'm20_SNGoGn', population: 'analysis-own' }))).flags).toContain('website');
-    expect(norm(resolveNorm(q({ population: 'malay' }))).flags).toContain('unverified');
+    expect(norm(resolveNorm(q({ population: 'jordanian' }))).flags).toContain('unverified');
     expect(norm(resolveNorm(q({ population: 'chinese', sex: 'M', ageYears: 12 }))).flags).toEqual([]);
   });
 
@@ -464,7 +470,7 @@ describe('zScore and band', () => {
 
 describe('resolveAcross and populationsOffered', () => {
   it('resolveAcross returns one result per population, in the order asked', () => {
-    const rs = resolveAcross(q({ sex: 'M', ageYears: 12, clinicDefault: 'malay' }), ['malay', 'chinese', 'saudi', 'user:Zeta']);
+    const rs = resolveAcross(q({ sex: 'M', ageYears: 12, clinicDefault: 'jordanian' }), ['jordanian', 'chinese', 'saudi', 'user:Zeta']);
     expect(rs).toHaveLength(4);
     // Ruling AUTO-Q7 (19 Oct 2026): Compare columns are a population's own norm or none (was 'choose', NORM-PICK-1).
     expect(rs.map((r) => (r.kind === 'norm' ? r.setId : r.kind))).toEqual(['malay-synthetic', 'wu-synthetic', 'none', 'none']);
@@ -472,7 +478,9 @@ describe('resolveAcross and populationsOffered', () => {
   it('populationsOffered lists set populations (not pending-only or research-only) then user: sets, with labels from POPULATIONS', () => {
     expect(populationsOffered(SETS, USER)).toEqual([
       { id: 'chinese', label: 'Chinese' },
+      // Owner rulings 7 Nov 2026: Malay falls back to the Chinese norms, so it is offered when Chinese is.
       { id: 'malay', label: 'Malay' },
+      { id: 'jordanian', label: 'Middle-Eastern / Jordanian' },
       { id: 'analysis-own', label: "The analysis's own norms" },
       { id: 'user:Alpha', label: 'Alpha (your norms)' },
       { id: 'user:Zeta', label: 'Zeta (your norms)' },
@@ -775,7 +783,7 @@ describe('rules 10-12: film scale (Task 4b, owner M-1/M-2)', () => {
 // measured the same thing in a similar group, and says so; ideals (centre: 'ideal') are marked.
 describe('rules 13-17: borrowed SDs (Task 4c, owner B-1/B-2)', () => {
   const CN = { id: 'chinese', label: 'Chinese', ethnicity: ['Chinese'] };
-  const MY = { id: 'malay', label: 'Malay', ethnicity: ['Malay'] };
+  const MY = { id: 'jordanian', label: 'Malay', ethnicity: ['Malay'] };   // any unaliased population (was 'malay', see MALAY)
   const JP = { id: 'japanese', label: 'Japanese', ethnicity: ['Japanese'] };
   const OWN_POP = { id: 'analysis-own', label: "The analysis's own norms", ethnicity: [] as string[] };
   const bare = (measurement: string, extra: Partial<NormEntry> = {}): NormEntry =>
@@ -1138,11 +1146,11 @@ describe('rules 13-17: borrowed SDs (Task 4c, owner B-1/B-2)', () => {
     it("item 4: an own-norm set's donors are 'same population' with the PATIENT's population (case, else clinic default); a population set keeps its own", () => {
       const steiner = own(bare('m01_SNA', { mean: 82, centre: 'ideal' }));
       expect(donorHomePopulation(q({ population: 'chinese' }), steiner)).toBe('chinese');
-      expect(donorHomePopulation(q({ population: null, clinicDefault: 'malay' }), steiner)).toBe('malay');
+      expect(donorHomePopulation(q({ population: null, clinicDefault: 'jordanian' }), steiner)).toBe('jordanian');
       expect(donorHomePopulation(q({ population: null, clinicDefault: null }), steiner)).toBeNull();
-      expect(donorHomePopulation(q({ population: 'analysis-own', clinicDefault: 'malay' }), steiner)).toBeNull();
+      expect(donorHomePopulation(q({ population: 'analysis-own', clinicDefault: 'jordanian' }), steiner)).toBeNull();
       expect(donorHomePopulation(q({ population: 'user:Zeta' }), steiner)).toBeNull();
-      expect(donorHomePopulation(q({ population: 'malay' }), CHOSEN)).toBe('chinese');
+      expect(donorHomePopulation(q({ population: 'jordanian' }), CHOSEN)).toBe('chinese');
     });
     it('item 5: printed.mean of a midpoint-centred ideal in an enlarged set is the printed midpoint', () => {
       const rangeIdeal = { measurement: 'm46_U1NAmm', sex: 'pooled', range: { low: 55, high: 66 }, unit: 'mm', source: 'x', definitionMatch: 'same', centre: 'ideal' } as NormEntry;

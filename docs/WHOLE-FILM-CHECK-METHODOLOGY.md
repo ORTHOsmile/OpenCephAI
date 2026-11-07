@@ -362,9 +362,10 @@ are not in the repository); their SHA-256 values let a reader confirm a copy.
 | SC1-1a, report | `sc1-1a.json` (author's copy) | `c08556b2…24b6` |
 | Box gate /2 (= gate /4's tolerances), report | `box-gate-2.json` (author's copy) | `db1a67a0…eae7` |
 | Box gate /4, record | in the repository: `reference/sc1-box-gate-4.json` | `ca3b3ecf…7cb6` |
-| Shape reference, 1,000 tracings (`whole-film-reference/1`) | in the repository and inside the app: `apps/desktop/src-tauri/resources/check/shape/whole-film-reference-v1.shape` (coordinates only, no images; Ceph-400 CC BY-NC 4.0 and Aariz CC BY 4.0, credited) | `6f0f066a…81bd` |
+| Shape reference, 1,000 tracings (`whole-film-reference/1`) | in the repository and inside the app (all versions): `apps/desktop/src-tauri/resources/check/shape/whole-film-reference-v1.shape` (coordinates only, no images; Ceph-400 CC BY-NC 4.0 and Aariz CC BY 4.0, credited) | `6f0f066a…81bd` |
 | The three calibrations in force | in the repository and inside the app: `apps/desktop/src-tauri/resources/check/regions/` `calibration.json` (gate /4), `cb-centre-calibration.json` (ruled, line 0.08), `size-calibration.json` | `724e6b45…d20`, `704d97fb…654`, `d3973360…664` |
-| Region finder | inside the app (not in the repository: 121 MB); Zenodo doi:10.5281/zenodo.23965907 `model.onnx` | `17171e68…7b80` |
+| Region finder, model | downloaded once in Models… (from 1.2.1; not in the app or the repository: 121 MB); Zenodo doi:10.5281/zenodo.23965907 `model.onnx` | `17171e68…7b80` |
+| Region finder, manifest | downloaded with the model; Zenodo doi:10.5281/zenodo.23965907 `manifest.json` | `0e5cfb0a…7d2a` |
 | Size look | in the repository: `reference/sc1-size.json`; calibration `size-calibration.json` (author's copy) | `836b8c34…1cab` |
 | Cranial-base centre | in the repository: `reference/sc1-cb-centre.json`, ruling `reference/sc1-cb-centre-ruling.json`; calibration `cb-centre-calibration.json` (author's copy) | ruling `463ef936…00b5`; calibration `111776c2…e797` |
 | Development runs (tuning films) | `sc1-1b-dev.json` (`57dbbe39…1da4`), `sc1-1b-dev-decompose.json` (`45ea63ca…3b81`), `sc1-1b-dev3.json` (`9cbf2c4a…96c4`) (author's copies) | as listed |
@@ -443,13 +444,30 @@ SHA-256 in section 7; the size calibration must be the pre-registered one (its r
 regions it uses). A gate /1 to /3 file, the measured (line 0.06) centre file, another reference, or another size
 calibration gives no verdict for that look.
 
-**Where the files come from (6 Nov 2026).** From 1.2 Beta the five files come inside the app, so nothing needs
-installing: the region finder (the author's own, CC BY 4.0, Zenodo doi:10.5281/zenodo.23949953, version 2), the three
-calibrations and the shape reference. Picture two shelves: the user's own models folder, and a shelf inside the app. The
-app looks at the user's shelf first; a complete set there that passes every check above is used. A set there that fails
-any check (an older calibration, say) is passed over, and the app takes the whole set from its own shelf instead, never
-half from each. Because the checks admit only the one tested version of each file, which shelf it came from cannot
-change a verdict. A file inside the app that fails its check reads "not set up" for its look, like any other. The
-calibrations inside the app were made again from the run reports the PKU run pinned (each report's SHA-256 checked) and
-the shape reference was rebuilt byte for byte (SHA-256 `6f0f066a…81bd`), so they are the files the PKU run used, not
-copies of them.
+**Where the files come from (1.2.1, 7 Nov 2026).** The check has two kinds of file, and they sit on two shelves.
+
+- *The user's shelf* holds the region finder: the author's own model (CC BY 4.0, Zenodo doi:10.5281/zenodo.23949953), which
+  finds the five regions on the film. It is 121 MB, so it is not built into the app. It is downloaded once, in **Models…**
+  (the app asks once, when the whole-film check is on and no finder is found; after Download or Later it does not ask again, and Models… always offers it), from Zenodo record 23965907. It
+  can also be added from a folder. The app checks both of its files, `manifest.json` and `model.onnx`, against fingerprints
+  (SHA-256, section 7) before it keeps them.
+- *The app's own shelf* holds four small files: the three calibrations and the shape reference. They come inside the app.
+
+What is compared to what. Each calibration was measured with one particular finder. Before the app pairs a finder with
+the calibrations it checks the finder's two files against the pinned fingerprints, the same ones the calibrations were made
+with. The calibrations themselves are checked as before (gate /4, the whole-film/3 ruling, the pinned shape reference and
+size calibration), so which shelf a calibration came from cannot change a verdict. The app looks at the user's shelf first;
+a complete set there that passes every check is used. A set there that fails any check is passed over, and the app takes
+the calibrations from its own shelf, never half from each.
+
+The number against its source. The pairing is exactly the one the PKU test used: with these same bytes the check found 981
+of 1,020 planted mistakes and 0 of 102 false alarms on the correct ones (the PKU run's report; the calibrations here were
+made again from the run reports it pinned, each report's SHA-256 checked, and the shape reference was rebuilt byte for byte,
+SHA-256 `6f0f066a…81bd`, so they are the files the PKU run used, not copies of them).
+
+What would make it wrong. A finder with the same `model.onnx` but another `manifest.json` would read the five regions with
+different settings (another input size or class order) and give boxes the calibrations were never measured on. The manifest
+fingerprint refuses it: such a finder is "not set up", never a verdict. A model file damaged in the download is refused
+the same way by its own fingerprint.
+
+**What the check cannot show without the check model.** Without the finder, the region, size and centre looks do not run, and a quiet note then says nothing about region, size or centre errors. The note on the film says so ("Whole-film check: regions not checked (not set up: download the check model in Models…)."). The other looks still run. Models… reads the size of the stored model file, not its fingerprint, so a damaged file of exactly the right size would read "Ready" there while the check itself refuses it as not set up.

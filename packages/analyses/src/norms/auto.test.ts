@@ -90,8 +90,8 @@ describe('bestCaucasian: the tie-breaks (SYNTHETIC)', () => {
   });
   it('Q12: two populations tied on age, n and year → the populations.json order (Chinese before Malay)', () => {
     const cn = mk('cn-SYNTHETIC', 2020, { population: { id: 'chinese', label: 'Chinese', ethnicity: ['Chinese'] } }, [{}]);
-    const my = mk('my-SYNTHETIC', 2020, { population: { id: 'malay', label: 'Malay', ethnicity: ['Malay'] } }, [{}]);
-    expect(bestStudy(sq([my, cn]), ['malay', 'chinese'])?.id).toBe('cn-SYNTHETIC');
+    const my = mk('my-SYNTHETIC', 2020, { population: { id: 'jordanian', label: 'Malay', ethnicity: ['Malay'] } }, [{}]);
+    expect(bestStudy(sq([my, cn]), ['jordanian', 'chinese'])?.id).toBe('cn-SYNTHETIC');
   });
   it('Q4: a website value ranks after a paper, whatever its n', () => {
     const web = mk('web-SYNTHETIC', 2024, { status: 'website', sample: { n: 500 }, citation: { authors: 'Some Site', title: 'SYNTHETIC', year: 2024, openAccess: true, url: 'https://example.invalid' } }, [{}]);
@@ -127,8 +127,9 @@ describe('AUTO-Q7: Compare columns are the population\'s own norm or none', () =
         else { expect(cols[i].kind).toBe('none'); none++; }
       });
     }
-    // Rows counted against the source: 130 rows × 11 populations × 2 patients = 2,860; both kinds must occur.
-    expect([own + none, own > 0, none > 0]).toEqual([2860, true, true]);
+    // Rows counted against the source: 131 rows (NUS BaSN added) × 12 populations (Indian added) × 2 patients = 3,144
+    // (owner rulings 7 Nov 2026); both kinds must occur.
+    expect([own + none, own > 0, none > 0]).toEqual([3144, true, true]);
   });
 });
 
@@ -200,7 +201,10 @@ describe('Auto in the resolver (real sets)', () => {
     const [cn, jp] = resolveAcross(q('m01_SNA', 'M', 30, { analysisId: 'steiner' }), ['chinese', 'japanese']);
     expect([cn.kind === 'norm' && cn.flags.includes('auto-fallback'), jp.kind]).toEqual([false, 'none']);
   });
-  it('the methodology note\'s numbers: a man of 30, every analysis row × population choice (1,430): 816 own norm, 19 Caucasian, 47 step 4, none asks', () => {
+  // Owner rulings 7 Nov 2026: Indian (new, = Caucasian), Malay (= Chinese) and the NUS BaSN row (no norm anywhere: 12 'none'
+  // rows) moved these from 1,430 / 816 / 19 / 47; Malay then falling back to Chinese only where no Malay study has the
+  // row (owner answer B, 7 Nov 2026) gives 855 / 18 / 51.
+  it('the methodology note\'s numbers: a man of 30, every analysis row × population choice (1,572): 855 own norm, 18 Caucasian, 51 step 4, none asks', () => {
     const tally = { own: 0, caucasian: 0, anywhere: 0, choose: 0, total: 0 };
     for (const a of ALL_ANALYSES) for (const m of a.measurements) for (const p of POPULATIONS.map((x) => x.id)) {
       const r = resolveNorm({ measurement: m.node, analysisId: a.id, population: p, clinicDefault: null, sex: 'M', ageYears: 30, sets, userNorms: [] });
@@ -208,7 +212,7 @@ describe('Auto in the resolver (real sets)', () => {
       if (r.kind === 'choose') tally.choose++;
       else if (r.kind === 'norm' && r.auto) tally[r.auto.step === 'analysis-own' ? 'own' : r.auto.step]++;
     }
-    expect(tally).toEqual({ own: 816, caucasian: 19, anywhere: 47, choose: 0, total: 1430 });   // docs/norms/SEVERITY.md quotes these
+    expect(tally).toEqual({ own: 855, caucasian: 18, anywhere: 51, choose: 0, total: 1572 });   // docs/norms/SEVERITY.md quotes these
   });
 });
 
@@ -218,7 +222,7 @@ describe('Auto in the resolver (real sets)', () => {
 // analysis's own norm (step 2) and as a manual choice (normChoices still lists it); only bestStudy's ranking excludes it.
 describe('Q-T5-1: step 4 never picks a teaching sheet filed under a population (owner ruling, 24 Oct 2026, fix round 1)', () => {
   const TEACHING = mk('teaching-SYNTHETIC', 2026, {
-    kind: 'analysis-own', analyses: ['steiner'], population: { id: 'malay', label: 'Malay', ethnicity: ['Malay'] }, sample: {},
+    kind: 'analysis-own', analyses: ['steiner'], population: { id: 'jordanian', label: 'Malay', ethnicity: ['Malay'] }, sample: {},
   }, [{}]);   // m13_Wits, pooled, mean -1, sd 2 (mk's defaults)
   const teachQ = (sets: NormSet[]): NormQuery => q('m13_Wits', 'M', 30, { population: 'saudi', sets });
   it('without the fix this sheet would win step 4 (the scenario, proven directly on bestStudy)', () => {
@@ -230,12 +234,12 @@ describe('Q-T5-1: step 4 never picks a teaching sheet filed under a population (
     expect(r).toEqual({ kind: 'choose', population: 'saudi', reason: 'no Saudi norm — choose one' });
   });
   it('the sheet is still a manual choice, and still the owning analysis\'s own norm (step 2, unaffected)', () => {
-    expect(normChoices(teachQ([TEACHING])).map((c) => c.id)).toContain('malay');
+    expect(normChoices(teachQ([TEACHING])).map((c) => c.id)).toContain('jordanian');   // any unaliased population (Malay uses Chinese norms since 7 Nov 2026)
     const r = resolveNorm(q('m13_Wits', 'M', 30, { analysisId: 'steiner', population: 'saudi', sets: [TEACHING] }));
     expect(r.kind === 'norm' && [r.setId, r.auto?.step]).toEqual(['teaching-SYNTHETIC', 'analysis-own']);
   });
   it('a real sample still beats the teaching sheet when both are candidates (unaffected, n 40 > nothing stated)', () => {
-    const real = mk('real-SYNTHETIC', 2020, { population: { id: 'malay', label: 'Malay', ethnicity: ['Malay'] } }, [{}]);
+    const real = mk('real-SYNTHETIC', 2020, { population: { id: 'jordanian', label: 'Malay', ethnicity: ['Malay'] } }, [{}]);
     expect(bestStudy(teachQ([TEACHING, real]), otherPopulations(teachQ([TEACHING, real]), ['saudi', 'caucasian']))?.id).toBe('real-SYNTHETIC');
   });
 });
@@ -255,6 +259,7 @@ describe('owner decision 6 (29 Oct 2026): no population at all — Auto fills a 
     expect(r.kind === 'norm' && [r.setId, r.flags.includes('auto-fallback')]).toEqual(['steiner1953', false]);
   });
   it('a pick stored under the own-norms key wins, "chosen by you"', () => {
+    // A stored pick of 'malay' gives the Malay study where one has the row (owner answer B, 7 Nov 2026).
     const r = resolveNorm(q({ picks: { 'analysis-own': { m18_PogNB: 'malay' } } }));
     expect(r.kind === 'norm' && [r.setId, r.flags.includes('chosen-by-you')]).toEqual(['mohammad2011', true]);
   });

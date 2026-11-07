@@ -388,6 +388,29 @@ describe('vertical and jaw-shape catalogue (#20-44, #90-92, Part A task 5)', () 
     });
   });
 
+  // --- #93 Cranial base angle Ba-S-N (owner ruling, 7 Nov 2026: the NUS sheet's BaSN row) ---
+  describe('m93_BaSN', () => {
+    it('oracle: equals angAt(Ba,S,N) on every synthetic skull, in degrees, a hand-placed point (Ba)', () => {
+      for (const s of SYNTHETIC_SKULLS) {
+        const p = s.points, v = g.evaluate(p, mmPerPx);
+        expect(sc(v, 'm93_BaSN')).toBeCloseTo(angAt(p.Ba, p.S, p.N), 9);
+      }
+      const e = VERTICAL.find((x) => x.id === 'm93_BaSN')!;
+      expect([e.no, e.unit, e.nodes.m93_BaSN, e.source]).toEqual(['93', 'deg', { kind: 'angle3', a: 'Ba', vertex: 'S', b: 'N' }, { mark: 'P', cite: 'Ricketts 1960', where: 'p. 346' }]);
+    });
+    it('behaviour: moving Ba moves it; the vertex is S', () => {
+      const p = SYNTHETIC_SKULLS[0].points;
+      const v0 = sc(g.evaluate(p, mmPerPx), 'm93_BaSN');
+      const v1 = sc(g.evaluate({ ...p, Ba: { x: p.Ba.x, y: p.Ba.y + 100 } }, mmPerPx), 'm93_BaSN');
+      expect(v1).not.toBeCloseTo(v0, 3);
+      expect(v0).toBeCloseTo(angAt(p.Ba, p.S, p.N), 9);
+    });
+    it('missing point: without Ba (not placed by hand), BaSN is null', () => {
+      const { Ba: _ba, ...rest } = SYNTHETIC_SKULLS[0].points;
+      expect(g.evaluate(rest, mmPerPx).m93_BaSN).toBeNull();
+    });
+  });
+
   // --- #35 Articular angle --- (brief gives no direction; single-point move chosen here)
   describe('m35_Articular', () => {
     it('oracle: equals angAt(S,Ar,Go) on every synthetic skull', () => {
@@ -684,7 +707,7 @@ describe('vertical and jaw-shape catalogue (#20-44, #90-92, Part A task 5)', () 
       ['m30_FacAxisR', 70, 120], ['m31_FacAxisM', 70, 130], ['m32_OralGnomon', 30, 70], ['m33_MandBend', 0, 60],
       ['m34_Saddle', 100, 145], ['m35_Articular', 120, 170], ['m36_Gonial', 100, 150], ['m37_UpperGonial', 30, 70],
       ['m38_LowerGonial', 50, 100], ['m39_SumAngles', 360, 420], ['m90_SNMP_ABO', 5, 50], ['m91_FMA_ABO', 0, 50],
-      ['m92_L1MP_ABO', 70, 120],
+      ['m92_L1MP_ABO', 70, 120], ['m93_BaSN', 110, 150],
     ];
     const p = SYNTHETIC_SKULLS[0].points, v = g.evaluate(p, mmPerPx);
     for (const [id, lo, hi] of bands) {

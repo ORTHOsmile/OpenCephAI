@@ -978,6 +978,17 @@ pub fn check_gate4(c: &RegionCalibration, fp: &str, r: &Records) -> anyhow::Resu
     ensure!(c.tau.0 == r.tau && c.score_line == r.score_line, "the calibration's tau {:?} at score line {} is not the gate /4 record's {:?} at {}", c.tau.0, c.score_line, r.tau, r.score_line);
     Ok(())
 }
+/// 1.2.1: the SHA-256 of the region finder's `manifest.json` (Zenodo record 23965907; the same value as
+/// `apps/desktop/src-tauri/check-finder.sha256`). The record's detector fingerprint pins `model.onnx`; this pins the rest of
+/// the finder (input size, colour handling, class names, output layout), so a finder in the user's folder may be paired
+/// with the calibrations inside the app only when both of its files are the ones the PKU run tested.
+pub const REGION_MANIFEST_SHA256: &str = "0e5cfb0a89d6e0a55fe4398aa0d403745844d45a67a64c796ac89ad0d2fb7d2a";
+/// The finder pins: Ok only when the finder's `model.onnx` is the record's detector and its `manifest.json` is the pinned one.
+pub fn check_finder(onnx_sha256: &str, manifest_sha256: &str, r: &Records) -> anyhow::Result<()> {
+    ensure!(onnx_sha256 == r.fingerprint, "this region finder's model.onnx has SHA-256 {onnx_sha256}, the one this version was tested with is {}", r.fingerprint);
+    ensure!(manifest_sha256 == REGION_MANIFEST_SHA256, "this region finder's manifest.json has SHA-256 {manifest_sha256}, the one this version was tested with is {REGION_MANIFEST_SHA256}");
+    Ok(())
+}
 /// The centre calibration in force is the ruled one: the record's line, a ruling naming the record and the measured line,
 /// the measured report and this detector.
 pub fn check_ruled_centre(c: &CbCalibration, fp: &str, r: &Records) -> anyhow::Result<()> {
@@ -989,7 +1000,7 @@ pub fn check_ruled_centre(c: &CbCalibration, fp: &str, r: &Records) -> anyhow::R
     c.fits(fp)
 }
 }
-pub use pins::{check_size, size_uses, SIZE_REPORT_SHA256, check_gate4, check_ruled_centre, records, Records, CENTRE_PATH, CENTRE_RECORD, GATE4, GATE4_PATH, GATE4_RECORD, REFERENCE_SHA256, WHOLE_FILM_3};
+pub use pins::{check_finder, REGION_MANIFEST_SHA256, check_size, size_uses, SIZE_REPORT_SHA256, check_gate4, check_ruled_centre, records, Records, CENTRE_PATH, CENTRE_RECORD, GATE4, GATE4_PATH, GATE4_RECORD, REFERENCE_SHA256, WHOLE_FILM_3};
 
 /// whole-film/1 exactly as it stood at commit 0142ba9 (the commit before SC-1 Part 1b Task C), with private mirror types,
 /// so that it still compiles when the real ones grow. `whole_film_1_is_unchanged_when_the_new_looks_are_off` compares the
@@ -2353,5 +2364,32 @@ mod tests {
         assert_eq!(r.size_look, ExtraLook::Judged);
         assert_eq!(r.size.unwrap().line, 0.32, "the three-region line");
         assert!(cb_reason(&r).is_none(), "no cranial-base reason without its box");
+    }
+
+    /// 1.2.1, the finder pins: the manifest constant, the build's `check-finder.sha256`, the check model's catalogue entry
+    /// and the gate /4 record's detector all name the same two files. Fails if any one of the four is edited alone.
+    #[test] fn the_finder_pins_agree_everywhere() {
+        let r = records().unwrap();
+        let sums = include_str!("../../../apps/desktop/src-tauri/check-finder.sha256");
+        let line = |f: &str| sums.lines().find(|l| l.ends_with(&format!("  {f}"))).unwrap().split_whitespace().next().unwrap().to_string();
+        assert_eq!(line("model.onnx"), r.fingerprint, "the record's detector is the pinned ONNX");
+        assert_eq!(line("manifest.json"), REGION_MANIFEST_SHA256);
+        let c = crate::catalog::check_model();
+        let sha = |f: &str| c.files.iter().find(|s| matches!(s, crate::catalog::Source::Zenodo { file, .. } if file == f)).unwrap().sha256().to_string();
+        println!("record {}, manifest {}; catalogue {:?}", r.fingerprint, REGION_MANIFEST_SHA256, (sha("model.onnx"), sha("manifest.json")));
+        assert_eq!((sha("model.onnx"), sha("manifest.json")), (r.fingerprint.clone(), REGION_MANIFEST_SHA256.to_string()));
+    }
+    /// Only the pinned pair passes: another ONNX, another manifest, or both, are refused, each naming what it found.
+    #[test] fn check_finder_takes_only_the_pinned_pair() {
+        let r = records().unwrap();
+        assert!(check_finder(&r.fingerprint, REGION_MANIFEST_SHA256, &r).is_ok());
+        for (why, onnx, man) in [("another ONNX", "0".repeat(64), REGION_MANIFEST_SHA256.to_string()), ("another manifest", r.fingerprint.clone(), "0".repeat(64)),
+            ("both other", "0".repeat(64), "0".repeat(64)), ("empty", String::new(), String::new())] {
+            let e = check_finder(&onnx, &man, &r).unwrap_err().to_string();
+            println!("{why}: {e}");
+            // Which pin refused: the ONNX pin is checked first and names model.onnx; only the manifest pin names manifest.json.
+            let want = if why == "another manifest" { "manifest.json" } else { "model.onnx" };
+            assert!(e.contains(want) && (why == "another manifest") == e.contains("manifest.json"), "{why}: the wrong pin refused: {e}");
+        }
     }
 }

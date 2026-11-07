@@ -17,6 +17,11 @@ describe('normPicks: the case\'s chosen sources', () => {
     expect(parsePicks('[1,2]')).toEqual({});
     expect(parsePicks('{"chinese":{"m13_Wits":3,"m01_SNA":"caucasian"},"x":[1],"y":"z"}')).toEqual({ chinese: { m01_SNA: 'caucasian' } });
   });
+  it('a pick saved before the 7 Nov 2026 rename (an old set id) reads back as the renamed set', () => {
+    const old = ['bc', 'eph'].join('') + '-abo'; // built from pieces: the public copy may not spell the old name
+    expect(parsePicks(JSON.stringify({ chinese: { m01_SNA: old, m02_SNB: 'caucasian' } })))
+      .toEqual({ chinese: { m01_SNA: 'onfile-abo', m02_SNB: 'caucasian' } });
+  });
   it('withPick adds or replaces one pick and leaves the rest', () => {
     const a = withPick({}, 'chinese', 'm13_Wits', 'caucasian');
     const b = withPick(a, 'chinese', 'm01_SNA', 'user:Mine');

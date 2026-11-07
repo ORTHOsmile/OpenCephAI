@@ -416,8 +416,8 @@ Swedish men of 29–32 y, 6.4 ± 2.5° (n = 11) — "Mild", one star. The source
 ## `status: "website"` — values from a web page, not a paper (owner N4; Task 8, 8 Oct)
 
 Four analyses (Björk–Jarabak, ABO, Nagasaki, Radney) and Kim's combination factor and extraction index
-have no paper on file, so their norms come from [source removed] (and one Björk–Jarabak ratio, #44, from [source removed]
-Dental). Picture it as a number copied off a teaching web page: it says where the middle of "normal" is,
+have no paper on file, so their norms are "data on file (primary source being confirmed)" (and one Björk–Jarabak ratio, #44,
+comes from a second source on file). Picture it as a number copied off a teaching web page: it says where the middle of "normal" is,
 but nothing about who was measured — no sample, no sex, no age, and the page never says whether its "± x"
 is a standard deviation. So these values are shown, marked "website value, not from a paper", and never
 coloured; a website entry never borrows an SD from a paper, and a paper never borrows one from a website.
@@ -425,7 +425,7 @@ A paper's value always beats a website's for the same measurement.
 
 What a website value cannot tell you: how far from normal a patient is in SD terms (no z-score), whether
 the value suits the patient's population, age or sex, or even whether the page measured the same thing —
-onfile constructs gonion on its Björk–Jarabak page (the app uses the AI's anatomical gonion, so those rows
+the data on file constructs gonion for the Björk–Jarabak analysis (the app uses the AI's anatomical gonion, so those rows
 are `close`), writes the ABO mandibular plane as "Go–Me" without saying which gonion, and defines its ODI
 differently from Kim 1974, so its combination factor is not the app's sum (`close`). Some pages repeat
 each other's numbers (Nagasaki's skeletal rows equal the ABO page's) or print two rows alike (Radney's

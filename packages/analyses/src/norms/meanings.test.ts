@@ -12,8 +12,8 @@ const approved = Object.fromEntries(doc.split('\n').filter((l) => /^\| ☑ \| \d
 }));
 
 describe('default meanings (MEANING-APPROVE)', () => {
-  it('the approved document has 90 ticked rows (positive control: the parser sees them)', () => {
-    expect(Object.keys(approved)).toHaveLength(90);
+  it('the approved document has 91 ticked rows (positive control: the parser sees them; #93 BaSN added 7 Nov 2026)', () => {
+    expect(Object.keys(approved)).toHaveLength(91);
   });
   it('every live catalogue measurement has a meaning, and there are no extras', () => {
     const live = CATALOGUE.filter((e) => !e.retired).map((e) => e.id).sort();

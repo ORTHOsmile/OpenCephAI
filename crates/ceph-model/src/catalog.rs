@@ -51,12 +51,16 @@ pub enum Source {
     /// `zip_member`: the checkpoint is inside a zip (GU2Net's download).
     #[serde(rename_all = "camelCase")]
     Gdrive { id: String, sha256: String, #[serde(default)] zip_member: Option<String>, #[serde(default)] page: String },
+    /// One file of a Zenodo VERSION record (never the all-versions DOI, which always points at the newest version: a new
+    /// version would fail the SHA-256 check and break every install). The whole-film check's region finder (1.2.1).
+    Zenodo { record: String, file: String, sha256: String },
 }
 impl Source {
     pub fn url(&self) -> String {
         match self {
             Self::Huggingface { repo, revision, file, .. } => format!("https://huggingface.co/{repo}/resolve/{revision}/{file}"),
             Self::Gdrive { id, .. } => format!("https://drive.usercontent.google.com/download?id={id}&export=download&confirm=t"),
+            Self::Zenodo { record, file, .. } => format!("https://zenodo.org/api/records/{record}/files/{file}/content"),
         }
     }
     /// Where a person downloads it by hand.
@@ -64,9 +68,10 @@ impl Source {
         match self {
             Self::Huggingface { repo, .. } => format!("https://huggingface.co/{repo}"),
             Self::Gdrive { id, page, .. } => if page.is_empty() { format!("https://drive.google.com/file/d/{id}/view") } else { page.clone() },
+            Self::Zenodo { record, .. } => format!("https://zenodo.org/records/{record}"),
         }
     }
-    pub fn sha256(&self) -> &str { match self { Self::Huggingface { sha256, .. } | Self::Gdrive { sha256, .. } => sha256 } }
+    pub fn sha256(&self) -> &str { match self { Self::Huggingface { sha256, .. } | Self::Gdrive { sha256, .. } | Self::Zenodo { sha256, .. } => sha256 } }
     pub fn zip_member(&self) -> Option<&str> { match self { Self::Gdrive { zip_member, .. } => zip_member.as_deref(), _ => None } }
 }
 #[derive(Clone, Debug, Default, Deserialize, Serialize, PartialEq)]
@@ -104,4 +109,52 @@ pub fn builtin() -> Vec<Model> {
         let (_, skeleton, layout) = BUILTIN.iter().find(|(id, _, _)| *id == entry.id).expect("every entry has a skeleton");
         Model { entry, skeleton: skeleton.to_vec(), layout: serde_json::from_str(layout).expect("layout is valid (tests/catalog.rs)") }
     }).collect()
+}
+
+/// The whole-film check's region finder (1.2.1): downloaded in Models…, kept apart from the landmark catalogue so it is
+/// never offered as a tracing model (`builtin()` holds no `check-regions`). `files` are fetched in order (the small
+/// manifest first) into `<models>/<folder>`.
+#[derive(Clone, Debug, Deserialize, Serialize, PartialEq)]
+#[serde(rename_all = "camelCase")]
+pub struct CheckEntry {
+    pub id: String, pub title: String, pub author: String, pub size_mb: u32, pub licence: Licence,
+    pub citation: String, pub folder: String, pub files: Vec<Source>,
+}
+const CHECK: &str = include_str!("../catalog/check.json");
+/// The check model's one entry.
+pub fn check_model() -> CheckEntry { serde_json::from_str(CHECK).expect("check.json is valid (tests)") }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    /// The check model downloads from the VERSION record (23965907), never the all-versions DOI. Fails if the URL or the
+    /// page takes any other form.
+    #[test] fn the_zenodo_source_gives_the_version_records_download_and_page() {
+        let s = Source::Zenodo { record: "23965907".into(), file: "model.onnx".into(), sha256: "a".repeat(64) };
+        assert_eq!(s.url(), "https://zenodo.org/api/records/23965907/files/model.onnx/content");
+        assert_eq!(s.page(), "https://zenodo.org/records/23965907");
+        assert_eq!(s.sha256(), "a".repeat(64));
+        assert_eq!(s.zip_member(), None);
+    }
+    /// The check model has its own entry, never offered as a tracing model. Fails if `builtin()` holds it, or the entry's
+    /// words, size, licence, folder or files change.
+    #[test] fn the_check_model_is_not_a_landmark_model() {
+        assert!(builtin().iter().all(|m| m.entry.id != "check-regions"), "never offered as a tracing model");
+        let c = check_model();
+        assert_eq!((c.id.as_str(), c.title.as_str(), c.author.as_str(), c.size_mb, c.folder.as_str()),
+            ("check-regions", "Region finder for the whole-film check", "Dr Linton Nash", 121, "regions"));
+        assert_eq!((c.licence.code.as_str(), c.licence.non_commercial), ("CC BY 4.0", false));
+        let names: Vec<_> = c.files.iter().map(|f| match f { Source::Zenodo { record, file, .. } => (record.as_str(), file.as_str()), _ => panic!("not zenodo") }).collect();
+        assert_eq!(names, [("23965907", "manifest.json"), ("23965907", "model.onnx")], "manifest first, then the model; the version record");
+        assert!(c.citation.contains("10.5281/zenodo.23949953"));
+        assert!(!c.citation.contains("v1"), "the credit gives the all-versions DOI and no version name: {}", c.citation);
+        assert!(!c.citation.contains("23965907"), "the version record is where the files come from, not the credit");
+    }
+    /// Edge: an entry whose source kind is unknown does not parse.
+    #[test] fn a_check_entry_with_an_unknown_source_kind_fails_to_parse() {
+        let bad = CHECK.replace("\"zenodo\"", "\"ftp\"");
+        let e = serde_json::from_str::<CheckEntry>(&bad).unwrap_err();
+        println!("unknown kind: {e}");
+        assert!(e.to_string().contains("unknown variant"), "{e}");
+    }
 }

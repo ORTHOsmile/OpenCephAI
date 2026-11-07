@@ -93,7 +93,7 @@ export const SKELETAL_AP: CatalogueEntry[] = [
 
   E('m15_ODI', '15', 'ODI', 'deg',
     { kind: 'sum', terms: ['m15_ABMP', 'PalKim'] },
-    { mark: 'P', cite: "Kim 1974 (onfile's version is wrong)", where: 'pp. 589–590' },
+    { mark: 'P', cite: "Kim 1974 (differs from Data on file (primary source being confirmed))", where: 'pp. 589–590' },
     {
       sign: 'A-B plane to mandibular plane, then the palatal angle (#27): "If the latter angle was positive, it was added to the former angle. If it was negative, it was subtracted from the former angle." (Kim 1974, p. 590, item 12); mandibular plane is "menton to the most inferior-posterior border of mandibular body" (Kim 1974, p. 589, item 3), i.e. the Tg→Me tangent',
       nodes: { m15_ABMP: { kind: 'angleLines', l1: 'AB', l2: 'MPt' } },
@@ -101,16 +101,16 @@ export const SKELETAL_AP: CatalogueEntry[] = [
 
   E('m16_CF', '16', 'Combination factor', 'deg',
     { kind: 'sum', terms: ['m15_ODI', 'm14_APDI'] },
-    { mark: 'S', cite: 'onfile' }),
+    { mark: 'S', cite: 'Data on file (primary source being confirmed)' }),
 
   E('m17_ExtrIndex', '17', 'Extraction index', 'deg',
     { kind: 'alias', of: 'm16_CF' },
-    { mark: 'S', cite: 'onfile' },
+    { mark: 'S', cite: 'Data on file (primary source being confirmed)' },
     { bands: [{ max: 149, label: 'Extraction' }, { max: 155.9, label: 'Borderline' }, { max: Infinity, label: 'Non-extraction' }] }),
 
   E('m18_PogNB', '18', 'Pog to NB (mm)', 'mm',
     { kind: 'signedDistance', p: 'Pog', line: 'NB', positiveAlong: 'FH' },
-    { mark: 'S', cite: "onfile (Steiner's later papers)" },
+    { mark: 'S', cite: 'Data on file (primary source being confirmed)' },
     { sign: '+ when Pog is ahead' }),
 
   E('m19_U6PTV', '19', 'U6 to PTV (mm)', 'mm',

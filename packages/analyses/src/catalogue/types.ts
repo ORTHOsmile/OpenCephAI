@@ -12,5 +12,5 @@ export interface CatalogueEntry {
   source: { mark: SourceMark; cite: string; where?: string };  // cite 'Steiner 1953', where 'chart p.741'
   nodes: Record<NodeId, Expr>;      // its own node (id) plus any private helper nodes; ids must be unique in the catalogue
   retired?: true;                   // #45, #48, #65: nodes = {}
-  bands?: { max: number; label: string }[];   // #17 extraction index categories (onfile)
+  bands?: { max: number; label: string }[];   // #17 extraction index categories (data on file)
 }

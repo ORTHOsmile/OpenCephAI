@@ -69,7 +69,7 @@ export const SOFT: CatalogueEntry[] = [
 
   E('m80_HAngle', '80', 'H-angle', 'deg',
     { kind: 'withSign', value: 'm80_ang', signFrom: 'm80_sgn' },
-    { mark: 'S', cite: "AlBarakati (onfile's version is wrong)" },
+    { mark: 'S', cite: "AlBarakati (differs from Data on file (primary source being confirmed))" },
     {
       sign: '+ when the upper lip is ahead of the soft-tissue facial line (Ns-SPogS), - when behind (a lip behind the line reads negative, as reported clinically in concave Class III faces)',
       nodes: {
@@ -80,7 +80,7 @@ export const SOFT: CatalogueEntry[] = [
 
   E('m81_LLH', '81', 'Lower lip to H-line (mm)', 'mm',
     { kind: 'signedDistance', p: 'LL', line: 'H', positiveAlong: 'FH' },
-    { mark: 'S', cite: 'AlBarakati, onfile' },
+    { mark: 'S', cite: 'AlBarakati; Data on file (primary source being confirmed)' },
     { sign: '+ when ahead' }),
 
   E('m82_InfSulcusH', '82', 'Inferior sulcus to H-line (mm)', 'mm',

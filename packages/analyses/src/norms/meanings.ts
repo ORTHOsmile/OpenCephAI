@@ -94,4 +94,5 @@ export const DEFAULT_MEANINGS: Record<string, Meaning> = {
   m90_SNMP_ABO: {"abbr":"SN-MP ABO","high":"dolichofacial","low":"brachyfacial"},
   m91_FMA_ABO: {"abbr":"FMA ABO","high":"dolichofacial","low":"brachyfacial"},
   m92_L1MP_ABO: {"abbr":"L1-MP ABO","high":"proclined lower incisors","low":"retroclined lower incisors"},
+  m93_BaSN: {"abbr":"Ba-S-N","high":"retrognathic mandible","low":"prognathic mandible"},
 };

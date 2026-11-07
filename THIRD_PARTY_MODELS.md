@@ -8,10 +8,11 @@ models it can use are other people's work, under their own licences.
 own link in **Models…**, accepts the licence on their own Mac, and CephTrace converts and checks them there. Only each
 network's structure, with every weight removed, ships with the app.
 
-**One exception, the author's own model (owner, 6 Nov 2026):** the whole-film check's region finder, which the author
-taught and published under CC BY 4.0 (Zenodo, doi:10.5281/zenodo.23949953), comes inside the app, with the check's three
-calibration files and its shape reference (expert-tracing coordinates only; see the two entries below), so the check
-works with nothing to install.
+**One exception, the author's own model (owner, 6 Nov 2026; changed 7 Nov 2026):** the whole-film check's region finder,
+which the author taught and published under CC BY 4.0 (Zenodo, doi:10.5281/zenodo.23949953), is downloaded once in
+**Models…** from that Zenodo record (121 MB, each file checked against a pinned SHA-256). It is not inside the app from
+1.2.1. The check's three calibration files and its shape reference (expert-tracing coordinates only; see the two entries
+below) still come inside the app.
 
 This is not legal advice. Check that your use is allowed, in particular before using a non-commercial model in a
 practice that charges fees.
@@ -173,11 +174,12 @@ The run record below was filled from the teaching run's own logs on 4 Nov 2026. 
 ## The region finder taught here (`rfdetr-m-aariz-regions`)
 
 - **What it is:** RF-DETR Medium, taught to draw a box round each of five regions (cranial base, maxilla, mandible,
-  incisors, soft-tissue profile) on lateral cephalograms. Used by the whole-film check. From 1.2 Beta it comes inside
-  the app (owner, 6 Nov 2026), in `resources/check/regions/` with the check's three calibration files; a copy a user
-  installs in their own models folder is looked in first. The ONNX file (121 MB) is not in the source repository: a local
-  build copies it from the owner's `OpenCephAI-models` repository (local), its master copy, and the signed build
-  downloads it from Zenodo version 2; both check its SHA-256 against `apps/desktop/src-tauri/check-finder.sha256`.
+  incisors, soft-tissue profile) on lateral cephalograms. Used by the whole-film check. From 1.2.1 it is downloaded once in Models… (owner, 7 Nov 2026) into the app's models
+folder, `regions/`, beside the check's three calibration files, which come inside the app (`resources/check/regions/`); a copy
+a user installs in their own models folder is looked in first. The ONNX file (121 MB) is not in the source repository or in
+the app: a local build's tests copy it from the owner's `OpenCephAI-models` repository (local), its master copy, and the
+app downloads it from Zenodo version 2 (record 23965907) and checks both files against pinned SHA-256 values (`model.onnx`
+`17171e68…7b80`, `manifest.json` `0e5cfb0a…7d2a`).
 - **Published openly (owner; version 1 on 5 Nov 2026, version 2 on 6 Nov 2026):** Zenodo, doi:10.5281/zenodo.23949953 (all
   versions; version 2 is doi:10.5281/zenodo.23965907, version 1 doi:10.5281/zenodo.23949954), CC BY 4.0, with RF-DETR's Apache-2.0
   licence and the Aariz credit. The record holds the ONNX file above, the PyTorch weights as safetensors, the film split

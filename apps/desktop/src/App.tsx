@@ -3,7 +3,7 @@ import { compile, type Vec2 } from '@ceph/geometry';
 import { ALL_ANALYSES, buildRegistry, foundBy, resolveNorm, type MyAnalysis } from '@ceph/analyses';
 import { getCurrentWebview } from '@tauri-apps/api/webview';
 import { ask, open } from '@tauri-apps/plugin-dialog';
-import { library, models, modelStatus, operators, setModelDir, settings, type CaseSummary, type ModelPointRow, type ModelStatus, type PointCheckFlag, type PointCheckView, type ResolveReason } from './ipc';
+import { checkModel, library, models, modelStatus, operators, setModelDir, settings, type CaseSummary, type ModelPointRow, type ModelStatus, type PointCheckFlag, type PointCheckView, type ResolveReason } from './ipc';
 import { checkExportProblem, checkStatus, filmFlags, filmHoldsSignOff, flagAt, notRunLines, shownView, signHoldLine, type CheckRead, type CheckStatus } from './points/pointCheck';
 import { pressChecked } from './layout/PointCheckNote';
 import { shownFor, wholeStatus, WHOLE_EXPORT_WORDS, type WholeRead } from './points/wholeFilm';
@@ -21,6 +21,8 @@ import { useChoose } from './library/useChoose';
 import { upgradeNotice } from './library/upgradeNotice';
 import { DATE_FORMAT_KEY, parseDateFormat, type DateFormat } from './dates';
 import { BETA_NOTICE_KEY, parseBetaSeen } from './beta';
+import { CheckModelOffer, showOffer } from './layout/CheckModelOffer';
+import { CheckModelProgress } from './layout/CheckModelProgress';
 import { BetaNotice } from './layout/BetaNotice';
 import { LIBRARY_VIEW_KEY, TABLE_LAYOUT_KEY, parseLibraryView, parseTableLayout, type LibraryView as LibraryViewMode, type TableLayout } from './library/view';
 import { useSeries } from './compare/useSeries';
@@ -106,6 +108,11 @@ export default function App() {
   const [libraryView, setLibraryView] = useState<LibraryViewMode>('pictures');
   // Owner, 2 Nov 2026: the one-time Beta notice. null = not read yet (nothing shown, so it never flashes up for a clinician who has seen it).
   const [betaSeen, setBetaSeen] = useState<boolean | null>(null);
+  // 1.2.1: the one-time question about the whole-film check's model, asked once the beta notice has been read (null: not asked yet).
+  const [offer, setOffer] = useState<boolean | null>(null);
+  // After Download in the one-time question: the small progress line under the film list (spec §6; batch B review I2).
+  const [offerStarted, setOfferStarted] = useState(false);
+  const [offerFailed, setOfferFailed] = useState(false);
   // Library ▸ Table ▸ Grouped/Flat (owner, 29 Oct 2026, item B as revised): remembered the same way.
   const [tableLayout, setTableLayout] = useState<TableLayout>('grouped');
   const [dropping, setDropping] = useState(false);
@@ -277,6 +284,7 @@ export default function App() {
   useEffect(() => { if (overlaysReady.current) settings.set('overlays', JSON.stringify(tracing.overlays)).catch(() => {}); }, [tracing.overlays]);
   useEffect(() => { settings.get('operator').then((v) => setOperator(v ?? '')).catch(() => {}); }, []);
   useEffect(() => { settings.get(DATE_FORMAT_KEY).then((v) => setDateFormat(parseDateFormat(v))).catch(() => {}); }, []);
+  useEffect(() => { if (betaSeen === true) checkModel.offer().then((v) => setOffer(v === true)).catch(() => setOffer(false)); }, [betaSeen]);
   useEffect(() => { settings.get(BETA_NOTICE_KEY).then((v) => setBetaSeen(parseBetaSeen(v))).catch(() => setBetaSeen(false)); }, []);
   useEffect(() => { settings.get(LIBRARY_VIEW_KEY).then((v) => setLibraryView(parseLibraryView(v))).catch(() => {}); }, []);
   useEffect(() => { settings.get(TABLE_LAYOUT_KEY).then((v) => setTableLayout(parseTableLayout(v))).catch(() => {}); }, []);
@@ -771,10 +779,12 @@ export default function App() {
         onOpen={openCase} onImport={onImport} onDelete={onDelete} onRestore={onRestore} onBackup={onBackup} onRestoreBackup={onRestoreBackup} operator={operator} onOperator={onOperator} dateFormat={dateFormat} onDateFormat={onDateFormat} onExportCsv={setCsvFor} view={libraryView} onView={onLibraryView}
         layout={tableLayout} onLayout={onTableLayout} onReport={openReportOf}
         modelNote={<>{model?.loaded ? <>Model: <b>{line}</b></> : <>No model installed.</>} <button type="button" onClick={onModels}>Models…</button> <button type="button" className="primary" onClick={onSettings}>Settings…</button> {autoBestNotes}</>} />
+      <CheckModelProgress started={offerStarted} failedNow={offerFailed} />
       {dropOverlay}
       {modelManager}
       {settingsWindow}
       {betaSeen === false && <BetaNotice onDismiss={() => { setBetaSeen(true); settings.set(BETA_NOTICE_KEY, '1').catch(() => {}); }} />}
+      {showOffer(betaSeen, offer) && <CheckModelOffer onDone={() => setOffer(false)} onStarted={() => { setOfferFailed(false); setOfferStarted(true); }} onFailed={() => setOfferFailed(true)} />}
       {switchNoteWindow}
       {csvFor && <CsvDialog count={csvFor.length} onSave={(c) => exportFilms(csvFor, c)} onClose={() => setCsvFor(null)} />}
     </div>

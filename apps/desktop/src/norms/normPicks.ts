@@ -1,4 +1,4 @@
-import { AUTO_CHOICE_ID, type NormPicks } from '@ceph/analyses';
+import { AUTO_CHOICE_ID, canonicalSetId, type NormPicks } from '@ceph/analyses';
 import type { settings } from '../ipc';
 
 // Owner NORM-PICK-1 (12 Oct): where the case's population (or a ticked compare population) has no norm for a
@@ -18,7 +18,8 @@ export function parsePicks(json: string | null): NormPicks {
   if (!v || typeof v !== 'object' || Array.isArray(v)) return out;
   for (const [pop, byM] of Object.entries(v as Record<string, unknown>)) {
     if (!byM || typeof byM !== 'object' || Array.isArray(byM)) continue;
-    const kept = Object.entries(byM as Record<string, unknown>).filter((e): e is [string, string] => typeof e[1] === 'string');
+    const kept = Object.entries(byM as Record<string, unknown>).filter((e): e is [string, string] => typeof e[1] === 'string')
+      .map(([m, src]): [string, string] => [m, canonicalSetId(src)]); // an old set id (renamed 7 Nov 2026) still means the same set
     if (kept.length) out[pop] = Object.fromEntries(kept);
   }
   return out;

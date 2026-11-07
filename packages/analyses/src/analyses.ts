@@ -29,7 +29,7 @@ export const ALL_ANALYSES: AnalysisDef[] = [
   analysis('abo', 'ABO', ids('1,2,3,90,91,54,46,47,92,49,50,72')),
   analysis('nagasaki', 'Nagasaki', ids('1,2,3,21,51,57,53,13')),
   analysis('radney', 'Radney', ids('47,46,52,51')),
-  analysis('nus', 'NUS', ids('1,2,3,23,25,26,13,29,54,55,57,53,64,68,69,71,72')),
+  analysis('nus', 'NUS', ids('1,2,3,23,25,26,13,29,54,55,57,53,64,68,69,71,72,93')),
 ];
 
 const BUILT_IN_IDS = ['steiner', 'downs', 'mcnamara'];

@@ -1,6 +1,6 @@
 import { byId } from '../catalogue';
 import { ALL_ANALYSES } from '../analyses';
-import { POPULATIONS } from './load';
+import { POPULATIONS, normsPopulation, populationChain, populationChoiceLabel, ruleWords } from './load';
 import { adultPool, combineGroups, type PoolRow } from './combined';
 import type { NormEntry, NormSet, NormSex } from './types';
 
@@ -115,6 +115,10 @@ export type Resolved =
       sdDonor: SdDonor | null;
       /** Owner N-A3 (19 Oct 2026): set only when Auto filled this result; absent otherwise. */
       auto?: AutoNote;
+      /** Owner rulings 7 Nov 2026: the population rule (populations.json `normsOf` / `fallsBackTo`) gave this row from
+       *  another population; the words said wherever the norm is shown ("Norms: Caucasian (population rule)", owner
+       *  answer C). Absent otherwise. */
+      alias?: string;
     };
 
 export interface SdDonor {
@@ -189,7 +193,7 @@ export function resolveNorm(q: NormQuery): Resolved {
     if (auto) return auto;
   }
   // 6c. Nothing.
-  const places = [popId !== null ? populationLabel(popId) : null, analysisName(q.analysisId), 'your norms'].filter(Boolean);
+  const places = [popId !== null ? populationLabel(normsPopulation(popId)) : null, analysisName(q.analysisId), 'your norms'].filter(Boolean);
   return { kind: 'none', reason: `No norm for this measurement in ${places.join(' or ')}.` };
 }
 
@@ -219,10 +223,16 @@ export function normChoices(q: NormQuery): NormChoice[] {
     out.push({ id: AUTO_CHOICE_ID, label: `Auto · ${who}${a.n !== null ? `, n = ${a.n}` : ''} (no ${a.populationWords} norm)`,
       rows: rowsUsed(auto, q.sets.find((s) => s.id === auto.setId) ?? null), ages: auto.ageRowUsed, resolved: auto });
   }
+  // Review minor 1 (7 Nov 2026): the population whose set already gives this patient's row by the rule (an Indian
+  // patient's Caucasian set; a Malay patient's Chinese set where no Malay study has the row) is not listed again.
+  const mine = popId === 'analysis-own' || popId === COMBINED_ADULT || popId.startsWith(USER_PREFIX) ? null : fromSource({ ...q, picks: undefined }, popId);
+  const mineFrom = mine?.alias ? q.sets.find((s) => s.id === mine.setId)?.population.id ?? null : null;
   for (const p of populationsOffered(q.sets, q.userNorms)) {
-    if (p.id === popId) continue;
+    if (p.id === popId || p.id === mineFrom) continue;
     const hit = fromSource({ ...q, picks: undefined }, p.id);
-    if (!hit) continue;
+    // Owner rulings 7 Nov 2026: a source reached only through the rule (Indian always; Malay where no Malay study has
+    // the row) would repeat the population it uses, which is listed in its own right.
+    if (!hit || hit.alias) continue;
     const set = q.sets.find((s) => s.id === hit.setId) ?? null;
     const label = p.id === 'analysis-own' ? `${noNormLabel(p.id, q.analysisId)} norm` : p.label;
     out.push({ id: p.id, label, rows: rowsUsed(hit, set), ages: hit.ageRowUsed, resolved: hit });
@@ -275,7 +285,9 @@ export function resolveAcross(q: NormQuery, populations: string[]): Resolved[] {
  *  clinician's own norm sets as `user:<setName>`, by name. */
 export function populationsOffered(sets: NormSet[], userNorms: UserNorm[]): { id: string; label: string }[] {
   const used = new Set(sets.filter((s) => s.status !== 'pending' && s.kind !== 'research-sd').map((s) => s.population.id));
-  const known = POPULATIONS.filter((p) => used.has(p.id)).map((p) => ({ id: p.id, label: p.label }));
+  // Owner rulings 7 Nov 2026: a population the rule sends elsewhere (Indian) is offered when the one it uses is.
+  const known = POPULATIONS.filter((p) => populationChain(p.id).some((x) => used.has(x)))
+    .map((p) => ({ id: p.id, label: populationChoiceLabel(p.id) }));
   const knownIds = new Set(known.map((p) => p.id));
   const unknown = sets
     .filter((s) => used.has(s.population.id) && !knownIds.has(s.population.id))
@@ -347,14 +359,25 @@ function autoFallback(q: NormQuery, popId: string): Hit | null {
   const own = popId === 'analysis-own' ? null : fromSource(free, 'analysis-own');
   let step: AutoNote['step'] = 'analysis-own';
   let used: NormSet | null = null;
-  if (!own && popId !== AUTO_POPULATION) { used = bestCaucasian(free); step = 'caucasian'; }
-  if (!own && !used) { used = bestStudy(free, otherPopulations(free, [popId, AUTO_POPULATION])); step = 'anywhere'; }
+  // Owner rulings 7 Nov 2026: the populations the rule already tried (Indian: Caucasian; Malay: Malay, then Chinese)
+  // are not looked in again.
+  const tried = popId === 'analysis-own' ? [popId] : populationChain(popId);
+  if (!own && !tried.includes(AUTO_POPULATION)) { used = bestCaucasian(free); step = 'caucasian'; }
+  if (!own && !used) { used = bestStudy(free, otherPopulations(free, [popId, ...tried, AUTO_POPULATION])); step = 'anywhere'; }
   const hit = own ?? (used ? fromSets(free, [used], true) : null);
   if (!hit) return null;
   const ns = rowsUsed(hit, q.sets.find((s) => s.id === hit.setId) ?? null).map((r) => r.n);
   const populationWords = noNormLabel(popId, q.analysisId);
   hit.flags.push('auto-fallback');
   hit.sourceLine += ` · Auto (no ${populationWords} norm)`;
+  // Review minor 2: a row Auto filled after the population rule says the rule too (Indian: "Norms: Caucasian
+  // (population rule)"; Malay, whose own studies were tried first: "population rule: no Chinese norm either").
+  if (popId !== 'analysis-own' && popId !== COMBINED_ADULT && !popId.startsWith(USER_PREFIX)) {
+    const chain = populationChain(popId);
+    const alias = ruleWords(popId, chain[0]);
+    if (alias) { hit.sourceLine += ` · ${alias}`; hit.alias = alias; }
+    else if (chain.length > 1) hit.sourceLine += ` · population rule: no ${chain.slice(1).map((p) => populationLabel(p).split(' (')[0]).join(' or ')} norm either`;
+  }
   hit.auto = {
     population: popId, populationWords, step,
     usedPopulation: used ? used.population.label.split(' (')[0] : null,
@@ -492,7 +515,8 @@ export const NO_ANALYSIS_LABEL = 'built-in analysis';
 
 /** What a population is called in "no <…> norm": its label; the analysis's own norms by the analysis ("Steiner's own"). */
 function noNormLabel(popId: string, analysisId: string): string {
-  if (popId !== 'analysis-own') return populationLabel(popId);
+  // Owner answer C (7 Nov 2026): an aliased population is named by the norms it uses, never by the recorded background.
+  if (popId !== 'analysis-own') return populationLabel(normsPopulation(popId));
   return analysisId ? `${analysisName(analysisId)}'s own` : NO_ANALYSIS_LABEL;
 }
 
@@ -500,9 +524,19 @@ function noNormLabel(popId: string, analysisId: string): string {
  *  population's sets (nearest age on, AGE-2). */
 function fromSource(q: NormQuery, popId: string): Hit | null {
   if (popId === COMBINED_ADULT) return fromCombined(q);
-  return popId.startsWith(USER_PREFIX)
-    ? fromUserNorms(q, q.userNorms.filter((u) => u.setName === popId.slice(USER_PREFIX.length)))
-    : fromSets(q, setsOfPopulation(q, popId), popId !== 'analysis-own');
+  if (popId.startsWith(USER_PREFIX)) return fromUserNorms(q, q.userNorms.filter((u) => u.setName === popId.slice(USER_PREFIX.length)));
+  // Owner rulings 7 Nov 2026 (populations.json): the populations the rule gives this one, in order (Indian: Caucasian;
+  // Malay: Malay, then Chinese); the first that has the row answers, and the source line says when it is not the
+  // patient's own.
+  if (popId === 'analysis-own') return fromSets(q, setsOfPopulation(q, popId), false);
+  for (const p of populationChain(popId)) {
+    const hit = fromSets(q, setsOfPopulation(q, p), true);
+    if (!hit) continue;
+    const words = ruleWords(popId, p);
+    if (words) { hit.sourceLine += ` · ${words}`; hit.alias = words; }
+    return hit;
+  }
+  return null;
 }
 
 function analysisName(id: string): string {
@@ -513,11 +547,21 @@ function analysisName(id: string): string {
  *  every analysis's own norms, so only this analysis's are taken from it. */
 function setsOfPopulation(q: NormQuery, popId: string): NormSet[] {
   if (popId === 'analysis-own') return ownSets(q);
-  return q.sets.filter((s) => s.population.id === popId && s.status !== 'pending' && s.kind !== 'research-sd');
+  return forThisPatient(q, q.sets.filter((s) => s.population.id === popId && s.status !== 'pending' && s.kind !== 'research-sd'));
 }
 
 function ownSets(q: NormQuery): NormSet[] {
-  return q.sets.filter((s) => s.kind === 'analysis-own' && s.status !== 'pending' && (s.analyses ?? []).includes(q.analysisId));
+  return forThisPatient(q, q.sets.filter((s) => s.kind === 'analysis-own' && s.status !== 'pending' && (s.analyses ?? []).includes(q.analysisId)));
+}
+
+/** Owner ruling 7 Nov 2026 (NUS): among own norms chosen by the patient's population (`forPopulations`), keep the ones
+ *  for this patient — their population (case, else clinic default), or the population whose norms it uses
+ *  (populations.json `normsOf`) — else the one marked `forOtherPopulations`. Sets without `forPopulations` are kept. */
+function forThisPatient(q: NormQuery, sets: NormSet[]): NormSet[] {
+  const pop = q.population ?? q.clinicDefault;
+  const fits = (s: NormSet) => pop !== null && (s.forPopulations!.includes(pop) || s.forPopulations!.includes(normsPopulation(pop)));
+  const anyFits = sets.some((s) => s.forPopulations && fits(s));
+  return sets.filter((s) => !s.forPopulations || (anyFits ? fits(s) : s.forOtherPopulations === true));
 }
 
 /** Rule 5 (after demoting website sets, so a paper always beats a website for the same value, and
@@ -908,7 +952,9 @@ function borrowedSd(q: NormQuery, e: NormEntry): BorrowedSd | null {
 export function shortCitation(set: NormSet): string {
   const firstAuthor = set.citation.authors.split(',')[0].trim();
   const surname = firstAuthor.replace(/\s+(?:Jr|Sr)\.?$|\s+(?:II|III)$/, '').replace(/\s+[A-Z](?:-?[A-Z]){0,2}\.?$/, '');
-  return set.citation.undated ? `${surname} (undated)` : `${surname} ${set.citation.year}`;
+  // Review minor 7: a name that already ends in a bracket takes "undated" inside it ("Data on file (NUS norms, undated)").
+  if (set.citation.undated) return surname.endsWith(')') ? `${surname.slice(0, -1)}, undated)` : `${surname} (undated)`;
+  return `${surname} ${set.citation.year}`;
 }
 
 /** P35: the words follow the band — children (high end under 18) boys/girls; adults (low end 18 or
@@ -1004,7 +1050,7 @@ export function donorHomePopulation(q: NormQuery, chosen: NormSet): string | nul
   if (chosen.kind !== 'analysis-own') return chosen.population.id;
   const pop = q.population ?? q.clinicDefault;
   if (pop === null || pop === 'analysis-own' || pop.startsWith(USER_PREFIX)) return null;
-  return pop;
+  return normsPopulation(pop);   // owner rulings 7 Nov 2026: Indian lends from Caucasian first; Malay from Malay
 }
 
 /** P32 item 6: a donor row's n — its own, else the sample's count for its sex (nMale / nFemale),

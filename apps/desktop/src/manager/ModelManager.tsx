@@ -7,17 +7,10 @@ import { useModels } from './useModels';
 import { AutoBestRow } from './AutoBestRow';
 import { BaseSelect } from './BaseSelect';
 import { PointCheckCounts } from './PointCheckCounts';
+import { CopyLink } from './CopyLink';
+import { CheckModelRow } from './CheckModelRow';
+import { useCheckModel } from './useCheckModel';
 import type { BaseControl } from '../ai/useBase';
-
-function CopyLink({ url }: { url: string }) {
-  const [copied, setCopied] = useState(false);
-  return (
-    <span className="model-link">
-      <input readOnly value={url} aria-label="Link" onFocus={(e) => e.currentTarget.select()} />
-      <button type="button" onClick={() => { void navigator.clipboard?.writeText(url).then(() => setCopied(true)).catch(() => {}); }}>{copied ? 'Copied' : 'Copy link'}</button>
-    </span>
-  );
-}
 
 /** Remove, Starts the tracing and Add downloaded file: runs the call, and a refusal reaches the screen (the words the app
  *  wrote, as they are), then the list is read again. Final review I1: this used to swallow the refusal. */
@@ -90,6 +83,7 @@ export function ModelManager({ onClose, onLocateModel, base, onOpenBestModel }: 
    *  Part F's table moved to Settings › Best model (spec 2026-10-29 §2), opened by `onOpenBestModel`. */
   base?: BaseControl; onOpenBestModel?: () => void }) {
   const { rows, progress, refresh, error } = useModels();
+  const check = useCheckModel();
   const [err, setErr] = useState<string | null>(null);
   const [folderNote, setFolderNote] = useState<string | null>(null);
   const titleOf = useCallback((id: string) => rows.find((r) => r.id === id)?.title ?? id, [rows]);
@@ -115,6 +109,11 @@ export function ModelManager({ onClose, onLocateModel, base, onOpenBestModel }: 
           baseSelect={base && <BaseSelect id="base-models" base={base.base} rows={rows} titleOf={titleOf} disabled={!rows.some((r) => r.status === 'ready')}
             onChoose={(id) => void base.choose(id, 'models')} error={base.errorFor('models')} />}
           onMain={() => act(() => models.setMain('auto-best'))} />
+        <section className="whole-film-models" aria-label="Whole-film check">
+          <h3>Whole-film check</h3>
+          <CheckModelRow row={check.row} progress={check.progress} onChanged={check.refresh} setErr={setErr} />
+          {check.error && <p className="error">{check.error}</p>}
+        </section>
         {rows.map((r) => <Row key={r.id} r={r} progress={progress} onChanged={changed} setErr={setErr} />)}
         <PointCheckCounts />
         {(err ?? error) && <p className="error">{err ?? error}</p>}

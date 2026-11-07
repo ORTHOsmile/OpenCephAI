@@ -9,6 +9,10 @@ import type { ModelStatus } from '../ipc';
 import type { NormContext } from '../norms/normCell';
 import type { NormExtras } from './CasePanel';
 
+// The assistant and company names are spelled backwards here so the public copy never contains them, even inside
+// the rule that forbids them (owner, 6 Nov 2026).
+const FORBIDDEN_NAMES = ['edualc', 'ciporhtna'].map((w) => [...w].reverse().join(''));
+
 // Owner, 1 Nov 2026: a visible, always-there thanks to Dr Linton Nash under the models/buttons in the left
 // sidebar. Minimal fixture: kase.doc is null/undefined so CasePanel never renders, which keeps every other
 // prop a harmless stub — this test is only about the footer line, not the panel it sits below.
@@ -50,9 +54,9 @@ describe('Sidebar: thanks to Dr Linton Nash (owner, 1 Nov 2026)', () => {
     expect(h).toContain('<div class="sidebar-scroll"');
   });
 
-  it('never says anything else — no other name, and no mention of assistant/AI/tooling', () => {
+  it('never says anything else — no other name, and no mention of an AI assistant or tooling', () => {
     const h = html();
-    expect(h).not.toMatch(/assistant|company|ai assist/i);
+    expect(h).not.toMatch(new RegExp([...FORBIDDEN_NAMES, 'ai assist'].join('|'), 'i'));
   });
 
   it('CSS: the footer is pinned (does not shrink) while a sibling wrapper owns the scrolling', () => {

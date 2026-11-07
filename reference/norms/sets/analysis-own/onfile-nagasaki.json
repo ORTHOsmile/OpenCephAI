@@ -6,10 +6,9 @@
   ],
   "status": "website",
   "citation": {
-    "authors": "[source removed]",
-    "title": "Nagasaki University Analysis: A Complete Cephalometric Guide",
+    "authors": "Data on file (primary source being confirmed)",
+    "title": "Nagasaki analysis norms",
     "year": 2026,
-    "url": "[source removed]",
     "openAccess": true
   },
   "population": {
@@ -38,8 +37,8 @@
     "The page itself says its norms are still being checked against the original papers (re-read 8 Oct).",
     "No source paper, sample, population, sex or age stated on the page.",
     "The page prints every norm as 'x ± y' without saying whether y is an SD or a range; stored as sd with a note.",
-    "SNA, SNB, ANB and SN–MP are identical to the onfile ABO page (82 ± 2, 80 ± 2, 2 ± 2, 32 ± 5), possibly a copied template; kept as printed.",
-    "SN–MP and IMPA are written 'Go–Me' without saying which gonion; entered as the catalogue's #21 and #57 (Go–Me), 'same'. onfile's Björk–Jarabak page constructs gonion; if this page does too, these would be 'close'."
+    "SNA, SNB, ANB and SN–MP are identical to the on-file ABO data (82 ± 2, 80 ± 2, 2 ± 2, 32 ± 5), possibly a copied template; kept as printed.",
+    "SN–MP and IMPA are written 'Go–Me' without saying which gonion; entered as the catalogue's #21 and #57 (Go–Me), 'same'. the on-file Björk–Jarabak data constructs gonion; if this page does too, these would be 'close'."
   ],
   "entries": [
     {
@@ -48,7 +47,7 @@
       "mean": 82,
       "sd": 2,
       "unit": "deg",
-      "source": "[source removed] Nagasaki page, Skeletal table, row 'SNA'",
+      "source": "Data on file (primary source being confirmed), Nagasaki analysis, Skeletal table, row 'SNA'",
       "definitionMatch": "same",
       "note": "printed as ± on the website; not stated to be an SD"
     },
@@ -58,7 +57,7 @@
       "mean": 80,
       "sd": 2,
       "unit": "deg",
-      "source": "[source removed] Nagasaki page, Skeletal table, row 'SNB'",
+      "source": "Data on file (primary source being confirmed), Nagasaki analysis, Skeletal table, row 'SNB'",
       "definitionMatch": "same",
       "note": "printed as ± on the website; not stated to be an SD"
     },
@@ -68,7 +67,7 @@
       "mean": 2,
       "sd": 2,
       "unit": "deg",
-      "source": "[source removed] Nagasaki page, Skeletal table, row 'ANB'",
+      "source": "Data on file (primary source being confirmed), Nagasaki analysis, Skeletal table, row 'ANB'",
       "definitionMatch": "same",
       "note": "printed as ± on the website; not stated to be an SD"
     },
@@ -78,7 +77,7 @@
       "mean": 32,
       "sd": 5,
       "unit": "deg",
-      "source": "[source removed] Nagasaki page, Skeletal table, row 'SN-MP'",
+      "source": "Data on file (primary source being confirmed), Nagasaki analysis, Skeletal table, row 'SN-MP'",
       "definitionMatch": "same",
       "note": "printed as ± on the website; not stated to be an SD. Page: 'the mandibular plane (Go–Me)'"
     },
@@ -88,7 +87,7 @@
       "mean": 4,
       "sd": 2,
       "unit": "mm",
-      "source": "[source removed] Nagasaki page, Dental table, row 'L1–NA'",
+      "source": "Data on file (primary source being confirmed), Nagasaki analysis, Dental table, row 'L1–NA'",
       "definitionMatch": "same",
       "note": "printed as ± on the website; not stated to be an SD. Page: perpendicular distance from the lower incisor tip to N–A"
     },
@@ -98,7 +97,7 @@
       "mean": 90,
       "sd": 3,
       "unit": "deg",
-      "source": "[source removed] Nagasaki page, Dental table, row 'IMPA'",
+      "source": "Data on file (primary source being confirmed), Nagasaki analysis, Dental table, row 'IMPA'",
       "definitionMatch": "same",
       "note": "printed as ± on the website; not stated to be an SD"
     },
@@ -108,7 +107,7 @@
       "mean": 131,
       "sd": 8,
       "unit": "deg",
-      "source": "[source removed] Nagasaki page, Dental table, row 'Interincisal'",
+      "source": "Data on file (primary source being confirmed), Nagasaki analysis, Dental table, row 'Interincisal'",
       "definitionMatch": "same",
       "note": "printed as ± on the website; not stated to be an SD"
     },
@@ -118,7 +117,7 @@
       "mean": 0,
       "sd": 2,
       "unit": "mm",
-      "source": "[source removed] Nagasaki page, Wits appraisal table, row 'Wits Appraisal (AO–BO)'",
+      "source": "Data on file (primary source being confirmed), Nagasaki analysis, Wits appraisal table, row 'Wits Appraisal (AO–BO)'",
       "definitionMatch": "close",
       "note": "printed as ± on the website; not stated to be an SD. Page defines AO and BO on the functional occlusal plane; AO ahead of BO counts as positive, a Class II pattern — the catalogue's sign",
       "definitionNote": "Measured on the functional occlusal plane (through the premolars); this app measures Wits on the occlusal plane through the molars and incisors (since 16 Oct 2026)"

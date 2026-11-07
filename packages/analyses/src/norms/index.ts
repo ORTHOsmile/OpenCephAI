@@ -1,10 +1,11 @@
 export type { NormSex, DefinitionMatch, SetStatus, SetKind, NormEntry, NormSet, FilmScale } from './types';
 export { validateSet, plausibilityErrors, PLAUSIBLE_BOUNDS, PLAUSIBLE_OVERRIDES } from './validate';
-export { loadSets, loadSetsFrom, POPULATIONS } from './load';
+export { loadSets, loadSetsFrom, POPULATIONS, normsPopulation, populationChain, ruleWords, populationChoiceLabel } from './load';
 export { ageAt, calendarAge } from './age';
 export type { UserNorm, NormQuery, NormFlag, Resolved, SdDonor, NormPicks, NormChoice, AutoNote } from './resolve';
 export { resolveNorm, zScore, band, resolveAcross, normChoices, populationsOffered, shortCitation, AGE_NOT_ENTERED_WORDS, FILM_DATE_MISSING_WORDS, NORM_FLAGS, NO_ANALYSIS_LABEL, bestStudy, bestCaucasian, otherPopulations, AUTO_POPULATION, AUTO_CHOICE_ID, OWN_POPULATION, pickPopulation, COMBINED_ADULT, COMBINED_ADULT_LABEL } from './resolve';
 export { adultPool, combineGroups, isAdultBand, SAME_COHORT, type Group, type PoolRow } from './combined';
+export { LEGACY_SET_IDS, canonicalSetId } from './legacy-ids';
 export { normSourcesFor, type NormSource } from './sources';
 export { AUTO_CASE_POPULATION, OTHER_BACKGROUND, autoPopulation, backgroundOptions, bestEvidenceSet, type PopulationChoice, type PopulationHow, type AutoPopulationInput } from './auto-population';
 export { FLAG_WORDS, OWN_NORMS_LABEL, SEX_NOT_RECORDED_HINT, choiceFacts } from './flags';

@@ -258,6 +258,19 @@ export interface WeightsCheckProgress { modelId: string; done: number; total: nu
 export const WEIGHTS_CHECK_EVENT = 'cephtrace://weights-check';
 export interface BestPerPoint { ruleVersion: string; points: BestPoint[]; choices: PointChoice[]; checks: ModelCheck[] }
 export interface ModelPointRow { modelId: string; title: string; main: boolean; points: { id: string; status: PointStatus }[] }
+/** The whole-film check's region finder, as Models… shows it (`check_model_row`). */
+export interface CheckRow { title: string; author: string; licence: string; citation: string; page: string; sizeMb: number;
+  status: 'not-installed' | 'installing' | 'ready' | 'failed' | 'damaged'; byHand: boolean; stage: string | null; error: string | null }
+export const checkModel = {
+  row: () => invoke<CheckRow>('check_model_row'),
+  install: () => invoke<void>('check_model_install'),
+  /** `path` is the folder holding manifest.json and model.onnx. */
+  addFiles: (path: string) => invoke<void>('check_model_add_files', { path }),
+  remove: () => invoke<void>('check_model_remove'),
+  /** Whether to ask the one-time question now. */
+  offer: () => invoke<boolean>('check_model_offer'),
+  offerAnswered: () => invoke<void>('check_model_offer_answered'),
+};
 export const models = {
   list: () => invoke<ModelRow[]>('models_list'),
   /** Who finds which point on this Mac, and whether each passes the gate. */

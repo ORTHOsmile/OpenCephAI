@@ -6,10 +6,9 @@
   ],
   "status": "website",
   "citation": {
-    "authors": "[source removed]",
-    "title": "Kim Analysis: ODI, APDI, CF & the Extraction Index",
+    "authors": "Data on file (primary source being confirmed)",
+    "title": "Kim analysis combination factor and extraction index norms",
     "year": 2026,
-    "url": "[source removed]",
     "openAccess": true
   },
   "population": {
@@ -39,7 +38,7 @@
     "The page attributes its norms to 'Kim IK (1978, 1987)' and describes the sample as Korean Class I adults; this is the website's statement, unchecked, and looks garbled: Kim's ODI paper is Kim YH 1974 and APDI Kim & Vietas 1978.",
     "The page's table has a column headed 'SD'; the CF's ± 6.24 is stored as sd. Its 'Clinical Range' 143.4°–168.4° is in the note.",
     "The page's extraction-index bands (< 149.0° extraction; 149.0°–155.9° borderline; > 155.9° non-extraction) match the bands already in the catalogue for #17; the page gives no separate norm for the index, so #17 carries the CF mean only.",
-    "The CF on the page is the sum of the page's own ODI and APDI; onfile's ODI is not Kim 1974's (catalogue #15), so a CF from the app's ODI is not the same quantity as the page's."
+    "The CF on the page is the sum of the page's own ODI and APDI; the on-file source's ODI is not Kim 1974's (catalogue #15), so a CF from the app's ODI is not the same quantity as the page's."
   ],
   "entries": [
     {
@@ -48,9 +47,9 @@
       "mean": 155.9,
       "sd": 6.24,
       "unit": "deg",
-      "source": "[source removed] Kim page, norms table, row 'CF (ODI + APDI)'",
+      "source": "Data on file (primary source being confirmed), Kim analysis, norms table, row 'CF (ODI + APDI)'",
       "definitionMatch": "close",
-      "definitionNote": "Same sum (ODI + APDI), but the page's ODI is onfile's own version (the AB plane measured against Frankfort horizontal, plus palatal plane to FH, re-read 8 Oct), not Kim 1974's (A–B line to the mandibular plane, catalogue #15); the app sums its own ODI and APDI",
+      "definitionNote": "Same sum (ODI + APDI), but the page's ODI is the on-file source's own version (the AB plane measured against Frankfort horizontal, plus palatal plane to FH, re-read 8 Oct), not Kim 1974's (A–B line to the mandibular plane, catalogue #15); the app sums its own ODI and APDI",
       "note": "Page column headed 'SD'. Page 'Clinical Range' 143.4°–168.4°; high = 'Non-extraction favoured', low = 'Extraction indicated'"
     },
     {
@@ -58,9 +57,9 @@
       "sex": "pooled",
       "mean": 155.9,
       "unit": "deg",
-      "source": "[source removed] Kim page, 'Combination Factor & Extraction Index' section, Extraction Index thresholds table",
+      "source": "Data on file (primary source being confirmed), Kim analysis, 'Combination Factor & Extraction Index' section, Extraction Index thresholds table",
       "definitionMatch": "close",
-      "definitionNote": "The extraction index is the CF read against bands; same caveat as #16 (onfile's ODI differs from Kim 1974's)",
+      "definitionNote": "The extraction index is the CF read against bands; same caveat as #16 (the on-file source's ODI differs from Kim 1974's)",
       "note": "The page gives no separate norm for the extraction index (re-read 8 Oct); 155.9° is the CF mean, which is also the upper edge of the 'Borderline' band. Bands on the page: < 149.0° extraction; 149.0°–155.9° borderline; > 155.9° non-extraction (the catalogue's bands)"
     }
   ]

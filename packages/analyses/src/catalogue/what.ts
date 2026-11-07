@@ -23,7 +23,7 @@ const RAW: Record<string, string> = {
   '14': "Facial angle ± A–B plane angle ± palatal plane angle, with the paper's sign rules",
   '15': "A–B line to mandibular plane angle ± palatal plane to FH angle, with the paper's sign rules",
   '16': "ODI + APDI",
-  '17': "onfile's thresholds on the combination factor; Kim's own paper not on file",
+  '17': "thresholds on the combination factor from Data on file (primary source being confirmed); Kim's own paper not yet in hand",
   '18': "Distance from Pog to N–B. + when Pog is ahead",
   '19': "Back of the upper first molar to PTV. + when the molar is ahead of PTV",
   '20': "Angle between SN and Go–Gn",
@@ -99,6 +99,7 @@ const RAW: Record<string, string> = {
   '90': "Angle between SN and constructed gonion to menton. Constructed gonion = where the ramus tangent meets the lower-border tangent",
   '91': "Angle between FH and constructed gonion to menton",
   '92': "Angle between the L1 axis and constructed gonion to menton",
+  '93': "Angle at S between Ba and N (the cranial base angle)",
 };
 export const WHAT: Record<string, string> = Object.fromEntries(
   Object.entries(RAW).map(([no, text]) => [no, stripScreenMarkup(text)]),

@@ -91,4 +91,12 @@ mod tests {
         assert_eq!(find_manifest(&[Some(a.clone()), None]), None);
         std::fs::remove_dir_all(a).ok();
     }
+    /// 1.2.1: the app carries the check's four small files only. A finder left in resources/check/regions (every Mac that
+    /// built 1.2.0 still has one, git-ignored) would be bundled again by `resources/check/**/*`. Fails while it is there.
+    #[test] fn the_resources_hold_only_the_four_small_files() {
+        let b = bundled_check_dir(std::path::Path::new(env!("CARGO_MANIFEST_DIR")));
+        let names = |d: PathBuf| { let mut v: Vec<String> = std::fs::read_dir(&d).unwrap_or_else(|e| panic!("{}: {e}", d.display())).flatten().map(|e| e.file_name().to_string_lossy().into_owned()).filter(|n| !n.starts_with('.')).collect(); v.sort(); v };   // a macOS .DS_Store is not a model file
+        assert_eq!(names(b.join("regions")), ["calibration.json", "cb-centre-calibration.json", "size-calibration.json"], "{}: remove model.onnx and manifest.json", b.display());
+        assert_eq!(names(b.join("shape")), ["whole-film-reference-v1.shape"]);
+    }
 }

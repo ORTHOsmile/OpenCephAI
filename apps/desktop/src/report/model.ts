@@ -34,7 +34,7 @@ export const REPORT_OPTION_KEYS: Record<keyof ReportOptions, string> = {
   profilogramPage: 'report_profilogram_page', normSources: 'report_norm_sources', placedBy: 'report_placed_by', pointsTable: 'report_points_table', profilogramGrid: 'report_profilogram_grid',
 };
 export const FOOTER = 'Research tool — not a diagnostic device';
-/** One version only, with the Beta label (owner option A, 2 Nov 2026): "OpenCephAI 1.2.0 (Beta)". Also the CSV app_version. */
+/** One version only, with the Beta label (owner option A, 2 Nov 2026): "OpenCephAI 1.2.1 (Beta)". Also the CSV app_version. */
 export const APP = `${tauriConf.productName} ${tauriConf.version} (Beta)`;
 
 export interface ReportRow {
@@ -204,7 +204,11 @@ export function normSourceSummary(cells: (NormCell | null)[], choice: Population
     : `We used the norms for the ${sexWord(main.normSex!)} ${main.normPopulation} population for ${ageRowWords(main.normAgeRowUsed)}`;
   const key = choice?.how === 'best-evidence' && !choice.ageCovered ? 'best-evidence-nearest' : choice?.how;
   const how = choice && key && key !== 'none' && choice.label === majority ? ` (${AUTO_HOW_REPORT[key]})` : '';
-  return mixed ? `${sentence}${how}; some measurements use other norms (marked ◆).` : `${sentence}${how}.`;
+  // Owner rulings 7 Nov 2026: say once that the population rule gave rows from another population ("Norms: Caucasian
+  // (population rule)", owner answer C: never the recorded background).
+  const aliases = [...new Set(used.map((c) => c.aliasNote).filter((w): w is string => !!w))];
+  const alias = aliases.length ? ` ${aliases.map((w) => `${w}.`).join(' ')}` : '';
+  return (mixed ? `${sentence}${how}; some measurements use other norms (marked ◆).` : `${sentence}${how}.`) + alias;
 }
 
 /** Owner, addendum 2 J (19 Oct 2026): the norms whose papers did not state their X-ray enlargement, each paper once

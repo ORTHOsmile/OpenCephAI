@@ -21,7 +21,7 @@ export const DENTAL: CatalogueEntry[] = [
 
   E('m46_U1NAmm', '46', 'U1–NA (mm), tip', 'mm',
     { kind: 'signedDistance', p: 'U1T', line: 'NA', positiveAlong: 'FH' },
-    { mark: 'S', cite: 'onfile (ABO, Radney)' },
+    { mark: 'S', cite: 'Data on file (primary source being confirmed)' },
     { sign: '+ when ahead' }),
 
   E('m47_U1NAdeg', '47', 'U1–NA (°)', 'deg',
@@ -32,7 +32,7 @@ export const DENTAL: CatalogueEntry[] = [
 
   E('m49_L1NBmm', '49', 'L1–NB (mm), tip', 'mm',
     { kind: 'signedDistance', p: 'L1T', line: 'NB', positiveAlong: 'FH' },
-    { mark: 'S', cite: 'onfile (ABO)' },
+    { mark: 'S', cite: 'Data on file (primary source being confirmed)' },
     { sign: '+ when ahead' }),
 
   E('m50_L1NBdeg', '50', 'L1–NB (°)', 'deg',
@@ -41,12 +41,12 @@ export const DENTAL: CatalogueEntry[] = [
 
   E('m51_L1NAmm', '51', 'L1–NA (mm), tip', 'mm',
     { kind: 'signedDistance', p: 'L1T', line: 'NA', positiveAlong: 'FH' },
-    { mark: 'S', cite: 'onfile (Nagasaki, Radney)' },
+    { mark: 'S', cite: 'Data on file (primary source being confirmed)' },
     { sign: '+ when ahead' }),
 
   E('m52_L1NAdeg', '52', 'L1–NA (°)', 'deg',
     { kind: 'angleLines', l1: 'NA', l2: 'L1axRev' },
-    { mark: 'S', cite: 'onfile (Radney)' }),
+    { mark: 'S', cite: 'Data on file (primary source being confirmed)' }),
 
   E('m53_Interincisal', '53', 'Interincisal angle', 'deg',
     { kind: 'angleLines', l1: 'U1axRev', l2: 'L1axRev' },
@@ -54,11 +54,11 @@ export const DENTAL: CatalogueEntry[] = [
 
   E('m54_U1SN', '54', 'U1–SN', 'deg',
     { kind: 'angleLines', l1: 'U1axRev', l2: 'SN' },
-    { mark: 'S', cite: 'onfile (ABO); Naini' }),
+    { mark: 'S', cite: 'Data on file (primary source being confirmed); Naini' }),
 
   E('m55_U1MxP', '55', 'U1–MxP', 'deg',
     { kind: 'angleLines', l1: 'MxP', l2: 'U1axRev' },
-    { mark: 'T', cite: 'Naini; onfile (Eastman)' }),
+    { mark: 'T', cite: 'Naini; Data on file (primary source being confirmed)' }),
 
   E('m56_IMPAt', '56', 'IMPA, tangent', 'deg',
     { kind: 'angleLines', l1: 'MeTg', l2: 'L1ax' },
@@ -67,7 +67,7 @@ export const DENTAL: CatalogueEntry[] = [
 
   E('m57_IMPAgome', '57', 'IMPA, Go–Me', 'deg',
     { kind: 'angleLines', l1: 'MeGo', l2: 'L1ax' },
-    { mark: 'T', cite: 'Naini; onfile (ABO, Nagasaki, Eastman)' }),
+    { mark: 'T', cite: 'Naini; Data on file (primary source being confirmed)' }),
 
   E('m58_FMIA', '58', 'FMIA', 'deg',
     { kind: 'angleLines', l1: 'L1ax', l2: 'FH' },

@@ -28,7 +28,7 @@ export const WHOLE_WORDS = {
   tooFew: (n: number) => `Whole-film check not run: only ${n} of 19 points found.`,
   notSetUp: 'Whole-film check not set up.',
   regionsOff: {
-    'no-region-model': 'Whole-film check: regions not checked (no region finder installed); a tracing at the wrong size is not seen.',
+    'no-region-model': 'Whole-film check: regions not checked (not set up: download the check model in Models…).',
     'not-set-up': 'Whole-film check: regions not checked (the region finder is not set up).',
     'film-too-small': 'Whole-film check: regions not checked (the film is too small).',
   } as Record<string, string>,

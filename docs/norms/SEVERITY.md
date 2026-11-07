@@ -230,8 +230,11 @@ window never uses Auto: each column is that population's own norm or "—" (ruli
 "choose one" before Auto. With Auto, 816 use the analysis's own norm, 19 a Caucasian sample, and 47 the best study of
 another population: Steiner's Pog to NB and ABO's U1–NA° and L1–NB° → Zheng 2026 (Chinese, n = 60); Eastman's LAFH % →
 Norman 2020 (Malay men, n = 50); Holdaway's upper lip strain and inferior sulcus → Lew 1992 (Chinese, Singapore, n = 48).
-None is left asking; "choose one" remains only for a measurement that only your own norms hold. `auto.test.ts` keeps
-these numbers true. The whole before/after (six SYNTHETIC skulls, every population, sex, age and pick state; 70,200
+None is left asking; "choose one" remains only for a measurement that only your own norms hold. Since 7 Nov 2026 (owner
+rulings: Indian patients use the Caucasian norms; Malay patients the Malay studies, then the Chinese) there are 12 population choices
+and the NUS BaSN row (1,572 rows): 855 use the analysis's own norm, 18 a Caucasian sample, 51 another population's best
+study. Indian reads exactly as Caucasian; Malay uses its own studies, then the Chinese ones where those have no row;
+every other population's rows are unchanged. `auto.test.ts` keeps these numbers true. The whole before/after (six SYNTHETIC skulls, every population, sex, age and pick state; 70,200
 queries): only former "choose one" rows changed (35,718 of them), every other row bit-identical
 (`docs/norms/evidence/2026-10-19-norms-auto-before-after.md`).
 
@@ -303,6 +306,60 @@ default set, 0 numbers changed — only the sentence; with none (re-measured 3 N
 Example: SNA for a woman of 30, Steiner 1953 82.0 ± 4.0° → the combined adult norm for women (8 studies, 290 people). **No route reproduces an old report
 exactly:** "Clinic default (as before the upgrade)" uses each analysis's own norms again, but rows those norms never
 covered now show another study's norm, marked ◆. Keep the saved PDF.
+
+## Indian and Malay patients, and the NUS analysis's two column sets (owner rulings and answers, 7 Nov 2026) — what they can and cannot tell you
+
+**The picture.** The population rule lends a patient another group's ruler where their own group has none. An
+**Indian** patient is laid against the **Caucasian** ruler for every row: the app holds no Indian study. A **Malay**
+patient is laid against the **Malay** studies (Norman 2020, Mohammad 2011, Cheong 2024) wherever they measured the row,
+and against the **Chinese** ruler only where no Malay study did. The owner's reason: research reports no significant norm
+difference between these pairs. The rule applies in every analysis and wherever the app chooses a group: the case's
+population, the clinic default, Auto's recorded background, the Compare window, the SD a row borrows, and the ◆
+fall-backs. It is held in one place (`reference/norms/populations.json`: Indian `normsOf` Caucasian, Malay `fallsBackTo`
+Chinese).
+
+The **NUS analysis** has two columns on its sheet. **Set 1** (the existing NUS sheet values, unchanged) is used for
+Chinese and Malay patients, and for anyone else; **set 2** for Caucasian and Indian patients. Set 2 is one reading of the
+sheet plus the owner's confirmation, so it shows as unverified. Set 2 has six values the sheet left out: **U1 to SN
+102 ± 2°**, the ABO norm already in the app (it agrees with set 2's own rows: U1 to MxPA 108° − SN to MxP 8° = 100°,
+within one SD); **L1 to APo 2.42 ± 1.68 mm**, pooled from the adult Caucasian studies on file (Gu 2011 and McNamara 1984
+Ann Arbor, N = 201; McNamara's Bolton children are left out because they are the same 32 children at six ages); and the
+SDs of **Wits 3.9, LAFH % 2.1, overjet 1.7, overbite 1.8**, taken from set 1 ("SD borrowed from NUS Chinese"). The
+lip-to-E-line SDs are borrowed by the usual rule (Gu 2011, Caucasian). **BaSN** (the cranial base angle at S between Ba and
+N, #93, new, last in the NUS list) has no norm in either set: no study on file holds it.
+
+**What is compared with what.** The patient's value against the mean and SD of the group the row names. Where the rule
+supplied the row, the source line, and the report sentence once, say only "Norms: Caucasian (population rule)" or
+"Norms: Chinese (population rule)" (owner answer C): the words never name the patient's recorded background. A NUS set 2
+row reads "Data on file (NUS norms, undated), …, set 2". Remember the usual order: a case set to Caucasian (or Indian) is
+first measured against the Caucasian studies; the NUS own norm is used where those studies have no row (for a Caucasian
+man of 30: MMPA, SN–MxP, LAFH %, U1–MxP, the interincisal angle, overjet and overbite), or with no population chosen
+(then set 1).
+
+**Against the literature.** On the app's own Malay and Chinese studies the two are close for the rows they share: SNA
+84.5 ± 4.0° in Norman 2020's 100 Malay adults against 83.0 ± 3.7° in Zheng 2026's 60 Chinese adults (1.5° apart, 0.4
+of an SD); SNB 81.2° against 81.0°; the interincisal angle 121.8° against 123.2°. The Malay studies cover 20 of the
+catalogue's measurements; for the rest (for example Wits, the facial angle, Y-axis) a Malay patient gets the Chinese
+studies. The app holds no Indian sample, so it cannot show the Indian–Caucasian pair; the ruling rests on the owner's
+reading of the literature, not yet a cited paper in the app (Lew 1994, Chinese, Malay and Indian women, is listed in
+SOURCES.md but not extracted). Set 2's L1 to APo is built from papers that place the lower incisor differently from the
+app's tip point, so it is marked "close". Set 2's U1 to SN is a website value (ABO, "data on file") with a narrow SD of
+2°: a Caucasian incisor 4° off reads two SDs out.
+
+**What would make it wrong.**
+1. **A real difference in one measurement.** "No significant difference" in a paper is about the averages it tested;
+   one measurement can still differ. A Malay patient's Wits, measured against Chinese studies, carries the Chinese
+   ruler's centre.
+2. **The patient's background is a label.** An Indian patient of mixed descent is laid against Caucasian samples from
+   Ann Arbor and elsewhere; read the source line's place.
+3. **The NUS fills are not on the sheet.** Set 2's U1 to SN, L1 to APo and the four borrowed SDs are the app's own,
+   owner-ruled numbers, not NUS's.
+
+**What it cannot show.** Whether an Indian or a Malay patient really resembles the Caucasian or the Chinese samples.
+Nothing in the app judges that. Before/after on the resolver grid against main `18ce649` (15 analyses × 94 measurements ×
+13 populations × 3 sexes × 3 ages): only 4,815 Malay rows (Auto before, the Chinese norm by the rule now), 63 NUS
+Caucasian rows and the new Indian (12,555) and BaSN (1,755) rows moved; every other row's numbers identical
+(`docs/norms/evidence/2026-11-07-nus-record.md` §8).
 
 ## Combined adult norm (owner R1/R5, NAP-P1 to P4, 3 Nov 2026) — what it can and cannot tell you
 

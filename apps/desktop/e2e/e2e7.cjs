@@ -84,7 +84,7 @@ const seed = { settings: {}, cases: {}, installs: {}, models: [
   await page.getByRole('button', { name: 'Models…' }).first().click();
   await page.waitForSelector('[role="dialog"][aria-label="Models"] section.model-row');
   const srp = modelRow('srpose-cldet23');
-  ok('1. Models… opens the dialog with three rows', (await page.locator('section.model-row').count()) === 3);
+  ok('1. Models… opens the dialog with three rows', (await page.locator('section.model-row:not(.check-model-row)').count()) === 3);   // the whole-film check's model row (1.2.1) is its own section, not a landmark model
   ok('1. the SRPose row shows Optional and Non-commercial', (await srp.getByText('Optional', { exact: true }).count()) === 1 && (await srp.getByText('Non-commercial').count()) === 1);
   ok('1. a Ready row shows its time per film', (await modelRow('cwlachap-hrnet-w32').innerText()).includes('Ready · 0.4 s per film'));
 

@@ -1,5 +1,6 @@
 #[cfg(test)] mod crosscheck; // the coverage table is checked by tests; the app does not call the rule (owner PARK-FLAGS, 15 Oct)
 mod best;
+mod check_model;
 mod auto_best;
 mod export;
 mod files;
@@ -187,7 +188,9 @@ pub fn run() {
             library::operators_list, library::operators_add, library::operators_set_current,
             files::text_file_write, files::text_file_read,
             models::models_list, models::models_accept_licence, models::models_install, models::models_add_file,
-            models::models_remove, models::models_set_main, models::detect_extras, models::models_points, models::models_main_point_source,
+            models::models_remove, models::models_set_main, check_model::check_model_row, check_model::check_model_install,
+            check_model::check_model_add_files, check_model::check_model_remove, check_model::check_model_offer,
+            check_model::check_model_offer_answered, models::detect_extras, models::models_points, models::models_main_point_source,
             best::models_best_per_point, best::models_point_choice,
             auto_best::models_auto_best, auto_best::models_auto_best_sync, auto_best::models_auto_best_undo, auto_best::models_auto_best_redo,
             auto_best::models_auto_best_intro, auto_best::models_auto_best_way_back, auto_best::models_auto_best_set_base,

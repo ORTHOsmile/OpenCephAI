@@ -16,8 +16,10 @@ describe('NUS (NDC sheet), Task 5', () => {
   const nus = ALL_ANALYSES.find((a) => a.id === 'nus')!;
   const ids = nus.measurements.map((m) => m.node as string);
 
-  it('guard on the analysis definition: NUS (analyses.ts) still lists the sheet\'s 17 measurements', () => {
-    expect(ids).toHaveLength(17);
+  // Owner ruling 7 Nov 2026: NUS also lists BaSN (#93), a sheet row with no number on either column set.
+  it('guard on the analysis definition: NUS (analyses.ts) lists the sheet\'s 17 measurements plus BaSN', () => {
+    expect(ids).toHaveLength(18);
+    expect(ids.filter((id) => id !== 'm93_BaSN')).toHaveLength(17);
   });
 
   it('every NUS measurement resolves to an ndc-sheet norm with a mean and an SD (gaps listed by id)', () => {
@@ -25,7 +27,7 @@ describe('NUS (NDC sheet), Task 5', () => {
       const r = resolveOwn('nus', id);
       return !(r.kind === 'norm' && r.setId === 'ndc-sheet' && r.mean !== null && r.sd !== null && r.colour);
     });
-    expect(gaps).toEqual([]);
+    expect(gaps).toEqual(['m93_BaSN']);   // no BaSN norm anywhere in the app (owner ruling 7 Nov 2026: left with none)
   });
 
   // Fix round 1: every mean/SD exactly as printed on the sheet (NDC Analysis.png, rows 1-17; the
@@ -39,7 +41,7 @@ describe('NUS (NDC sheet), Task 5', () => {
   ];
 
   it('the table covers exactly the NUS measurements', () => {
-    expect(SHEET.map(([id]) => id)).toEqual(ids);
+    expect(SHEET.map(([id]) => id)).toEqual(ids.filter((id) => id !== 'm93_BaSN'));
   });
 
   it.each(SHEET)('%s resolves to the sheet value: mean %s, SD %s', (id, mean, sd) => {
@@ -49,11 +51,13 @@ describe('NUS (NDC sheet), Task 5', () => {
     expect([r.setId, r.mean, r.sd]).toEqual(['ndc-sheet', mean, sd]);
   });
 
-  it('the sheet is undated: its source line reads "NDC (undated)", never a placeholder year', () => {
+  // Owner ruling 7 Nov 2026: reworded "Data on file (NUS norms)" (was "NDC (undated)").
+  // Review minor 7: one bracket, "Data on file (NUS norms, undated)" (was "Data on file (NUS norms) (undated)").
+  it('the sheet is undated: its source line reads "Data on file (NUS norms, undated)", never a placeholder year', () => {
     const r = resolveOwn('nus', 'm01_SNA');
     expect(r.kind).toBe('norm');
     if (r.kind !== 'norm') return;
-    expect(r.sourceLine.startsWith('NDC (undated), ')).toBe(true);
+    expect(r.sourceLine.startsWith('Data on file (NUS norms, undated), ')).toBe(true);
     expect(r.sourceLine).not.toMatch(/\b(19|20)\d\d\b/);
   });
 
@@ -549,8 +553,8 @@ describe('own norms part 2 (Task 7): Ricketts, Tweed, E-line, Holdaway, Eastman'
   });
 });
 
-// ---- Task 8: website values (owner N4). Five [source removed] pages (Björk–Jarabak also takes #44 from
-// [source removed] Dental), typed twice from the live pages on 7 Oct and every difference settled by re-reading
+// ---- Task 8: website values (owner N4). Five sets of data on file (Björk–Jarabak also takes #44 from
+// a second source on file), typed twice from the live pages on 7 Oct and every difference settled by re-reading
 // the page on 8 Oct (task-8-report.md). Website values are shown, marked "website value, not from a
 // paper", and never coloured; a website entry never borrows an SD.
 type WebRow = [id: string, mean: number | null, sd: number | null, range: [number, number] | null];
@@ -562,7 +566,7 @@ const WEB: Record<string, { set: string; rows: WebRow[]; none: string[] }> = {
       ['m37_UpperGonial', null, null, [52, 55]], ['m38_LowerGonial', null, null, [70, 75]], ['m39_SumAngles', 396, 6, null],
       ['m40_SGo', 80, 5, null], ['m41_NMe', 122, 6, null], ['m42_Jarabak', null, null, [62, 65]], ['m44_ArStoArGo', 0.799, 0.063, null],
     ],
-    none: ['m43_SNtoGoMe'], // no website norm: [source removed] prints only the inverse ratio (Go′–Me/S–N)
+    none: ['m43_SNtoGoMe'], // no website norm: the second source on file prints only the inverse ratio (Go′–Me/S–N)
   },
   abo: {
     set: 'onfile-abo',
@@ -661,7 +665,8 @@ describe('website values (Task 8, N4): Björk–Jarabak, ABO, Nagasaki, Radney, 
       expect(s, id).toBeDefined();
       if (!s) continue;
       expect([id, s.kind, s.status, s.curation.comparedOn, s.scale, s.population.id]).toEqual([id, 'analysis-own', 'website', '2026-10-08', { kind: 'not-stated' }, 'analysis-own']);
-      expect(s.citation.url).toMatch(/^https:\/\/www\.onfile\.com\//);
+      expect(s.citation.url).toBeUndefined(); // owner 7 Nov 2026: no website is named as the source
+      expect(s.citation.authors).toBe('Data on file (primary source being confirmed)');
       expect(s.curation.notes).toMatch(/accessed 2026-10-07/);
       expect(s.entries.filter((e) => e.sdSource !== undefined)).toEqual([]);
     }
@@ -673,13 +678,13 @@ describe('website values (Task 8, N4): Björk–Jarabak, ABO, Nagasaki, Radney, 
       expect([id, missing.map((e) => e.measurement)]).toEqual([id, []]);
     }
     for (const id of ['onfile-bjork-jarabak', 'onfile-kim-cf-ei']) {
-      const onfile = setById(id)!.entries.filter((e) => e.sd !== undefined && !e.source.startsWith('[source removed]'));
-      expect(onfile.length).toBeGreaterThan(0);
-      expect(onfile.filter((e) => /not stated to be an SD/.test(e.note ?? '')).map((e) => e.measurement)).toEqual([]);
+      const onFile = setById(id)!.entries.filter((e) => e.sd !== undefined && !/second data table/.test(e.source));
+      expect(onFile.length).toBeGreaterThan(0);
+      expect(onFile.filter((e) => /not stated to be an SD/.test(e.note ?? '')).map((e) => e.measurement)).toEqual([]);
     }
   });
 
-  it('Björk–Jarabak: onfile constructs gonion, so every gonion measurement is close; saddle angle and N–Me are same', () => {
+  it('Björk–Jarabak: the data on file constructs gonion, so every gonion measurement is close; saddle angle and N–Me are same', () => {
     const s = setById('onfile-bjork-jarabak')!;
     const match = Object.fromEntries(s.entries.map((e) => [e.measurement, e.definitionMatch]));
     expect(match).toEqual({
@@ -689,14 +694,14 @@ describe('website values (Task 8, N4): Björk–Jarabak, ABO, Nagasaki, Radney, 
     for (const e of s.entries.filter((x) => x.definitionMatch === 'close')) expect(e.definitionNote).toMatch(/constructed/);
   });
 
-  it('Björk–Jarabak: the "mean norm" bands are ranges with the wider clinical range in the note; #44 is [source removed]\'s, said so', () => {
+  it('Björk–Jarabak: the "mean norm" bands are ranges with the wider clinical range in the note; #44 is from the second table on file, said so', () => {
     const s = setById('onfile-bjork-jarabak')!;
     const e = (id: string) => s.entries.find((x) => x.measurement === id)!;
     expect(e('m37_UpperGonial').note).toMatch(/47°–60°/);
     expect(e('m38_LowerGonial').note).toMatch(/65°–80°/);
     expect(e('m42_Jarabak').note).toMatch(/59%–68%/);
-    expect(e('m44_ArStoArGo').source).toMatch(/^[source removed] Dental/);
-    expect(s.caveats.some((c) => /#44/.test(c) && /not from onfile/.test(c))).toBe(true);
+    expect(e('m44_ArStoArGo').source).toMatch(/second data table/);
+    expect(s.caveats.some((c) => /#44/.test(c) && /not from the on-file source/.test(c))).toBe(true);
     expect(s.caveats.some((c) => /#43/.test(c))).toBe(true);
   });
 
@@ -705,7 +710,7 @@ describe('website values (Task 8, N4): Björk–Jarabak, ABO, Nagasaki, Radney, 
   });
 
   it('caveats: Nagasaki\'s skeletal rows repeat the ABO page; Radney\'s two incisor angles are both 22 ± 2; Kim\'s attribution is garbled', () => {
-    expect(setById('onfile-nagasaki')!.caveats.some((c) => /ABO page/.test(c))).toBe(true);
+    expect(setById('onfile-nagasaki')!.caveats.some((c) => /ABO data/.test(c))).toBe(true);
     expect(setById('onfile-radney')!.caveats.some((c) => /22 ± 2/.test(c))).toBe(true);
     expect(setById('onfile-kim-cf-ei')!.caveats.some((c) => /Kim IK \(1978, 1987\)/.test(c))).toBe(true);
   });
@@ -783,8 +788,14 @@ describe('website values (Task 8, N4): Björk–Jarabak, ABO, Nagasaki, Radney, 
 // ---- Task 9a-1: population sets — Zheng 2026, Wu 2007, Gu 2011 (Chinese and Caucasian), Mohammad
 // 2011. Typed twice from the papers; every difference settled from the page images
 // (task-9a1-report.md). Every query below gives a real (SYNTHETIC) age, sex and population.
+// Owner ruling 7 Nov 2026: a Malay PATIENT uses the Chinese norms (populations.json `normsOf`), so these extraction tests
+// read the Malay studies as studies, filed for the test under a population id of their own that is not aliased.
+const MALAY_STUDIES = 'malay-studies-SYNTHETIC-ID';
+const asStudies = (ss: NormSet[]) => ss.map((s) => (s.population.id === 'malay' ? { ...s, population: { ...s.population, id: MALAY_STUDIES } } : s));
 const resolvePop = (measurement: string, population: string, sex: 'M' | 'F' | null, ageYears: number | null, useSets = sets) =>
-  resolveNorm({ measurement, analysisId: 'steiner', population, clinicDefault: null, sex, ageYears, sets: useSets, userNorms: [] });
+  population === 'malay'
+    ? resolveNorm({ measurement, analysisId: 'steiner', population: MALAY_STUDIES, clinicDefault: null, sex, ageYears, sets: asStudies(useSets), userNorms: [] })
+    : resolveNorm({ measurement, analysisId: 'steiner', population, clinicDefault: null, sex, ageYears, sets: useSets, userNorms: [] });
 
 const T9A1: Record<string, { population: string; scale: NormSet['scale'] }> = {
   zheng2026: { population: 'chinese', scale: { kind: 'not-stated' } },
@@ -1836,7 +1847,7 @@ describe('Task 9b-2 part 1: Bailey & Taylor, Obamiyi, Caballero, Alshahrani, Jar
     expect(s.entries.every((e) => /PMC6191777/.test(e.source))).toBe(true);
   });
 
-  it('Björk–Jarabak: the saddle angle (own norms) resolves to Jarabak via Alshahrani 2018 — second-hand, coloured — not the onfile website value', () => {
+  it('Björk–Jarabak: the saddle angle (own norms) resolves to Jarabak via Alshahrani 2018 — second-hand, coloured — not the on-file website value', () => {
     const r = resolveOwn('bjork-jarabak', 'm34_Saddle');
     expect(r.kind === 'norm' && [r.setId, r.mean, r.sd, r.colour, r.flags.includes('second-hand'), r.flags.includes('website')]).toEqual(
       ['jarabak-via-alshahrani2018', 123, 6, true, true, false],
@@ -1844,7 +1855,7 @@ describe('Task 9b-2 part 1: Bailey & Taylor, Obamiyi, Caballero, Alshahrani, Jar
     expect(r.kind === 'norm' && r.sourceLine).toMatch(/quoted second-hand via Alshahrani et al\. 2018, Tables III–IV/);
   });
 
-  it('positive control: without the Jarabak set, the same query falls back to the onfile website value', () => {
+  it('positive control: without the Jarabak set, the same query falls back to the on-file website value', () => {
     const r = resolveNorm({ measurement: 'm34_Saddle', analysisId: 'bjork-jarabak', population: null, clinicDefault: null, sex: null, ageYears: null, sets: sets.filter((s) => s.id !== 'jarabak-via-alshahrani2018'), userNorms: [] });
     expect(r.kind === 'norm' && [r.setId, r.flags.includes('website')]).toEqual(['onfile-bjork-jarabak', true]);
   });

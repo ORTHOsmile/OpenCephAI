@@ -552,3 +552,18 @@ describe('owner decisions 1 and 3 (29 Oct 2026): a case on Auto', () => {
     expect(populationMissing('auto', sets, [])).toBe(false);
   });
 });
+
+// Owner ruling 7 Nov 2026: an Indian case uses the Caucasian norms (Malay the Chinese); the cell carries the words, the
+// screen's source line says them, and the report sentence repeats them once.
+describe('the population alias on a cell (owner ruling 7 Nov 2026)', () => {
+  const q = (population: string): NormQuery => ({ measurement: 'm01_SNA', analysisId: 'steiner', population, clinicDefault: null, sex: 'M', ageYears: 30, sets, userNorms: [] });
+  it('an Indian case: the Caucasian norm, with the words; a Caucasian case: no words', () => {
+    const ind = normCell(80, resolveNorm(q('indian')), q('indian'), 1);
+    const cau = normCell(80, resolveNorm(q('caucasian')), q('caucasian'), 1);
+    expect(ind.aliasNote).toBe('Norms: Caucasian (population rule)');
+    expect(ind.sourceLine).toContain('Norms: Caucasian (population rule)');
+    expect(ind.sourceLine).not.toMatch(/Indian/);   // owner answer C: never the recorded background
+    expect([ind.normMean, ind.normSd, ind.normPopulation]).toEqual([cau.normMean, cau.normSd, cau.normPopulation]);
+    expect(cau.aliasNote ?? null).toBeNull();
+  });
+});

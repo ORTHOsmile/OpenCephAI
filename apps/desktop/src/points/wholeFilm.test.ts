@@ -20,7 +20,7 @@ describe('the owner\'s words, verbatim', () => {
     expect(WHOLE_WORDS.noCeph).toBe('Whole-film check: the region finder found no skull on this film.');
     expect(WHOLE_WORDS.tooFew(9)).toBe('Whole-film check not run: only 9 of 19 points found.');
     expect(WHOLE_WORDS.notSetUp).toBe('Whole-film check not set up.');
-    expect(WHOLE_WORDS.regionsOff['no-region-model']).toBe('Whole-film check: regions not checked (no region finder installed); a tracing at the wrong size is not seen.');
+    expect(WHOLE_WORDS.regionsOff['no-region-model']).toBe('Whole-film check: regions not checked (not set up: download the check model in Models…).');
     expect(WHOLE_WORDS.regionsOff['not-set-up']).toBe('Whole-film check: regions not checked (the region finder is not set up).');
     expect(WHOLE_WORDS.regionsOff['film-too-small']).toBe('Whole-film check: regions not checked (the film is too small).');
     expect(WHOLE_WORDS.hover).toBe('A note, not a verdict. It checks the tracing against the film in boxes; it does not judge errors under about 10 mm.');

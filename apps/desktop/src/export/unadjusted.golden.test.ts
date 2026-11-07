@@ -11,7 +11,7 @@
 // Task 10 (addendum 2 J, owner ruling Q-A): two more deliberate exceptions, re-captured and diffed the same way
 // (a programmatic cell-by-cell diff, not eyeballing): (1) `reportTexts` gains exactly one new line per film — the
 // unstated-X-ray-enlargement list this fixture's real catalogue rows trigger (Steiner, Downs, Ricketts, Jarabak,
-// Jacobson, Holdaway, [source removed] all have at least one row with no stated enlargement) — `autoNote` stays null (this
+// Jacobson, Holdaway, the data on file all have at least one row with no stated enlargement) — `autoNote` stays null (this
 // fixture has no population, so Auto never fires: resolve.ts's "no population chosen at all" path). (2) the TIDY
 // layout only (review I-1, fix round 1: wide carries no norm/z columns at all) gains a `norm_auto` column, blank on
 // every row (confirmed: no Auto and no hand-picked row here). Diffed against the commit before Task 10 (`1bc690a`):
@@ -39,6 +39,21 @@
 // 390 and header lines 27 identical; tidy 3 × 4,810 cells, of which 48 + 45 + 48 differ, every one on a row that read
 // "No norm" before (Pog–NB, Co–A, Upper pharynx, LAFH %, Upper lip strain, Inferior sulcus to H-line, U1–NA (°),
 // L1–NB (°)); wide 3 × 148 cells, 0 differ; texts gain the report sentence and the Auto footnote (5 lines per film).
+// NUS wording (owner ruling 7 Nov 2026): set 1 reads "Data on file (NUS norms)" (was "NDC"). Re-captured from the
+// working tree on top of `3a67f63` (`capturedAt` reads `3a67f63`) and diffed: nums 390 identical, header 27 identical;
+// texts 3 x 17 and tidy 3 x 17 cells (of 3 x 4,847) differ, every one an "NDC" line or cell now reading "Data on file
+// (NUS norms)"; wide 3 x 296 cells, 0 differ.
+// BaSN (#93, owner ruling 7 Nov 2026) joins the NUS analysis: re-captured on top of `86b4d3d` and diffed with the rows
+// aligned: nums 130 -> 131, the old 130 identical with the new null removed; header identical; texts gain the row's
+// three lines (label, "Needs: Ba", "No norm ..."), none lost; tidy 130 common rows, 4,810 cells, 0 differ, one new
+// row (NUS, Cranial base angle); wide 148 common columns, 0 differ, one new column `nus.m93_BaSN`.
+// Review I-1: BaSN moved to the END of the NUS list; re-captured on top of `0f877cc` and diffed against main `18ce649`:
+// the old 130 numbers identical (new null last in NUS), header identical, tidy 130 common rows with only the 17 NDC
+// wording cells changed, wide 148 common columns 0 differ; positions pinned by the test at the end of this file.
+// Owner answer C (7 Nov 2026): NUS row text drops "(Chinese and Malay)" / "(Caucasian and Indian)"; re-captured on top of
+// `7d45a0f`: against main, numbers, header and wide identical, tidy 17 cells and texts 17 lines (each an old NDC line).
+// Review minor 7: "Data on file (NUS norms, undated)" (one bracket); re-captured on top of `0fac0b8`: 17 text lines and
+// 17 tidy cells per film changed, each only that bracket; numbers, header and wide identical.
 // Node's fs/path/url are read with a type-erased dynamic import, like `report/testFonts.ts` — the repo has no
 // `@types/node`, so a static `import … from 'node:fs'` fails `tsc` (confirmed by the Step 7 build check).
 import { describe, it, expect } from 'vitest';
@@ -101,4 +116,28 @@ describe('a film with no fine-tune exports exactly what it did before Task 13 (s
       expect(now.tidy.split('\r\n').filter(Boolean).length).toBe(now.nums.length + 1);   // rows compared = rows on the film
     });
   }
+});
+
+// Review I-1 (7 Nov 2026): BaSN (#93) is appended at the END of the NUS list, the last analysis, so in the wide layout
+// every film column and every measurement column of 1.2.1 (main `18ce649`) keeps its position; the new column sits after
+// them, before the tail columns (scale … app_version), which therefore move one place right — as they already do
+// whenever the analyses shown change. Read by name. The old header: golden/wide-header-18ce649.json.
+describe('wide CSV column positions against main 18ce649 (review I-1)', () => {
+  const old = (JSON.parse(readFileSync(fileURLToPath(new URL('./golden/wide-header-18ce649.json', import.meta.url)), 'utf8')) as { header: string[] }).header;
+  const now = (artefact(FILMS[0][1]).wide.split('\r\n')[0]).replace(/^﻿/, '').split(',');
+  const TAIL = ['scale', 'mm_per_px', 'verified_by', 'verified_at', 'models', 'exported_at', 'app_version'];
+  it('the old header holds 148 columns ending in the 7 tail columns (positive control on the fixture)', () => {
+    expect([old.length, old.slice(-7)]).toEqual([148, TAIL]);
+  });
+  it('every old film and measurement column keeps its index; only nus.m93_BaSN is new, right after them', () => {
+    const body = old.length - TAIL.length;
+    const moved = old.slice(0, body).filter((c, i) => now[i] !== c);
+    expect(moved).toEqual([]);
+    expect(now[body]).toBe('nus.m93_BaSN');
+    expect(now.filter((c) => !old.includes(c))).toEqual(['nus.m93_BaSN']);
+  });
+  it('the 7 tail columns keep their order, each one place right', () => {
+    expect(now.slice(-7)).toEqual(TAIL);
+    expect(TAIL.map((c) => now.indexOf(c) - old.indexOf(c))).toEqual([1, 1, 1, 1, 1, 1, 1]);
+  });
 });

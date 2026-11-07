@@ -551,6 +551,7 @@ h2.section-head { font-size: var(--size-xs); font-weight: var(--weight-bold); le
  * Reuses the model manager's/analysis picker's modal-backdrop. */
 .settings-window { display: flex; flex-direction: column; gap: var(--space-3); width: 640px; max-height: calc(100vh - var(--layout-toolbar) - var(--space-8)); overflow-y: auto; padding: var(--space-4); border-radius: var(--radius-md); border: 1px solid var(--line); background: var(--raised); box-shadow: var(--shadow-popover); color: var(--text); }
 .settings-window h2 { margin: 0; font-size: var(--size-lg); }
+.settings-window .icon-close { align-self: flex-end; margin: 0; padding: 0 var(--space-2); background: none; border: 0; font-size: var(--size-lg); line-height: 1; color: var(--text-2); cursor: pointer; }
 .settings-window > .row { display: flex; gap: var(--space-2); align-items: center; justify-content: flex-end; }
 /* The left panel's Settings… on its own row, centred (owner, 29 Oct). */
 .sidebar .row.settings-row { display: flex; justify-content: center; }

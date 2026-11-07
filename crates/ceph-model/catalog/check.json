@@ -1,0 +1,8 @@
+{ "id": "check-regions", "title": "Region finder for the whole-film check", "author": "Dr Linton Nash", "sizeMb": 121,
+  "licence": { "version": "cc-by-4.0", "code": "CC BY 4.0", "weights": "CC BY 4.0",
+    "summary": "Free to use and share, with credit to the author.", "url": "https://creativecommons.org/licenses/by/4.0/", "nonCommercial": false },
+  "citation": "Nash L (2026). OpenCephAI region finder for lateral cephalograms. Zenodo. doi:10.5281/zenodo.23949953 (all versions). Licence: CC BY 4.0.",
+  "folder": "regions",
+  "files": [
+    { "kind": "zenodo", "record": "23965907", "file": "manifest.json", "sha256": "0e5cfb0a89d6e0a55fe4398aa0d403745844d45a67a64c796ac89ad0d2fb7d2a" },
+    { "kind": "zenodo", "record": "23965907", "file": "model.onnx", "sha256": "17171e68f9f7072062e2a3a2cbd4851618056f5136bed998f1782c49d4897b80" } ] }

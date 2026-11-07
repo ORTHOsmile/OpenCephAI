@@ -7,7 +7,7 @@
 // What each column means (a measurement is counted once per analysis, in the first column it fits):
 //   ownSd     the analysis's own norm (a paper or sheet, not a website) has an SD on at least one row
 //   ownNoSd   the analysis's own norm exists but prints no SD (the app borrows one at display, B-1)
-//   website   only a website value (onfile / [source removed]) — shown, never coloured (N4)
+//   website   only a website value (data on file) — shown, never coloured (N4)
 //   noOwn     no own norm and no website value
 // and, independently of those four:
 //   pop       at least one population set gives this measurement (definitionMatch not 'different')
@@ -97,7 +97,8 @@ describe('norm coverage (Task 11): per analysis, per population — printed and 
     { analysis: 'abo', n: 12, ownSd: 0, ownNoSd: 0, website: 10, noOwn: 2, pop: 10, nothing: 0 },
     { analysis: 'nagasaki', n: 8, ownSd: 0, ownNoSd: 0, website: 8, noOwn: 0, pop: 7, nothing: 0 },
     { analysis: 'radney', n: 4, ownSd: 0, ownNoSd: 0, website: 4, noOwn: 0, pop: 2, nothing: 0 },
-    { analysis: 'nus', n: 17, ownSd: 17, ownNoSd: 0, website: 0, noOwn: 0, pop: 16, nothing: 0 },
+    // Owner ruling 7 Nov 2026: BaSN (#93) added to NUS with no norm anywhere (n 17 -> 18, noOwn 0 -> 1, nothing 0 -> 1).
+    { analysis: 'nus', n: 18, ownSd: 17, ownNoSd: 0, website: 0, noOwn: 1, pop: 16, nothing: 1 },
   ];
 
   const PINNED_POPULATIONS: PopRow[] = [
@@ -114,7 +115,7 @@ describe('norm coverage (Task 11): per analysis, per population — printed and 
 
   const PINNED_NOTHING: Record<string, string[]> = {
     steiner: [], downs: [], mcnamara: [], ricketts: [], tweed: [], 'bjork-jarabak': ['m43_SNtoGoMe'], wits: [],
-    eastman: [], holdaway: [], 'e-line': [], kim: [], abo: [], nagasaki: [], radney: [], nus: [],
+    eastman: [], holdaway: [], 'e-line': [], kim: [], abo: [], nagasaki: [], radney: [], nus: ['m93_BaSN'],
   };
 
   const rows = ALL_ANALYSES.map((a) => analysisRow(a.id));
@@ -137,7 +138,7 @@ describe('norm coverage (Task 11): per analysis, per population — printed and 
   });
 
   it('the number of committed set files is pinned (a removed or added file fails here first)', () => {
-    expect(sets.length).toBe(50);
+    expect(sets.length).toBe(51); // 51: NUS set 2 (pending), 7 Nov 2026
   });
 
   it('per-analysis counts are pinned', () => {

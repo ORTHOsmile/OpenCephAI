@@ -20,8 +20,8 @@ describe('Beta label (owner, 2 Nov 2026)', () => {
   it('the bundle identifier is unchanged', () => {
     expect(tauriConf.identifier).toBe('app.cephtrace.desktop');
   });
-  it('the Beta label does not touch the version number (1.2.0 since 6 Nov 2026; one number in three files)', () => {
-    expect(tauriConf.version).toMatch(/^1\.2\.0$/);
+  it('the Beta label does not touch the version number (1.2.1 since 7 Nov 2026; one number in three files)', () => {
+    expect(tauriConf.version).toMatch(/^1\.2\.1$/);
   });
 });
 

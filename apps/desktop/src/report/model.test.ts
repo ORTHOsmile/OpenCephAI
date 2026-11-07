@@ -23,7 +23,8 @@ describe('CONTEXT-LINE (owner, 16 Oct 2026): the owner\'s words, in the report o
     // (branding.test.ts, same semantics: a file matches itself as './branding.test.ts'). model.ts, a sibling of
     // this test file, therefore keys as './model.ts'.
     expect(carrying.sort()).toEqual(['./model.ts']);
-  });
+    // It reads every screen file, about 4 s alone; 5 s timed out once under a busy full run (7 Nov 2026).
+  }, 30_000);
 });
 
 describe('the report model (spec 2026-10-17): the rows the screen shows, grouped by analysis', () => {
@@ -231,6 +232,13 @@ describe('isBlankChartRow / visibleChartRows (owner, 29 Oct 2026)', () => {
 describe('normSourceSummary (owner, 29 Oct 2026): the one-sentence norm summary', () => {
   const used = (normSex: 'M' | 'F' | 'pooled', normPopulation: string, normAgeRowUsed: string | null) =>
     cell({ normSex, normPopulation, normAgeRowUsed });
+  it('owner ruling 7 Nov 2026: an aliased population says which norms it used, once', () => {
+    const words = 'Norms: Caucasian (population rule)';   // owner answer C, 7 Nov 2026
+    expect(normSourceSummary([cell({ normSex: 'M', normPopulation: 'Caucasian', normAgeRowUsed: '18 y and over', aliasNote: words }),
+      cell({ normSex: 'M', normPopulation: 'Caucasian', normAgeRowUsed: '18 y and over', aliasNote: words })]))
+      .toBe(`We used the norms for the male Caucasian population for adults. ${words}.`);
+    expect(normSourceSummary([used('M', 'Caucasian', '18 y and over')])).toBe('We used the norms for the male Caucasian population for adults.');
+  });
   describe('owner decisions 1 and 4 (29 Oct 2026): the sentence says how Auto chose', () => {
     const pc = (how: 'background' | 'clinic-default' | 'best-evidence' | 'combined', label: string, ageCovered = true) =>
       ({ population: 'x', how, setId: null, ageCovered, label });

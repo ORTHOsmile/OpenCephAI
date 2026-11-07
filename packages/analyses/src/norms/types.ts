@@ -47,6 +47,12 @@ export interface NormSet {
   id: string; // 'zheng2026-adults', file name without .json
   kind: SetKind;
   analyses?: string[]; // for kind 'analysis-own': the analysis ids (ALL_ANALYSES ids) it is the own norm of
+  /** Owner ruling 7 Nov 2026 (NUS): for kind 'analysis-own', the patient populations this own norm is for (the NUS
+   *  sheet's set 1 for Chinese and Malay patients, set 2 for Caucasian and Indian). When an analysis has such sets, a
+   *  patient whose population (case, else clinic default; or the population it uses, populations.json `normsOf`) is
+   *  listed gets that set; anyone else gets the one marked `forOtherPopulations`. Absent: for every patient. */
+  forPopulations?: string[];
+  forOtherPopulations?: true;
   status: SetStatus;
   citation: {
     authors: string;

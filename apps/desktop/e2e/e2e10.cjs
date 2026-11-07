@@ -174,7 +174,7 @@ const seed = { settings: {}, ops: ['Dr A', 'Dr B'], userNorms: [], cases: { c1: 
   const mset = page.getByRole('dialog', { name: 'Settings' });
   await mset.getByRole('tab', { name: 'Meanings' }).click();
   const mrow = mset.locator(`.meanings-row[data-node="${starNode}"]`);
-  ok('M1. Settings › Meanings lists every measurement with its approved words, for the current clinician', (await mset.locator('.meanings-row').count()) === 90
+  ok('M1. Settings › Meanings lists every measurement with its approved words, for the current clinician', (await mset.locator('.meanings-row').count()) === 91   /* 91: #93 BaSN added, owner ruling 7 Nov 2026 */
     && (await mset.innerText()).includes('Dr A'), String(await mset.locator('.meanings-row').count()));
   for (const side of ['above', 'below']) { const f = mrow.getByLabel(new RegExp(`, ${side} the norm$`)); await f.fill('SYNTHETIC-term'); await f.blur(); }
   await page.waitForTimeout(200);
@@ -707,11 +707,13 @@ const seed = { settings: {}, ops: ['Dr A', 'Dr B'], userNorms: [], cases: { c1: 
   ok('11b. Background reads Not recorded, with Other or mixed last', (await bg11.locator('option:checked').innerText()) === 'Not recorded'
     && (await bg11.locator('option').allInnerTexts()).slice(-1)[0] === 'Other or mixed');
   await bg11.selectOption({ label: 'Malay' });
-  await waitUntil(async () => (await optLabels())[0] === "Auto — Malay (patient's background)");
-  ok("11b. choosing Background Malay: Auto follows it — \"Auto — Malay (patient's background)\"", (await optLabels())[0] === "Auto — Malay (patient's background)", (await optLabels())[0]);
+  // Owner answer B, 7 Nov 2026: a Malay patient uses the Malay studies (Chinese only where they have no row).
+  const malayAuto = "Auto — Malay (patient's background)";
+  await waitUntil(async () => (await optLabels())[0] === malayAuto);
+  ok(`11b. choosing Background Malay: Auto follows it — "${malayAuto}"`, (await optLabels())[0] === malayAuto, (await optLabels())[0]);
   ok('11b. and the store holds the background on the case\'s patient', await page.evaluate(() => JSON.parse(localStorage.getItem('fakeLib')).cases.c1.background) === 'malay');
   await waitUntil(async () => /Malay/.test(await srcText('SNA')));
-  ok('11b. and SNA is graded against the Malay norm', /Malay/.test(await srcText('SNA')), (await srcText('SNA')).slice(0, 100));
+  ok('11b. and SNA is graded against the Malay norm (a Malay study has SNA)', /Malay/.test(await srcText('SNA')) && !/population rule|norms used/.test(await srcText('SNA')), (await srcText('SNA')).slice(0, 160));
   await reopen();
   ok('11b. closed and reopened: Background and Auto are kept', (await bg11.inputValue()) === 'malay' && (await pop11.inputValue()) === 'auto');
   await page.getByRole('button', { name: 'Superimposition ›' }).click();
@@ -741,7 +743,8 @@ const seed = { settings: {}, ops: ['Dr A', 'Dr B'], userNorms: [], cases: { c1: 
   // "Compare populations…" (master plan §9: 2–4 side by side). Edge case: 1 ticked asks for 2 to 4.
   await page.getByRole('button', { name: 'Compare populations…' }).click();
   const cmp = page.getByRole('dialog', { name: 'Compare populations' });
-  await cmp.getByRole('checkbox', { name: 'Chinese' }).check();
+  // exact: a name match is a substring match, so pin the one tick-box (7 Nov 2026: the list's labels changed).
+  await cmp.getByRole('checkbox', { name: 'Chinese', exact: true }).check();
   ok('11. 1 ticked: asks for 2 to 4 populations', (await cmp.locator('.hint', { hasText: 'Tick 2 to 4 populations to compare.' }).count()) === 1);
   await cmp.getByRole('checkbox', { name: /^Caucasian/ }).check();
   ok('11. two populations side by side', (await cmp.locator('thead th.pop').count()) === 2);

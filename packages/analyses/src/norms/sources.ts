@@ -1,8 +1,8 @@
 import type { NormSet, SetStatus } from './types';
 import { shortCitation } from './resolve';
 
-/** `title` is the set's full citation title: two sets can share a short citation and population (the onfile ABO and
- *  Nagasaki sets both read "[source removed] 2026 | The analysis's own norms"), and the title tells them apart (review M-2). */
+/** `title` is the set's full citation title: two sets can share a short citation and population (the on-file ABO and
+ *  Nagasaki sets both read "Data on file (primary source being confirmed) 2026 | The analysis's own norms"), and the title tells them apart (review M-2). */
 export interface NormSource { setId: string; citation: string; title: string; population: string; status: SetStatus; match: 'same' | 'close'; note: string | null; via: string | null }
 
 /** The norm sets that hold a usable entry for a measurement (Part D: "the norm sources available for it").

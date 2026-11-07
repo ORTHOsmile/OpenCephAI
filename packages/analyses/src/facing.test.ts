@@ -50,7 +50,7 @@ describe('FACING-1: a left-facing film measures the same as a right-facing one',
     }
     console.log(`FACING-1: compared ${compared} values (${SYNTHETIC_SKULLS.length} skulls × ${ids.length} measurements, nulls on both sides skipped); ${changed.length} differ`);
     expect(compared).toBeGreaterThan(0);
-    expect(compared).toBe(540);
+    expect(compared).toBe(546);   // 546: #93 BaSN on the 6 skulls (owner ruling 7 Nov 2026; was 540)
     expect(changed).toEqual([]);
   });
 });

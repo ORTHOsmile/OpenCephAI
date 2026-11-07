@@ -4,6 +4,10 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
+// The assistant and company names are spelled backwards here so the public copy never contains them, even inside
+// the rule that forbids them (owner, 6 Nov 2026).
+const FORBIDDEN_NAMES = ['edualc', 'ciporhtna'].map((w) => [...w].reverse().join(''));
+
 // Owner, 1 Nov 2026: "Program and Design: Dr Linton Nash" in the README (his 5 Nov edit dropped the thanks line). Repo root is two up.
 const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', '..');
 const readme = () => fs.readFileSync(path.join(repoRoot, 'README.md'), 'utf8');
@@ -18,7 +22,7 @@ test('README.md has a Credits section with the exact credit line and no thanks l
 });
 
 test('README.md names no AI or tool', () => {
-  assert.doesNotMatch(readme(), /assistant|company|co-authored/i);
+  assert.doesNotMatch(readme(), new RegExp([...FORBIDDEN_NAMES, 'co-authored'].join('|'), 'i'));
 });
 
 // Owner, 2 Nov 2026: a short plain Roadmap (Now / Next / Later), no dates, no internal names.

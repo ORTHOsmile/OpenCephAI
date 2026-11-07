@@ -7,11 +7,11 @@ All 15 analyses can be built from one list of 92 measurements, each defined once
 ## How to read this page
 
 - **One catalogue, many analyses.** Each measurement (for example SNA) is defined once: its points, its line, which angle, which sign. An analysis is a named list of catalogue measurements. NUS is built the same way as Steiner.
-- **Same name, same thing.** Where two analyses use the same measurement, they share one definition. Where they truly differ (Steiner's U1–NA mm from the labial surface, onfile's from the tip), they get two entries.
+- **Same name, same thing.** Where two analyses use the same measurement, they share one definition. Where they truly differ (Steiner's U1–NA mm from the labial surface, the data on file's from the tip), they get two entries.
 - **Source marks** on every measurement:
   - **P** = the analysis's own paper, on file and read.
   - **T** = the textbook (Naini, *Facial Aesthetics*, Ch. 7).
-  - **S** = second-hand only (onfile, [source removed], or a later paper following the original). Built, but marked "not checked against the original" in the app.
+  - **S** = second-hand only (data on file, or a later paper following the original). Built, but marked "not checked against the original" in the app.
   - **?** = a choice or conflict for you (section 1).
 - **Sign** means which way is plus. It is written out wherever a measurement can go negative.
 - Comment on any line, or edit it in place. Nothing is built until you approve this page.
@@ -22,12 +22,12 @@ Each of these changes a number on some films. My recommendation is first; commen
 
 | # | Choice | Options | Recommended | Why it matters |
 | --- | --- | --- | --- | --- |
-| C1 | **Incisor-to-line distances** (U1–NA mm, L1–NB mm, L1–NA mm) | (a) each analysis uses its own source's point; (b) incisal tip for all; (c) most labial point of the crown for all | **(a)**: Steiner from the most labial point of the crown, as his paper says; ABO, Nagasaki and Radney from the tip, as onfile says | On a proclined incisor the tip and the labial bulge sit 1–2 mm apart along the line |
+| C1 | **Incisor-to-line distances** (U1–NA mm, L1–NB mm, L1–NA mm) | (a) each analysis uses its own source's point; (b) incisal tip for all; (c) most labial point of the crown for all | **(a)**: Steiner from the most labial point of the crown, as his paper says; ABO, Nagasaki and Radney from the tip, as the data on file says | On a proclined incisor the tip and the labial bulge sit 1–2 mm apart along the line |
 | C2 | **Mandibular plane** | (a) each analysis uses its own paper's plane (Steiner Go–Gn, Eastman/ABO Go–Me, Downs, Tweed and Ricketts a tangent to the lower border, which needs one more point placed by hand); (b) Go–Me for all, so every mandibular plane is automatic | **(a)**: a norm only fits the plane it was measured on | Go–Gn and Go–Me differ by a few degrees, so "SN–MP" reads differently in Steiner and ABO |
-| C3 | **Gonion for Björk–Jarabak** | (a) the Go point the AI places; (b) a constructed Go′ (where the ramus and lower-border tangents meet) | **(a)** now; (b) later as a setting | [source removed] uses Go′ (not defined on its page). onfile's Björk–Jarabak page also constructs gonion, "at the intersection of the ramus tangent and mandibular plane tangent" (re-read 8 Oct 2026), so both website sources use a constructed gonion and every gonion row from them is `close` to the app's. They differ most on a rounded jaw angle. |
+| C3 | **Gonion for Björk–Jarabak** | (a) the Go point the AI places; (b) a constructed Go′ (where the ramus and lower-border tangents meet) | **(a)** now; (b) later as a setting | The data on file uses Go′ (not defined). The Björk–Jarabak data on file also constructs gonion, "at the intersection of the ramus tangent and mandibular plane tangent" (re-read 8 Oct 2026), so both website sources use a constructed gonion and every gonion row from them is `close` to the app's. They differ most on a rounded jaw angle. |
 | C4 | **Occlusal plane** (Wits part superseded 16 Oct 2026: every Wits on the Downs plane, see C7) | (a) each paper's own: Downs and Steiner through the molar and incisor overlap; Wits the functional plane through molar and premolar cusp overlap; (b) one plane for all | **(a)**. Molar points now come from the AI (SRPose and Aariz, Part B: U6, L6; which cusp is still to confirm on films); there are no premolar points from the AI, so P is placed by hand | Wits can change by several mm between the two planes |
 | C5 | **Soft-tissue nasion** (only Holdaway uses it) | (a) a point you place at the deepest point of the nasal root (Naini); (b) Holdaway's: where the S–N line, carried forward, crosses the skin | **(b)** once the app traces the soft-tissue outline; **(a)** until then, marked | It moves the soft-tissue facial angle and the H-angle by a degree or two |
-| C6 | **ABO interincisal angle** | (a) leave it out (onfile's ABO page lists 10 without it); (b) include it (onfile's overview lists it) | **(a)**: the detail page is the fuller source | One extra line in ABO |
+| C6 | **ABO interincisal angle** | (a) leave it out (the ABO data on file lists 10 without it); (b) include it (the overview data on file lists it) | **(a)**: the detail page is the fuller source | One extra line in ABO |
 | C7 | Overjet and overbite (NUS) | (a) along FH and at right angles to it; (b) along the functional occlusal plane and at right angles to it | (a): automatic, and close to what a ruler on the film gives. Neither the textbook nor the NUS sheet says which | On a steep occlusal plane the two differ by up to about 1 mm. Please say how NUS residents measure them |
 | C8 | Porion for Frankfort | (a) anatomical porion (the AI point) for all; (b) Tweed's own: 4.5 mm above the ear-rod centre, for Tweed only | (a): Ricketts and McNamara both insist on anatomical porion, and the app has no ear-rod point | Tweed says his point makes FMA a little smaller than anatomical porion would |
 | C9 | NUS mandibular plane (FMA, MMPA, L1 to MP) | (a) Go–Me, the Eastman tradition the NUS sheet follows; (b) the lower-border tangent | (a), unless NUS residents draw a tangent | Decides whether NUS's FMA is #22 or #23 in the catalogue |
@@ -116,7 +116,7 @@ Each line is defined once and named the way its paper names it. Where two papers
 | SN | S to N | Steiner, Eastman, ABO, Nagasaki, NUS, Björk–Jarabak | P Steiner |
 | FH, Frankfort | Anatomical porion to orbitale (Ricketts 1981 and McNamara insist on anatomical, not machine, porion) | Downs, Tweed, Ricketts, McNamara, Kim, ABO, NUS | P |
 | MxP, palatal plane | ANS to PNS | Eastman, NUS, Kim, Ricketts | P Ricketts, T |
-| MP Go–Me | Gonion to menton | McNamara, Eastman, ABO, Nagasaki, NUS | P McNamara, S onfile |
+| MP Go–Me | Gonion to menton | McNamara, Eastman, ABO, Nagasaki, NUS | P McNamara, S Data on file |
 | MP Go–Gn | Gonion to gnathion | Steiner ("GoGn, after Riedel") | P Steiner |
 | MP tangent | Tangent to the lower border of the mandible, touching its lowest midline point (Downs) or its "most dependent points" (Tweed) | Downs, Tweed, Ricketts (mandibular plane "as described by Downs") | P Downs, Tweed |
 | Facial plane | N to Pog | Downs, Ricketts, Kim, Holdaway (hard-tissue) | P Downs |
@@ -150,7 +150,7 @@ Each line is defined once and named the way its paper names it. Where two papers
 
 ## 4. The measurement catalogue
 
-92 measurements, 3 of them retired by C1; 42 use only the 19 points today's models name. **AI** = every point it needs is found by an installed model; **hand** = it waits for a point placed by hand. "+" says which way is plus.
+93 measurements (#93 Ba–S–N added 7 Nov 2026), 3 of them retired by C1; 42 use only the 19 points today's models name. **AI** = every point it needs is found by an installed model; **hand** = it waits for a point placed by hand. "+" says which way is plus.
 
 ### Skeletal: front-to-back
 
@@ -170,10 +170,10 @@ Each line is defined once and named the way its paper names it. Where two papers
 | 12 | Maxillomandibular difference (mm) | Co–Gn − Co–A | P McNamara | hand |
 | 13 | Wits (mm) | A and B dropped at right angles onto the occlusal plane through the molars and incisors (AO, BO); distance AO to BO. + when BO is behind AO (Class II) | P Jacobson (sign); plane per owner ruling NUS-OP-1 (16 Oct 2026; Jacobson used the functional plane) | hand |
 | 14 | APDI | Facial angle ± A–B plane angle ± palatal plane angle, with the paper's sign rules | P Kim & Vietas 1978 | AI |
-| 15 | ODI | A–B line to mandibular plane angle ± palatal plane to FH angle, with the paper's sign rules | P Kim 1974 (onfile's version is wrong) | AI |
-| 16 | Combination factor | ODI + APDI | S onfile | AI |
-| 17 | Extraction index | onfile's thresholds on the combination factor; Kim's own paper not on file | S onfile | AI |
-| 18 | Pog to NB (mm) | Distance from Pog to N–B. + when Pog is ahead | S onfile (Steiner's later papers) | AI |
+| 15 | ODI | A–B line to mandibular plane angle ± palatal plane to FH angle, with the paper's sign rules | P Kim 1974 (the data on file differs) | AI |
+| 16 | Combination factor | ODI + APDI | S Data on file | AI |
+| 17 | Extraction index | thresholds on the combination factor from Data on file (primary source being confirmed); Kim's own paper not yet in hand | S Data on file (primary source being confirmed) | AI |
+| 18 | Pog to NB (mm) | Distance from Pog to N–B. + when Pog is ahead | S Data on file (Steiner's later papers) | AI |
 | 19 | U6 to PTV (mm) | Back of the upper first molar to PTV. + when the molar is ahead of PTV (corrected 7 Oct 2026: sign added) | P Ricketts 1981 | hand |
 
 ### Skeletal: vertical and jaw shape
@@ -181,51 +181,52 @@ Each line is defined once and named the way its paper names it. Where two papers
 | # | Measurement | What is measured | Source | AI |
 | --- | --- | --- | --- | --- |
 | 20 | SN–GoGn | Angle between SN and Go–Gn | P Steiner | AI |
-| 21 | SN–GoMe (SN–MP) | Angle between SN and Go–Me | S onfile (ABO, Nagasaki) | AI |
+| 21 | SN–GoMe (SN–MP) | Angle between SN and Go–Me | S Data on file (ABO, Nagasaki) | AI |
 | 22 | FH–MP, tangent (FMA, Downs mandibular plane) | Angle between FH and the lower-border tangent | P Tweed, Downs, Ricketts | hand (tangent point; C2) |
-| 23 | FH–GoMe | Angle between FH and Go–Me | P McNamara; S onfile (ABO FMA) | AI |
+| 23 | FH–GoMe | Angle between FH and Go–Me | P McNamara; S Data on file (ABO FMA) | AI |
 | 24 | Y-axis | Angle between S–Gn and FH | P Downs | AI |
-| 25 | MMPA | Angle between the palatal plane and Go–Me | T Naini; S onfile (Eastman) | AI |
-| 26 | SN–MxP | Angle between SN and the palatal plane | T Naini; S onfile (Eastman) | AI |
+| 25 | MMPA | Angle between the palatal plane and Go–Me | T Naini; S Data on file (Eastman) | AI |
+| 26 | SN–MxP | Angle between SN and the palatal plane | T Naini; S Data on file (Eastman) | AI |
 | 27 | Palatal plane to FH | Angle between ANS–PNS and FH. − when the front tips up, + when it tips down (Kim 1974 p. 590; Kim & Vietas 1978 p. 622; corrected 7 Oct 2026: an unsourced line had this reversed) | P Ricketts 1981, Kim | AI |
 | 28 | LAFH, ANS–Me (mm) | Lower anterior face height | P McNamara | AI |
 | 29 | LAFH % | ANS–Me as a percentage of N–Me | T Naini ("about 55%") | AI |
 | 30 | Facial axis, Ricketts | Angle between Ba–N and Pt–constructed Gn, at their crossing (CC) | P Ricketts 1981 | hand |
 | 31 | Facial axis, McNamara | Angle between Ba–N and PTM–constructed Gn (his Gn: N–Pog meets Go–Me), at their crossing; >90 = deficient vertical growth (McNamara 1984 p. 460; owner ruling 7 Oct 2026: line against line, not his bracketed corner at PTM) | P McNamara | hand |
-| 32 | Oral gnomon (onfile: "lower facial height") | Angle ANS–Xi–Pm | P Ricketts 1981 | hand |
+| 32 | Oral gnomon (data on file: "lower facial height") | Angle ANS–Xi–Pm | P Ricketts 1981 | hand |
 | 33 | Mandibular bend | Angle between the condyle axis (Xi–DC) and the corpus axis (Pm–Xi, extended back) | P Ricketts 1981 | hand |
-| 34 | Saddle angle | Angle N–S–Ar | S onfile, [source removed]; T Naini | AI |
-| 35 | Articular angle | Angle S–Ar–Go | S onfile, [source removed] | AI |
-| 36 | Gonial angle | Angle Ar–Go–Me | S onfile, [source removed] | AI |
-| 37 | Upper gonial angle | Angle Ar–Go–N | S onfile | AI |
-| 38 | Lower gonial angle | Angle N–Go–Me | S onfile | AI |
-| 39 | Sum of angles | #34 + #35 + #36 | S onfile, [source removed] | AI |
-| 40 | Posterior face height S–Go (mm) | Sella to gonion, straight-line distance (corrected 12 Oct 2026: the cell was empty) | S onfile; T Naini | AI |
-| 41 | Anterior face height N–Me (mm) | Nasion to menton, straight-line distance (corrected 12 Oct 2026: the cell was empty) | S onfile; T Naini | AI |
-| 42 | Jarabak ratio (%) | S–Go ÷ N–Me × 100 | S onfile, [source removed] | AI |
-| 43 | Cranial base to body | S–N length ÷ Go–Me length | S [source removed] | AI |
-| 44 | Posterior cranial base to ramus | Ar–S length ÷ Ar–Go length | S [source removed] | AI |
-| 90 | SN–MP, ABO | Angle between SN and constructed gonion to menton. Constructed gonion = where the ramus tangent meets the lower-border tangent | P ABO 2025 slides (constructed gonion); menton per onfile | hand (two tangent points) |
+| 34 | Saddle angle | Angle N–S–Ar | S Data on file; T Naini | AI |
+| 35 | Articular angle | Angle S–Ar–Go | S Data on file | AI |
+| 36 | Gonial angle | Angle Ar–Go–Me | S Data on file | AI |
+| 37 | Upper gonial angle | Angle Ar–Go–N | S Data on file | AI |
+| 38 | Lower gonial angle | Angle N–Go–Me | S Data on file | AI |
+| 39 | Sum of angles | #34 + #35 + #36 | S Data on file | AI |
+| 40 | Posterior face height S–Go (mm) | Sella to gonion, straight-line distance (corrected 12 Oct 2026: the cell was empty) | S Data on file; T Naini | AI |
+| 41 | Anterior face height N–Me (mm) | Nasion to menton, straight-line distance (corrected 12 Oct 2026: the cell was empty) | S Data on file; T Naini | AI |
+| 42 | Jarabak ratio (%) | S–Go ÷ N–Me × 100 | S Data on file | AI |
+| 43 | Cranial base to body | S–N length ÷ Go–Me length | S Data on file | AI |
+| 44 | Posterior cranial base to ramus | Ar–S length ÷ Ar–Go length | S Data on file | AI |
+| 90 | SN–MP, ABO | Angle between SN and constructed gonion to menton. Constructed gonion = where the ramus tangent meets the lower-border tangent | P ABO 2025 slides (constructed gonion); menton per the data on file | hand (two tangent points) |
 | 91 | FMA, ABO | Angle between FH and constructed gonion to menton | P ABO 2025 slides | hand (two tangent points) |
 | 92 | L1–MP, ABO | Angle between the L1 axis and constructed gonion to menton | P ABO 2025 slides | hand |
+| 93 | Cranial base angle, Ba–S–N | Angle at S between Ba and N (the cranial base angle) | P Ricketts 1960 (p. 346, N–S–Ba); added by owner ruling 7 Nov 2026 for the NUS sheet's BaSN row | hand (Ba) |
 
 ### Dental
 
 | # | Measurement | What is measured | Source | AI |
 | --- | --- | --- | --- | --- |
 | 45 | U1–NA (mm), labial point | Not used: C1 ruled the tip for all (#46) | P Steiner | hand |
-| 46 | U1–NA (mm), tip | U1 tip to N–A. + when ahead | S onfile (ABO, Radney) | AI |
+| 46 | U1–NA (mm), tip | U1 tip to N–A. + when ahead | S Data on file (ABO, Radney) | AI |
 | 47 | U1–NA (°) | Angle between the U1 axis and N–A | P Steiner; S Radney | hand |
 | 48 | L1–NB (mm), labial point | Not used: C1 ruled the tip for all (#49) | P Steiner | hand |
-| 49 | L1–NB (mm), tip | L1 tip to N–B | S onfile (ABO) | AI |
+| 49 | L1–NB (mm), tip | L1 tip to N–B | S Data on file (ABO) | AI |
 | 50 | L1–NB (°) | Angle between the L1 axis and N–B | P Steiner | hand |
-| 51 | L1–NA (mm), tip | L1 tip to N–A | S onfile (Nagasaki, Radney) | AI |
-| 52 | L1–NA (°) | Angle between the L1 axis and N–A | S onfile (Radney) | hand |
+| 51 | L1–NA (mm), tip | L1 tip to N–A | S Data on file (Nagasaki, Radney) | AI |
+| 52 | L1–NA (°) | Angle between the L1 axis and N–A | S Data on file (Radney) | hand |
 | 53 | Interincisal angle | Inside angle between the U1 and L1 axes | P Downs, Steiner | hand |
-| 54 | U1–SN | Angle between the U1 axis and SN | S onfile (ABO); T | hand |
-| 55 | U1–MxP | Angle between the U1 axis and the palatal plane | T Naini; S onfile (Eastman) | hand |
+| 54 | U1–SN | Angle between the U1 axis and SN | S Data on file (ABO); T | hand |
+| 55 | U1–MxP | Angle between the U1 axis and the palatal plane | T Naini; S Data on file (Eastman) | hand |
 | 56 | IMPA, tangent | Angle between the L1 axis and the lower-border tangent. Downs writes it as degrees above or below 90 | P Tweed, Downs | hand |
-| 57 | IMPA, Go–Me | Angle between the L1 axis and Go–Me | T; S onfile (ABO, Nagasaki, Eastman) | hand |
+| 57 | IMPA, Go–Me | Angle between the L1 axis and Go–Me | T; S Data on file (ABO, Nagasaki, Eastman) | hand |
 | 58 | FMIA | Angle between the L1 axis and FH (third angle of Tweed's triangle) | P Tweed 1954 | hand |
 | 59 | L1–GoGn | Angle between the L1 axis and Go–Gn | P Steiner 1953 chart | hand |
 | 60 | Occlusal plane to SN | Downs occlusal plane to SN | P Steiner | hand |
@@ -253,8 +254,8 @@ Each line is defined once and named the way its paper names it. Where two papers
 | 77 | Basic upper lip thickness (mm) | About 3 mm below A to the drape of the upper lip | S AlBarakati | hand (lip drape point) |
 | 78 | Upper lip thickness (mm) | Labial surface of U1 to the upper lip vermilion | S AlBarakati | hand |
 | 79 | Upper lip strain (mm) | #77 − #78 (Holdaway: basic thickness minus thickness at the vermilion; normal about +1 to +2 mm) (corrected 8 Oct 2026, owner LIP-2: was #78 − #77, the opposite sign) | S AlBarakati, Google | hand |
-| 80 | H-angle | Angle between the H-line and the soft-tissue facial line. + when the upper lip is ahead of the soft-tissue facial line, − when behind (negative in concave Class III faces) (corrected 7 Oct 2026: sign added) | S AlBarakati (onfile's version is wrong) | hand |
-| 81 | Lower lip to H-line (mm) | Lower lip to the H-line (corrected 12 Oct 2026: the cell was empty) | S AlBarakati, onfile | AI |
+| 80 | H-angle | Angle between the H-line and the soft-tissue facial line. + when the upper lip is ahead of the soft-tissue facial line, − when behind (negative in concave Class III faces) (corrected 7 Oct 2026: sign added) | S AlBarakati (the data on file differs) | hand |
+| 81 | Lower lip to H-line (mm) | Lower lip to the H-line (corrected 12 Oct 2026: the cell was empty) | S AlBarakati, data on file | AI |
 | 82 | Inferior sulcus to H-line (mm) | Deepest point under the lower lip to the H-line | S AlBarakati | hand |
 | 83 | Soft-tissue chin thickness (mm) | Between the hard and soft facial lines, level with suprapogonion | S AlBarakati | hand |
 | 84 | Upper pharynx (mm) | Back of the soft palate (front half) to the nearest point on the back pharyngeal wall | P McNamara | hand |
@@ -277,16 +278,16 @@ Each analysis is a list of catalogue numbers from section 4. With today's models
 | McNamara | 8, 9, 10, 11, 12, 28, 23, 31, 67, 64, 84, 85 | P McNamara 1984 | 6 of 12 |
 | Ricketts (1981 summary) | 30, 4, 22, 32, 27, 7, 64, 19, 53, 72, 33 | P Ricketts 1981 | 4 of 11 |
 | Tweed triangle | 22, 56, 58 | P Tweed 1946, 1954 | 0 of 3 (1 of 3 if C2 is Go–Me) |
-| Björk–Jarabak | 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44 | S onfile, [source removed]; T Naini | **11 of 11** |
+| Björk–Jarabak | 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44 | S Data on file; T Naini | **11 of 11** |
 | Wits | 13 | P Jacobson 1975 | 0 of 1 |
-| Eastman | 1, 2, 3, 26, 25, 55, 57, 53, 29 | T Naini; S onfile | 6 of 9 |
+| Eastman | 1, 2, 3, 26, 25, 55, 57, 53, 29 | T Naini; S Data on file | 6 of 9 |
 | Holdaway | 73, 74, 75, 76, 7, 77, 78, 79, 80, 81, 82, 83 | S AlBarakati 2012 (following Holdaway 1983) | 3 of 12 |
 | E-line | 71, 72 | P Ricketts 1957, 1960 | 0 of 2 |
-| Kim | 15, 14, 16, 17 | P Kim 1974, Kim & Vietas 1978; S onfile for 16, 17 | **4 of 4** |
-| ABO | 1, 2, 3, 90, 91, 54, 46, 47, 92, 49, 50, 72 (official list, ABO 2025 slides) | S onfile | 5 of 12 |
-| Nagasaki University | 1, 2, 3, 21, 51, 57, 53, 13 | S onfile | 5 of 8 |
-| Radney | 47, 46, 52, 51 | S onfile (Creekmore 1997) | 2 of 4 |
-| NUS | 1, 2, 3, 23, 25, 26, 13, 29, 54, 55, 57, 53, 64, 68, 69, 71, 72 | NUS/NDC sheet for the list; P and T for each definition | 8 of 17 |
+| Kim | 15, 14, 16, 17 | P Kim 1974, Kim & Vietas 1978; S Data on file for 16, 17 | **4 of 4** |
+| ABO | 1, 2, 3, 90, 91, 54, 46, 47, 92, 49, 50, 72 (official list, ABO 2025 slides) | S Data on file | 5 of 12 |
+| Nagasaki University | 1, 2, 3, 21, 51, 57, 53, 13 | S Data on file | 5 of 8 |
+| Radney | 47, 46, 52, 51 | S Data on file (Creekmore 1997) | 2 of 4 |
+| NUS | 1, 2, 3, 23, 25, 26, 13, 29, 54, 55, 57, 53, 64, 68, 69, 71, 72, 93 | NUS/NDC sheet for the list (#93 BaSN added 7 Nov 2026); P and T for each definition | 8 of 18 |
 
 **What blocks the most, and so would gain the most from a model that finds it:**
 
@@ -318,11 +319,11 @@ Papers stay on your Mac in `reference/norms/local/`; only these citations go int
 - Naini FB. *Facial Aesthetics: Concepts & Clinical Diagnosis*, Ch. 7 (textbook, T)
 - Miyashita K. *Contemporary Cephalometric Radiography*, glossary (point definitions; checked against the page image)
 
-**Second-hand (S), pages opened 6 Oct 2026:** onfile [analysis list]([source removed]), [Steiner]([source removed]), [Holdaway]([source removed]), [Björk–Jarabak]([source removed]), [Kim]([source removed]), [Eastman]([source removed]), [ABO]([source removed]), [Nagasaki]([source removed]), [Radney]([source removed]); [[source removed] Dental, Björk and Jarabak]([source removed]).
+**Second-hand (S), web pages opened 6 Oct 2026:** data on file (primary sources being confirmed; the pages are named in the private records only).
 
-**Where onfile disagrees with the papers (so the papers win):**
+**Where the data on file disagrees with the papers (so the papers win):**
 
-| onfile says | The paper says |
+| Data on file says | The paper says |
 | --- | --- |
 | ODI: A–B plane to **FH** ± palatal plane | A–B plane to the **mandibular plane** ± palatal plane (Kim 1974) |
 | Holdaway H-angle: to **N–B** | To the **soft-tissue facial line** (AlBarakati, following Holdaway) |
@@ -338,8 +339,8 @@ Papers stay on your Mac in `reference/norms/local/`; only these citations go int
 
 - [ ] Holdaway 1983 itself (would turn 12 S marks into P). No institutional access; AlBarakati stands in.
 - [ ] Jarabak & Fizzell 1972 (book) or Björk 1947, for the Björk–Jarabak definitions.
-- [ ] Kim's paper defining the extraction index (onfile only).
-- [ ] A source for the Nagasaki and Radney lists beyond onfile. (ABO now has its own: American Board of Orthodontics, Cephalometric Review, workshop slides rev. 14 Mar 2025, on file; it defines the list and points but gives no norm values.)
+- [ ] Kim's paper defining the extraction index (data on file only).
+- [ ] A source for the Nagasaki and Radney lists beyond the data on file. (ABO now has its own: American Board of Orthodontics, Cephalometric Review, workshop slides rev. 14 Mar 2025, on file; it defines the list and points but gives no norm values.)
 - [x] The CL-Detection 2023 landmark list: found in Figure 3 of arXiv 2409.15834 (see section 2).
 - [x] Your rulings on C1–C9 (section 1).
 

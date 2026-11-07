@@ -61,7 +61,7 @@ const DEFINITION_MATCHES = ['same', 'close', 'different'];
 /** Final review I-4 (12 Oct): the keys the format allows (types.ts), so a misspelt key ("ageband")
  *  is refused instead of silently ignored. Keep in step with NormSet / NormEntry in types.ts. */
 export const ALLOWED_KEYS = {
-  set: ['id', 'kind', 'analyses', 'status', 'citation', 'population', 'sample', 'selection', 'modality', 'scale', 'headPosition', 'secondHand', 'ageRows', 'curation', 'caveats', 'entries'],
+  set: ['id', 'kind', 'analyses', 'forPopulations', 'forOtherPopulations', 'status', 'citation', 'population', 'sample', 'selection', 'modality', 'scale', 'headPosition', 'secondHand', 'ageRows', 'curation', 'caveats', 'entries'],
   citation: ['authors', 'title', 'journal', 'year', 'undated', 'volume', 'pages', 'doi', 'pmid', 'pmcid', 'url', 'openAccess'],
   population: ['id', 'label', 'ethnicity', 'country', 'region'],
   sample: ['n', 'nMale', 'nFemale', 'ageMin', 'ageMax', 'ageMean'],
@@ -349,6 +349,16 @@ export function validateSet(set: unknown, ctx: { populations: string[] }): strin
 
   if (!s.population || !ctx.populations.includes(s.population.id)) {
     problems.push(`${id}: unknown population id "${s.population?.id}"`);
+  }
+
+  // Owner ruling 7 Nov 2026 (NUS): an own norm chosen by the patient's population.
+  if (s.forPopulations !== undefined) {
+    if (s.kind !== 'analysis-own') problems.push(`${id}: forPopulations is only allowed for kind "analysis-own"`);
+    if (!isStringArray(s.forPopulations) || s.forPopulations.length === 0) problems.push(`${id}: forPopulations must be a non-empty array of population ids`);
+    else for (const p of s.forPopulations) if (!ctx.populations.includes(p)) problems.push(`${id}: forPopulations names unknown population id "${p}"`);
+  }
+  if (s.forOtherPopulations !== undefined && (s.forOtherPopulations !== true || s.forPopulations === undefined)) {
+    problems.push(`${id}: forOtherPopulations must be true, and only beside forPopulations`);
   }
 
   if (!Array.isArray(s.entries)) {

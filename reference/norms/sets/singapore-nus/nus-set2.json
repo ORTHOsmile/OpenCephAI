@@ -1,0 +1,227 @@
+{
+  "id": "nus-set2",
+  "kind": "analysis-own",
+  "analyses": [
+    "nus"
+  ],
+  "forPopulations": [
+    "caucasian",
+    "indian"
+  ],
+  "status": "single-extracted",
+  "citation": {
+    "authors": "Data on file (NUS norms)",
+    "title": "NUS analysis norms, set 2 (Caucasian and Indian)",
+    "undated": true,
+    "openAccess": false
+  },
+  "population": {
+    "id": "singapore-nus",
+    "label": "Singapore (NUS teaching)",
+    "ethnicity": [],
+    "country": "Singapore"
+  },
+  "sample": {},
+  "selection": "unknown",
+  "modality": "unknown",
+  "scale": {
+    "kind": "true-size",
+    "source": "owner ruling 8 Oct: the NUS sheet is scaled correctly"
+  },
+  "headPosition": "unknown",
+  "curation": {
+    "extractedBy": [
+      "owner-transcription",
+      "AI reader A"
+    ],
+    "comparedOn": "2026-11-07",
+    "date": "2026-11-07",
+    "notes": "Owner's transcription of the NUS sheet's second column set (7 Nov 2026, confirmed by the owner in session). One reader plus the owner's confirmation; not a double extraction, so status single-extracted (shown as unverified). Switched on by owner ruling, 7 Nov 2026: used for Caucasian and Indian patients. Filled by that ruling: U1 to SN (from the ABO norm in the app, owner answer 7 Nov 2026), L1 to APo (pooled adult Caucasian rows), and the SDs of Wits, LAFH %, OJ and OB (from set 1). The E-line SDs are borrowed by the app at resolve time (the SD-lender order)."
+  },
+  "caveats": [
+    "Switched on by owner ruling, 7 Nov 2026: the NUS analysis uses this set for Caucasian and Indian patients (forPopulations), set 1 (ndc-sheet) for everyone else. Indian patients use the Caucasian norms everywhere in the app (populations.json); research reports no significant difference.",
+    "The owner's table: the NUS sheet has no sex difference and one norm for all ages. Set 1 (Chinese = Malay) is the existing ndc-sheet; set 2 (Caucasian = Indian) is this set. Transcribed from the owner's screenshots and confirmed by the owner, 7 Nov 2026.",
+    "Filled, not printed on the sheet (owner ruling 7 Nov 2026): L1 to APo = Gu 2011 Caucasian adults and McNamara 1984 Ann Arbor adults pooled n-weighted (2.42 +/- 1.68 mm, N = 201; the Bolton children are excluded because they are the same 32 children at six ages); the SDs of Wits (3.9), LAFH % (2.1), OJ (1.7) and OB (1.8) are set 1's. Arithmetic: docs/norms/evidence/2026-11-07-nus-record.md.",
+    "Left blank: BaSN (no set in the app holds a Ba-S-N norm for Caucasian patients). The NUS analysis then falls back as for any missing own norm. U1 to SN was blank on the sheet and is FILLED from ABO (owner answer, 7 Nov 2026): 102 +/- 2, which agrees with this set's own 108 - 8 = 100.",
+    "Sex and age not stated: all values entered as pooled, with no age band."
+  ],
+  "entries": [
+    {
+      "measurement": "m01_SNA",
+      "sex": "pooled",
+      "mean": 82.0,
+      "sd": 3.0,
+      "unit": "deg",
+      "source": "Data on file (NUS norms), set 2, row 'SNA'",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m02_SNB",
+      "sex": "pooled",
+      "mean": 79.0,
+      "sd": 3.0,
+      "unit": "deg",
+      "source": "Data on file (NUS norms), set 2, row 'SNB'",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m03_ANB",
+      "sex": "pooled",
+      "mean": 3.0,
+      "sd": 1.0,
+      "unit": "deg",
+      "source": "Data on file (NUS norms), set 2, row 'ANB'",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m23_FHGoMe",
+      "sex": "pooled",
+      "mean": 25.0,
+      "sd": 5.0,
+      "unit": "deg",
+      "source": "Data on file (NUS norms), set 2, row 'FMA'",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m25_MMPA",
+      "sex": "pooled",
+      "mean": 27.0,
+      "sd": 5.0,
+      "unit": "deg",
+      "source": "Data on file (NUS norms), set 2, row 'MMPA'",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m26_SNMxP",
+      "sex": "pooled",
+      "mean": 8.0,
+      "sd": 3.0,
+      "unit": "deg",
+      "source": "Data on file (NUS norms), set 2, row 'SN-MxP'",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m13_Wits",
+      "sex": "pooled",
+      "mean": 0.0,
+      "sd": 3.9,
+      "sdSource": {
+        "set": "ndc-sheet",
+        "source": "set 1, Skeletal section, row 7 'WITS': SD borrowed from NUS Chinese (set 1)"
+      },
+      "unit": "mm",
+      "source": "Data on file (NUS norms), set 2, row 'Wits'",
+      "definitionMatch": "same",
+      "note": "No SD on the sheet: SD borrowed from NUS Chinese (set 1, the same sheet's other column set), owner ruling 7 Nov 2026; the app's lender order found no eligible lender. Printed 0.0 (no sign). The sheet states no sign rule or occlusal plane; read with the catalogue's Jacobson sign (BO behind AO positive), along the standard occlusal plane (molars to incisors) per owner ruling NUS-OP-1 (16 Oct 2026: NUS uses the standard plane; until then the functional plane)."
+    },
+    {
+      "measurement": "m29_LAFHpct",
+      "sex": "pooled",
+      "mean": 55.0,
+      "sd": 2.1,
+      "sdSource": {
+        "set": "ndc-sheet",
+        "source": "set 1, Skeletal section, row 8 'LAFH': SD borrowed from NUS Chinese (set 1)"
+      },
+      "unit": "%",
+      "source": "Data on file (NUS norms), set 2, row 'LAFH'",
+      "definitionMatch": "same",
+      "note": "No SD on the sheet: SD borrowed from NUS Chinese (set 1, the same sheet's other column set), owner ruling 7 Nov 2026; the app's lender order found no eligible lender. Unit printed as %; the sheet does not state the ratio's points. Read as the catalogue's ANS–Me / N–Me × 100 (Eastman/Naini usage, 'about 55%'); 53.9% fits that ratio and nothing on the sheet indicates another."
+    },
+    {
+      "measurement": "m54_U1SN",
+      "sex": "pooled",
+      "mean": 102,
+      "sd": 2,
+      "unit": "deg",
+      "source": "Data on file (NUS norms), set 2, row 'U1 to SN': blank on the sheet, FILLED from ABO (owner answer, 7 Nov 2026): the ABO norm already in the app, 102 +/- 2 (onfile-abo, Dental table, row 'U1 to SN')",
+      "definitionMatch": "same",
+      "note": "Check (owner ruling 7 Nov 2026): this set's own rows imply U1 to SN = U1 to MxPA 108 - SN to MxP 8 = 100 deg, within one SD (2) of 102, so the value agrees with the sheet. The ABO value is a 'Data on file' website value (shown uncoloured in the ABO analysis); here, by the owner's answer, it is used as set 2's norm and coloured. Its SD of 2 deg is narrow. The app holds no Steiner U1-SN norm (steiner1953 has none)."
+    },
+    {
+      "measurement": "m55_U1MxP",
+      "sex": "pooled",
+      "mean": 108.0,
+      "sd": 5.0,
+      "unit": "deg",
+      "source": "Data on file (NUS norms), set 2, row 'U1 to MxPA'",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m57_IMPAgome",
+      "sex": "pooled",
+      "mean": 92.0,
+      "sd": 5.0,
+      "unit": "deg",
+      "source": "Data on file (NUS norms), set 2, row 'L1 to MMPA'",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m53_Interincisal",
+      "sex": "pooled",
+      "mean": 133.0,
+      "sd": 10.0,
+      "unit": "deg",
+      "source": "Data on file (NUS norms), set 2, row 'Interincisal angle'",
+      "definitionMatch": "same"
+    },
+    {
+      "measurement": "m64_L1APog",
+      "sex": "pooled",
+      "mean": 2.42,
+      "sd": 1.68,
+      "n": 201,
+      "unit": "mm",
+      "source": "Data on file (NUS norms), set 2, row 'L1 to APo': blank on the sheet, FILLED (owner ruling 7 Nov 2026) by pooling the adult Caucasian rows n-weighted: Gu 2011 (women n 60, 2.2 +/- 1.3; men n 30, 2.3 +/- 1.7) and McNamara 1984 Ann Arbor (women n 73, 2.7 +/- 1.7; men n 38, 2.3 +/- 2.1); McNamara 1984 Bolton children excluded (the same 32 children at six ages)",
+      "definitionMatch": "close",
+      "definitionNote": "filled from papers that place L1 differently from the app's incisal tip (their rows are 'close')",
+      "note": "Pooled mean = sum(n x) / N; SD = sqrt(sum[(n - 1) s^2 + n (x - mean)^2] / (N - 1)): 2.4154 and 1.6798, printed 2.42 and 1.68 (docs/norms/evidence/2026-11-07-nus-record.md, section 2)."
+    },
+    {
+      "measurement": "m68_Overjet",
+      "sex": "pooled",
+      "mean": 3.0,
+      "sd": 1.7,
+      "sdSource": {
+        "set": "ndc-sheet",
+        "source": "set 1, Dental section, row 14 'OJ': SD borrowed from NUS Chinese (set 1)"
+      },
+      "unit": "mm",
+      "source": "Data on file (NUS norms), set 2, row 'OJ'",
+      "definitionMatch": "same",
+      "note": "No SD on the sheet: SD borrowed from NUS Chinese (set 1, the same sheet's other column set), owner ruling 7 Nov 2026; the app's lender order found no eligible lender. The sheet states no measuring direction. The catalogue measures along the standard occlusal plane, molars to incisors (owner ruling NUS-OP-1, 16 Oct 2026, replacing C7's functional plane)."
+    },
+    {
+      "measurement": "m69_Overbite",
+      "sex": "pooled",
+      "mean": 3.0,
+      "sd": 1.8,
+      "sdSource": {
+        "set": "ndc-sheet",
+        "source": "set 1, Dental section, row 15 'OB': SD borrowed from NUS Chinese (set 1)"
+      },
+      "unit": "mm",
+      "source": "Data on file (NUS norms), set 2, row 'OB'",
+      "definitionMatch": "same",
+      "note": "No SD on the sheet: SD borrowed from NUS Chinese (set 1, the same sheet's other column set), owner ruling 7 Nov 2026; the app's lender order found no eligible lender. The sheet states no measuring direction. The catalogue measures at right angles to the standard occlusal plane, molars to incisors (owner ruling NUS-OP-1, 16 Oct 2026, replacing C7's functional plane)."
+    },
+    {
+      "measurement": "m71_ULE",
+      "sex": "pooled",
+      "mean": 0.0,
+      "unit": "mm",
+      "source": "Data on file (NUS norms), set 2, row 'Upper lip to E-line'",
+      "definitionMatch": "same",
+      "note": "No SD on the sheet. Not stored here: the app borrows one when it resolves this row (rules 13-17, SD-lender order of 13 Oct 2026) and marks it 'SD borrowed from <set>' in the source line. Sign: read with the catalogue's rule (+ when the lip is ahead of the E-line, Ricketts 1960)."
+    },
+    {
+      "measurement": "m72_LLE",
+      "sex": "pooled",
+      "mean": -2.0,
+      "unit": "mm",
+      "source": "Data on file (NUS norms), set 2, row 'Lower lip to E-line'",
+      "definitionMatch": "same",
+      "note": "No SD on the sheet. Not stored here: the app borrows one when it resolves this row (rules 13-17, SD-lender order of 13 Oct 2026) and marks it 'SD borrowed from <set>' in the source line. Sign: read with the catalogue's rule (+ when the lip is ahead of the E-line, Ricketts 1960); the sheet's -2.0 for the lower lip is a minus (behind the line)."
+    }
+  ]
+}

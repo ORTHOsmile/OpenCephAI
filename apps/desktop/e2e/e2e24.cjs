@@ -206,7 +206,7 @@ const results = []; const ok = (name, cond, extra = '') => { results.push(`${con
   // (d) no region finder, nothing else unusual: only the regions-not-checked line, and no Checked (nothing to check).
   await toLibrary(); await set({ wf: view(check({ id: 16, outcome: 'clean', regionLook: 'no-region-model' })) }); await importNew();      // c6
   await note.waitFor({ timeout: 4000 }).catch(() => {});
-  ok('d1. no region model, clean shape: the regions-not-checked line only, no button', JSON.stringify(await noteLines()) === JSON.stringify(['Whole-film check: regions not checked (no region finder installed); a tracing at the wrong size is not seen.']) && (await noteBtns()).length === 0, (await noteLines()).join('|'));
+  ok('d1. no region model, clean shape: the regions-not-checked line only, no button', JSON.stringify(await noteLines()) === JSON.stringify(['Whole-film check: regions not checked (not set up: download the check model in Models…).']) && (await noteBtns()).length === 0, (await noteLines()).join('|'));
   await toLibrary(); await set({ wf: view(check({ id: 17, outcome: 'clean', regionLook: 'film-too-small' })) }); await importNew();      // c7
   await note.waitFor({ timeout: 4000 }).catch(() => {});
   ok('d2. film too small: its line', (await noteLines()).join('|') === 'Whole-film check: regions not checked (the film is too small).');
@@ -410,7 +410,7 @@ const results = []; const ok = (name, cond, extra = '') => { results.push(`${con
     'Whole-film check: size not judged: incomplete tracing (all 19 points needed).', 'Whole-film check: cranial-base centre not judged: S, N, Po, Ar and Or all needed.']), (await noteLines()).join('|'));
   await toLibrary(); await set({ wf: view(check({ id: 85, outcome: 'clean', regionLook: 'no-region-model', sizeLook: 'no-region-model' })) }); await importNew();
   await note.waitFor({ timeout: 4000 }).catch(() => {});
-  ok('SZ6. no region model: the regions-not-checked line covers the size too (no separate size line)', (await noteLines()).join('|') === 'Whole-film check: regions not checked (no region finder installed); a tracing at the wrong size is not seen.');
+  ok('SZ6. no region model: the regions-not-checked line covers the size too (no separate size line)', (await noteLines()).join('|') === 'Whole-film check: regions not checked (not set up: download the check model in Models…).');
   await toLibrary(); await set({ wf: view(check({ id: 86, reasons: [reason('size', { factor: 0.5 })], resolved: { reason: 'expected-variant', operator: 'SYNTHETIC-operator', resolvedAt: '2026-11-05T00:00:00Z' } })) }); await importNew();
   await note.waitFor({ timeout: 4000 }).catch(() => {});
   ok('SZ7. locked/Checked already: the size line stays with "Checked: Expected variant …", no button', (await noteLines()).includes(SIZE_HALF) && /Checked: Expected variant/.test(await text(note)) && (await noteBtns()).length === 0);

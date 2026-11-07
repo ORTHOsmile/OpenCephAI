@@ -39,7 +39,7 @@ The app looks a patient's measurement up in these files (`packages/analyses/src/
      folder. Population ids are in `reference/norms/populations.json`.
    - `analysis-own`: an analysis's own published norms (Steiner's ideals, McNamara's norms). Lists the
      analyses it belongs to in `analyses`.
-   - Values from a web page ([source removed]) are not a separate kind: they are an `analysis-own` set with
+   - Values from a web page are not a separate kind: they are an `analysis-own` set with
      `status: "website"`. Shown but never coloured.
 3. **Extract it twice**, independently, into `reference/norms/local/extract/<id>.a.json` and `.b.json`
    (give both the same written instructions).

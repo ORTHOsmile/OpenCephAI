@@ -1,7 +1,8 @@
 [
   { "id": "singapore-nus", "label": "Singapore (NUS teaching)" },
   { "id": "chinese", "label": "Chinese" },
-  { "id": "malay", "label": "Malay" },
+  { "id": "malay", "label": "Malay", "fallsBackTo": "chinese" },
+  { "id": "indian", "label": "Indian", "normsOf": "caucasian" },
   { "id": "saudi", "label": "Saudi" },
   { "id": "jordanian", "label": "Middle-Eastern / Jordanian" },
   { "id": "swedish", "label": "Swedish" },

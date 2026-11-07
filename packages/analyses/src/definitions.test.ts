@@ -74,8 +74,8 @@ function markupIn(values: string[]): string[] {
 
 describe('plain words for each measurement (appendix §4)', () => {
   const fromAppendix = appendixWhat(appendix);
-  it('the appendix parse finds all 92 rows (positive control on the parser)', () => {
-    expect(Object.keys(fromAppendix)).toHaveLength(92);
+  it('the appendix parse finds all 93 rows (positive control on the parser; #93 BaSN added 7 Nov 2026)', () => {
+    expect(Object.keys(fromAppendix)).toHaveLength(93);
     expect(fromAppendix['1']).toBe('Angle at N between S and A');
     expect(fromAppendix['27']).not.toMatch(/corrected/);
     expect(fromAppendix['27']).toMatch(/Kim 1974 p\. 590/);   // P4: the citation stays
